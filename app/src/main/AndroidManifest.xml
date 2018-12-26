@@ -19,6 +19,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ManageDrugsActivity"
+            android:label="Manage Drugs"
+            android:parentActivityName=".MainActivity" />
+
+        <activity android:name=".ManageCustomersActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="Manage Customers"/>
+
+        <activity android:name=".ManagePensActivity"
+            android:label="Manage Pens"
+            android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".ReportsActivity"
+            android:label="Reports"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
