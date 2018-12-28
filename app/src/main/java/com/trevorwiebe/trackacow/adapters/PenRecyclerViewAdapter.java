@@ -32,7 +32,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
     @NonNull
     @Override
     public PenViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_pen_recyclerview, viewGroup, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_single_string, viewGroup, false);
         return new PenViewHolder(view);
     }
 
@@ -59,7 +59,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         public PenViewHolder(View view){
             super(view);
 
-            mPen = view.findViewById(R.id.view_pen_tv);
+            mPen = view.findViewById(R.id.view_single_string);
         }
     }
 }

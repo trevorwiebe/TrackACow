@@ -3,6 +3,8 @@ package com.trevorwiebe.trackacow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,10 +13,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+    private DatabaseReference mPenRef = FirebaseDatabase.getInstance().getReference(mFirebaseAuth.getCurrentUser().getUid()).child(PenObject.PEN_OBJECT);
+    private ValueEventListener mPenListener;
+    private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
+    private ArrayList<PenObject> mPenList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +57,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        RecyclerView mainRv = findViewById(R.id.main_rv);
+        mainRv.setLayoutManager(new LinearLayoutManager(this));
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, this);
+        mainRv.setAdapter(mPenRecyclerViewAdapter);
+
+        mainRv.addOnItemTouchListener(new ItemClickListener(this, mainRv, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
+                trackCowIntent.putExtra("penObject", mPenList.get(position));
+                startActivity(trackCowIntent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -62,6 +97,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
+
+        mPenListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mPenList.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    PenObject penObject = snapshot.getValue(PenObject.class);
+                    if(penObject != null){
+                        mPenList.add(penObject);
+                    }
+                }
+                mPenRecyclerViewAdapter.swapData(mPenList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
     }
 
     @Override
@@ -73,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
+        mPenRef.removeEventListener(mPenListener);
         super.onPause();
     }
 
@@ -119,6 +174,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void onSignedInInitialized(){
-
+        mPenRef.addValueEventListener(mPenListener);
     }
 }

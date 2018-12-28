@@ -23,18 +23,36 @@
             android:name=".ManageDrugsActivity"
             android:label="Manage Drugs"
             android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".ManageCustomersActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="Manage Customers"/>
-
-        <activity android:name=".ManagePensActivity"
+        <activity
+            android:name=".ManageCustomersActivity"
+            android:label="Manage Customers"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ManagePensActivity"
             android:label="Manage Pens"
-            android:parentActivityName=".MainActivity"/>
-
-        <activity android:name=".ReportsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ReportsActivity"
             android:label="Reports"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddNewCustomer"
+            android:label="Add new customer"
+            android:parentActivityName=".ManageCustomersActivity" />
+        <activity
+            android:name=".MedicatedCowsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddNewDrugActivity"
+            android:label="Add new drug"
+            android:parentActivityName=".ManageDrugsActivity" />
+        <activity
+            android:name=".EditDrugActivity"
+            android:label="Edit drug"
+            android:parentActivityName=".ManageDrugsActivity" />
+        <activity android:name=".MedicateACowActivity"
+            android:label="Medicate a cow"
+            android:parentActivityName=".MedicatedCowsActivity"/>
     </application>
 
 </manifest>
