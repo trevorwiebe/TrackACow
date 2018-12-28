@@ -51,7 +51,7 @@ public class MedicateACowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicate_a_cow);
 
-        mBaseRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mTagName = findViewById(R.id.tag_number);
         mNotes = findViewById(R.id.notes);

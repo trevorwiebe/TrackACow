@@ -33,7 +33,7 @@ public class ManagePensActivity extends AppCompatActivity {
 
     private static final String TAG = "ManagePensActivity";
 
-    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference mPenRef = mBaseRef.child(PenObject.PEN_OBJECT);
     private ValueEventListener mPenListener;
     private ArrayList<PenObject> mPenObjectList = new ArrayList<>();

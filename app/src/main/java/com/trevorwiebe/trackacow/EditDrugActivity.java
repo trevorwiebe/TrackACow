@@ -43,7 +43,7 @@ public class EditDrugActivity extends AppCompatActivity {
             finish();
         }
 
-        mDrugRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+        mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
 
         mUpdateDrugName = findViewById(R.id.update_drug_name);
         mUpdateDefaultAmount = findViewById(R.id.update_default_amount_given);

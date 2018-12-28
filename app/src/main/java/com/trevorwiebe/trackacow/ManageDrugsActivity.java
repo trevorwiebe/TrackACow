@@ -30,7 +30,7 @@ public class ManageDrugsActivity extends AppCompatActivity {
 
     private ManageDrugRecyclerViewAdapter mManageDrugRecyclerViewAdapter;
     private ArrayList<DrugObject> mDrugList = new ArrayList<>();
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
     private ValueEventListener mDrugListener;
     private static final int UPDATE_DRUG_CALLBACK_CODE = 747;
 

@@ -39,7 +39,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
     private static final String TAG = "MedicatedCowsActivity";
 
-    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private Query mTrackCow;
     private ValueEventListener mTrackCowListener;
     private ArrayList<CowObject> mTreatedCows = new ArrayList<>();

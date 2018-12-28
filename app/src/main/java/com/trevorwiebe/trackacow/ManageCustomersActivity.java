@@ -24,7 +24,7 @@ public class ManageCustomersActivity extends AppCompatActivity {
 
     private CustomerRecyclerViewAdapter mCustomerRecyclerViewAdapter;
     private ArrayList<CustomerObject> mCustList = new ArrayList<>();
-    private DatabaseReference mCustRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CustomerObject.CUSTOMER_OBJECT);
+    private DatabaseReference mCustRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CustomerObject.CUSTOMER_OBJECT);
     private ValueEventListener mCustListener;
 
     @Override

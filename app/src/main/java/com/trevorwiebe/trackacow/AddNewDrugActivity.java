@@ -15,7 +15,7 @@ import com.trevorwiebe.trackacow.objects.DrugObject;
 
 public class AddNewDrugActivity extends AppCompatActivity {
 
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
 
     private TextInputEditText mDrugName;
     private TextInputEditText mDefaultAmount;

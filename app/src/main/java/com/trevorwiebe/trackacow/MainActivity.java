@@ -14,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-    private DatabaseReference mPenRef = FirebaseDatabase.getInstance().getReference(mFirebaseAuth.getCurrentUser().getUid()).child(PenObject.PEN_OBJECT);
+    private DatabaseReference mPenRef;
     private ValueEventListener mPenListener;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenObject> mPenList = new ArrayList<>();
@@ -80,7 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null){
+                mFirebaseAuth = firebaseAuth;
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user == null){
+
+                    onSignedOutCleanUp();
+
                     // Choose authentication providers
                     List<AuthUI.IdpConfig> providers = Arrays.asList(
                             new AuthUI.IdpConfig.EmailBuilder().build());
@@ -93,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     .build(),
                             RC_SIGN_IN);
                 }else{
-                    onSignedInInitialized();
+                    onSignedInInitialized(user);
                 }
             }
         };
@@ -127,7 +134,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
-        mPenRef.removeEventListener(mPenListener);
+        if(mPenRef != null) {
+            mPenRef.removeEventListener(mPenListener);
+        }
         super.onPause();
     }
 
@@ -164,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent manageCustomersIntent = new Intent(MainActivity.this, ManageCustomersActivity.class);
                 startActivity(manageCustomersIntent);
                 break;
+            case R.id.nav_sign_out:
+                AuthUI.getInstance().signOut(this);
+                break;
             default:
                 Log.e(TAG, "onNavigationItemSelected: unknown menu id");
         }
@@ -173,7 +185,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void onSignedInInitialized(){
+    private void onSignedInInitialized(FirebaseUser user){
+
+        mPenRef = FirebaseDatabase.getInstance().getReference("users").child(mFirebaseAuth.getCurrentUser().getUid()).child(PenObject.PEN_OBJECT);
+
         mPenRef.addValueEventListener(mPenListener);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView userName = headerView.findViewById(R.id.nav_userName);
+        TextView userEmail = headerView.findViewById(R.id.nav_userEmail);
+
+        userName.setText(user.getDisplayName());
+        userEmail.setText(user.getEmail());
+    }
+
+    private void onSignedOutCleanUp(){
+
+        Log.d(TAG, "onSignedOutCleanUp: here");
+
+        if(mPenRef != null) {
+            mPenRef.removeEventListener(mPenListener);
+        }
+
+        mPenList.clear();
+        mPenRecyclerViewAdapter.swapData(mPenList);
+
+        mPenRef = null;
     }
 }
