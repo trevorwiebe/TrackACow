@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        final TextView noPensTv = findViewById(R.id.no_pens_tv);
         RecyclerView mainRv = findViewById(R.id.main_rv);
         mainRv.setLayoutManager(new LinearLayoutManager(this));
         mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, this);
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if(penObject != null){
                         mPenList.add(penObject);
                     }
+                }
+                if(mPenList.size() != 0) {
+                    noPensTv.setVisibility(View.INVISIBLE);
                 }
                 mPenRecyclerViewAdapter.swapData(mPenList);
             }

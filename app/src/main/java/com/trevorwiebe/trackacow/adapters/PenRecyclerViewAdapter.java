@@ -42,7 +42,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         PenObject penObject = mPenList.get(i);
         String penName = penObject.getPenName();
 
-        penViewHolder.mPen.setText(penName);
+        penViewHolder.mPen.setText("Pen: " + penName);
     }
 
     public void swapData(ArrayList<PenObject> penObjects){
