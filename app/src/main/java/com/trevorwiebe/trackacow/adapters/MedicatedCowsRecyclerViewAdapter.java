@@ -4,18 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.objects.CowDrugObject;
+import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.CowObject;
 import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -30,8 +25,6 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
     private ArrayList<CowObject> mCowList;
     private ArrayList<DrugObject> mDrugList;
     private Context mContext;
-    private int mExpandedPosition = -1;
-    private MedicatedCowsRecyclerViewAdapter.TrackCowViewHolder mExpandedHolder;
 
     public MedicatedCowsRecyclerViewAdapter(ArrayList<CowObject> cowObjects, ArrayList<DrugObject> drugList, Context context){
         this.mCowList = cowObjects;
@@ -64,52 +57,59 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         CowObject cowObject = mCowList.get(position);
 
         String tagNumber = Integer.toString(cowObject.getCowNumber());
-        long date = cowObject.getDate();
+        String notes = cowObject.getNotes();
 
         trackCowViewHolder.mTagNumber.setText(tagNumber);
-        String strDate = Utility.convertMillisToDate(date);
-        trackCowViewHolder.mDate.setText("Date treated:" + strDate);
-
-        String notes = cowObject.getNotes();
-        trackCowViewHolder.mNotes.setText(notes);
-
-        ArrayList<CowDrugObject> cowDrugObjects = cowObject.getmDrugList();
-        for(int q=0; q<cowDrugObjects.size(); q++){
-            CowDrugObject cowDrugObject = cowDrugObjects.get(q);
-
+        if(notes == null || notes.length() == 0){
+            trackCowViewHolder.mNotes.setVisibility(View.GONE);
+        }else {
+            trackCowViewHolder.mNotes.setVisibility(View.VISIBLE);
+            trackCowViewHolder.mNotes.setText("Notes: " + notes);
         }
 
-        final boolean isExpanded = position == mExpandedPosition;
-        trackCowViewHolder.mMoreLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-        trackCowViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mExpandedHolder != null) {
-                    mExpandedHolder.mMoreLayout.setVisibility(View.GONE);
-                    notifyItemChanged(mExpandedPosition);
-                }
-                mExpandedPosition = isExpanded ? -1 : trackCowViewHolder.getAdapterPosition();
-                mExpandedHolder = isExpanded ? null : trackCowViewHolder;
-                notifyItemChanged(trackCowViewHolder.getAdapterPosition());
-            }
-        });
+        ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
+        for(int q = 0; q< drugsGivenObjects.size(); q++){
+            DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
+
+            String drugId = drugsGivenObject.getDrugId();
+            int amountGiven = drugsGivenObject.getAmountGiven();
+            long date = drugsGivenObject.getDate();
+
+            DrugObject drugObject = findDrugObject(drugId, mDrugList);
+            String drugName = drugObject.getDrugName();
+            String amountGivenStr = Integer.toString(amountGiven);
+            String dateStr = Utility.convertMillisToDate(date);
+
+            String message = amountGivenStr + "cc of " + drugName + " given on " + dateStr;
+
+            trackCowViewHolder.mDrugsGiven.setText(message);
+
+        }
     }
 
     public class TrackCowViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mTagNumber;
-        private TextView mDate;
+        private TextView mDrugsGiven;
         private TextView mNotes;
-        private LinearLayout mMoreLayout;
 
         public TrackCowViewHolder(View view){
             super(view);
 
             mTagNumber = view.findViewById(R.id.medicated_cow_tag_number);
-            mDate = view.findViewById(R.id.date);
+            mDrugsGiven = view.findViewById(R.id.medication_given);
             mNotes = view.findViewById(R.id.notes);
-            mMoreLayout = view.findViewById(R.id.more_layout);
 
         }
+    }
+
+    private DrugObject findDrugObject(String drugId, ArrayList<DrugObject> drugList){
+        for(int p=0; p<drugList.size(); p++){
+            DrugObject drugObject = drugList.get(p);
+            if(drugObject.getDrugId().equals(drugId)){
+                return drugObject;
+            }
+        }
+        return null;
     }
 }

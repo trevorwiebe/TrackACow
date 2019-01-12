@@ -1,17 +1,18 @@
 package com.trevorwiebe.trackacow.objects;
 
-public class CowDrugObject {
+public class DrugsGivenObject {
 
-    // TODO: 12/27/2018 add date field
     private String drugId;
     private int amountGiven;
+    private long date;
 
-    public CowDrugObject(String drugId, int amountGiven) {
+    public DrugsGivenObject(String drugId, int amountGiven, long date) {
         this.drugId = drugId;
         this.amountGiven = amountGiven;
+        this.date = date;
     }
 
-    public CowDrugObject(){}
+    public DrugsGivenObject(){}
 
     public String getDrugId() {
         return drugId;
@@ -27,5 +28,13 @@ public class CowDrugObject {
 
     public void setAmountGiven(int amountGiven) {
         this.amountGiven = amountGiven;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 }

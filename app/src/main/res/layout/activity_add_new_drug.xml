@@ -23,7 +23,8 @@
                 android:id="@+id/add_drug_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="15"
+                android:ems="10"
+                android:textSize="16sp"
                 android:hint="Drug name"
                 android:inputType="textCapWords"/>
 
@@ -40,43 +41,9 @@
                 android:id="@+id/default_amount_given"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="15"
+                android:ems="10"
+                android:textSize="16sp"
                 android:hint="Default amount given"
-                android:inputType="number"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/min_given"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                android:hint="Minimum given"
-                android:inputType="number"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/maximum_given"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                android:hint="Maximum given"
                 android:inputType="number"/>
 
         </android.support.design.widget.TextInputLayout>

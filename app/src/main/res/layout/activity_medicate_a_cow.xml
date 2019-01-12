@@ -65,6 +65,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/no_drugs_added"
+            android:textSize="16sp"
+            android:textColor="@color/errorRed"
+            android:visibility="gone"
+            android:text="You need to add some drugs first.  Go to the navigation drawer under Manage items -> Drugs"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/drug_layout"
             android:orientation="vertical"

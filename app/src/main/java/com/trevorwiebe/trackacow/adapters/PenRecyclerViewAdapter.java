@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
 
+    // TODO: 1/12/19 make 'pen:' bold
+
     private ArrayList<PenObject> mPenList;
     private Context mContext;
 

@@ -12,15 +12,11 @@ public class DrugObject implements Parcelable {
     private String drugId;
     private String drugName;
     private int defaultAmount;
-    private int minAmount;
-    private int maxAmount;
 
-    public DrugObject(String drugId, String drugName, int defaultAmount, int minAmount, int maxAmount) {
+    public DrugObject(String drugId, String drugName, int defaultAmount) {
         this.drugId = drugId;
         this.drugName = drugName;
         this.defaultAmount = defaultAmount;
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
     }
 
     public DrugObject(){}
@@ -49,22 +45,6 @@ public class DrugObject implements Parcelable {
         this.defaultAmount = defaultAmount;
     }
 
-    public int getMinAmount() {
-        return minAmount;
-    }
-
-    public void setMinAmount(int minAmount) {
-        this.minAmount = minAmount;
-    }
-
-    public int getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(int maxAmount) {
-        this.maxAmount = maxAmount;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -75,16 +55,12 @@ public class DrugObject implements Parcelable {
         dest.writeString(this.drugId);
         dest.writeString(this.drugName);
         dest.writeInt(this.defaultAmount);
-        dest.writeInt(this.minAmount);
-        dest.writeInt(this.maxAmount);
     }
 
     protected DrugObject(Parcel in) {
         this.drugId = in.readString();
         this.drugName = in.readString();
         this.defaultAmount = in.readInt();
-        this.minAmount = in.readInt();
-        this.maxAmount = in.readInt();
     }
 
     public static final Creator<DrugObject> CREATOR = new Creator<DrugObject>() {

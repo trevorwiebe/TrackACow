@@ -39,13 +39,9 @@ public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDr
 
         String drugName = drugObject.getDrugName();
         String defaultGiven = Integer.toString(drugObject.getDefaultAmount());
-        String minGiven = Integer.toString(drugObject.getMinAmount());
-        String maxGiven = Integer.toString(drugObject.getMaxAmount());
 
         manageDrugViewHolder.mDrugName.setText(drugName);
         manageDrugViewHolder.mDefaultAmount.setText(defaultGiven);
-        manageDrugViewHolder.mMinAmount.setText(minGiven);
-        manageDrugViewHolder.mMaxAmount.setText(maxGiven);
     }
 
     @Override
@@ -65,16 +61,12 @@ public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDr
 
         private TextView mDrugName;
         private TextView mDefaultAmount;
-        private TextView mMinAmount;
-        private TextView mMaxAmount;
 
         public ManageDrugViewHolder(View view){
             super(view);
 
             mDrugName = view.findViewById(R.id.drug_name);
             mDefaultAmount = view.findViewById(R.id.manage_default_given);
-            mMinAmount = view.findViewById(R.id.manage_min_given);
-            mMaxAmount = view.findViewById(R.id.manage_max_given);
         }
     }
 }

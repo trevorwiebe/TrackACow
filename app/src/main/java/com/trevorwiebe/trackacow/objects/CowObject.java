@@ -13,16 +13,13 @@ public class CowObject {
     private String cowId;
     private String penId;
     private String notes;
-    // TODO: 12/27/2018 change date to last treated date
-    private long date;
-    private ArrayList<CowDrugObject> mDrugList = new ArrayList<>();
+    private ArrayList<DrugsGivenObject> mDrugList = new ArrayList<>();
 
-    public CowObject(int cowNumber, String cowId, String penId, String notes, long date, ArrayList<CowDrugObject> mDrugList) {
+    public CowObject(int cowNumber, String cowId, String penId, String notes, ArrayList<DrugsGivenObject> mDrugList) {
         this.cowNumber = cowNumber;
         this.cowId = cowId;
         this.penId = penId;
         this.notes = notes;
-        this.date = date;
         this.mDrugList = mDrugList;
     }
 
@@ -60,19 +57,11 @@ public class CowObject {
         this.notes = notes;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public ArrayList<CowDrugObject> getmDrugList() {
+    public ArrayList<DrugsGivenObject> getmDrugList() {
         return mDrugList;
     }
 
-    public void setmDrugList(ArrayList<CowDrugObject> mDrugList) {
+    public void setmDrugList(ArrayList<DrugsGivenObject> mDrugList) {
         this.mDrugList = mDrugList;
     }
 }

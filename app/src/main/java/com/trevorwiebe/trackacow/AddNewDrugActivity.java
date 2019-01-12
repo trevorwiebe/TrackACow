@@ -19,8 +19,6 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
     private TextInputEditText mDrugName;
     private TextInputEditText mDefaultAmount;
-    private TextInputEditText mMinGiven;
-    private TextInputEditText mMaxGiven;
     private Button mSaveDrug;
 
     @Override
@@ -30,27 +28,21 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
         mDrugName = findViewById(R.id.add_drug_name);
         mDefaultAmount = findViewById(R.id.default_amount_given);
-        mMinGiven = findViewById(R.id.min_given);
-        mMaxGiven = findViewById(R.id.maximum_given);
         mSaveDrug = findViewById(R.id.save_drug);
 
         mSaveDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDrugName.length() == 0 && mDefaultAmount.length() == 0 && mMinGiven.length() == 0 && mMaxGiven.length() == 0) {
+                if(mDrugName.length() == 0 && mDefaultAmount.length() == 0) {
                     Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
-                }else if(Integer.parseInt(mMaxGiven.getText().toString()) <= Integer.parseInt(mMinGiven.getText().toString())){
-                    Snackbar.make(view, "Minimum amount given must be less than maximum amount given", Snackbar.LENGTH_LONG).show();
                 }else{
 
                     DatabaseReference pushRef = mDrugRef.push();
                     String key = pushRef.getKey();
                     String drugName = mDrugName.getText().toString();
                     int defaultGiven = Integer.parseInt(mDefaultAmount.getText().toString());
-                    int minGiven = Integer.parseInt(mMinGiven.getText().toString());
-                    int maxGiven = Integer.parseInt(mMaxGiven.getText().toString());
 
-                    DrugObject drugObject = new DrugObject(key, drugName, defaultGiven, minGiven, maxGiven);
+                    DrugObject drugObject = new DrugObject(key, drugName, defaultGiven);
 
                     pushRef.setValue(drugObject);
 
@@ -58,8 +50,6 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
                     mDrugName.setText("");
                     mDefaultAmount.setText("");
-                    mMinGiven.setText("");
-                    mMaxGiven.setText("");
                     mDrugName.requestFocus();
                 }
             }

@@ -122,7 +122,6 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     }
 
     public void medicateCow(View view){
-        // TODO: 12/27/2018 you could send the number thats in the searchView in this intent and set it to the tag number, making it easier for the user to add cows
         Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
         medicateCowIntent.putExtra("penObject", mSelectedPen);
         startActivityForResult(medicateCowIntent, MEDICATE_A_COW_CODE);
