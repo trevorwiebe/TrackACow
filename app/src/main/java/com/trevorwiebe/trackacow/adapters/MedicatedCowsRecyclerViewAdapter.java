@@ -68,7 +68,8 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         }
 
         ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
-        for(int q = 0; q< drugsGivenObjects.size(); q++){
+        String message = "";
+        for(int q=0; q<drugsGivenObjects.size(); q++){
             DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
 
             String drugId = drugsGivenObject.getDrugId();
@@ -80,11 +81,12 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             String amountGivenStr = Integer.toString(amountGiven);
             String dateStr = Utility.convertMillisToDate(date);
 
-            String message = amountGivenStr + "cc of " + drugName + " given on " + dateStr;
-
-            trackCowViewHolder.mDrugsGiven.setText(message);
-
+            message = message + amountGivenStr + "cc of " + drugName + " given on " + dateStr;
+            if(drugsGivenObjects.size() != q+1){
+                message = message + "\n";
+            }
         }
+        trackCowViewHolder.mDrugsGiven.setText(message);
     }
 
     public class TrackCowViewHolder extends RecyclerView.ViewHolder{
