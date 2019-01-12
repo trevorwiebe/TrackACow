@@ -1,5 +1,8 @@
 package com.trevorwiebe.trackacow.objects;
 
+import android.support.annotation.Keep;
+
+@Keep
 public class DrugsGivenObject {
 
     private String drugId;

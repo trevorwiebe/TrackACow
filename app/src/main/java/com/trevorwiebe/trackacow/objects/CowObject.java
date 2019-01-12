@@ -1,7 +1,10 @@
 package com.trevorwiebe.trackacow.objects;
 
+import android.support.annotation.Keep;
+
 import java.util.ArrayList;
 
+@Keep
 public class CowObject {
 
     public static final String COW = "cows";
