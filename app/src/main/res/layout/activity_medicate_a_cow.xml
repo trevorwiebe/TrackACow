@@ -30,6 +30,7 @@
                     android:ems="10"
                     android:id="@+id/tag_number"
                     android:hint="Tag number"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -47,6 +48,7 @@
                     android:inputType="textCapSentences"
                     android:id="@+id/notes"
                     android:hint="Notes"
+                    android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -59,7 +61,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:text="Drugs given"
+            android:text="Drugs"
             android:textSize="18sp"
             android:textColor="@android:color/black"
             android:layout_width="match_parent"

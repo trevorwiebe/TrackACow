@@ -23,8 +23,16 @@
         android:layout_marginTop="36dp"
         android:textSize="16sp"
         android:gravity="center_horizontal"
+        android:visibility="invisible"
         android:text="To begin add your cattle pens.  You can do so in the navigation drawer under Manage items -> Pens"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <ProgressBar
+        android:id="@+id/loading_main"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 

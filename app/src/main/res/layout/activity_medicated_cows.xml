@@ -37,7 +37,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="@android:color/darker_gray"
         android:text="There are no medicated cows in this pen. Tap the + button to add one."
         android:layout_width="match_parent"

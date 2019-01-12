@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         final TextView noPensTv = findViewById(R.id.no_pens_tv);
+        final ProgressBar loadingMain = findViewById(R.id.loading_main);
         RecyclerView mainRv = findViewById(R.id.main_rv);
         mainRv.setLayoutManager(new LinearLayoutManager(this));
         mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, this);
@@ -116,7 +118,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mPenList.add(penObject);
                     }
                 }
-                if(mPenList.size() != 0) {
+                loadingMain.setVisibility(View.INVISIBLE);
+                if(mPenList.size() == 0) {
+                    noPensTv.setVisibility(View.VISIBLE);
+                }else {
                     noPensTv.setVisibility(View.INVISIBLE);
                 }
                 mPenRecyclerViewAdapter.swapData(mPenList);
