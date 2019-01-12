@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -181,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_manage_customers:
                 Intent manageCustomersIntent = new Intent(MainActivity.this, ManageCustomersActivity.class);
                 startActivity(manageCustomersIntent);
+                break;
+            case R.id.nav_settings:
+                Toast.makeText(this, "Nothing here yet", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_sign_out:
                 AuthUI.getInstance().signOut(this);

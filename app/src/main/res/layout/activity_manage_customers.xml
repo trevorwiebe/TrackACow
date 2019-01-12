@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".ManageCustomersActivity">
 
+    <TextView
+        android:text="You can't add customers yet"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="36dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/manage_customers_rv"
         android:layout_width="match_parent"
@@ -14,11 +25,11 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <ProgressBar
-        android:id="@+id/loading_customers"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <!--<ProgressBar-->
+        <!--android:id="@+id/loading_customers"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_new_customer"
