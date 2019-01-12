@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -189,6 +190,7 @@ public class MedicateACowActivity extends AppCompatActivity {
         editText.setTag(drugId + "_editText");
         editText.setText(defaultAmountStr);
         editText.setVisibility(View.GONE);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
         linearLayout.addView(checkBox);

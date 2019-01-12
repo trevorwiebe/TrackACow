@@ -77,7 +77,10 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             long date = drugsGivenObject.getDate();
 
             DrugObject drugObject = findDrugObject(drugId, mDrugList);
-            String drugName = drugObject.getDrugName();
+            String drugName = "";
+            if(drugObject != null) {
+                drugName = drugObject.getDrugName();
+            }
             String amountGivenStr = Integer.toString(amountGiven);
             String dateStr = Utility.convertMillisToDate(date);
 
