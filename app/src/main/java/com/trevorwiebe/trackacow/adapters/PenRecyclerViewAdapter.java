@@ -34,7 +34,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
     @NonNull
     @Override
     public PenViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_single_string, viewGroup, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_pen, viewGroup, false);
         return new PenViewHolder(view);
     }
 
@@ -43,8 +43,18 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
         PenObject penObject = mPenList.get(i);
         String penName = penObject.getPenName();
+        penViewHolder.mPen.setText(penName);
 
-        penViewHolder.mPen.setText("Pen: " + penName);
+        boolean isActive = penObject.isActive();
+        if(isActive){
+            penViewHolder.mIsPenActive.setText("Pen is active");
+            penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
+        }else{
+            penViewHolder.mIsPenActive.setText("Pen is idle");
+            penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.redText));
+        }
+
+
     }
 
     public void swapData(ArrayList<PenObject> penObjects){
@@ -57,11 +67,13 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
     public class PenViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mPen;
+        private TextView mIsPenActive;
 
         public PenViewHolder(View view){
             super(view);
 
-            mPen = view.findViewById(R.id.view_single_string);
+            mPen = view.findViewById(R.id.pen);
+            mIsPenActive = view.findViewById(R.id.is_pen_active);
         }
     }
 }

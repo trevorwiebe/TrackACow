@@ -70,7 +70,7 @@
         <TextView
             android:id="@+id/no_drugs_added"
             android:textSize="16sp"
-            android:textColor="@color/errorRed"
+            android:textColor="@color/redText"
             android:visibility="gone"
             android:text="You need to add some drugs first.  Go to the navigation drawer under Manage items -> Drugs"
             android:layout_marginLeft="16dp"

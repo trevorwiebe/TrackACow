@@ -71,7 +71,7 @@ public class ManagePensActivity extends AppCompatActivity {
                             if(isPenNameAvailable(penName, mPenObjectList)) {
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
-                                PenObject penObject = new PenObject(key, penName, "");
+                                PenObject penObject = new PenObject(key, penName, "", false);
                                 pushRef.setValue(penObject);
                                 Snackbar.make(view, "Pen save successfully", Snackbar.LENGTH_LONG).show();
                             }else{
