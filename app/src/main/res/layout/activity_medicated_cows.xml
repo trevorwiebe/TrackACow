@@ -24,6 +24,7 @@
         android:layout_height="wrap_content" />
 
     <ProgressBar
+        android:visibility="invisible"
         android:id="@+id/load_medicated_cows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,5 +83,79 @@
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/pen_idle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="This pen is idle"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="32dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_margin="16dp"
+                android:text="Fill in the blanks below, then mark the pen as active to continue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/customer_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="11"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="16sp"
+                    android:inputType="textCapWords"
+                    android:hint="Customer name"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/total_head"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="11"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:hint="Total head"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:text="Mark as active"
+                android:id="@+id/mark_as_active"
+                android:textColor="@android:color/white"
+                android:background="@color/colorAccent"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:layout_margin="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

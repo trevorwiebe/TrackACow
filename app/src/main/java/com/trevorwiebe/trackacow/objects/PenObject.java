@@ -10,21 +10,25 @@ public class PenObject implements Parcelable {
     public static final String PEN_OBJECT = "pens";
     public static final String PEN_PEN_ID = "penId";
     public static final String PEN_PEN_NAME = "penName";
-    public static final String PEN_CUSTOMER_ID = "customerId";
+    public static final String PEN_CUSTOMER_NAME = "customerName";
+    public static final String PEN_TOTAL_HEAD = "totalHead";
+    public static final String PEN_IS_ACTIVE = "active";
 
     private String penId;
     private String penName;
-    private String customerId;
+    private String customerName;
+    private int totalHead;
     private boolean isActive;
 
-    public PenObject(String penId, String penName, String customerId, boolean isActive) {
+    public PenObject(){}
+
+    public PenObject(String penId, String penName, String customerName, int totalHead, boolean isActive) {
         this.penId = penId;
         this.penName = penName;
-        this.customerId = customerId;
+        this.customerName = customerName;
+        this.totalHead = totalHead;
         this.isActive = isActive;
     }
-
-    public PenObject(){}
 
     public String getPenId() {
         return penId;
@@ -42,12 +46,20 @@ public class PenObject implements Parcelable {
         this.penName = penName;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public int getTotalHead() {
+        return totalHead;
+    }
+
+    public void setTotalHead(int totalHead) {
+        this.totalHead = totalHead;
     }
 
     public boolean isActive() {
@@ -58,6 +70,7 @@ public class PenObject implements Parcelable {
         isActive = active;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,14 +80,16 @@ public class PenObject implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.penId);
         dest.writeString(this.penName);
-        dest.writeString(this.customerId);
+        dest.writeString(this.customerName);
+        dest.writeInt(this.totalHead);
         dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
     }
 
     protected PenObject(Parcel in) {
         this.penId = in.readString();
         this.penName = in.readString();
-        this.customerId = in.readString();
+        this.customerName = in.readString();
+        this.totalHead = in.readInt();
         this.isActive = in.readByte() != 0;
     }
 

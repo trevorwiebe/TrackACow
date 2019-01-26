@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +44,9 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private Query mTrackCow;
+    private DatabaseReference mDrugRef;
     private ValueEventListener mTrackCowListener;
+    private ValueEventListener mDrugListener;
     private ArrayList<CowObject> mTreatedCows = new ArrayList<>();
     private ArrayList<DrugObject> mDrugList = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
@@ -50,10 +55,15 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private TextView mNoMedicatedCows;
     private SearchView mSearchView;
     private static final int MEDICATE_A_COW_CODE = 743;
+    private boolean mIsActive;
 
     private RecyclerView mMedicatedCows;
     private CardView mResultsNotFound;
     private FloatingActionButton mMedicateACowFab;
+    private Button mMarkAsActive;
+    private ScrollView mPenIdleLayout;
+    private TextInputEditText mCustomerName;
+    private TextInputEditText mTotalCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +73,18 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mSelectedPen = getIntent().getParcelableExtra("penObject");
         mTrackCow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
 
-        setTitle("Medicated cows in pen " + mSelectedPen.getPenName());
+        mIsActive = mSelectedPen.isActive();
+
+        setTitle("Pen " + mSelectedPen.getPenName());
 
         mMedicateACowFab = findViewById(R.id.medicate_a_cow_fab);
         mLoadMedicatedCows = findViewById(R.id.load_medicated_cows);
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
         mResultsNotFound = findViewById(R.id.result_not_found);
-
-        mMedicatedCows = findViewById(R.id.track_cow_rv);
-        mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
-        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList,this);
-        mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
+        mMarkAsActive = findViewById(R.id.mark_as_active);
+        mPenIdleLayout = findViewById(R.id.pen_idle);
+        mCustomerName = findViewById(R.id.customer_name);
+        mTotalCount = findViewById(R.id.total_head);
 
         mTrackCowListener = new ValueEventListener() {
             @Override
@@ -100,8 +111,8 @@ public class MedicatedCowsActivity extends AppCompatActivity {
             }
         };
 
-        DatabaseReference drugRef = mBaseRef.child(DrugObject.DRUG_OBJECT);
-        drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDrugRef = mBaseRef.child(DrugObject.DRUG_OBJECT);
+        mDrugListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -117,8 +128,47 @@ public class MedicatedCowsActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+        };
+
+        mMarkAsActive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCustomerName.length() == 0 || mTotalCount.length() == 0){
+                    Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                mIsActive = true;
+                String customerName = mCustomerName.getText().toString();
+                int totalHead = Integer.parseInt(mTotalCount.getText().toString());
+
+                mSelectedPen.setActive(mIsActive);
+                mSelectedPen.setCustomerName(customerName);
+                mSelectedPen.setTotalHead(totalHead);
+
+                mBaseRef.child(PenObject.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                mPenIdleLayout.setVisibility(View.INVISIBLE);
+
+                mMedicateACowFab.show();
+                mTrackCow.addValueEventListener(mTrackCowListener);
+                mDrugRef.addListenerForSingleValueEvent(mDrugListener);
+                invalidateOptionsMenu();
+            }
         });
 
+        mMedicatedCows = findViewById(R.id.track_cow_rv);
+        mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
+        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList,this);
+        mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
+
+        if(mIsActive){
+            mLoadMedicatedCows.setVisibility(View.VISIBLE);
+            mMedicateACowFab.show();
+            mDrugRef.addListenerForSingleValueEvent(mDrugListener);
+            mPenIdleLayout.setVisibility(View.INVISIBLE);
+        }else{
+            mMedicateACowFab.hide();
+        }
     }
 
     public void medicateCow(View view){
@@ -145,12 +195,16 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mTrackCow.addValueEventListener(mTrackCowListener);
+        if(mIsActive) {
+            mTrackCow.addValueEventListener(mTrackCowListener);
+        }
     }
 
     @Override
     protected void onPause() {
-        mTrackCow.removeEventListener(mTrackCowListener);
+        if(mIsActive) {
+            mTrackCow.removeEventListener(mTrackCowListener);
+        }
         super.onPause();
     }
 
@@ -162,12 +216,17 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+        if(mIsActive){
+            searchItem.setVisible(true);
+        }else{
+            searchItem.setVisible(false);
+        }
+
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 ArrayList<CowObject> list = findTags(s);

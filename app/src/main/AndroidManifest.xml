@@ -28,10 +28,6 @@
             android:label="Manage Pens"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".AddNewCustomer"
-            android:label="Add new customer"
-            android:parentActivityName=".ManageCustomersActivity" />
-        <activity
             android:name=".MedicatedCowsActivity"
             android:parentActivityName=".MainActivity" />
         <activity
