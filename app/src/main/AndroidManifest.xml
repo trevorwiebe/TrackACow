@@ -24,16 +24,8 @@
             android:label="Manage Drugs"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ManageCustomersActivity"
-            android:label="Manage Customers"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".ManagePensActivity"
             android:label="Manage Pens"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".ReportsActivity"
-            android:label="Reports"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AddNewCustomer"

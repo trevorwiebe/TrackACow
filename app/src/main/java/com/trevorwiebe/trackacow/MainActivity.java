@@ -167,10 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (id){
-            case R.id.nav_reports:
-                Intent manageReportsIntent = new Intent(MainActivity.this, ReportsActivity.class);
-                startActivity(manageReportsIntent);
-                break;
             case R.id.nav_manage_drugs:
                 Intent manageDrugsIntent = new Intent(MainActivity.this, ManageDrugsActivity.class);
                 startActivity(manageDrugsIntent);
@@ -178,13 +174,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_manage_pens:
                 Intent managePensIntent = new Intent(MainActivity.this, ManagePensActivity.class);
                 startActivity(managePensIntent);
-                break;
-            case R.id.nav_manage_customers:
-                Intent manageCustomersIntent = new Intent(MainActivity.this, ManageCustomersActivity.class);
-                startActivity(manageCustomersIntent);
-                break;
-            case R.id.nav_settings:
-                Toast.makeText(this, "Nothing here yet", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_sign_out:
                 AuthUI.getInstance().signOut(this);
