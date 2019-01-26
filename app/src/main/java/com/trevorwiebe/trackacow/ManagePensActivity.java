@@ -50,7 +50,7 @@ public class ManagePensActivity extends AppCompatActivity {
         final ProgressBar loadingPens = findViewById(R.id.loading_pens);
         mPensRv = findViewById(R.id.manage_pens_rv);
         mPensRv.setLayoutManager(new LinearLayoutManager(this));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenObjectList, this);
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenObjectList, true, this);
         mPensRv.setAdapter(mPenRecyclerViewAdapter);
         FloatingActionButton managePensFab = findViewById(R.id.manage_pens_fab);
         managePensFab.setOnClickListener(new View.OnClickListener() {

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ProgressBar loadingMain = findViewById(R.id.loading_main);
         RecyclerView mainRv = findViewById(R.id.main_rv);
         mainRv.setLayoutManager(new LinearLayoutManager(this));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, this);
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, false, this);
         mainRv.setAdapter(mPenRecyclerViewAdapter);
 
         mainRv.addOnItemTouchListener(new ItemClickListener(this, mainRv, new ItemClickListener.OnItemClickListener() {

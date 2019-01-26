@@ -15,14 +15,14 @@ import java.util.ArrayList;
 
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
 
-    // TODO: 1/12/19 make 'pen:' bold
-
     private ArrayList<PenObject> mPenList;
     private Context mContext;
+    private boolean isEditing;
 
-    public PenRecyclerViewAdapter(ArrayList<PenObject> penObjectList, Context context){
+    public PenRecyclerViewAdapter(ArrayList<PenObject> penObjectList, boolean isEditing, Context context){
         this.mPenList = penObjectList;
         this.mContext = context;
+        this.isEditing = isEditing;
     }
 
     @Override
@@ -45,15 +45,18 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         String penName = penObject.getPenName();
         penViewHolder.mPen.setText(penName);
 
-        boolean isActive = penObject.isActive();
-        if(isActive){
-            penViewHolder.mIsPenActive.setText("Pen is active");
-            penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
-        }else{
-            penViewHolder.mIsPenActive.setText("Pen is idle");
-            penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.redText));
+        if(isEditing){
+            penViewHolder.mIsPenActive.setVisibility(View.GONE);
+        }else {
+            boolean isActive = penObject.isActive();
+            if (isActive) {
+                penViewHolder.mIsPenActive.setText("Pen is active");
+                penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
+            } else {
+                penViewHolder.mIsPenActive.setText("Pen is idle");
+                penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.redText));
+            }
         }
-
 
     }
 
