@@ -16,17 +16,21 @@ public class CowObject {
     private String cowId;
     private String penId;
     private String notes;
+    private boolean isAlive;
+    private long date;
     private ArrayList<DrugsGivenObject> mDrugList = new ArrayList<>();
 
-    public CowObject(int cowNumber, String cowId, String penId, String notes, ArrayList<DrugsGivenObject> mDrugList) {
+    public CowObject (){}
+
+    public CowObject(int cowNumber, String cowId, String penId, String notes, boolean isAlive, long date, ArrayList<DrugsGivenObject> mDrugList) {
         this.cowNumber = cowNumber;
         this.cowId = cowId;
         this.penId = penId;
         this.notes = notes;
+        this.isAlive = isAlive;
+        this.date = date;
         this.mDrugList = mDrugList;
     }
-
-    public CowObject(){}
 
     public int getCowNumber() {
         return cowNumber;
@@ -58,6 +62,22 @@ public class CowObject {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public ArrayList<DrugsGivenObject> getmDrugList() {

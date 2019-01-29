@@ -11,10 +11,12 @@ import android.widget.DatePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.objects.DeadCowObject;
+import com.trevorwiebe.trackacow.objects.CowObject;
+import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MarkACowDeadActivity extends AppCompatActivity {
@@ -71,16 +73,16 @@ public class MarkACowDeadActivity extends AppCompatActivity {
             Snackbar.make(view1, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
             return;
         }
-        String tagNumber = mTagNumber.getText().toString();
+        int tagNumber = Integer.parseInt(mTagNumber.getText().toString());
         String strDate = mDate.getText().toString();
         long date = Utility.convertDateToMillis(strDate);
         String notes = mNotes.getText().toString();
 
-        DatabaseReference pushRef = mBaseRef.child(DeadCowObject.DEAD_COWS).push();
+        DatabaseReference pushRef = mBaseRef.child(CowObject.COW).push();
 
-        DeadCowObject deadCowObject = new DeadCowObject(mSelectedPen.getPenId(), pushRef.getKey(), tagNumber, date, notes);
+        CowObject CowObject = new CowObject(tagNumber, pushRef.getKey(), mSelectedPen.getPenId(), notes, false, date, null);
 
-        pushRef.setValue(deadCowObject);
+        pushRef.setValue(CowObject);
 
         mTagNumber.setText("");
         mNotes.setText("");

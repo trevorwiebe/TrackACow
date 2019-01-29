@@ -133,7 +133,7 @@ public class MedicateACowActivity extends AppCompatActivity {
                     DatabaseReference pushRef = mBaseRef.child(CowObject.COW).push();
                     String id = pushRef.getKey();
 
-                    CowObject cowObject = new CowObject(tagNumber, id, mSelectedPen.getPenId(), notes, drugList);
+                    CowObject cowObject = new CowObject(tagNumber, id, mSelectedPen.getPenId(), notes, true, System.currentTimeMillis(), drugList);
 
                     pushRef.setValue(cowObject);
 
