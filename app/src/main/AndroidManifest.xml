@@ -38,9 +38,14 @@
             android:name=".EditDrugActivity"
             android:label="Edit drug"
             android:parentActivityName=".ManageDrugsActivity" />
-        <activity android:name=".MedicateACowActivity"
+        <activity
+            android:name=".MedicateACowActivity"
             android:label="Medicate a cow"
+            android:parentActivityName=".MedicatedCowsActivity" />
+        <activity android:name=".PenReportsActivity"
+            android:label="Pen Reports"
             android:parentActivityName=".MedicatedCowsActivity"/>
+
     </application>
 
 </manifest>

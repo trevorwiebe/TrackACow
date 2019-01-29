@@ -53,6 +53,8 @@ public class MedicateACowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicate_a_cow);
 
+        // TODO: 1/26/2019 prevent cow from being saved without a medication being checked
+
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mTagName = findViewById(R.id.tag_number);

@@ -18,15 +18,17 @@ public class PenObject implements Parcelable {
     private String penName;
     private String customerName;
     private int totalHead;
+    private String notes;
     private boolean isActive;
 
     public PenObject(){}
 
-    public PenObject(String penId, String penName, String customerName, int totalHead, boolean isActive) {
+    public PenObject(String penId, String penName, String customerName, int totalHead, String notes, boolean isActive) {
         this.penId = penId;
         this.penName = penName;
         this.customerName = customerName;
         this.totalHead = totalHead;
+        this.notes = notes;
         this.isActive = isActive;
     }
 
@@ -62,6 +64,14 @@ public class PenObject implements Parcelable {
         this.totalHead = totalHead;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -82,6 +92,7 @@ public class PenObject implements Parcelable {
         dest.writeString(this.penName);
         dest.writeString(this.customerName);
         dest.writeInt(this.totalHead);
+        dest.writeString(this.notes);
         dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
     }
 
@@ -90,6 +101,7 @@ public class PenObject implements Parcelable {
         this.penName = in.readString();
         this.customerName = in.readString();
         this.totalHead = in.readInt();
+        this.notes = in.readString();
         this.isActive = in.readByte() != 0;
     }
 

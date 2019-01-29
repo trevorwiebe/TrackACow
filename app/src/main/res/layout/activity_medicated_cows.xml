@@ -143,6 +143,21 @@
                     android:hint="Total head"/>
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/pen_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="16sp"
+                    android:inputType="textCapSentences"
+                    android:hint="Notes"/>
+            </android.support.design.widget.TextInputLayout>
+
             <Button
                 android:text="Mark as active"
                 android:id="@+id/mark_as_active"
