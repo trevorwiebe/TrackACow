@@ -261,6 +261,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                 }else{
                     mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                     mResultsNotFound.setVisibility(View.INVISIBLE);
+                    mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList);
                 }
                 return false;
             }
