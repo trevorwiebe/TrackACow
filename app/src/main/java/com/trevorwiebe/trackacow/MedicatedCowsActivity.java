@@ -156,6 +156,11 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                 mBaseRef.child(PenObject.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
 
                 setActive();
+
+                mCustomerName.setText("");
+                mTotalCount.setText("");
+                mNotes.setText("");
+
             }
         });
 
@@ -259,7 +264,9 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                     shouldShowCouldntFindTag = true;
                     mMedicatedCowsRecyclerViewAdapter.swapData(list, mDrugList);
                 }else{
-                    mMedicateACowFabMenu.setVisibility(View.VISIBLE);
+                    if(shouldShowCouldntFindTag) {
+                        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
+                    }
                     mResultsNotFound.setVisibility(View.INVISIBLE);
                     mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList);
                 }
@@ -296,7 +303,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         mTrackCow.addValueEventListener(mTrackCowListener);
         mDrugRef.addListenerForSingleValueEvent(mDrugListener);
-        mPenIdleLayout.setVisibility(View.INVISIBLE);
+        mPenIdleLayout.setVisibility(View.GONE);
         shouldShowCouldntFindTag = true;
         invalidateOptionsMenu();
         mIsActive = true;
@@ -305,7 +312,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private void setInActive(){
         mIsActive = false;
         mNoMedicatedCows.setVisibility(View.GONE);
-        mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
+        mMedicateACowFabMenu.setVisibility(View.GONE);
         shouldShowCouldntFindTag = false;
         mPenIdleLayout.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
