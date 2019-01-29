@@ -181,6 +181,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     public void markACowDead(View view){
         mMedicateACowFabMenu.collapse();
         Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
+        markCowDeadIntent.putExtra("penObject", mSelectedPen);
         startActivity(markCowDeadIntent);
     }
 
