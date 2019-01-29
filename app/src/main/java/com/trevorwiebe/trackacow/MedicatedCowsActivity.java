@@ -5,17 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,7 +60,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private SearchView mSearchView;
     private RecyclerView mMedicatedCows;
     private CardView mResultsNotFound;
-    private FloatingActionButton mMedicateACowFab;
+    private FloatingActionsMenu mMedicateACowFabMenu;
     private Button mMarkAsActive;
     private ScrollView mPenIdleLayout;
     private TextInputEditText mCustomerName;
@@ -75,7 +73,6 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_medicated_cows);
 
         // TODO: 1/26/2019 add the ability to edit medicated cow entries
-        // TODO: 1/26/2019 add a fab on the left side of the screen to enter in deads
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
         mTrackCow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
@@ -84,7 +81,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
         setTitle("Pen " + mSelectedPen.getPenName());
 
-        mMedicateACowFab = findViewById(R.id.medicate_a_cow_fab);
+        mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu);
         mLoadMedicatedCows = findViewById(R.id.load_medicated_cows);
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
         mResultsNotFound = findViewById(R.id.result_not_found);
@@ -175,9 +172,16 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     }
 
     public void medicateCow(View view){
+        mMedicateACowFabMenu.collapse();
         Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
         medicateCowIntent.putExtra("penObject", mSelectedPen);
         startActivityForResult(medicateCowIntent, MEDICATE_A_COW_CODE);
+    }
+
+    public void markACowDead(View view){
+        mMedicateACowFabMenu.collapse();
+        Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
+        startActivity(markCowDeadIntent);
     }
 
     @Override
@@ -206,7 +210,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         super.onResume();
         if(mIsActive) {
             mTrackCow.addValueEventListener(mTrackCowListener);
-            mMedicateACowFab.show();
+            mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         }
     }
 
@@ -246,15 +250,15 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                     ArrayList<CowObject> list = findTags(s);
                     if (list.size() == 0 && shouldShowCouldntFindTag) {
                         mResultsNotFound.setVisibility(View.VISIBLE);
-                        mMedicateACowFab.hide();
+                        mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
                     } else {
-                        mMedicateACowFab.show();
+                        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                         mResultsNotFound.setVisibility(View.INVISIBLE);
                     }
                     shouldShowCouldntFindTag = true;
                     mMedicatedCowsRecyclerViewAdapter.swapData(list, mDrugList);
                 }else{
-                    mMedicateACowFab.show();
+                    mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                     mResultsNotFound.setVisibility(View.INVISIBLE);
                 }
                 return false;
@@ -287,7 +291,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
     private void setActive(){
         mLoadMedicatedCows.setVisibility(View.VISIBLE);
-        mMedicateACowFab.show();
+        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         mTrackCow.addValueEventListener(mTrackCowListener);
         mDrugRef.addListenerForSingleValueEvent(mDrugListener);
         mPenIdleLayout.setVisibility(View.INVISIBLE);
@@ -299,7 +303,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private void setInActive(){
         mIsActive = false;
         mNoMedicatedCows.setVisibility(View.GONE);
-        mMedicateACowFab.hide();
+        mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
         shouldShowCouldntFindTag = false;
         mPenIdleLayout.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
