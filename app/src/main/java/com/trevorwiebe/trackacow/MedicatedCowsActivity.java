@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,13 +52,14 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private ArrayList<DrugObject> mDrugList = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
     private PenObject mSelectedPen;
-    private ProgressBar mLoadMedicatedCows;
-    private TextView mNoMedicatedCows;
-    private SearchView mSearchView;
     private static final int MEDICATE_A_COW_CODE = 743;
+    private static final int VIEW_PEN_REPORTS_CODE = 345;
     private boolean mIsActive;
     private boolean shouldShowCouldntFindTag;
 
+    private ProgressBar mLoadMedicatedCows;
+    private TextView mNoMedicatedCows;
+    private SearchView mSearchView;
     private RecyclerView mMedicatedCows;
     private CardView mResultsNotFound;
     private FloatingActionButton mMedicateACowFab;
@@ -155,12 +157,8 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                 mSelectedPen.setNotes(notes);
 
                 mBaseRef.child(PenObject.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
-                mPenIdleLayout.setVisibility(View.INVISIBLE);
 
-                mMedicateACowFab.show();
-                mTrackCow.addValueEventListener(mTrackCowListener);
-                mDrugRef.addListenerForSingleValueEvent(mDrugListener);
-                invalidateOptionsMenu();
+                setActive();
             }
         });
 
@@ -170,14 +168,9 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
 
         if(mIsActive){
-            mLoadMedicatedCows.setVisibility(View.VISIBLE);
-            mMedicateACowFab.show();
-            mDrugRef.addListenerForSingleValueEvent(mDrugListener);
-            mPenIdleLayout.setVisibility(View.INVISIBLE);
-            shouldShowCouldntFindTag = true;
+            setActive();
         }else{
-            mMedicateACowFab.hide();
-            shouldShowCouldntFindTag = false;
+            setInActive();
         }
     }
 
@@ -199,6 +192,12 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == MEDICATE_A_COW_CODE && resultCode == Activity.RESULT_OK){
             Snackbar.make(mMedicatedCows, "Save successfully!", Snackbar.LENGTH_SHORT).show();
+        }else if(requestCode == VIEW_PEN_REPORTS_CODE && resultCode == Activity.RESULT_OK){
+            if(data.getStringExtra("event").equals("deletion")){
+                mIsActive = false;
+                setInActive();
+                invalidateOptionsMenu();
+            }
         }
     }
 
@@ -268,7 +267,8 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_reports){
             Intent penReportsIntent = new Intent(MedicatedCowsActivity.this, PenReportsActivity.class);
-            startActivity(penReportsIntent);
+            penReportsIntent.putExtra("selectedPen", mSelectedPen);
+            startActivityForResult(penReportsIntent, VIEW_PEN_REPORTS_CODE);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -283,5 +283,25 @@ public class MedicatedCowsActivity extends AppCompatActivity {
             }
         }
         return listToReturn;
+    }
+
+    private void setActive(){
+        mLoadMedicatedCows.setVisibility(View.VISIBLE);
+        mMedicateACowFab.show();
+        mTrackCow.addValueEventListener(mTrackCowListener);
+        mDrugRef.addListenerForSingleValueEvent(mDrugListener);
+        mPenIdleLayout.setVisibility(View.INVISIBLE);
+        shouldShowCouldntFindTag = true;
+        invalidateOptionsMenu();
+        mIsActive = true;
+    }
+
+    private void setInActive(){
+        mIsActive = false;
+        mNoMedicatedCows.setVisibility(View.GONE);
+        mMedicateACowFab.hide();
+        shouldShowCouldntFindTag = false;
+        mPenIdleLayout.setVisibility(View.VISIBLE);
+        invalidateOptionsMenu();
     }
 }
