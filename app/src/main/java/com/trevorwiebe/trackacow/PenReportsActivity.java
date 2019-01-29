@@ -31,6 +31,7 @@ import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PenReportsActivity extends AppCompatActivity {
@@ -41,10 +42,13 @@ public class PenReportsActivity extends AppCompatActivity {
     private PenObject mSelectedPen;
     private ArrayList<DrugObject> mDrugList = new ArrayList<>();
     private ArrayList<DrugReportsObject> mDrugReports = new ArrayList<>();
+    private ArrayList<CowObject> mDeads = new ArrayList<>();
 
     private TextView mCustomerName;
     private TextView mTotalHead;
     private TextView mNotes;
+    private TextView mTotalDeathLoss;
+    private TextView mDeathLossPercentage;
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
@@ -63,6 +67,8 @@ public class PenReportsActivity extends AppCompatActivity {
         mResetPenBtn.setOnClickListener(resetPenListener);
 
         mDrugsUsedLayout = findViewById(R.id.drugs_used_layout);
+        mTotalDeathLoss = findViewById(R.id.reports_death_loss);
+        mDeathLossPercentage = findViewById(R.id.reports_death_loss_percentage);
         mCustomerName = findViewById(R.id.reports_customer_name);
         mTotalHead = findViewById(R.id.reports_total_head);
         mNotes = findViewById(R.id.reports_notes);
@@ -84,13 +90,18 @@ public class PenReportsActivity extends AppCompatActivity {
                     }
                 }
 
-                Query cow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
+                final Query cow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
                 cow.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             CowObject cowObject = snapshot.getValue(CowObject.class);
                             if(cowObject != null){
+
+                                if(!cowObject.isAlive()){
+                                    mDeads.add(cowObject);
+                                }
+
                                 ArrayList<DrugsGivenObject> mDrugsGivenObject = cowObject.getmDrugList();
                                 for(int i=0; i<mDrugsGivenObject.size(); i++){
                                     DrugsGivenObject drugsGivenObject = mDrugsGivenObject.get(i);
@@ -130,6 +141,15 @@ public class PenReportsActivity extends AppCompatActivity {
 
                             mDrugsUsedLayout.addView(textView);
                         }
+
+                        int numberDead = mDeads.size();
+                        int total = mSelectedPen.getTotalHead();
+
+                        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                        float percent = (numberDead * 100.f) / total;
+
+                        mTotalDeathLoss.setText(Integer.toString(numberDead) + " dead");
+                        mDeathLossPercentage.setText(decimalFormat.format(percent) + "%");
                     }
 
                     @Override
