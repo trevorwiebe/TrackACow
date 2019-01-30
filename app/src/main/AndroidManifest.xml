@@ -4,13 +4,15 @@
     package="com.trevorwiebe.trackacow">
 
     <application
-        tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".EditMedicatedCowActivity"
+            android:parentActivityName=".MedicatedCowsActivity"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -48,12 +50,14 @@
             android:name=".PenReportsActivity"
             android:label="Pen Reports"
             android:parentActivityName=".MedicatedCowsActivity" />
-        <activity android:name=".MarkACowDeadActivity"
+        <activity
+            android:name=".MarkACowDeadActivity"
             android:label="Mark a cow dead"
-            android:parentActivityName=".MedicatedCowsActivity"/>
-        <activity android:name=".EditPenActivity"
+            android:parentActivityName=".MedicatedCowsActivity" />
+        <activity
+            android:name=".EditPenActivity"
             android:label="Edit pen"
-            android:parentActivityName=".MedicatedCowsActivity"/>
+            android:parentActivityName=".MedicatedCowsActivity" />
     </application>
 
 </manifest>

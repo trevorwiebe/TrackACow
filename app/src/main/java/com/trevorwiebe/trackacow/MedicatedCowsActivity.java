@@ -33,7 +33,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.objects.CowObject;
 import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
 import java.util.ArrayList;
 
@@ -168,6 +170,21 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
         mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList,this);
         mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
+
+        mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                CowObject cowObject = mTreatedCows.get(position);
+                Intent editCowIntent = new Intent(MedicatedCowsActivity.this, EditMedicatedCowActivity.class);
+                editCowIntent.putExtra("cow", cowObject);
+                startActivity(editCowIntent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
         if(mIsActive){
             setActive();
