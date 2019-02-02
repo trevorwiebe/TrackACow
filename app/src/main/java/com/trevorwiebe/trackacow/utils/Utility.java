@@ -1,5 +1,9 @@
 package com.trevorwiebe.trackacow.utils;
 
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -23,4 +27,17 @@ public class Utility {
             return null;
         }
     }
+
+    public static void vibrate(Context context, long millisToVibrate){
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if(v != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(millisToVibrate, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                //deprecated in API 26
+                v.vibrate(millisToVibrate);
+            }
+        }
+    }
+
 }

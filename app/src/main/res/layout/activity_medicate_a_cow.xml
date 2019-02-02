@@ -27,7 +27,7 @@
 
                 <android.support.design.widget.TextInputEditText
                     android:inputType="number"
-                    android:ems="10"
+                    android:ems="7"
                     android:id="@+id/tag_number"
                     android:hint="Tag number"
                     android:textSize="16sp"

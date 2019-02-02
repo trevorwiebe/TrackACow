@@ -217,9 +217,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == MEDICATE_A_COW_CODE && resultCode == Activity.RESULT_OK){
-            Snackbar.make(mMedicatedCows, "Save successfully!", Snackbar.LENGTH_SHORT).show();
-        }else if(requestCode == VIEW_PEN_REPORTS_CODE && resultCode == Activity.RESULT_OK){
+        if(requestCode == VIEW_PEN_REPORTS_CODE && resultCode == Activity.RESULT_OK){
             if(data.getStringExtra("event").equals("deletion")){
                 mIsActive = false;
                 setInActive();

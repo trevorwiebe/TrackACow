@@ -92,5 +92,6 @@ public class MarkACowDeadActivity extends AppCompatActivity {
 
         Snackbar.make(view1, "Save successfully!", Snackbar.LENGTH_LONG).show();
 
+        Utility.vibrate(MarkACowDeadActivity.this, 50);
     }
 }

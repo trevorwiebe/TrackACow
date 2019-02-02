@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,6 +32,7 @@ import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.CowObject;
 import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -140,8 +143,34 @@ public class MedicateACowActivity extends AppCompatActivity {
 
                     pushRef.setValue(cowObject);
 
-                    setResult(Activity.RESULT_OK);
-                    finish();
+                    Snackbar.make(view, "Save successfully", Snackbar.LENGTH_SHORT).show();
+
+                    Utility.vibrate(MedicateACowActivity.this, 50);
+
+                    mTagName.setText("");
+                    mTagName.requestFocus();
+                    mNotes.setText("");
+
+                    for(int r=0; r<mDrugLayout.getChildCount(); r++){
+                        View checkBoxView = mDrugLayout.getChildAt(r);
+                        if(checkBoxView instanceof CheckBox){
+                            CheckBox checkBox = (CheckBox) checkBoxView;
+                            checkBox.setChecked(false);
+                            if(checkBox.isChecked()){
+                                r++;
+                                View  editText = mDrugLayout.getChildAt(r);
+
+                                if(editText instanceof EditText){
+
+                                    EditText textViewAmountGiven = (EditText) editText;
+                                    textViewAmountGiven.setVisibility(View.GONE);
+                                }
+                            }
+                        }
+                    }
+
+                    ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
                 }
             }
         });
