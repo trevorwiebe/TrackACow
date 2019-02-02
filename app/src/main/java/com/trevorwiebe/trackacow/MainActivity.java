@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +26,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.db.AppDatabase;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.objects.CowObject;
+import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
@@ -45,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ValueEventListener mPenListener;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenObject> mPenList = new ArrayList<>();
+
+    private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
+    private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
+    private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, false, this);
         mainRv.setAdapter(mPenRecyclerViewAdapter);
 
-        mainRv.addOnItemTouchListener(new ItemClickListener(this, mainRv, new ItemClickListener.OnItemClickListener() {
+        mainRv.addOnItemTouchListener(new ItemClickListener(this, mainRv,
+                new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
@@ -200,11 +213,101 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    String key = snapshot.getKey();
+                    if(key != null) {
+                        switch (key) {
+                            case "cows":
+                                for(DataSnapshot cowSnapshot : snapshot.getChildren()){
+                                    CowObject cowObject = cowSnapshot.getValue(CowObject.class);
+                                    if(cowObject != null) {
+                                        CowEntity cowEntity = new CowEntity();
+                                        cowEntity.setAlive(cowObject.isAlive());
+                                        cowEntity.setCowId(cowObject.getCowId());
+                                        cowEntity.setDate(cowObject.getDate());
+                                        cowEntity.setNotes(cowObject.getNotes());
+                                        cowEntity.setPenId(cowObject.getPenId());
+                                        cowEntity.setTagNumber(cowObject.getCowNumber());
+                                        mCowEntityUpdateList.add(cowEntity);
+
+                                        DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
+                                        ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
+                                        for(int q=0; q<drugsGivenObjects.size(); q++){
+                                            DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
+
+                                            drugsGivenEntity.setAmountGiven(drugsGivenObject.getAmountGiven());
+                                            drugsGivenEntity.setCowId(cowEntity.getCowId());
+                                            drugsGivenEntity.setDate(drugsGivenObject.getDate());
+                                            mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
+                                        }
+                                    }
+                                }
+                                break;
+                            case "drugs":
+                                for(DataSnapshot drugsSnapshot : snapshot.getChildren()){
+                                    DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
+                                    if(drugObject != null){
+                                        DrugEntity drugEntity = new DrugEntity();
+                                        drugEntity.setDrugName(drugObject.getDrugName());
+                                        drugEntity.setDrugId(drugObject.getDrugId());
+                                        drugEntity.setDefaultAmount(drugObject.getDefaultAmount());
+                                        mDrugEntityUpdateList.add(drugEntity);
+                                    }
+                                }
+                                break;
+                            case "pens":
+                                for(DataSnapshot penSnapshot : snapshot.getChildren()){
+                                    PenObject penObject = penSnapshot.getValue(PenObject.class);
+                                    if(penObject != null){
+                                        PenEntity penEntity = new PenEntity();
+                                        penEntity.setCustomerName(penObject.getCustomerName());
+                                        penEntity.setNotes(penObject.getNotes());
+                                        penEntity.setPenDatabaseId(penObject.getPenId());
+                                        penEntity.setPenName(penObject.getPenName());
+                                        penEntity.setTotalHead(penObject.getTotalHead());
+
+                                        mPenEntityUpdateList.add(penEntity);
+                                    }
+                                }
+                                break;
+                            default:
+                                Log.e(TAG, "onDataChange: unknown snapshot key");
+                        }
+                    }
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+
+                        db.cowDao().deleteCowTable();
+                        db.drugDao().deleteDrugTable();
+                        db.drugsGivenDao().deleteDrugsGivenTable();
+                        db.penDao().deletePenTable();
+
+                        db.cowDao().insertCowList(mCowEntityUpdateList);
+                        db.drugDao().insertListDrug(mDrugEntityUpdateList);
+                        db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
+                        db.penDao().insertPenList(mPenEntityUpdateList);
+
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void onSignedOutCleanUp(){
-
-        Log.d(TAG, "onSignedOutCleanUp: here");
 
         if(mPenRef != null) {
             mPenRef.removeEventListener(mPenListener);
