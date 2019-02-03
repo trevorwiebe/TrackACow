@@ -1,11 +1,11 @@
-package com.trevorwiebe.trackacow.db.entities;
+package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "Pen")
-public class PenEntity {
+@Entity(tableName = "HoldingPen")
+public class HoldingPenEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -29,7 +29,7 @@ public class PenEntity {
     @ColumnInfo(name = "totalHead")
     private int totalHead;
 
-    public PenEntity(){}
+    public HoldingPenEntity(){}
 
     public int getPrimaryKey() {
         return primaryKey;
@@ -86,4 +86,5 @@ public class PenEntity {
     public void setTotalHead(int totalHead) {
         this.totalHead = totalHead;
     }
+
 }

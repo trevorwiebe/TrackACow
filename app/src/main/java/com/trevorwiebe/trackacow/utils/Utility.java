@@ -1,10 +1,16 @@
 package com.trevorwiebe.trackacow.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+
+import com.trevorwiebe.trackacow.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +44,37 @@ public class Utility {
                 v.vibrate(millisToVibrate);
             }
         }
+    }
+
+    public static boolean haveNetworkConnection(Context context) {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(cm != null) {
+            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+            for (NetworkInfo ni : netInfo) {
+                if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                    if (ni.isConnected())
+                        haveConnectedWifi = true;
+                if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                    if (ni.isConnected())
+                        haveConnectedMobile = true;
+            }
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public static void setNewDataToUpload(Activity activity, boolean isThereNewData){
+        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), isThereNewData);
+        editor.apply();
+    }
+
+    public static boolean isThereNewDataToUpload(Activity activity){
+        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), false);
     }
 
 }

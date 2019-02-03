@@ -36,6 +36,7 @@ import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,97 +215,99 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
 
-        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    String key = snapshot.getKey();
-                    if(key != null) {
-                        switch (key) {
-                            case "cows":
-                                for(DataSnapshot cowSnapshot : snapshot.getChildren()){
-                                    CowObject cowObject = cowSnapshot.getValue(CowObject.class);
-                                    if(cowObject != null) {
-                                        CowEntity cowEntity = new CowEntity();
-                                        cowEntity.setAlive(cowObject.isAlive());
-                                        cowEntity.setCowId(cowObject.getCowId());
-                                        cowEntity.setDate(cowObject.getDate());
-                                        cowEntity.setNotes(cowObject.getNotes());
-                                        cowEntity.setPenId(cowObject.getPenId());
-                                        cowEntity.setTagNumber(cowObject.getCowNumber());
-                                        mCowEntityUpdateList.add(cowEntity);
+        if(Utility.haveNetworkConnection(this)) {
+            DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key = snapshot.getKey();
+                        if (key != null) {
+                            switch (key) {
+                                case "cows":
+                                    for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
+                                        CowObject cowObject = cowSnapshot.getValue(CowObject.class);
+                                        if (cowObject != null) {
+                                            CowEntity cowEntity = new CowEntity();
+                                            cowEntity.setAlive(cowObject.isAlive());
+                                            cowEntity.setCowId(cowObject.getCowId());
+                                            cowEntity.setDate(cowObject.getDate());
+                                            cowEntity.setNotes(cowObject.getNotes());
+                                            cowEntity.setPenId(cowObject.getPenId());
+                                            cowEntity.setTagNumber(cowObject.getCowNumber());
+                                            mCowEntityUpdateList.add(cowEntity);
 
-                                        DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                                        ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
-                                        for(int q=0; q<drugsGivenObjects.size(); q++){
-                                            DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
+                                            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
+                                            ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
+                                            for (int q = 0; q < drugsGivenObjects.size(); q++) {
+                                                DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
 
-                                            drugsGivenEntity.setAmountGiven(drugsGivenObject.getAmountGiven());
-                                            drugsGivenEntity.setCowId(cowEntity.getCowId());
-                                            drugsGivenEntity.setDate(drugsGivenObject.getDate());
-                                            mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
+                                                drugsGivenEntity.setAmountGiven(drugsGivenObject.getAmountGiven());
+                                                drugsGivenEntity.setCowId(cowEntity.getCowId());
+                                                drugsGivenEntity.setDate(drugsGivenObject.getDate());
+                                                mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
+                                            }
                                         }
                                     }
-                                }
-                                break;
-                            case "drugs":
-                                for(DataSnapshot drugsSnapshot : snapshot.getChildren()){
-                                    DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
-                                    if(drugObject != null){
-                                        DrugEntity drugEntity = new DrugEntity();
-                                        drugEntity.setDrugName(drugObject.getDrugName());
-                                        drugEntity.setDrugId(drugObject.getDrugId());
-                                        drugEntity.setDefaultAmount(drugObject.getDefaultAmount());
-                                        mDrugEntityUpdateList.add(drugEntity);
+                                    break;
+                                case "drugs":
+                                    for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
+                                        DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
+                                        if (drugObject != null) {
+                                            DrugEntity drugEntity = new DrugEntity();
+                                            drugEntity.setDrugName(drugObject.getDrugName());
+                                            drugEntity.setDrugId(drugObject.getDrugId());
+                                            drugEntity.setDefaultAmount(drugObject.getDefaultAmount());
+                                            mDrugEntityUpdateList.add(drugEntity);
+                                        }
                                     }
-                                }
-                                break;
-                            case "pens":
-                                for(DataSnapshot penSnapshot : snapshot.getChildren()){
-                                    PenObject penObject = penSnapshot.getValue(PenObject.class);
-                                    if(penObject != null){
-                                        PenEntity penEntity = new PenEntity();
-                                        penEntity.setCustomerName(penObject.getCustomerName());
-                                        penEntity.setNotes(penObject.getNotes());
-                                        penEntity.setPenDatabaseId(penObject.getPenId());
-                                        penEntity.setPenName(penObject.getPenName());
-                                        penEntity.setTotalHead(penObject.getTotalHead());
+                                    break;
+                                case "pens":
+                                    for (DataSnapshot penSnapshot : snapshot.getChildren()) {
+                                        PenObject penObject = penSnapshot.getValue(PenObject.class);
+                                        if (penObject != null) {
+                                            PenEntity penEntity = new PenEntity();
+                                            penEntity.setCustomerName(penObject.getCustomerName());
+                                            penEntity.setNotes(penObject.getNotes());
+                                            penEntity.setPenDatabaseId(penObject.getPenId());
+                                            penEntity.setPenName(penObject.getPenName());
+                                            penEntity.setTotalHead(penObject.getTotalHead());
 
-                                        mPenEntityUpdateList.add(penEntity);
+                                            mPenEntityUpdateList.add(penEntity);
+                                        }
                                     }
-                                }
-                                break;
-                            default:
-                                Log.e(TAG, "onDataChange: unknown snapshot key");
+                                    break;
+                                default:
+                                    Log.e(TAG, "onDataChange: unknown snapshot key");
+                            }
                         }
                     }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+
+                            db.cowDao().deleteCowTable();
+                            db.drugDao().deleteDrugTable();
+                            db.drugsGivenDao().deleteDrugsGivenTable();
+                            db.penDao().deletePenTable();
+
+                            db.cowDao().insertCowList(mCowEntityUpdateList);
+                            db.drugDao().insertListDrug(mDrugEntityUpdateList);
+                            db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
+                            db.penDao().insertPenList(mPenEntityUpdateList);
+
+                        }
+                    }).start();
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        db.cowDao().deleteCowTable();
-                        db.drugDao().deleteDrugTable();
-                        db.drugsGivenDao().deleteDrugsGivenTable();
-                        db.penDao().deletePenTable();
-
-                        db.cowDao().insertCowList(mCowEntityUpdateList);
-                        db.drugDao().insertListDrug(mDrugEntityUpdateList);
-                        db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
-                        db.penDao().insertPenList(mPenEntityUpdateList);
-
-                    }
-                }).start();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+                }
+            });
+        }
     }
 
     private void onSignedOutCleanUp(){
