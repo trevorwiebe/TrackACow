@@ -48,8 +48,8 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         if(isEditing){
             penViewHolder.mIsPenActive.setVisibility(View.GONE);
         }else {
-            boolean isActive = penObject.isActive();
-            if (isActive) {
+            int isActive = penObject.getIsActive();
+            if (isActive == 1) {
                 penViewHolder.mIsPenActive.setText("Pen is active");
                 penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
             } else {

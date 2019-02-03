@@ -15,7 +15,7 @@ public class PenEntity {
     private String customerName;
 
     @ColumnInfo(name = "isActive")
-    private boolean isActive;
+    private int isActive;
 
     @ColumnInfo(name = "notes")
     private String notes;
@@ -47,12 +47,12 @@ public class PenEntity {
         this.customerName = customerName;
     }
 
-    public boolean isActive() {
+    public int getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
 
     public String getNotes() {

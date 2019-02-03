@@ -19,11 +19,11 @@ public class PenObject implements Parcelable {
     private String customerName;
     private int totalHead;
     private String notes;
-    private boolean isActive;
+    private int isActive;
 
     public PenObject(){}
 
-    public PenObject(String penId, String penName, String customerName, int totalHead, String notes, boolean isActive) {
+    public PenObject(String penId, String penName, String customerName, int totalHead, String notes, int isActive) {
         this.penId = penId;
         this.penName = penName;
         this.customerName = customerName;
@@ -72,14 +72,13 @@ public class PenObject implements Parcelable {
         this.notes = notes;
     }
 
-    public boolean isActive() {
+    public int getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
-
 
     @Override
     public int describeContents() {
@@ -93,7 +92,7 @@ public class PenObject implements Parcelable {
         dest.writeString(this.customerName);
         dest.writeInt(this.totalHead);
         dest.writeString(this.notes);
-        dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.isActive);
     }
 
     protected PenObject(Parcel in) {
@@ -102,7 +101,7 @@ public class PenObject implements Parcelable {
         this.customerName = in.readString();
         this.totalHead = in.readInt();
         this.notes = in.readString();
-        this.isActive = in.readByte() != 0;
+        this.isActive = in.readInt();
     }
 
     public static final Creator<PenObject> CREATOR = new Creator<PenObject>() {

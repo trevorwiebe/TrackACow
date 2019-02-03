@@ -79,7 +79,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
         mSelectedPen = getIntent().getParcelableExtra("penObject");
         mTrackCow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
 
-        mIsActive = mSelectedPen.isActive();
+        mIsActive = mSelectedPen.getIsActive() == 1;
 
         setTitle("Pen " + mSelectedPen.getPenName());
 
@@ -150,7 +150,8 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                 int totalHead = Integer.parseInt(mTotalCount.getText().toString());
                 String notes = mNotes.getText().toString();
 
-                mSelectedPen.setActive(mIsActive);
+
+                mSelectedPen.setIsActive(1);
                 mSelectedPen.setCustomerName(customerName);
                 mSelectedPen.setTotalHead(totalHead);
                 mSelectedPen.setNotes(notes);

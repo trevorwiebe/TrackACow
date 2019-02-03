@@ -207,7 +207,7 @@ public class PenReportsActivity extends AppCompatActivity {
                             mSelectedPen.setNotes("");
                             mSelectedPen.setTotalHead(0);
                             mSelectedPen.setCustomerName("");
-                            mSelectedPen.setActive(false);
+                            mSelectedPen.setIsActive(0);
 
                             mBaseRef.child(PenObject.PEN_OBJECT).child(penId).setValue(mSelectedPen);
 

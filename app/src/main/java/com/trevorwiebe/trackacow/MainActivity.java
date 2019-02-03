@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,23 +38,28 @@ import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.LoadPensAsyncTask;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        LoadPensAsyncTask.OnPensLoaded {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 132;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-    private DatabaseReference mPenRef;
-    private ValueEventListener mPenListener;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenObject> mPenList = new ArrayList<>();
+    private LinearLayout mNoConnectionLayout;
+    private ProgressBar mLoadingMain;
+    private TextView mNoPensTv;
+    private RecyclerView mPenRv;
 
     private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
@@ -75,14 +82,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final TextView noPensTv = findViewById(R.id.no_pens_tv);
-        final ProgressBar loadingMain = findViewById(R.id.loading_main);
-        RecyclerView mainRv = findViewById(R.id.main_rv);
-        mainRv.setLayoutManager(new LinearLayoutManager(this));
+        mNoPensTv = findViewById(R.id.no_pens_tv);
+        mLoadingMain = findViewById(R.id.loading_main);
+        mNoConnectionLayout = findViewById(R.id.no_connection_and_signed_out_layout);
+        mPenRv = findViewById(R.id.main_rv);
+        mPenRv.setLayoutManager(new LinearLayoutManager(this));
         mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, false, this);
-        mainRv.setAdapter(mPenRecyclerViewAdapter);
+        mPenRv.setAdapter(mPenRecyclerViewAdapter);
 
-        mainRv.addOnItemTouchListener(new ItemClickListener(this, mainRv,
+        mPenRv.addOnItemTouchListener(new ItemClickListener(this, mPenRv,
                 new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -104,47 +112,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user == null){
 
-                    onSignedOutCleanUp();
+                    mLoadingMain.setVisibility(View.INVISIBLE);
+                    mPenRv.setVisibility(View.INVISIBLE);
 
-                    // Choose authentication providers
-                    List<AuthUI.IdpConfig> providers = Arrays.asList(
-                            new AuthUI.IdpConfig.EmailBuilder().build());
+                    if(Utility.haveNetworkConnection(MainActivity.this)) {
+                        onSignedOutCleanUp();
 
-                    // Create and launch sign-in intent
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
+                        // Choose authentication providers
+                        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                                new AuthUI.IdpConfig.EmailBuilder().build());
+
+                        // Create and launch sign-in intent
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setAvailableProviders(providers)
+                                        .build(),
+                                RC_SIGN_IN);
+                    }else{
+                        mNoConnectionLayout.setVisibility(View.VISIBLE);
+                    }
                 }else{
                     onSignedInInitialized(user);
                 }
-            }
-        };
-
-        mPenListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mPenList.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    PenObject penObject = snapshot.getValue(PenObject.class);
-                    if(penObject != null){
-                        mPenList.add(penObject);
-                    }
-                }
-                loadingMain.setVisibility(View.INVISIBLE);
-                if(mPenList.size() == 0) {
-                    noPensTv.setVisibility(View.VISIBLE);
-                }else {
-                    noPensTv.setVisibility(View.INVISIBLE);
-                }
-                mPenRecyclerViewAdapter.swapData(mPenList);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         };
     }
@@ -158,9 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
-        if(mPenRef != null) {
-            mPenRef.removeEventListener(mPenListener);
-        }
         super.onPause();
     }
 
@@ -201,11 +188,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void onPensLoaded(ArrayList<PenObject> penObjectList) {
+        mPenList = penObjectList;
+        if(mPenList.size() == 0) {
+            mNoPensTv.setVisibility(View.VISIBLE);
+        }else {
+            mNoPensTv.setVisibility(View.INVISIBLE);
+        }
+        mPenRecyclerViewAdapter.swapData(mPenList);
+        mPenRv.setVisibility(View.VISIBLE);
+    }
+
+    public void signInButton(View view){
+        mFirebaseAuth.addAuthStateListener(mAuthListener);
+    }
+
     private void onSignedInInitialized(FirebaseUser user){
 
-        mPenRef = FirebaseDatabase.getInstance().getReference("users").child(mFirebaseAuth.getCurrentUser().getUid()).child(PenObject.PEN_OBJECT);
-
-        mPenRef.addValueEventListener(mPenListener);
+        mLoadingMain.setVisibility(View.VISIBLE);
+        mNoConnectionLayout.setVisibility(View.INVISIBLE);
+        mPenRv.setVisibility(View.INVISIBLE);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -216,7 +219,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userEmail.setText(user.getEmail());
 
         if(Utility.haveNetworkConnection(this)) {
-            DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -225,6 +229,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (key != null) {
                             switch (key) {
                                 case "cows":
+                                    mCowEntityUpdateList.clear();
+                                    mDrugsGivenEntityUpdateList.clear();
                                     for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
                                         CowObject cowObject = cowSnapshot.getValue(CowObject.class);
                                         if (cowObject != null) {
@@ -251,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     }
                                     break;
                                 case "drugs":
+                                    mDrugEntityUpdateList.clear();
                                     for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
                                         DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
                                         if (drugObject != null) {
@@ -263,10 +270,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     }
                                     break;
                                 case "pens":
+                                    mPenList.clear();
+                                    mPenEntityUpdateList.clear();
                                     for (DataSnapshot penSnapshot : snapshot.getChildren()) {
                                         PenObject penObject = penSnapshot.getValue(PenObject.class);
                                         if (penObject != null) {
+
+                                            mPenList.add(penObject);
+
                                             PenEntity penEntity = new PenEntity();
+                                            penEntity.setIsActive(penObject.getIsActive());
                                             penEntity.setCustomerName(penObject.getCustomerName());
                                             penEntity.setNotes(penObject.getNotes());
                                             penEntity.setPenDatabaseId(penObject.getPenId());
@@ -274,8 +287,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             penEntity.setTotalHead(penObject.getTotalHead());
 
                                             mPenEntityUpdateList.add(penEntity);
+
                                         }
                                     }
+                                    mLoadingMain.setVisibility(View.INVISIBLE);
+                                    if(mPenList.size() == 0) {
+                                        mNoPensTv.setVisibility(View.VISIBLE);
+                                    }else {
+                                        mNoPensTv.setVisibility(View.INVISIBLE);
+                                    }
+                                    mPenRecyclerViewAdapter.swapData(mPenList);
+                                    mPenRv.setVisibility(View.VISIBLE);
                                     break;
                                 default:
                                     Log.e(TAG, "onDataChange: unknown snapshot key");
@@ -307,18 +329,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
             });
+        }else{
+            mLoadingMain.setVisibility(View.INVISIBLE);
+            new LoadPensAsyncTask(MainActivity.this).execute(MainActivity.this);
         }
+
     }
 
     private void onSignedOutCleanUp(){
-
-        if(mPenRef != null) {
-            mPenRef.removeEventListener(mPenListener);
-        }
-
         mPenList.clear();
         mPenRecyclerViewAdapter.swapData(mPenList);
-
-        mPenRef = null;
     }
+
 }
