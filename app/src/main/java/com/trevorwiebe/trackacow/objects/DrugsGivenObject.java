@@ -10,11 +10,13 @@ public class DrugsGivenObject implements Parcelable {
     private String drugId;
     private int amountGiven;
     private long date;
+    private String cowId;
 
-    public DrugsGivenObject(String drugId, int amountGiven, long date) {
+    public DrugsGivenObject(String drugId, int amountGiven, long date, String cowId) {
         this.drugId = drugId;
         this.amountGiven = amountGiven;
         this.date = date;
+        this.cowId = cowId;
     }
 
     public DrugsGivenObject(){}
@@ -43,6 +45,14 @@ public class DrugsGivenObject implements Parcelable {
         this.date = date;
     }
 
+    public String getCowId() {
+        return cowId;
+    }
+
+    public void setCowId(String cowId) {
+        this.cowId = cowId;
+    }
+
 
     @Override
     public int describeContents() {
@@ -54,12 +64,14 @@ public class DrugsGivenObject implements Parcelable {
         dest.writeString(this.drugId);
         dest.writeInt(this.amountGiven);
         dest.writeLong(this.date);
+        dest.writeString(this.cowId);
     }
 
     protected DrugsGivenObject(Parcel in) {
         this.drugId = in.readString();
         this.amountGiven = in.readInt();
         this.date = in.readLong();
+        this.cowId = in.readString();
     }
 
     public static final Creator<DrugsGivenObject> CREATOR = new Creator<DrugsGivenObject>() {

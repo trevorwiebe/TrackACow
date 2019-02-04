@@ -29,6 +29,9 @@ public class HoldingCowEntity {
     @ColumnInfo(name = "penId")
     private String penId;
 
+    @ColumnInfo(name = "whatHappened")
+    private int whatHappened;
+
     public HoldingCowEntity(){}
 
     public int getPrimaryKey() {
@@ -87,4 +90,11 @@ public class HoldingCowEntity {
         this.penId = penId;
     }
 
+    public int getWhatHappened() {
+        return whatHappened;
+    }
+
+    public void setWhatHappened(int whatHappened) {
+        this.whatHappened = whatHappened;
+    }
 }

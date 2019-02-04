@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +37,7 @@ import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
-import com.trevorwiebe.trackacow.utils.LoadPensAsyncTask;
+import com.trevorwiebe.trackacow.utils.LoadPens;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        LoadPensAsyncTask.OnPensLoaded {
+        LoadPens.OnPensLoaded {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 132;
@@ -229,8 +228,6 @@ public class MainActivity extends AppCompatActivity implements
                         if (key != null) {
                             switch (key) {
                                 case "cows":
-                                    mCowEntityUpdateList.clear();
-                                    mDrugsGivenEntityUpdateList.clear();
                                     for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
                                         CowObject cowObject = cowSnapshot.getValue(CowObject.class);
                                         if (cowObject != null) {
@@ -257,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements
                                     }
                                     break;
                                 case "drugs":
-                                    mDrugEntityUpdateList.clear();
                                     for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
                                         DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
                                         if (drugObject != null) {
@@ -271,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements
                                     break;
                                 case "pens":
                                     mPenList.clear();
-                                    mPenEntityUpdateList.clear();
                                     for (DataSnapshot penSnapshot : snapshot.getChildren()) {
                                         PenObject penObject = penSnapshot.getValue(PenObject.class);
                                         if (penObject != null) {
@@ -320,6 +315,11 @@ public class MainActivity extends AppCompatActivity implements
                             db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
                             db.penDao().insertPenList(mPenEntityUpdateList);
 
+                            mCowEntityUpdateList.clear();
+                            mDrugEntityUpdateList.clear();
+                            mDrugsGivenEntityUpdateList.clear();
+                            mPenEntityUpdateList.clear();
+
                         }
                     }).start();
                 }
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements
             });
         }else{
             mLoadingMain.setVisibility(View.INVISIBLE);
-            new LoadPensAsyncTask(MainActivity.this).execute(MainActivity.this);
+            new LoadPens(MainActivity.this).execute(MainActivity.this);
         }
 
     }

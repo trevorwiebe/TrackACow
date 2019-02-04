@@ -25,16 +25,19 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
 
     private ArrayList<CowObject> mCowList;
     private ArrayList<DrugObject> mDrugList;
+    private ArrayList<DrugsGivenObject> mDrugsGivenObject;
     private Context mContext;
 
-    public MedicatedCowsRecyclerViewAdapter(ArrayList<CowObject> cowObjects, ArrayList<DrugObject> drugList, Context context) {
+    public MedicatedCowsRecyclerViewAdapter(ArrayList<CowObject> cowObjects, ArrayList<DrugObject> drugList, ArrayList<DrugsGivenObject> drugsGivenObjects, Context context) {
         this.mCowList = cowObjects;
+        this.mDrugList = drugList;
+        this.mDrugsGivenObject = drugsGivenObjects;
         this.mContext = context;
     }
 
     @Override
     public int getItemCount() {
-        if (mCowList == null) return 0;
+        if (mCowList == null || mDrugList == null || mDrugsGivenObject == null) return 0;
         return mCowList.size();
     }
 
@@ -45,10 +48,11 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         return new TrackCowViewHolder(view);
     }
 
-    public void swapData(ArrayList<CowObject> cowObjectsList, ArrayList<DrugObject> drugObjects) {
+    public void swapData(ArrayList<CowObject> cowObjectsList, ArrayList<DrugObject> drugObjects, ArrayList<DrugsGivenObject> drugsGivenObjects) {
         mCowList = cowObjectsList;
         mDrugList = drugObjects;
-        if (mCowList != null && mDrugList != null) {
+        mDrugsGivenObject = drugsGivenObjects;
+        if (mCowList != null && mDrugList != null && mDrugsGivenObject != null) {
             notifyDataSetChanged();
         }
     }
@@ -59,6 +63,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         CowObject cowObject = mCowList.get(position);
         String tagNumber = Integer.toString(cowObject.getCowNumber());
         String notes = cowObject.getNotes();
+        String cowId = cowObject.getCowId();
 
         trackCowViewHolder.mTagNumber.setText(tagNumber);
         if (notes == null || notes.length() == 0) {
@@ -68,11 +73,12 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             trackCowViewHolder.mNotes.setText("Notes: " + notes);
         }
 
-        Log.d(TAG, "onBindViewHolder: " + cowObject.isAlive());
-
         if (cowObject.isAlive()) {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
             ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
+            if(drugsGivenObjects == null){
+                drugsGivenObjects = findDrugsGivenObjectByCowId(cowId, mDrugsGivenObject);
+            }
             String message = "";
             for (int q = 0; q < drugsGivenObjects.size(); q++) {
                 DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
@@ -93,8 +99,8 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
                 if (drugsGivenObjects.size() != q + 1) {
                     message = message + "\n";
                 }
+                trackCowViewHolder.mDrugsGiven.setText(message);
             }
-            trackCowViewHolder.mDrugsGiven.setText(message);
         } else {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(R.color.redText));
             trackCowViewHolder.mDrugsGiven.setText("This cow is dead");
@@ -125,5 +131,16 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             }
         }
         return null;
+    }
+
+    private ArrayList<DrugsGivenObject> findDrugsGivenObjectByCowId(String cowId, ArrayList<DrugsGivenObject> drugsGivenObjects){
+        ArrayList<DrugsGivenObject> drugsGivenToCow = new ArrayList<>();
+        for(int r=0; r<drugsGivenObjects.size(); r++){
+            DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(r);
+            if(drugsGivenObject.getCowId().equals(cowId)){
+                drugsGivenToCow.add(drugsGivenObject);
+            }
+        }
+        return drugsGivenToCow;
     }
 }

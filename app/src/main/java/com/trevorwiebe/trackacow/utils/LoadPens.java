@@ -12,9 +12,9 @@ import com.trevorwiebe.trackacow.objects.PenObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadPensAsyncTask extends AsyncTask<Context, Void, ArrayList<PenObject>> {
+public class LoadPens extends AsyncTask<Context, Void, ArrayList<PenObject>> {
 
-    private static final String TAG = "LoadPensAsyncTask";
+    private static final String TAG = "LoadPens";
 
     private ArrayList<PenObject> penList = new ArrayList<>();
     private OnPensLoaded mOnPensLoaded;
@@ -23,7 +23,7 @@ public class LoadPensAsyncTask extends AsyncTask<Context, Void, ArrayList<PenObj
         void onPensLoaded(ArrayList<PenObject> penObjectList);
     }
 
-    public LoadPensAsyncTask(OnPensLoaded onPensLoaded){
+    public LoadPens(OnPensLoaded onPensLoaded){
         this.mOnPensLoaded = onPensLoaded;
     }
 

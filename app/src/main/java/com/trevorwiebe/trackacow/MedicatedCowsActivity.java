@@ -35,11 +35,16 @@ import com.trevorwiebe.trackacow.objects.CowObject;
 import com.trevorwiebe.trackacow.objects.DrugObject;
 import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.utils.LoadDrugsGiven;
+import com.trevorwiebe.trackacow.utils.LoadMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class MedicatedCowsActivity extends AppCompatActivity {
+public class MedicatedCowsActivity extends AppCompatActivity implements
+        LoadMedicatedCowsByPenId.OnCowsLoaded,
+        LoadDrugsGiven.OnDrugsLoaded{
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -50,6 +55,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     private ValueEventListener mDrugListener;
     private ArrayList<CowObject> mTreatedCows = new ArrayList<>();
     private ArrayList<DrugObject> mDrugList = new ArrayList<>();
+    private ArrayList<DrugsGivenObject> mDrugsGivenList = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
     private PenObject mSelectedPen;
     private static final int MEDICATE_A_COW_CODE = 743;
@@ -104,7 +110,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                     }
                 }
                 mLoadMedicatedCows.setVisibility(View.INVISIBLE);
-                mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList);
+                mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
                 if(mTreatedCows.size() == 0){
                     mNoMedicatedCows.setVisibility(View.VISIBLE);
                 }else{
@@ -128,7 +134,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                         mDrugList.add(drugObject);
                     }
                 }
-                mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList);
+                mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
             }
 
             @Override
@@ -169,7 +175,7 @@ public class MedicatedCowsActivity extends AppCompatActivity {
 
         mMedicatedCows = findViewById(R.id.track_cow_rv);
         mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
-        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList,this);
+        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList, mDrugsGivenList,this);
         mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
 
         mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
@@ -231,7 +237,13 @@ public class MedicatedCowsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(mIsActive) {
-            mTrackCow.addValueEventListener(mTrackCowListener);
+            if(Utility.haveNetworkConnection(this)) {
+                mTrackCow.addValueEventListener(mTrackCowListener);
+            }else{
+                mLoadMedicatedCows.setVisibility(View.INVISIBLE);
+                new LoadMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+                new LoadDrugsGiven(this).execute(this);
+            }
             mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         }
     }
@@ -278,13 +290,13 @@ public class MedicatedCowsActivity extends AppCompatActivity {
                         mResultsNotFound.setVisibility(View.INVISIBLE);
                     }
                     shouldShowCouldntFindTag = true;
-                    mMedicatedCowsRecyclerViewAdapter.swapData(list, mDrugList);
+                    mMedicatedCowsRecyclerViewAdapter.swapData(list, mDrugList, mDrugsGivenList);
                 }else{
                     if(shouldShowCouldntFindTag) {
                         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                     }
                     mResultsNotFound.setVisibility(View.INVISIBLE);
-                    mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList);
+                    mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
                 }
                 return false;
             }
@@ -300,6 +312,23 @@ public class MedicatedCowsActivity extends AppCompatActivity {
             startActivityForResult(penReportsIntent, VIEW_PEN_REPORTS_CODE);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCowsLoaded(ArrayList<CowObject> cowObjectList) {
+        mTreatedCows = cowObjectList;
+        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+        if(mTreatedCows.size() == 0){
+            mNoMedicatedCows.setVisibility(View.VISIBLE);
+        }else{
+            mNoMedicatedCows.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onDrugsLoaded(ArrayList<DrugsGivenObject> drugsGivenObjects) {
+        mDrugsGivenList = drugsGivenObjects;
+        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
     }
 
     private ArrayList<CowObject> findTags(String inputString){

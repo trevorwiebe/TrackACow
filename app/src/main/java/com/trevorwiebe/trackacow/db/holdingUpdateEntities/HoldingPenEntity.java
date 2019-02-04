@@ -29,6 +29,9 @@ public class HoldingPenEntity {
     @ColumnInfo(name = "totalHead")
     private int totalHead;
 
+    @ColumnInfo(name = "whatHappened")
+    private int whatHappened;
+
     public HoldingPenEntity(){}
 
     public int getPrimaryKey() {
@@ -87,4 +90,11 @@ public class HoldingPenEntity {
         this.totalHead = totalHead;
     }
 
+    public int getWhatHappened() {
+        return whatHappened;
+    }
+
+    public void setWhatHappened(int whatHappened) {
+        this.whatHappened = whatHappened;
+    }
 }

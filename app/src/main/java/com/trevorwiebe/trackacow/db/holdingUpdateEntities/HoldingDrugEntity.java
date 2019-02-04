@@ -17,9 +17,11 @@ public class HoldingDrugEntity {
     @ColumnInfo(name = "drugId")
     private String drugId;
 
-
     @ColumnInfo(name = "drugName")
     private String drugName;
+
+    @ColumnInfo(name = "whatHappened")
+    private int whatHappened;
 
     public HoldingDrugEntity() {}
 
@@ -55,4 +57,11 @@ public class HoldingDrugEntity {
         this.drugName = drugName;
     }
 
+    public int getWhatHappened() {
+        return whatHappened;
+    }
+
+    public void setWhatHappened(int whatHappened) {
+        this.whatHappened = whatHappened;
+    }
 }
