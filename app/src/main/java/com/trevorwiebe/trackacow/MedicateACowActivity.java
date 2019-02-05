@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,15 +25,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugObject;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.utils.LoadAllDrugs;
+import com.trevorwiebe.trackacow.utils.SetDrugsGivenList;
+import com.trevorwiebe.trackacow.utils.SetMedicatedCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class MedicateACowActivity extends AppCompatActivity {
+public class MedicateACowActivity extends AppCompatActivity implements LoadAllDrugs.OnAllDrugsLoaded {
 
     private static final String TAG = "MedicateACowActivity";
 
@@ -47,8 +47,8 @@ public class MedicateACowActivity extends AppCompatActivity {
     private TextView mNoDrugs;
     private Button mSaveCow;
 
-    private ArrayList<DrugObject> mDrugList = new ArrayList<>();
-    private PenObject mSelectedPen;
+    private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private PenEntity mSelectedPen;
     private DatabaseReference mBaseRef;
 
     @Override
@@ -67,28 +67,32 @@ public class MedicateACowActivity extends AppCompatActivity {
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
-        DatabaseReference drugRef = mBaseRef.child(DrugObject.DRUG_OBJECT);
-        drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    DrugObject drugObject = snapshot.getValue(DrugObject.class);
-                    if(drugObject != null){
-                        addCheckBox(mDrugLayout, drugObject);
-                        mDrugList.add(drugObject);
+        if(Utility.haveNetworkConnection(this)) {
+            DatabaseReference drugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
+            drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
+                        if (drugEntity != null) {
+                            addCheckBox(mDrugLayout, drugEntity);
+                            mDrugList.add(drugEntity);
+                        }
                     }
+                    if (mDrugList.size() == 0) {
+                        mNoDrugs.setVisibility(View.VISIBLE);
+                    }
+                    mLoadDrugs.setVisibility(View.GONE);
                 }
-                if(mDrugList.size() ==  0){
-                    mNoDrugs.setVisibility(View.VISIBLE);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
-                mLoadDrugs.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            });
+        }else{
+            new LoadAllDrugs(this).execute(this);
+        }
 
         mSaveCow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,14 +103,18 @@ public class MedicateACowActivity extends AppCompatActivity {
                     Snackbar.make(view, "Please set the tag number", Snackbar.LENGTH_LONG).show();
                 }else{
 
-                    ArrayList<DrugsGivenObject> drugList = new ArrayList<>();
+                    DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
+                    String cowId = pushRef.getKey();
+
+                    ArrayList<DrugsGivenEntity> drugList = new ArrayList<>();
 
                     for(int r=0; r<mDrugLayout.getChildCount(); r++){
-                        DrugsGivenObject drugsGivenObject = new DrugsGivenObject();
+                        DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
+                        drugsGivenEntity.setCowId(cowId);
                         View checkBoxView = mDrugLayout.getChildAt(r);
                         if(checkBoxView instanceof CheckBox){
                             CheckBox checkBox = (CheckBox) checkBoxView;
-                            drugsGivenObject.setDrugId(checkBox.getTag().toString());
+                            drugsGivenEntity.setDrugId(checkBox.getTag().toString());
                             if(checkBox.isChecked()){
                                 r++;
                                 View  editText = mDrugLayout.getChildAt(r);
@@ -115,14 +123,12 @@ public class MedicateACowActivity extends AppCompatActivity {
 
                                     EditText textViewAmountGiven = (EditText) editText;
                                     int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                    drugsGivenObject.setAmountGiven(amountGiven);
+                                    drugsGivenEntity.setAmountGiven(amountGiven);
 
                                     long time = System.currentTimeMillis();
-                                    drugsGivenObject.setDate(time);
+                                    drugsGivenEntity.setDate(time);
 
-                                    drugList.add(drugsGivenObject);
-
-                                    Log.d(TAG, "onClick: here");
+                                    drugList.add(drugsGivenEntity);
                                 }
                             }
                         }
@@ -136,12 +142,18 @@ public class MedicateACowActivity extends AppCompatActivity {
                     int tagNumber = Integer.parseInt(mTagName.getText().toString());
                     String notes = mNotes.getText().toString();
 
-                    DatabaseReference pushRef = mBaseRef.child(CowObject.COW).push();
-                    String id = pushRef.getKey();
+                    CowEntity cowObject = new CowEntity(true, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
 
-                    CowObject cowObject = new CowObject(tagNumber, id, mSelectedPen.getPenId(), notes, true, System.currentTimeMillis(), drugList);
-
-                    pushRef.setValue(cowObject);
+                    if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
+                        pushRef.setValue(cowObject);
+                    }else{
+                        new SetMedicatedCow(cowObject).execute(MedicateACowActivity.this);
+                        new SetDrugsGivenList(drugList).execute(MedicateACowActivity.this);
+                        for(int i=0; i<drugList.size(); i++){
+                            DrugsGivenEntity drugsGivenEntity = drugList.get(i);
+                            Log.d(TAG, "onClick: " + drugsGivenEntity.getCowId());
+                        }
+                    }
 
                     Snackbar.make(view, "Save successfully", Snackbar.LENGTH_SHORT).show();
 
@@ -177,6 +189,19 @@ public class MedicateACowActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
+        mDrugList = drugEntities;
+        for(int x=0; x<mDrugList.size(); x++){
+            DrugEntity drugEntity = drugEntities.get(x);
+            addCheckBox(mDrugLayout, drugEntity);
+        }
+        if (drugEntities.size() == 0) {
+            mNoDrugs.setVisibility(View.VISIBLE);
+        }
+        mLoadDrugs.setVisibility(View.GONE);
+    }
+
     private CompoundButton.OnCheckedChangeListener checkBoxListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -190,11 +215,11 @@ public class MedicateACowActivity extends AppCompatActivity {
         }
     };
 
-    private void addCheckBox(LinearLayout linearLayout, DrugObject drugObject){
+    private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity){
 
-        String drugName = drugObject.getDrugName();
-        String drugId = drugObject.getDrugId();
-        int defaultAmount = drugObject.getDefaultAmount();
+        String drugName = drugEntity.getDrugName();
+        String drugId = drugEntity.getDrugId();
+        int defaultAmount = drugEntity.getDefaultAmount();
         String defaultAmountStr = Integer.toString(defaultAmount);
 
         final float scale = getResources().getDisplayMetrics().density;

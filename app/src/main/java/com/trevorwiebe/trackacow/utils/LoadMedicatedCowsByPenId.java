@@ -5,14 +5,13 @@ import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.objects.CowObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayList<CowObject>> {
+public class LoadMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
 
-    private ArrayList<CowObject> mCowObjectList = new ArrayList<>();
+    private ArrayList<CowEntity> mCowObjectList = new ArrayList<>();
     private String mPenId;
     private OnCowsLoaded mOnCowsLoaded;
 
@@ -22,22 +21,17 @@ public class LoadMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayList
     }
 
     public interface OnCowsLoaded{
-        void onCowsLoaded(ArrayList<CowObject> cowObjectList);
+        void onCowsLoaded(ArrayList<CowEntity> cowObjectList);
     }
 
     @Override
-    protected ArrayList<CowObject> doInBackground(Context... contexts) {
+    protected ArrayList<CowEntity> doInBackground(Context... contexts) {
         List<CowEntity> cowEntities = AppDatabase.getAppDatabase(contexts[0]).cowDao().getCowEntitiesByPenId(mPenId);
-        for(int x=0; x<cowEntities.size(); x++){
-            CowEntity cowEntity = cowEntities.get(x);
-            CowObject cowObject = new CowObject(cowEntity.getTagNumber(), cowEntity.getCowId(), cowEntity.getPenId(), cowEntity.getNotes(), cowEntity.isAlive(), cowEntity.getDate(), null);
-            mCowObjectList.add(cowObject);
-        }
-        return mCowObjectList;
+        return (ArrayList<CowEntity>) cowEntities;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<CowObject> cowObjects) {
+    protected void onPostExecute(ArrayList<CowEntity> cowObjects) {
         super.onPostExecute(cowObjects);
         mOnCowsLoaded.onCowsLoaded(cowObjects);
     }

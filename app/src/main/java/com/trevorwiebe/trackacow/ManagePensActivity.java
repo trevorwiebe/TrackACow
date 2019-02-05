@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,14 +16,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
 import java.util.ArrayList;
@@ -34,9 +32,9 @@ public class ManagePensActivity extends AppCompatActivity {
     private static final String TAG = "ManagePensActivity";
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private DatabaseReference mPenRef = mBaseRef.child(PenObject.PEN_OBJECT);
+    private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
     private ValueEventListener mPenListener;
-    private ArrayList<PenObject> mPenObjectList = new ArrayList<>();
+    private ArrayList<PenEntity> mPenObjectList = new ArrayList<>();
 
     private RecyclerView mPensRv;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
@@ -71,8 +69,8 @@ public class ManagePensActivity extends AppCompatActivity {
                             if(isPenNameAvailable(penName, mPenObjectList)) {
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
-                                PenObject penObject = new PenObject(key, penName, "", 0, "", 0);
-                                pushRef.setValue(penObject);
+                                PenEntity penEntity = new PenEntity(key, "", 0, "", penName, 0);
+                                pushRef.setValue(penEntity);
                                 Snackbar.make(view, "Pen save successfully", Snackbar.LENGTH_LONG).show();
                             }else{
                                 Snackbar.make(view, "This name is already taken", Snackbar.LENGTH_LONG).show();
@@ -95,9 +93,9 @@ public class ManagePensActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mPenObjectList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    PenObject penObject = snapshot.getValue(PenObject.class);
-                    if(penObject != null){
-                        mPenObjectList.add(penObject);
+                    PenEntity penEntity = snapshot.getValue(PenEntity.class);
+                    if(penEntity != null){
+                        mPenObjectList.add(penEntity);
                     }
                 }
                 loadingPens.setVisibility(View.INVISIBLE);
@@ -118,14 +116,14 @@ public class ManagePensActivity extends AppCompatActivity {
         mPensRv.addOnItemTouchListener(new ItemClickListener(this, mPensRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(final View view, int position) {
-                final PenObject selectedPenObject = mPenObjectList.get(position);
+                final PenEntity selectedPenEntity = mPenObjectList.get(position);
                 AlertDialog.Builder editPen = new AlertDialog.Builder(ManagePensActivity.this);
                 editPen.setTitle("Edit pen");
                 View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_edit_text, null);
                 final EditText editPenEditText = dialogView.findViewById(R.id.dialog_edit_text_edit_text);
                 editPen.setView(dialogView);
-                editPenEditText.setText(selectedPenObject.getPenName());
-                editPenEditText.setSelection(selectedPenObject.getPenName().length());
+                editPenEditText.setText(selectedPenEntity.getPenName());
+                editPenEditText.setSelection(selectedPenEntity.getPenName().length());
                 editPen.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -134,8 +132,8 @@ public class ManagePensActivity extends AppCompatActivity {
                         }else{
                             String updatedText = editPenEditText.getText().toString();
                             if(isPenNameAvailable(updatedText, mPenObjectList)) {
-                                selectedPenObject.setPenName(updatedText);
-                                mPenRef.child(selectedPenObject.getPenId()).setValue(selectedPenObject);
+                                selectedPenEntity.setPenName(updatedText);
+                                mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
                                 Snackbar.make(mPensRv, "Pen updated successfully", Snackbar.LENGTH_LONG).show();
                             }else{
                                 Snackbar.make(mPensRv, "Pen already taken", Snackbar.LENGTH_LONG).show();
@@ -152,7 +150,7 @@ public class ManagePensActivity extends AppCompatActivity {
                 editPen.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String id = selectedPenObject.getPenId();
+                        String id = selectedPenEntity.getPenId();
                         mPenRef.child(id).removeValue();
                         Snackbar.make(view, "Pen deleted successfully", Snackbar.LENGTH_LONG).show();
                     }
@@ -179,10 +177,10 @@ public class ManagePensActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private boolean isPenNameAvailable(String penName, ArrayList<PenObject> penList){
+    private boolean isPenNameAvailable(String penName, ArrayList<PenEntity> penList){
         for(int r=0; r<penList.size(); r++){
-            PenObject penObject = penList.get(r);
-            if(penObject.getPenName().equals(penName))return false;
+            PenEntity penEntity = penList.get(r);
+            if(penEntity.getPenName().equals(penName))return false;
         }
         return true;
     }

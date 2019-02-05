@@ -11,12 +11,11 @@ import android.widget.DatePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.utils.SetMedicatedCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MarkACowDeadActivity extends AppCompatActivity {
@@ -27,7 +26,7 @@ public class MarkACowDeadActivity extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
-    private PenObject mSelectedPen;
+    private PenEntity mSelectedPen;
     private DatabaseReference mBaseRef;
 
     @Override
@@ -66,6 +65,7 @@ public class MarkACowDeadActivity extends AppCompatActivity {
                 mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
             }
         };
+
     }
 
     public void markAsDead(View view1){
@@ -75,14 +75,17 @@ public class MarkACowDeadActivity extends AppCompatActivity {
         }
         int tagNumber = Integer.parseInt(mTagNumber.getText().toString());
         String strDate = mDate.getText().toString();
-        long date = Utility.convertDateToMillis(strDate);
         String notes = mNotes.getText().toString();
 
-        DatabaseReference pushRef = mBaseRef.child(CowObject.COW).push();
+        DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
 
-        CowObject CowObject = new CowObject(tagNumber, pushRef.getKey(), mSelectedPen.getPenId(), notes, false, date, null);
+        CowEntity cowEntity = new CowEntity(false, "key", tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
 
-        pushRef.setValue(CowObject);
+        if(Utility.haveNetworkConnection(this)){
+            pushRef.setValue(cowEntity);
+        }else{
+            new SetMedicatedCow(cowEntity).execute(this);
+        }
 
         mTagNumber.setText("");
         mNotes.setText("");

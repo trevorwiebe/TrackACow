@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 
 import java.util.ArrayList;
 
@@ -18,10 +18,10 @@ import java.util.ArrayList;
 public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDrugRecyclerViewAdapter.ManageDrugViewHolder> {
 
 
-    private ArrayList<DrugObject> mDrugList;
+    private ArrayList<DrugEntity> mDrugList;
     private Context mContext;
 
-    public ManageDrugRecyclerViewAdapter(ArrayList<DrugObject> drugList, Context context){
+    public ManageDrugRecyclerViewAdapter(ArrayList<DrugEntity> drugList, Context context){
         this.mDrugList = drugList;
         this.mContext = context;
     }
@@ -35,7 +35,7 @@ public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDr
 
     @Override
     public void onBindViewHolder(@NonNull ManageDrugViewHolder manageDrugViewHolder, int i) {
-        DrugObject drugObject = mDrugList.get(i);
+        DrugEntity drugObject = mDrugList.get(i);
 
         String drugName = drugObject.getDrugName();
         String defaultGiven = Integer.toString(drugObject.getDefaultAmount());
@@ -50,7 +50,7 @@ public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDr
         return mDrugList.size();
     }
 
-    public void swapData(ArrayList<DrugObject> newDrugList){
+    public void swapData(ArrayList<DrugEntity> newDrugList){
         mDrugList = newDrugList;
         if(mDrugList != null){
             notifyDataSetChanged();

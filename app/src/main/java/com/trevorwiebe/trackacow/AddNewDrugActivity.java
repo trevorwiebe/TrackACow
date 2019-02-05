@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow;
 
-import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +10,11 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 
 public class AddNewDrugActivity extends AppCompatActivity {
 
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
 
     private TextInputEditText mDrugName;
     private TextInputEditText mDefaultAmount;
@@ -42,9 +41,9 @@ public class AddNewDrugActivity extends AppCompatActivity {
                     String drugName = mDrugName.getText().toString();
                     int defaultGiven = Integer.parseInt(mDefaultAmount.getText().toString());
 
-                    DrugObject drugObject = new DrugObject(key, drugName, defaultGiven);
+                    DrugEntity drugEntity = new DrugEntity(defaultGiven, key, drugName);
 
-                    pushRef.setValue(drugObject);
+                    pushRef.setValue(drugEntity);
 
                     Snackbar.make(view, "Drug saved successfully!", Snackbar.LENGTH_LONG).show();
 

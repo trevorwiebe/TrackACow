@@ -31,10 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugObject;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.LoadDrugsGiven;
 import com.trevorwiebe.trackacow.utils.LoadMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -53,11 +53,11 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private DatabaseReference mDrugRef;
     private ValueEventListener mTrackCowListener;
     private ValueEventListener mDrugListener;
-    private ArrayList<CowObject> mTreatedCows = new ArrayList<>();
-    private ArrayList<DrugObject> mDrugList = new ArrayList<>();
-    private ArrayList<DrugsGivenObject> mDrugsGivenList = new ArrayList<>();
+    private ArrayList<CowEntity> mTreatedCows = new ArrayList<>();
+    private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
-    private PenObject mSelectedPen;
+    private PenEntity mSelectedPen;
     private static final int MEDICATE_A_COW_CODE = 743;
     private static final int VIEW_PEN_REPORTS_CODE = 345;
     private boolean mIsActive;
@@ -83,7 +83,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         // TODO: 1/26/2019 add the ability to edit medicated cow entries
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
-        mTrackCow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
+        mTrackCow = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(mSelectedPen.getPenId());
 
         mIsActive = mSelectedPen.getIsActive() == 1;
 
@@ -104,9 +104,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mTreatedCows.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    CowObject cowObject = snapshot.getValue(CowObject.class);
-                    if(cowObject != null){
-                        mTreatedCows.add(cowObject);
+                    CowEntity cowEntity = snapshot.getValue(CowEntity.class);
+                    if(cowEntity != null){
+                        mTreatedCows.add(cowEntity);
                     }
                 }
                 mLoadMedicatedCows.setVisibility(View.INVISIBLE);
@@ -124,14 +124,14 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             }
         };
 
-        mDrugRef = mBaseRef.child(DrugObject.DRUG_OBJECT);
+        mDrugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
         mDrugListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    DrugObject drugObject = snapshot.getValue(DrugObject.class);
-                    if(drugObject != null){
-                        mDrugList.add(drugObject);
+                    DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
+                    if(drugEntity != null){
+                        mDrugList.add(drugEntity);
                     }
                 }
                 mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
@@ -162,7 +162,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 mSelectedPen.setTotalHead(totalHead);
                 mSelectedPen.setNotes(notes);
 
-                mBaseRef.child(PenObject.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
 
                 setActive();
 
@@ -181,9 +181,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CowObject cowObject = mTreatedCows.get(position);
+                CowEntity cowEntity = mTreatedCows.get(position);
                 Intent editCowIntent = new Intent(MedicatedCowsActivity.this, EditMedicatedCowActivity.class);
-                editCowIntent.putExtra("cow", cowObject);
+                editCowIntent.putExtra("cow", cowEntity);
                 startActivity(editCowIntent);
             }
 
@@ -242,7 +242,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             }else{
                 mLoadMedicatedCows.setVisibility(View.INVISIBLE);
                 new LoadMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-                new LoadDrugsGiven(this).execute(this);
+                LoadDrugsGiven loadDrugsGiven = new LoadDrugsGiven(this, mDrugsGivenList);
+                loadDrugsGiven.execute(this);
             }
             mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         }
@@ -281,7 +282,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             @Override
             public boolean onQueryTextChange(String s) {
                 if(s.length() >= 1) {
-                    ArrayList<CowObject> list = findTags(s);
+                    ArrayList<CowEntity> list = findTags(s);
                     if (list.size() == 0 && shouldShowCouldntFindTag) {
                         mResultsNotFound.setVisibility(View.VISIBLE);
                         mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
@@ -315,7 +316,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCowsLoaded(ArrayList<CowObject> cowObjectList) {
+    public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
         mTreatedCows = cowObjectList;
         mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
         if(mTreatedCows.size() == 0){
@@ -326,18 +327,18 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDrugsLoaded(ArrayList<DrugsGivenObject> drugsGivenObjects) {
-        mDrugsGivenList = drugsGivenObjects;
+    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        mDrugsGivenList = drugsGivenEntities;
         mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
     }
 
-    private ArrayList<CowObject> findTags(String inputString){
-        ArrayList<CowObject> listToReturn = new ArrayList<>();
+    private ArrayList<CowEntity> findTags(String inputString){
+        ArrayList<CowEntity> listToReturn = new ArrayList<>();
         for(int e=0; e<mTreatedCows.size(); e++){
-            CowObject cowObject = mTreatedCows.get(e);
-            String tag = Integer.toString(cowObject.getCowNumber());
+            CowEntity cowEntity = mTreatedCows.get(e);
+            String tag = Integer.toString(cowEntity.getTagNumber());
             if(tag.startsWith(inputString)){
-                listToReturn.add(cowObject);
+                listToReturn.add(cowEntity);
             }
         }
         return listToReturn;

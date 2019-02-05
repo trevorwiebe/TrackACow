@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -23,21 +23,21 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
 
     private static final String TAG = "MedicatedCowsRecyclerVi";
 
-    private ArrayList<CowObject> mCowList;
-    private ArrayList<DrugObject> mDrugList;
-    private ArrayList<DrugsGivenObject> mDrugsGivenObject;
+    private ArrayList<CowEntity> mCowList;
+    private ArrayList<DrugEntity> mDrugList;
+    private ArrayList<DrugsGivenEntity> mDrugsGivenEntities;
     private Context mContext;
 
-    public MedicatedCowsRecyclerViewAdapter(ArrayList<CowObject> cowObjects, ArrayList<DrugObject> drugList, ArrayList<DrugsGivenObject> drugsGivenObjects, Context context) {
+    public MedicatedCowsRecyclerViewAdapter(ArrayList<CowEntity> cowObjects, ArrayList<DrugEntity> drugList, ArrayList<DrugsGivenEntity> drugsGivenObjects, Context context) {
         this.mCowList = cowObjects;
         this.mDrugList = drugList;
-        this.mDrugsGivenObject = drugsGivenObjects;
+        this.mDrugsGivenEntities = drugsGivenObjects;
         this.mContext = context;
     }
 
     @Override
     public int getItemCount() {
-        if (mCowList == null || mDrugList == null || mDrugsGivenObject == null) return 0;
+        if (mCowList == null || mDrugList == null || mDrugsGivenEntities == null) return 0;
         return mCowList.size();
     }
 
@@ -48,11 +48,11 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         return new TrackCowViewHolder(view);
     }
 
-    public void swapData(ArrayList<CowObject> cowObjectsList, ArrayList<DrugObject> drugObjects, ArrayList<DrugsGivenObject> drugsGivenObjects) {
+    public void swapData(ArrayList<CowEntity> cowObjectsList, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         mCowList = cowObjectsList;
-        mDrugList = drugObjects;
-        mDrugsGivenObject = drugsGivenObjects;
-        if (mCowList != null && mDrugList != null && mDrugsGivenObject != null) {
+        mDrugList = drugEntities;
+        mDrugsGivenEntities = drugsGivenEntities;
+        if (mCowList != null && mDrugList != null && mDrugsGivenEntities != null) {
             notifyDataSetChanged();
         }
     }
@@ -60,10 +60,12 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
     @Override
     public void onBindViewHolder(@NonNull final TrackCowViewHolder trackCowViewHolder, final int position) {
 
-        CowObject cowObject = mCowList.get(position);
-        String tagNumber = Integer.toString(cowObject.getCowNumber());
-        String notes = cowObject.getNotes();
-        String cowId = cowObject.getCowId();
+        CowEntity cowEntity = mCowList.get(position);
+        String tagNumber = Integer.toString(cowEntity.getTagNumber());
+        String notes = cowEntity.getNotes();
+        String cowId = cowEntity.getCowId();
+
+        Log.d(TAG, "onBindViewHolder: cowId: " + cowId);
 
         trackCowViewHolder.mTagNumber.setText(tagNumber);
         if (notes == null || notes.length() == 0) {
@@ -73,30 +75,27 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             trackCowViewHolder.mNotes.setText("Notes: " + notes);
         }
 
-        if (cowObject.isAlive()) {
+        if (cowEntity.isAlive()) {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
-            ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
-            if(drugsGivenObjects == null){
-                drugsGivenObjects = findDrugsGivenObjectByCowId(cowId, mDrugsGivenObject);
-            }
             String message = "";
-            for (int q = 0; q < drugsGivenObjects.size(); q++) {
-                DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
+            mDrugsGivenEntities = findDrugsGivenObjectByCowId(cowId, mDrugsGivenEntities);
+            for (int q = 0; q < mDrugsGivenEntities.size(); q++) {
+                DrugsGivenEntity drugsGivenEntity = mDrugsGivenEntities.get(q);
 
-                String drugId = drugsGivenObject.getDrugId();
-                int amountGiven = drugsGivenObject.getAmountGiven();
-                long date = drugsGivenObject.getDate();
+                String drugId = drugsGivenEntity.getDrugId();
+                int amountGiven = drugsGivenEntity.getAmountGiven();
+                long date = drugsGivenEntity.getDate();
 
-                DrugObject drugObject = findDrugObject(drugId, mDrugList);
+                DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
                 String drugName = "";
-                if (drugObject != null) {
-                    drugName = drugObject.getDrugName();
+                if (drugEntity != null) {
+                    drugName = drugEntity.getDrugName();
                 }
                 String amountGivenStr = Integer.toString(amountGiven);
                 String dateStr = Utility.convertMillisToDate(date);
 
                 message = message + amountGivenStr + "cc of " + drugName + " given on " + dateStr;
-                if (drugsGivenObjects.size() != q + 1) {
+                if (mDrugsGivenEntities.size() != q + 1) {
                     message = message + "\n";
                 }
                 trackCowViewHolder.mDrugsGiven.setText(message);
@@ -123,22 +122,23 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         }
     }
 
-    private DrugObject findDrugObject(String drugId, ArrayList<DrugObject> drugList) {
+    private DrugEntity findDrugEntities(String drugId, ArrayList<DrugEntity> drugList) {
         for (int p = 0; p < drugList.size(); p++) {
-            DrugObject drugObject = drugList.get(p);
-            if (drugObject.getDrugId().equals(drugId)) {
-                return drugObject;
+            DrugEntity drugEntity = drugList.get(p);
+            if (drugEntity.getDrugId().equals(drugId)) {
+                return drugEntity;
             }
         }
         return null;
     }
 
-    private ArrayList<DrugsGivenObject> findDrugsGivenObjectByCowId(String cowId, ArrayList<DrugsGivenObject> drugsGivenObjects){
-        ArrayList<DrugsGivenObject> drugsGivenToCow = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> findDrugsGivenObjectByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenObjects){
+        ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
         for(int r=0; r<drugsGivenObjects.size(); r++){
-            DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(r);
-            if(drugsGivenObject.getCowId().equals(cowId)){
-                drugsGivenToCow.add(drugsGivenObject);
+            DrugsGivenEntity drugsGivenEntity = drugsGivenObjects.get(r);
+            Log.d(TAG, "findDrugsGivenObjectByCowId: " + drugsGivenEntity.getCowId() + " " + drugsGivenEntity.getAmountGiven());
+            if(drugsGivenEntity.getCowId().equals(cowId)){
+                drugsGivenToCow.add(drugsGivenEntity);
             }
         }
         return drugsGivenToCow;

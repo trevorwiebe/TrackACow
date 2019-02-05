@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,10 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugObject;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,10 +38,10 @@ public class PenReportsActivity extends AppCompatActivity {
     private static final String TAG = "PenReportsActivity";
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private PenObject mSelectedPen;
-    private ArrayList<DrugObject> mDrugList = new ArrayList<>();
+    private PenEntity mSelectedPen;
+    private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<DrugReportsObject> mDrugReports = new ArrayList<>();
-    private ArrayList<CowObject> mDeads = new ArrayList<>();
+    private ArrayList<CowEntity> mDeads = new ArrayList<>();
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -79,38 +78,27 @@ public class PenReportsActivity extends AppCompatActivity {
         mTotalHead.setText(totalHead);
         mNotes.setText(notes);
 
-        DatabaseReference drugRef = mBaseRef.child(DrugObject.DRUG_OBJECT);
+        DatabaseReference drugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
         drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    DrugObject drugObject = snapshot.getValue(DrugObject.class);
+                    DrugEntity drugObject = snapshot.getValue(DrugEntity.class);
                     if(drugObject != null){
                         mDrugList.add(drugObject);
                     }
                 }
 
-                final Query cow = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(mSelectedPen.getPenId());
+                final Query cow = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(mSelectedPen.getPenId());
                 cow.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            CowObject cowObject = snapshot.getValue(CowObject.class);
-                            if(cowObject != null){
+                            CowEntity cowEntity = snapshot.getValue(CowEntity.class);
+                            if(cowEntity != null){
 
-                                if(!cowObject.isAlive()){
-                                    mDeads.add(cowObject);
-                                }
-
-                                ArrayList<DrugsGivenObject> mDrugsGivenObject = cowObject.getmDrugList();
-                                for(int i=0; i<mDrugsGivenObject.size(); i++){
-                                    DrugsGivenObject drugsGivenObject = mDrugsGivenObject.get(i);
-                                    int amountGiven = drugsGivenObject.getAmountGiven();
-                                    String id = drugsGivenObject.getDrugId();
-                                    if(findAndUpdateDrugReports(id, amountGiven) == 0){
-                                        DrugReportsObject drugReportsObject = new DrugReportsObject(id, amountGiven);
-                                        mDrugReports.add(drugReportsObject);
-                                    }
+                                if(!cowEntity.isAlive()){
+                                    mDeads.add(cowEntity);
                                 }
                             }
                         }
@@ -125,7 +113,7 @@ public class PenReportsActivity extends AppCompatActivity {
                             int pixels8 = (int) (8 * scale + 0.5f);
 
                             DrugReportsObject drugReportsObject = mDrugReports.get(p);
-                            DrugObject drugObject = findDrugObject(drugReportsObject.getDrugId());
+                            DrugEntity drugObject = findDrugEntity(drugReportsObject.getDrugId());
                             String textToSet = Integer.toString(drugReportsObject.drugAmount) + " ccs of " + drugObject.getDrugName();
 
                             TextView textView = new TextView(PenReportsActivity.this);
@@ -197,7 +185,7 @@ public class PenReportsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     final String penId = mSelectedPen.getPenId();
-                    Query deleteCowsQuery = mBaseRef.child(CowObject.COW).orderByChild(CowObject.PEN_ID).equalTo(penId);
+                    Query deleteCowsQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(penId);
                     deleteCowsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -209,7 +197,7 @@ public class PenReportsActivity extends AppCompatActivity {
                             mSelectedPen.setCustomerName("");
                             mSelectedPen.setIsActive(0);
 
-                            mBaseRef.child(PenObject.PEN_OBJECT).child(penId).setValue(mSelectedPen);
+                            mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
 
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("event", "deletion");
@@ -235,11 +223,11 @@ public class PenReportsActivity extends AppCompatActivity {
         }
     };
 
-    private DrugObject findDrugObject(String drugId){
+    private DrugEntity findDrugEntity(String drugId){
         for(int r=0; r<mDrugList.size(); r++){
-            DrugObject drugObject = mDrugList.get(r);
-            if(drugObject.getDrugId().equals(drugId)){
-                return drugObject;
+            DrugEntity drugEntity = mDrugList.get(r);
+            if(drugEntity.getDrugId().equals(drugId)){
+                return drugEntity;
             }
         }
         return null;

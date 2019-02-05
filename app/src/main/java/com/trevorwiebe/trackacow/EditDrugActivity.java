@@ -12,11 +12,7 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.objects.DrugObject;
-
-import org.w3c.dom.Text;
-
-import java.text.NumberFormat;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 
 public class EditDrugActivity extends AppCompatActivity {
 
@@ -32,7 +28,7 @@ public class EditDrugActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_drug);
 
-        final DrugObject selectedDrug = getIntent().getParcelableExtra("drugObject");
+        final DrugEntity selectedDrug = getIntent().getParcelableExtra("drugObject");
 
         if(selectedDrug == null){
             Intent resultIntent = new Intent();
@@ -41,7 +37,7 @@ public class EditDrugActivity extends AppCompatActivity {
             finish();
         }
 
-        mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+        mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
 
         mUpdateDrugName = findViewById(R.id.update_drug_name);
         mUpdateDefaultAmount = findViewById(R.id.update_default_amount_given);

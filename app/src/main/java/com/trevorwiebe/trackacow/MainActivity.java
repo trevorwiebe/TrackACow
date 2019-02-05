@@ -32,10 +32,6 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.objects.CowObject;
-import com.trevorwiebe.trackacow.objects.DrugObject;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
-import com.trevorwiebe.trackacow.objects.PenObject;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.LoadPens;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -54,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
-    private ArrayList<PenObject> mPenList = new ArrayList<>();
+    private ArrayList<PenEntity> mPenList = new ArrayList<>();
     private LinearLayout mNoConnectionLayout;
     private ProgressBar mLoadingMain;
     private TextView mNoPensTv;
@@ -188,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPensLoaded(ArrayList<PenObject> penObjectList) {
+    public void onPensLoaded(ArrayList<PenEntity> penObjectList) {
         mPenList = penObjectList;
         if(mPenList.size() == 0) {
             mNoPensTv.setVisibility(View.VISIBLE);
@@ -209,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements
         mNoConnectionLayout.setVisibility(View.INVISIBLE);
         mPenRv.setVisibility(View.INVISIBLE);
 
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.nav_userName);
@@ -220,6 +217,14 @@ public class MainActivity extends AppCompatActivity implements
         if(Utility.haveNetworkConnection(this)) {
             DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
+            drugsGivenEntity.setPrimaryKey(1);
+            drugsGivenEntity.setAmountGiven(45);
+            drugsGivenEntity.setCowId("cowId");
+            drugsGivenEntity.setDate(System.currentTimeMillis());
+            baseRef.child("test").setValue(drugsGivenEntity);
+
             baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -229,38 +234,16 @@ public class MainActivity extends AppCompatActivity implements
                             switch (key) {
                                 case "cows":
                                     for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
-                                        CowObject cowObject = cowSnapshot.getValue(CowObject.class);
-                                        if (cowObject != null) {
-                                            CowEntity cowEntity = new CowEntity();
-                                            cowEntity.setAlive(cowObject.isAlive());
-                                            cowEntity.setCowId(cowObject.getCowId());
-                                            cowEntity.setDate(cowObject.getDate());
-                                            cowEntity.setNotes(cowObject.getNotes());
-                                            cowEntity.setPenId(cowObject.getPenId());
-                                            cowEntity.setTagNumber(cowObject.getCowNumber());
+                                        CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
+                                        if (cowEntity != null) {
                                             mCowEntityUpdateList.add(cowEntity);
-
-                                            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                                            ArrayList<DrugsGivenObject> drugsGivenObjects = cowObject.getmDrugList();
-                                            for (int q = 0; q < drugsGivenObjects.size(); q++) {
-                                                DrugsGivenObject drugsGivenObject = drugsGivenObjects.get(q);
-
-                                                drugsGivenEntity.setAmountGiven(drugsGivenObject.getAmountGiven());
-                                                drugsGivenEntity.setCowId(cowEntity.getCowId());
-                                                drugsGivenEntity.setDate(drugsGivenObject.getDate());
-                                                mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
-                                            }
                                         }
                                     }
                                     break;
                                 case "drugs":
                                     for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
-                                        DrugObject drugObject = drugsSnapshot.getValue(DrugObject.class);
-                                        if (drugObject != null) {
-                                            DrugEntity drugEntity = new DrugEntity();
-                                            drugEntity.setDrugName(drugObject.getDrugName());
-                                            drugEntity.setDrugId(drugObject.getDrugId());
-                                            drugEntity.setDefaultAmount(drugObject.getDefaultAmount());
+                                        DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
+                                        if (drugEntity != null) {
                                             mDrugEntityUpdateList.add(drugEntity);
                                         }
                                     }
@@ -268,21 +251,10 @@ public class MainActivity extends AppCompatActivity implements
                                 case "pens":
                                     mPenList.clear();
                                     for (DataSnapshot penSnapshot : snapshot.getChildren()) {
-                                        PenObject penObject = penSnapshot.getValue(PenObject.class);
-                                        if (penObject != null) {
-
-                                            mPenList.add(penObject);
-
-                                            PenEntity penEntity = new PenEntity();
-                                            penEntity.setIsActive(penObject.getIsActive());
-                                            penEntity.setCustomerName(penObject.getCustomerName());
-                                            penEntity.setNotes(penObject.getNotes());
-                                            penEntity.setPenDatabaseId(penObject.getPenId());
-                                            penEntity.setPenName(penObject.getPenName());
-                                            penEntity.setTotalHead(penObject.getTotalHead());
-
+                                        PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
+                                        if (penEntity != null) {
+                                            mPenList.add(penEntity);
                                             mPenEntityUpdateList.add(penEntity);
-
                                         }
                                     }
                                     mLoadingMain.setVisibility(View.INVISIBLE);
@@ -293,6 +265,8 @@ public class MainActivity extends AppCompatActivity implements
                                     }
                                     mPenRecyclerViewAdapter.swapData(mPenList);
                                     mPenRv.setVisibility(View.VISIBLE);
+                                    break;
+                                case "drugsGiven":
                                     break;
                                 default:
                                     Log.e(TAG, "onDataChange: unknown snapshot key");

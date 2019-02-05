@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.ManageDrugRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.objects.DrugObject;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
 import java.util.ArrayList;
@@ -29,8 +28,8 @@ import java.util.ArrayList;
 public class ManageDrugsActivity extends AppCompatActivity {
 
     private ManageDrugRecyclerViewAdapter mManageDrugRecyclerViewAdapter;
-    private ArrayList<DrugObject> mDrugList = new ArrayList<>();
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugObject.DRUG_OBJECT);
+    private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
     private ValueEventListener mDrugListener;
     private static final int UPDATE_DRUG_CALLBACK_CODE = 747;
 
@@ -61,7 +60,7 @@ public class ManageDrugsActivity extends AppCompatActivity {
         mManageDrugRv.addOnItemTouchListener(new ItemClickListener(this, mManageDrugRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                DrugObject selectedDrugObject = mDrugList.get(position);
+                DrugEntity selectedDrugObject = mDrugList.get(position);
                 Intent editDrugIntent = new Intent(ManageDrugsActivity.this, EditDrugActivity.class);
                 editDrugIntent.putExtra("drugObject", selectedDrugObject);
                 startActivityForResult(editDrugIntent, UPDATE_DRUG_CALLBACK_CODE);
@@ -78,9 +77,9 @@ public class ManageDrugsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mDrugList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    DrugObject drugObject = snapshot.getValue(DrugObject.class);
-                    if(drugObject != null){
-                        mDrugList.add(drugObject);
+                    DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
+                    if(drugEntity != null){
+                        mDrugList.add(drugEntity);
                     }
                 }
                 loadingDrugs.setVisibility(View.INVISIBLE);

@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.objects.PenObject;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
 
 import java.util.ArrayList;
 
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
 
-    private ArrayList<PenObject> mPenList;
+    private ArrayList<PenEntity> mPenList;
     private Context mContext;
     private boolean isEditing;
 
-    public PenRecyclerViewAdapter(ArrayList<PenObject> penObjectList, boolean isEditing, Context context){
+    public PenRecyclerViewAdapter(ArrayList<PenEntity> penObjectList, boolean isEditing, Context context){
         this.mPenList = penObjectList;
         this.mContext = context;
         this.isEditing = isEditing;
@@ -41,14 +41,14 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
     @Override
     public void onBindViewHolder(@NonNull PenViewHolder penViewHolder, int i) {
 
-        PenObject penObject = mPenList.get(i);
-        String penName = penObject.getPenName();
+        PenEntity penEntity = mPenList.get(i);
+        String penName = penEntity.getPenName();
         penViewHolder.mPen.setText(penName);
 
         if(isEditing){
             penViewHolder.mIsPenActive.setVisibility(View.GONE);
         }else {
-            int isActive = penObject.getIsActive();
+            int isActive = penEntity.getIsActive();
             if (isActive == 1) {
                 penViewHolder.mIsPenActive.setText("Pen is active");
                 penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
@@ -60,7 +60,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
     }
 
-    public void swapData(ArrayList<PenObject> penObjects){
+    public void swapData(ArrayList<PenEntity> penObjects){
         mPenList = penObjects;
         if(mPenList != null){
             notifyDataSetChanged();

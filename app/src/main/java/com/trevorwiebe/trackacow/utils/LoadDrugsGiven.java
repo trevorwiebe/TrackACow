@@ -5,38 +5,35 @@ import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.objects.DrugsGivenObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadDrugsGiven extends AsyncTask<Context, Void, ArrayList<DrugsGivenObject>> {
+public class LoadDrugsGiven extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
 
-    private ArrayList<DrugsGivenObject> mDrugsGivenObjects = new ArrayList<>();
+    private static final String TAG = "LoadDrugsGiven";
+
+    private ArrayList<DrugsGivenEntity> mDrugsGivenEntity;
     private OnDrugsLoaded mOnDrugsLoaded;
 
-    public LoadDrugsGiven(OnDrugsLoaded onDrugsLoaded){
+    public LoadDrugsGiven(OnDrugsLoaded onDrugsLoaded, ArrayList<DrugsGivenEntity> drugsGivenEntities){
         this.mOnDrugsLoaded = onDrugsLoaded;
+        this.mDrugsGivenEntity = drugsGivenEntities;
     }
 
     public interface OnDrugsLoaded{
-        void onDrugsLoaded(ArrayList<DrugsGivenObject> drugsGivenObjects);
+        void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities);
     }
 
     @Override
-    protected ArrayList<DrugsGivenObject> doInBackground(Context... contexts) {
+    protected ArrayList<DrugsGivenEntity> doInBackground(Context... contexts) {
         List<DrugsGivenEntity> drugsGivenEntities = AppDatabase.getAppDatabase(contexts[0]).drugsGivenDao().getDrugsGivenList();
-        for(int o=0; o<drugsGivenEntities.size(); o++){
-            DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(o);
-            DrugsGivenObject drugsGivenObject = new DrugsGivenObject("drugId", drugsGivenEntity.getAmountGiven(), drugsGivenEntity.getDate(), drugsGivenEntity.getCowId());
-            mDrugsGivenObjects.add(drugsGivenObject);
-        }
-        return mDrugsGivenObjects;
+        return (ArrayList<DrugsGivenEntity>) drugsGivenEntities;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<DrugsGivenObject> drugsGivenObjects) {
-        super.onPostExecute(drugsGivenObjects);
-        mOnDrugsLoaded.onDrugsLoaded(mDrugsGivenObjects);
+    protected void onPostExecute(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        super.onPostExecute(drugsGivenEntities);
+        mOnDrugsLoaded.onDrugsLoaded(mDrugsGivenEntity);
     }
 }
