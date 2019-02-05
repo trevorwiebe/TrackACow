@@ -55,6 +55,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private DatabaseReference mDrugRef;
     private ValueEventListener mTrackCowListener;
     private ValueEventListener mDrugListener;
+    private ArrayList<CowEntity> mSelectedCows = new ArrayList<>();
     private ArrayList<CowEntity> mTreatedCows = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
@@ -109,6 +110,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                     CowEntity cowEntity = snapshot.getValue(CowEntity.class);
                     if(cowEntity != null){
                         mTreatedCows.add(cowEntity);
+                        mSelectedCows.add(cowEntity);
                     }
                 }
                 mLoadMedicatedCows.setVisibility(View.INVISIBLE);
@@ -185,7 +187,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CowEntity cowEntity = mTreatedCows.get(position);
+                CowEntity cowEntity = mSelectedCows.get(position);
                 Intent editCowIntent = new Intent(MedicatedCowsActivity.this, EditMedicatedCowActivity.class);
                 editCowIntent.putExtra("cow", cowEntity);
                 startActivity(editCowIntent);
@@ -285,8 +287,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             @Override
             public boolean onQueryTextChange(String s) {
                 if(s.length() >= 1) {
-                    ArrayList<CowEntity> list = findTags(s);
-                    if (list.size() == 0 && shouldShowCouldntFindTag) {
+                    mSelectedCows = findTags(s);
+                    if (mSelectedCows.size() == 0 && shouldShowCouldntFindTag) {
                         mResultsNotFound.setVisibility(View.VISIBLE);
                         mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
                     } else {
@@ -294,12 +296,13 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                         mResultsNotFound.setVisibility(View.INVISIBLE);
                     }
                     shouldShowCouldntFindTag = true;
-                    mMedicatedCowsRecyclerViewAdapter.swapData(list, mDrugList, mDrugsGivenList);
+                    mMedicatedCowsRecyclerViewAdapter.swapData(mSelectedCows, mDrugList, mDrugsGivenList);
                 }else{
                     if(shouldShowCouldntFindTag) {
                         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                     }
                     mResultsNotFound.setVisibility(View.INVISIBLE);
+                    mSelectedCows = mTreatedCows;
                     mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
                 }
                 return false;
@@ -321,6 +324,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     @Override
     public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
         mTreatedCows = cowObjectList;
+        mSelectedCows = cowObjectList;
         mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
         if(mTreatedCows.size() == 0){
             mNoMedicatedCows.setVisibility(View.VISIBLE);
