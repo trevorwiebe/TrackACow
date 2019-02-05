@@ -35,8 +35,8 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.utils.LoadDrugsGiven;
-import com.trevorwiebe.trackacow.utils.LoadMedicatedCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.LoadDrugsGiven;
+import com.trevorwiebe.trackacow.dataLoaders.LoadMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 

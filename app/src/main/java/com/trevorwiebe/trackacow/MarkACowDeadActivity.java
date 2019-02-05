@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.utils.SetMedicatedCow;
+import com.trevorwiebe.trackacow.dataLoaders.SetMedicatedCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.Calendar;

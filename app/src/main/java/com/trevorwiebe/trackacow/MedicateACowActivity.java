@@ -29,9 +29,9 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.utils.LoadAllDrugs;
-import com.trevorwiebe.trackacow.utils.SetDrugsGivenList;
-import com.trevorwiebe.trackacow.utils.SetMedicatedCow;
+import com.trevorwiebe.trackacow.dataLoaders.LoadAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.SetDrugsGivenList;
+import com.trevorwiebe.trackacow.dataLoaders.SetMedicatedCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
