@@ -6,7 +6,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,18 +24,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.dataLoaders.LoadAllDrugs;
-import com.trevorwiebe.trackacow.dataLoaders.SetDrugsGivenList;
-import com.trevorwiebe.trackacow.dataLoaders.SetMedicatedCow;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class MedicateACowActivity extends AppCompatActivity implements LoadAllDrugs.OnAllDrugsLoaded {
+public class MedicateACowActivity extends AppCompatActivity implements QueryAllDrugs.OnAllDrugsLoaded {
 
     private static final String TAG = "MedicateACowActivity";
 
@@ -91,7 +90,7 @@ public class MedicateACowActivity extends AppCompatActivity implements LoadAllDr
                 }
             });
         }else{
-            new LoadAllDrugs(this).execute(this);
+            new QueryAllDrugs(this).execute(this);
         }
 
         mSaveCow.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +101,8 @@ public class MedicateACowActivity extends AppCompatActivity implements LoadAllDr
                 }else if(mTagName.length() == 0){
                     Snackbar.make(view, "Please set the tag number", Snackbar.LENGTH_LONG).show();
                 }else{
+
+                    DatabaseReference drugsGivenRef = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN);
 
                     DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
                     String cowId = pushRef.getKey();
@@ -128,7 +129,15 @@ public class MedicateACowActivity extends AppCompatActivity implements LoadAllDr
                                     long time = System.currentTimeMillis();
                                     drugsGivenEntity.setDate(time);
 
+                                    if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
+                                        DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                        String drugsGivenKey = drugsGivenPushRef.getKey();
+                                        drugsGivenEntity.setDrugId(drugsGivenKey);
+                                        drugsGivenPushRef.setValue(drugsGivenEntity);
+                                    }
+
                                     drugList.add(drugsGivenEntity);
+
                                 }
                             }
                         }
@@ -146,14 +155,10 @@ public class MedicateACowActivity extends AppCompatActivity implements LoadAllDr
 
                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
                         pushRef.setValue(cowObject);
-                    }else{
-                        new SetMedicatedCow(cowObject).execute(MedicateACowActivity.this);
-                        new SetDrugsGivenList(drugList).execute(MedicateACowActivity.this);
-                        for(int i=0; i<drugList.size(); i++){
-                            DrugsGivenEntity drugsGivenEntity = drugList.get(i);
-                            Log.d(TAG, "onClick: " + drugsGivenEntity.getCowId());
-                        }
                     }
+
+                    new InsertSingleCow(cowObject).execute(MedicateACowActivity.this);
+                    new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
 
                     Snackbar.make(view, "Save successfully", Snackbar.LENGTH_SHORT).show();
 

@@ -6,13 +6,13 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 
-public class SetMedicatedCow extends AsyncTask<Context, Void, Void> {
+public class InsertSingleCow extends AsyncTask<Context, Void, Void> {
 
-    private static final String TAG = "SetMedicatedCow";
+    private static final String TAG = "InsertSingleCow";
 
     private CowEntity mCowEntity;
 
-    public SetMedicatedCow(CowEntity cowEntity){
+    public InsertSingleCow(CowEntity cowEntity){
         this.mCowEntity = cowEntity;
     }
 

@@ -25,6 +25,9 @@ public interface PenDao {
     @Query("SELECT * FROM Pen")
     List<PenEntity> getPenList();
 
+    @Query("UPDATE Pen SET customerName = :customerName, isActive = :isActive, totalHead = :totalHead, notes = :notes WHERE penId = :penId")
+    void updatePenByFields(String customerName, int isActive, int totalHead, String notes, String penId);
+
     @Query("DELETE FROM Pen")
     void deletePenTable();
 

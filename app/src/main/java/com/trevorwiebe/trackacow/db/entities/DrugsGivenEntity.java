@@ -10,6 +10,8 @@ import android.os.Parcelable;
 @Entity(tableName = "DrugsGiven")
 public class DrugsGivenEntity implements Parcelable {
 
+    public static final String DRUGS_GIVEN = "drugsGiven";
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;

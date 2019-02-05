@@ -11,9 +11,9 @@ import android.widget.DatePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.dataLoaders.SetMedicatedCow;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.Calendar;
@@ -84,7 +84,7 @@ public class MarkACowDeadActivity extends AppCompatActivity {
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);
         }else{
-            new SetMedicatedCow(cowEntity).execute(this);
+            new InsertSingleCow(cowEntity).execute(this);
         }
 
         mTagNumber.setText("");

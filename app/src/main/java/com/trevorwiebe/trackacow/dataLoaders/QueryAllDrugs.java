@@ -9,11 +9,11 @@ import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity>> {
+public class QueryAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity>> {
 
     private OnAllDrugsLoaded mOnAllDrugsLoaded;
 
-    public LoadAllDrugs(OnAllDrugsLoaded onAllDrugsLoaded){
+    public QueryAllDrugs(OnAllDrugsLoaded onAllDrugsLoaded){
         this.mOnAllDrugsLoaded = onAllDrugsLoaded;
     }
 

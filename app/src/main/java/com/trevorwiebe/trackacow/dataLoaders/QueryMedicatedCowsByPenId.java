@@ -9,13 +9,13 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
+public class QueryMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
 
     private ArrayList<CowEntity> mCowObjectList = new ArrayList<>();
     private String mPenId;
     private OnCowsLoaded mOnCowsLoaded;
 
-    public LoadMedicatedCowsByPenId(OnCowsLoaded onCowsLoaded, String penId){
+    public QueryMedicatedCowsByPenId(OnCowsLoaded onCowsLoaded, String penId){
         this.mPenId = penId;
         this.mOnCowsLoaded = onCowsLoaded;
     }

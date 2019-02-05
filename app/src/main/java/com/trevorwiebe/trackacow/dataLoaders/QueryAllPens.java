@@ -11,9 +11,9 @@ import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadPens extends AsyncTask<Context, Void, ArrayList<PenEntity>> {
+public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>> {
 
-    private static final String TAG = "LoadPens";
+    private static final String TAG = "QueryAllPens";
 
     private OnPensLoaded mOnPensLoaded;
 
@@ -21,7 +21,7 @@ public class LoadPens extends AsyncTask<Context, Void, ArrayList<PenEntity>> {
         void onPensLoaded(ArrayList<PenEntity> penObjectList);
     }
 
-    public LoadPens(OnPensLoaded onPensLoaded){
+    public QueryAllPens(OnPensLoaded onPensLoaded){
         this.mOnPensLoaded = onPensLoaded;
     }
 

@@ -9,16 +9,12 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadDrugsGiven extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
+public class QueryDrugsAllGiven extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
 
-    private static final String TAG = "LoadDrugsGiven";
-
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntity;
     private OnDrugsLoaded mOnDrugsLoaded;
 
-    public LoadDrugsGiven(OnDrugsLoaded onDrugsLoaded, ArrayList<DrugsGivenEntity> drugsGivenEntities){
+    public QueryDrugsAllGiven(OnDrugsLoaded onDrugsLoaded, ArrayList<DrugsGivenEntity> drugsGivenEntities){
         this.mOnDrugsLoaded = onDrugsLoaded;
-        this.mDrugsGivenEntity = drugsGivenEntities;
     }
 
     public interface OnDrugsLoaded{
@@ -34,6 +30,6 @@ public class LoadDrugsGiven extends AsyncTask<Context, Void, ArrayList<DrugsGive
     @Override
     protected void onPostExecute(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         super.onPostExecute(drugsGivenEntities);
-        mOnDrugsLoaded.onDrugsLoaded(mDrugsGivenEntity);
+        mOnDrugsLoaded.onDrugsLoaded(drugsGivenEntities);
     }
 }

@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,20 +32,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsAllGiven;
+import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.dataLoaders.LoadDrugsGiven;
-import com.trevorwiebe.trackacow.dataLoaders.LoadMedicatedCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
 public class MedicatedCowsActivity extends AppCompatActivity implements
-        LoadMedicatedCowsByPenId.OnCowsLoaded,
-        LoadDrugsGiven.OnDrugsLoaded{
+        QueryMedicatedCowsByPenId.OnCowsLoaded,
+        QueryDrugsAllGiven.OnDrugsLoaded{
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -151,18 +153,20 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                     return;
                 }
 
-                mIsActive = true;
                 String customerName = mCustomerName.getText().toString();
                 int totalHead = Integer.parseInt(mTotalCount.getText().toString());
                 String notes = mNotes.getText().toString();
-
 
                 mSelectedPen.setIsActive(1);
                 mSelectedPen.setCustomerName(customerName);
                 mSelectedPen.setTotalHead(totalHead);
                 mSelectedPen.setNotes(notes);
 
-                mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                if(Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
+                    mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                }
+
+                new UpdatePen(mSelectedPen).execute(MedicatedCowsActivity.this);
 
                 setActive();
 
@@ -241,9 +245,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 mTrackCow.addValueEventListener(mTrackCowListener);
             }else{
                 mLoadMedicatedCows.setVisibility(View.INVISIBLE);
-                new LoadMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-                LoadDrugsGiven loadDrugsGiven = new LoadDrugsGiven(this, mDrugsGivenList);
-                loadDrugsGiven.execute(this);
+                new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+                new QueryDrugsAllGiven(this, mDrugsGivenList).execute(this);
             }
             mMedicateACowFabMenu.setVisibility(View.VISIBLE);
         }
@@ -345,10 +348,17 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     private void setActive(){
-        mLoadMedicatedCows.setVisibility(View.VISIBLE);
         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-        mTrackCow.addValueEventListener(mTrackCowListener);
-        mDrugRef.addListenerForSingleValueEvent(mDrugListener);
+        if(Utility.haveNetworkConnection(this)){
+            mTrackCow.addValueEventListener(mTrackCowListener);
+            mDrugRef.addListenerForSingleValueEvent(mDrugListener);
+            mLoadMedicatedCows.setVisibility(View.VISIBLE);
+        }else{
+            mLoadMedicatedCows.setVisibility(View.INVISIBLE);
+            new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+            QueryDrugsAllGiven queryDrugsAllGiven = new QueryDrugsAllGiven(this, mDrugsGivenList);
+            queryDrugsAllGiven.execute(this);
+        }
         mPenIdleLayout.setVisibility(View.GONE);
         shouldShowCouldntFindTag = true;
         invalidateOptionsMenu();

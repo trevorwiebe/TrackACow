@@ -9,13 +9,13 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.util.ArrayList;
 
-public class SetDrugsGivenList extends AsyncTask<Context, Void, Void> {
+public class InsertDrugsGivenList extends AsyncTask<Context, Void, Void> {
 
-    private static final String TAG = "SetDrugsGivenList";
+    private static final String TAG = "InsertDrugsGivenList";
 
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntity;
 
-    public SetDrugsGivenList(ArrayList<DrugsGivenEntity> drugsGivenEntities){
+    public InsertDrugsGivenList(ArrayList<DrugsGivenEntity> drugsGivenEntities){
         this.mDrugsGivenEntity = drugsGivenEntities;
     }
 

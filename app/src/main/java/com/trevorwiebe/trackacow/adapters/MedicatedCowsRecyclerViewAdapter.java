@@ -48,15 +48,6 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         return new TrackCowViewHolder(view);
     }
 
-    public void swapData(ArrayList<CowEntity> cowObjectsList, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mCowList = cowObjectsList;
-        mDrugList = drugEntities;
-        mDrugsGivenEntities = drugsGivenEntities;
-        if (mCowList != null && mDrugList != null && mDrugsGivenEntities != null) {
-            notifyDataSetChanged();
-        }
-    }
-
     @Override
     public void onBindViewHolder(@NonNull final TrackCowViewHolder trackCowViewHolder, final int position) {
 
@@ -78,9 +69,9 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         if (cowEntity.isAlive()) {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
             String message = "";
-            mDrugsGivenEntities = findDrugsGivenObjectByCowId(cowId, mDrugsGivenEntities);
-            for (int q = 0; q < mDrugsGivenEntities.size(); q++) {
-                DrugsGivenEntity drugsGivenEntity = mDrugsGivenEntities.get(q);
+            ArrayList<DrugsGivenEntity> drugsGivenEntities = findDrugsGivenObjectByCowId(cowId, mDrugsGivenEntities);
+            for (int q = 0; q < drugsGivenEntities.size(); q++) {
+                DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
 
                 String drugId = drugsGivenEntity.getDrugId();
                 int amountGiven = drugsGivenEntity.getAmountGiven();
@@ -95,7 +86,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
                 String dateStr = Utility.convertMillisToDate(date);
 
                 message = message + amountGivenStr + "cc of " + drugName + " given on " + dateStr;
-                if (mDrugsGivenEntities.size() != q + 1) {
+                if (drugsGivenEntities.size() != q + 1) {
                     message = message + "\n";
                 }
                 trackCowViewHolder.mDrugsGiven.setText(message);
@@ -103,6 +94,15 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         } else {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(R.color.redText));
             trackCowViewHolder.mDrugsGiven.setText("This cow is dead");
+        }
+    }
+
+    public void swapData(ArrayList<CowEntity> cowObjectsList, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        mCowList = cowObjectsList;
+        mDrugList = drugEntities;
+        mDrugsGivenEntities = drugsGivenEntities;
+        if (mCowList != null && mDrugList != null && mDrugsGivenEntities != null) {
+            notifyDataSetChanged();
         }
     }
 
@@ -136,7 +136,6 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
         for(int r=0; r<drugsGivenObjects.size(); r++){
             DrugsGivenEntity drugsGivenEntity = drugsGivenObjects.get(r);
-            Log.d(TAG, "findDrugsGivenObjectByCowId: " + drugsGivenEntity.getCowId() + " " + drugsGivenEntity.getAmountGiven());
             if(drugsGivenEntity.getCowId().equals(cowId)){
                 drugsGivenToCow.add(drugsGivenEntity);
             }

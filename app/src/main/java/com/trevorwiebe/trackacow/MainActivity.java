@@ -33,7 +33,7 @@ import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
-import com.trevorwiebe.trackacow.dataLoaders.LoadPens;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        LoadPens.OnPensLoaded {
+        QueryAllPens.OnPensLoaded {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 132;
@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
             });
         }else{
             mLoadingMain.setVisibility(View.INVISIBLE);
-            new LoadPens(MainActivity.this).execute(MainActivity.this);
+            new QueryAllPens(MainActivity.this).execute(MainActivity.this);
         }
 
     }
