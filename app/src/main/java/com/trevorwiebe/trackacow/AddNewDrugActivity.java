@@ -10,7 +10,9 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.InsertDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 public class AddNewDrugActivity extends AppCompatActivity {
 
@@ -43,9 +45,16 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
                     DrugEntity drugEntity = new DrugEntity(defaultGiven, key, drugName);
 
-                    pushRef.setValue(drugEntity);
+
+                    if(Utility.haveNetworkConnection(AddNewDrugActivity.this)){
+                        pushRef.setValue(drugEntity);
+                    }
+
+                    new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);
 
                     Snackbar.make(view, "Drug saved successfully!", Snackbar.LENGTH_LONG).show();
+
+                    Utility.vibrate(AddNewDrugActivity.this, 50);
 
                     mDrugName.setText("");
                     mDefaultAmount.setText("");

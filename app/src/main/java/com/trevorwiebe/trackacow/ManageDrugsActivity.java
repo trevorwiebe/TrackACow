@@ -20,12 +20,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.ManageDrugRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class ManageDrugsActivity extends AppCompatActivity {
+public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDrugs.OnAllDrugsLoaded {
 
     private ManageDrugRecyclerViewAdapter mManageDrugRecyclerViewAdapter;
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
@@ -34,14 +36,16 @@ public class ManageDrugsActivity extends AppCompatActivity {
     private static final int UPDATE_DRUG_CALLBACK_CODE = 747;
 
     private RecyclerView mManageDrugRv;
+    private ProgressBar mLoadingDrugs;
+    private TextView mDrugEmptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_drugs);
 
-        final ProgressBar loadingDrugs = findViewById(R.id.load_drugs);
-        final TextView drugListEmpty = findViewById(R.id.drug_list_empty);
+        mLoadingDrugs = findViewById(R.id.load_drugs);
+        mDrugEmptyList = findViewById(R.id.drug_list_empty);
 
         FloatingActionButton addNewDrugFab = findViewById(R.id.add_new_drug);
         addNewDrugFab.setOnClickListener(new View.OnClickListener() {
@@ -82,13 +86,13 @@ public class ManageDrugsActivity extends AppCompatActivity {
                         mDrugList.add(drugEntity);
                     }
                 }
-                loadingDrugs.setVisibility(View.INVISIBLE);
+                mLoadingDrugs.setVisibility(View.INVISIBLE);
                 if(mDrugList.size() == 0){
                     // show drug list empty
-                    drugListEmpty.setVisibility(View.VISIBLE);
+                    mDrugEmptyList.setVisibility(View.VISIBLE);
                 }else{
                     // hide drug list empty
-                    drugListEmpty.setVisibility(View.INVISIBLE);
+                    mDrugEmptyList.setVisibility(View.INVISIBLE);
                 }
                 mManageDrugRecyclerViewAdapter.swapData(mDrugList);
             }
@@ -118,12 +122,30 @@ public class ManageDrugsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mDrugRef.addValueEventListener(mDrugListener);
+        if(Utility.haveNetworkConnection(this)) {
+            mDrugRef.addValueEventListener(mDrugListener);
+        }else{
+            new QueryAllDrugs(this).execute(this);
+        }
     }
 
     @Override
     protected void onPause() {
         mDrugRef.removeEventListener(mDrugListener);
         super.onPause();
+    }
+
+    @Override
+    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
+        mDrugList = drugEntities;
+        mLoadingDrugs.setVisibility(View.INVISIBLE);
+        if(mDrugList.size() == 0){
+            // show drug list empty
+            mDrugEmptyList.setVisibility(View.VISIBLE);
+        }else{
+            // hide drug list empty
+            mDrugEmptyList.setVisibility(View.INVISIBLE);
+        }
+        mManageDrugRecyclerViewAdapter.swapData(mDrugList);
     }
 }

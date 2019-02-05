@@ -18,7 +18,7 @@ public class QueryAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity
     }
 
     public interface OnAllDrugsLoaded{
-        void onAllDrugsLoaded(ArrayList<DrugEntity> drugObjects);
+        void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class QueryAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity
     }
 
     @Override
-    protected void onPostExecute(ArrayList<DrugEntity> drugObjects) {
-        super.onPostExecute(drugObjects);
-        mOnAllDrugsLoaded.onAllDrugsLoaded(drugObjects);
+    protected void onPostExecute(ArrayList<DrugEntity> drugEntities) {
+        super.onPostExecute(drugEntities);
+        mOnAllDrugsLoaded.onAllDrugsLoaded(drugEntities);
     }
 }
