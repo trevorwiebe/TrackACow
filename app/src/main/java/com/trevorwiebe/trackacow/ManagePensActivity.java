@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -154,9 +155,18 @@ public class ManagePensActivity extends AppCompatActivity implements QueryAllPen
                 editPen.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String id = selectedPenEntity.getPenId();
-                        mPenRef.child(id).removeValue();
+                        if(Utility.haveNetworkConnection(ManagePensActivity.this)){
+                            String id = selectedPenEntity.getPenId();
+                            mPenRef.child(id).removeValue();
+                        }else{
+
+                        }
+                        new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
                         Snackbar.make(view, "Pen deleted successfully", Snackbar.LENGTH_LONG).show();
+
+                        new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
+
+                        // TODO: 2/6/2019 find all the medicated cows with this penId and delete them
                     }
                 });
                 editPen.show();
