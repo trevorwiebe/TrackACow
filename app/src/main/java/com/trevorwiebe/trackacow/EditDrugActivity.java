@@ -12,7 +12,9 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 public class EditDrugActivity extends AppCompatActivity {
 
@@ -78,7 +80,14 @@ public class EditDrugActivity extends AppCompatActivity {
         mDeleteDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrugRef.child(selectedDrug.getDrugId()).removeValue();
+                if(Utility.haveNetworkConnection(EditDrugActivity.this)) {
+                    mDrugRef.child(selectedDrug.getDrugId()).removeValue();
+                }else{
+
+                }
+
+                new DeleteDrug(selectedDrug).execute(EditDrugActivity.this);
+
                 Intent resultIntent = new Intent();
 
                 resultIntent.putExtra("event", "deleted");

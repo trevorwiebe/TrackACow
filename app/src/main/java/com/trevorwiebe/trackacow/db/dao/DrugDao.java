@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 
 import java.util.List;
@@ -33,6 +32,6 @@ public interface DrugDao {
     void updateDrug(DrugEntity drugEntity);
 
     @Delete
-    void deleteDrug(CowEntity cowEntity);
+    void deleteDrug(DrugEntity drugEntity);
 
 }
