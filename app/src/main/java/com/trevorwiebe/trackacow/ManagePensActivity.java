@@ -22,21 +22,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class ManagePensActivity extends AppCompatActivity {
+public class ManagePensActivity extends AppCompatActivity implements QueryAllPens.OnPensLoaded {
 
     private static final String TAG = "ManagePensActivity";
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
     private ValueEventListener mPenListener;
-    private ArrayList<PenEntity> mPenObjectList = new ArrayList<>();
+    private ArrayList<PenEntity> mPenEntityList = new ArrayList<>();
 
     private RecyclerView mPensRv;
+    private ProgressBar mLoadingPens;
+    private TextView mEmptyTv;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
 
     @Override
@@ -44,11 +48,11 @@ public class ManagePensActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_pens);
 
-        final TextView emptyRvText = findViewById(R.id.empty_pen_rv);
-        final ProgressBar loadingPens = findViewById(R.id.loading_pens);
+        mEmptyTv = findViewById(R.id.empty_pen_rv);
+        mLoadingPens = findViewById(R.id.loading_pens);
         mPensRv = findViewById(R.id.manage_pens_rv);
         mPensRv.setLayoutManager(new LinearLayoutManager(this));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenObjectList, true, this);
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenEntityList, true, this);
         mPensRv.setAdapter(mPenRecyclerViewAdapter);
         FloatingActionButton managePensFab = findViewById(R.id.manage_pens_fab);
         managePensFab.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +70,7 @@ public class ManagePensActivity extends AppCompatActivity {
 
                         }else{
                             String penName = dialogEditTextEditText.getText().toString();
-                            if(isPenNameAvailable(penName, mPenObjectList)) {
+                            if(isPenNameAvailable(penName, mPenEntityList)) {
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
                                 PenEntity penEntity = new PenEntity(key, "", 0, "", penName, 0);
@@ -91,19 +95,19 @@ public class ManagePensActivity extends AppCompatActivity {
         mPenListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mPenObjectList.clear();
+                mPenEntityList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     PenEntity penEntity = snapshot.getValue(PenEntity.class);
                     if(penEntity != null){
-                        mPenObjectList.add(penEntity);
+                        mPenEntityList.add(penEntity);
                     }
                 }
-                loadingPens.setVisibility(View.INVISIBLE);
-                mPenRecyclerViewAdapter.swapData(mPenObjectList);
-                if(mPenObjectList.size() > 0){
-                    emptyRvText.setVisibility(View.INVISIBLE);
+                mLoadingPens.setVisibility(View.INVISIBLE);
+                mPenRecyclerViewAdapter.swapData(mPenEntityList);
+                if(mPenEntityList.size() > 0){
+                    mEmptyTv.setVisibility(View.INVISIBLE);
                 }else{
-                    emptyRvText.setVisibility(View.VISIBLE);
+                    mEmptyTv.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -116,7 +120,7 @@ public class ManagePensActivity extends AppCompatActivity {
         mPensRv.addOnItemTouchListener(new ItemClickListener(this, mPensRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(final View view, int position) {
-                final PenEntity selectedPenEntity = mPenObjectList.get(position);
+                final PenEntity selectedPenEntity = mPenEntityList.get(position);
                 AlertDialog.Builder editPen = new AlertDialog.Builder(ManagePensActivity.this);
                 editPen.setTitle("Edit pen");
                 View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_edit_text, null);
@@ -131,7 +135,7 @@ public class ManagePensActivity extends AppCompatActivity {
                             Snackbar.make(mPensRv, "Please fill the blank", Snackbar.LENGTH_LONG).show();
                         }else{
                             String updatedText = editPenEditText.getText().toString();
-                            if(isPenNameAvailable(updatedText, mPenObjectList)) {
+                            if(isPenNameAvailable(updatedText, mPenEntityList)) {
                                 selectedPenEntity.setPenName(updatedText);
                                 mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
                                 Snackbar.make(mPensRv, "Pen updated successfully", Snackbar.LENGTH_LONG).show();
@@ -168,13 +172,29 @@ public class ManagePensActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mPenRef.addValueEventListener(mPenListener);
+        if(Utility.haveNetworkConnection(this)) {
+            mPenRef.addValueEventListener(mPenListener);
+        }else{
+            new QueryAllPens(this).execute(this);
+        }
     }
 
     @Override
     protected void onPause() {
         mPenRef.removeEventListener(mPenListener);
         super.onPause();
+    }
+
+    @Override
+    public void onPensLoaded(ArrayList<PenEntity> penEntityList) {
+        mPenEntityList = penEntityList;
+        mLoadingPens.setVisibility(View.INVISIBLE);
+        mPenRecyclerViewAdapter.swapData(mPenEntityList);
+        if(mPenEntityList.size() > 0){
+            mEmptyTv.setVisibility(View.INVISIBLE);
+        }else{
+            mEmptyTv.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean isPenNameAvailable(String penName, ArrayList<PenEntity> penList){

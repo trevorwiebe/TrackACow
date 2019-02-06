@@ -18,7 +18,7 @@ public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>>
     private OnPensLoaded mOnPensLoaded;
 
     public interface OnPensLoaded{
-        void onPensLoaded(ArrayList<PenEntity> penObjectList);
+        void onPensLoaded(ArrayList<PenEntity> penEntitiesList);
     }
 
     public QueryAllPens(OnPensLoaded onPensLoaded){
@@ -28,13 +28,12 @@ public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>>
     @Override
     protected ArrayList<PenEntity> doInBackground(Context... contexts) {
         List<PenEntity> penEntities = AppDatabase.getAppDatabase(contexts[0]).penDao().getPenList();
-        Log.d(TAG, "doInBackground: " + penEntities.size());
         return (ArrayList<PenEntity>) penEntities;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<PenEntity> penObjects) {
-        super.onPostExecute(penObjects);
-        mOnPensLoaded.onPensLoaded(penObjects);
+    protected void onPostExecute(ArrayList<PenEntity> penEntities) {
+        super.onPostExecute(penEntities);
+        mOnPensLoaded.onPensLoaded(penEntities);
     }
 }
