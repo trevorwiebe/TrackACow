@@ -2,7 +2,6 @@ package com.trevorwiebe.trackacow.dataLoaders;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
@@ -23,7 +22,8 @@ public class UpdatePen extends AsyncTask<Context, Void, Void> {
         int totalHead = penEntity.getTotalHead();
         String notes = penEntity.getNotes();
         String penId = penEntity.getPenId();
-        AppDatabase.getAppDatabase(contexts[0]).penDao().updatePenByFields(customerName, 1, totalHead, notes, penId);
+        int isActive = penEntity.getIsActive();
+        AppDatabase.getAppDatabase(contexts[0]).penDao().updatePenByFields(customerName, isActive, totalHead, notes, penId);
         return null;
     }
 }

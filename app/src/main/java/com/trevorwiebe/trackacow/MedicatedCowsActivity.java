@@ -315,18 +315,12 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     @Override
     public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         mDrugsGivenList = drugsGivenEntities;
-        for(int x=0; x<mDrugsGivenList.size(); x++){
-            DrugsGivenEntity drugsGivenEntity = mDrugsGivenList.get(x);
-        }
         new QueryAllDrugs(this).execute(this);
     }
 
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
-        for(int i=0; i<mDrugList.size(); i++){
-            DrugEntity drugEntity = mDrugList.get(i);
-        }
         new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
     }
 
@@ -363,10 +357,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         }else{
             mLoadMedicatedCows.setVisibility(View.INVISIBLE);
             new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-            QueryDrugsGivenByPenId queryDrugsGivenByPenId = new QueryDrugsGivenByPenId(this, mSelectedPen.getPenId());
-            queryDrugsGivenByPenId.execute(this);
+            new QueryDrugsGivenByPenId(this, mSelectedPen.getPenId()).execute(this);
         }
         mPenIdleLayout.setVisibility(View.GONE);
+        mMedicatedCows.setVisibility(View.VISIBLE);
         shouldShowCouldntFindTag = true;
         invalidateOptionsMenu();
         mIsActive = true;
@@ -377,6 +371,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mNoMedicatedCows.setVisibility(View.GONE);
         mMedicateACowFabMenu.setVisibility(View.GONE);
         shouldShowCouldntFindTag = false;
+        mMedicatedCows.setVisibility(View.GONE);
         mPenIdleLayout.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
     }

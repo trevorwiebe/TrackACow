@@ -163,8 +163,6 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                     new InsertSingleCow(cowObject).execute(MedicateACowActivity.this);
                     new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
 
-                    Snackbar.make(view, "Save successfully", Snackbar.LENGTH_SHORT).show();
-
                     Utility.vibrate(MedicateACowActivity.this, 50);
 
                     mTagName.setText("");

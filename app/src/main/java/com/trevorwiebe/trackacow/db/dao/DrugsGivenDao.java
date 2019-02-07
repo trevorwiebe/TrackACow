@@ -28,6 +28,9 @@ public interface DrugsGivenDao {
     @Query("SELECT * FROM DrugsGiven")
     List<DrugsGivenEntity> getDrugsGivenList();
 
+    @Query("DELETE FROM DrugsGiven WHERE penId = :penId")
+    void deleteDrugsGivenByPenId(String penId);
+
     @Query("DELETE FROM DrugsGiven")
     void deleteDrugsGivenTable();
 

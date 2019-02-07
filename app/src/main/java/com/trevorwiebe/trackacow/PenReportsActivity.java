@@ -26,9 +26,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -271,33 +275,43 @@ public class PenReportsActivity extends AppCompatActivity implements
             confirmDeletion.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+
                     final String penId = mSelectedPen.getPenId();
-                    Query deleteCowsQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(penId);
-                    deleteCowsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                snapshot.getRef().removeValue();
+                    mSelectedPen.setNotes("");
+                    mSelectedPen.setTotalHead(0);
+                    mSelectedPen.setCustomerName("");
+                    mSelectedPen.setIsActive(0);
+
+                    if(Utility.haveNetworkConnection(PenReportsActivity.this)){
+                        Query deleteCowsQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(penId);
+                        deleteCowsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                    snapshot.getRef().removeValue();
+                                }
+
+                                mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
+
+                                new UpdatePen(mSelectedPen).execute(PenReportsActivity.this);
+
+                                onPenReset();
                             }
-                            mSelectedPen.setNotes("");
-                            mSelectedPen.setTotalHead(0);
-                            mSelectedPen.setCustomerName("");
-                            mSelectedPen.setIsActive(0);
 
-                            mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("event", "deletion");
+                            }
+                        });
+                    }else{
 
-                            setResult(Activity.RESULT_OK, resultIntent);
-                            finish();
-                        }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    new UpdatePen(mSelectedPen).execute(PenReportsActivity.this);
+                    new DeleteCowsByPenId(mSelectedPen.getPenId()).execute(PenReportsActivity.this);
+                    new DeleteDrugsGivenByPenId(mSelectedPen.getPenId()).execute(PenReportsActivity.this);
 
-                        }
-                    });
+                    onPenReset();
                 }
             });
             confirmDeletion.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -309,6 +323,14 @@ public class PenReportsActivity extends AppCompatActivity implements
             confirmDeletion.show();
         }
     };
+
+    private void onPenReset(){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("event", "deletion");
+
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
 
     private DrugEntity findDrugEntity(String drugId){
         for(int r=0; r<mDrugList.size(); r++){

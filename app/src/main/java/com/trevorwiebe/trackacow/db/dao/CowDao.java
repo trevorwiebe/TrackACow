@@ -28,6 +28,9 @@ public interface CowDao {
     @Query("SELECT * FROM Cow WHERE isAlive = 0 AND penId = :id")
     List<CowEntity> getDeadCowEntitiesByPenId(String id);
 
+    @Query("DELETE FROM Cow WHERE penId = :penId")
+    void deleteCowsByPenId(String penId);
+
     @Query("DELETE FROM cow")
     void deleteCowTable();
 
