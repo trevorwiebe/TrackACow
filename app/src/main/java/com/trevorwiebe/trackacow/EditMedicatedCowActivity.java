@@ -22,6 +22,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteCow;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -30,7 +34,9 @@ import com.trevorwiebe.trackacow.utils.Utility;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class EditMedicatedCowActivity extends AppCompatActivity {
+public class EditMedicatedCowActivity extends AppCompatActivity implements
+        QueryAllDrugs.OnAllDrugsLoaded,
+        QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded{
 
     private static final String TAG = "EditMedicatedCowActivit";
 
@@ -75,61 +81,17 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
         mEditDate.setText(date);
         mEditNotes.setText(notes);
 
+        mUpdateBtn.setText("Update entry");
+        mDeleteBtn.setText("Delete entry");
+
         if(isAlive == 1){
-            mUpdateBtn.setText("Update medicated cow");
-            mDeleteBtn.setText("Delete medicated cow");
             mEditDateLayout.setVisibility(View.GONE);
-            DatabaseReference drugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
-            drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        DrugEntity drugObject = snapshot.getValue(DrugEntity.class);
-                        if(drugObject != null){
-                            mDrugList.add(drugObject);
-                        }
-                    }
-                    // TODO: 2/4/2019 fix this here
-                    ArrayList<DrugsGivenEntity> drugsGivenObjects = new ArrayList<>();
-                    for(int t=0; t<drugsGivenObjects.size(); t++){
+            if(Utility.haveNetworkConnection(this)) {
 
-                        DrugsGivenEntity drugsGivenEntity = drugsGivenObjects.get(t);
-                        int amountGiven = drugsGivenEntity.getAmountGiven();
-                        String drugId = drugsGivenEntity.getDrugId();
-
-                        final float scale = getResources().getDisplayMetrics().density;
-                        int pixels16 = (int) (16 * scale + 0.5f);
-                        int pixels8 = (int) (8 * scale + 0.5f);
-
-                        Log.d(TAG, "onCreate: " + drugId);
-
-                        DrugEntity drugEntity = findDrugEntity(drugId);
-                        String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
-
-                        TextView textView = new TextView(EditMedicatedCowActivity.this);
-                        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        );
-                        textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
-                        textView.setTextColor(getResources().getColor(android.R.color.black));
-                        textView.setLayoutParams(textViewParams);
-
-                        textView.setText(textToSet);
-
-                        mDrugLayout.addView(textView);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            }else{
+                new QueryAllDrugs(this).execute(this);
+            }
         }else{
-
-            mUpdateBtn.setText("Update dead cow");
-            mDeleteBtn.setText("Wait, This cow isn't dead");
             final float scale = getResources().getDisplayMetrics().density;
             int pixels16 = (int) (16 * scale + 0.5f);
             int pixels8 = (int) (8 * scale + 0.5f);
@@ -143,7 +105,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
             textView.setTextColor(getResources().getColor(android.R.color.black));
             textView.setLayoutParams(textViewParams);
             textView.setTypeface(null, Typeface.BOLD);
-            textView.setTextSize(18);
+            textView.setTextSize(19);
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setText("This cow is dead");
             textView.setTextColor(getResources().getColor(R.color.redText));
@@ -183,11 +145,30 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
         mDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).removeValue();
+                if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
+                    mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).removeValue();
+                }else{
+
+                }
+
+                new DeleteCow(mCowEntity).execute(EditMedicatedCowActivity.this);
+                new DeleteDrugsGivenByCowId(mCowEntity.getCowId()).execute(EditMedicatedCowActivity.this);
+
                 finish();
             }
         });
 
+    }
+
+    @Override
+    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
+        mDrugList = drugEntities;
+        new QueryDrugsGivenByCowId(this, mCowEntity.getCowId()).execute(this);
+    }
+
+    @Override
+    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        setDrugGivenLayout(drugsGivenEntities);
     }
 
     private DrugEntity findDrugEntity(String drugId){
@@ -198,5 +179,33 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){
+        for (int t = 0; t < drugsGivenEntities.size(); t++) {
+            DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
+            int amountGiven = drugsGivenEntity.getAmountGiven();
+            String drugId = drugsGivenEntity.getDrugId();
+
+            final float scale = getResources().getDisplayMetrics().density;
+            int pixels16 = (int) (16 * scale + 0.5f);
+            int pixels8 = (int) (8 * scale + 0.5f);
+
+            DrugEntity drugEntity = findDrugEntity(drugId);
+            String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
+
+            TextView textView = new TextView(EditMedicatedCowActivity.this);
+            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+            textView.setLayoutParams(textViewParams);
+
+            textView.setText(textToSet);
+
+            mDrugLayout.addView(textView);
+        }
     }
 }

@@ -31,6 +31,9 @@ public interface DrugsGivenDao {
     @Query("DELETE FROM DrugsGiven WHERE penId = :penId")
     void deleteDrugsGivenByPenId(String penId);
 
+    @Query("DELETE FROM DrugsGiven WHERE cowId = :cowId")
+    void deleteDrugsGivenByCowId(String cowId);
+
     @Query("DELETE FROM DrugsGiven")
     void deleteDrugsGivenTable();
 
