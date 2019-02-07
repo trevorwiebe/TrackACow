@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
+import com.trevorwiebe.trackacow.dataLoaders.InsertPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -75,8 +76,17 @@ public class ManagePensActivity extends AppCompatActivity implements QueryAllPen
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
                                 PenEntity penEntity = new PenEntity(key, "", 0, "", penName, 0);
-                                pushRef.setValue(penEntity);
-                                Snackbar.make(view, "Pen save successfully", Snackbar.LENGTH_LONG).show();
+
+                                if(Utility.haveNetworkConnection(ManagePensActivity.this)){
+                                    pushRef.setValue(penEntity);
+                                }else{
+
+                                }
+
+                                new InsertPen(penEntity).execute(ManagePensActivity.this);
+
+                                new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
+
                             }else{
                                 Snackbar.make(view, "This name is already taken", Snackbar.LENGTH_LONG).show();
                             }

@@ -9,12 +9,14 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryDrugsAllGiven extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
+public class QueryDrugsGivenByPenId extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
 
     private OnDrugsLoaded mOnDrugsLoaded;
+    private String mPenId;
 
-    public QueryDrugsAllGiven(OnDrugsLoaded onDrugsLoaded, ArrayList<DrugsGivenEntity> drugsGivenEntities){
+    public QueryDrugsGivenByPenId(OnDrugsLoaded onDrugsLoaded, String penId){
         this.mOnDrugsLoaded = onDrugsLoaded;
+        this.mPenId = penId;
     }
 
     public interface OnDrugsLoaded{
@@ -23,7 +25,7 @@ public class QueryDrugsAllGiven extends AsyncTask<Context, Void, ArrayList<Drugs
 
     @Override
     protected ArrayList<DrugsGivenEntity> doInBackground(Context... contexts) {
-        List<DrugsGivenEntity> drugsGivenEntities = AppDatabase.getAppDatabase(contexts[0]).drugsGivenDao().getDrugsGivenList();
+        List<DrugsGivenEntity> drugsGivenEntities = AppDatabase.getAppDatabase(contexts[0]).drugsGivenDao().getDrugsGivenByPenId(mPenId);
         return (ArrayList<DrugsGivenEntity>) drugsGivenEntities;
     }
 

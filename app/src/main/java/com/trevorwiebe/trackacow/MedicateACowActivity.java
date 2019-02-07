@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -129,10 +130,12 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                                     long time = System.currentTimeMillis();
                                     drugsGivenEntity.setDate(time);
 
+                                    DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                    String drugsGivenKey = drugsGivenPushRef.getKey();
+                                    drugsGivenEntity.setDrugId(drugsGivenKey);
+                                    drugsGivenEntity.setPenId(mSelectedPen.getPenId());
+
                                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
-                                        DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
-                                        String drugsGivenKey = drugsGivenPushRef.getKey();
-                                        drugsGivenEntity.setDrugId(drugsGivenKey);
                                         drugsGivenPushRef.setValue(drugsGivenEntity);
                                     }
 

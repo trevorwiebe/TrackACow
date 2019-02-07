@@ -28,12 +28,16 @@ public class DrugsGivenEntity implements Parcelable {
     @ColumnInfo(name = "cowId")
     private String cowId;
 
-    public DrugsGivenEntity(int primaryKey, String drugId, int amountGiven, long date, String cowId) {
+    @ColumnInfo(name = "penId")
+    private String penId;
+
+    public DrugsGivenEntity(int primaryKey, String drugId, int amountGiven, long date, String cowId, String penId) {
         this.primaryKey = primaryKey;
         this.drugId = drugId;
         this.amountGiven = amountGiven;
         this.date = date;
         this.cowId = cowId;
+        this.penId = penId;
     }
 
     @Ignore
@@ -79,6 +83,14 @@ public class DrugsGivenEntity implements Parcelable {
         this.cowId = cowId;
     }
 
+    public String getPenId() {
+        return penId;
+    }
+
+    public void setPenId(String penId) {
+        this.penId = penId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -91,6 +103,7 @@ public class DrugsGivenEntity implements Parcelable {
         dest.writeInt(this.amountGiven);
         dest.writeLong(this.date);
         dest.writeString(this.cowId);
+        dest.writeString(this.penId);
     }
 
     protected DrugsGivenEntity(Parcel in) {
@@ -99,9 +112,10 @@ public class DrugsGivenEntity implements Parcelable {
         this.amountGiven = in.readInt();
         this.date = in.readLong();
         this.cowId = in.readString();
+        this.penId = in.readString();
     }
 
-    public static final Parcelable.Creator<DrugsGivenEntity> CREATOR = new Parcelable.Creator<DrugsGivenEntity>() {
+    public static final Creator<DrugsGivenEntity> CREATOR = new Creator<DrugsGivenEntity>() {
         @Override
         public DrugsGivenEntity createFromParcel(Parcel source) {
             return new DrugsGivenEntity(source);

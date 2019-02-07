@@ -218,13 +218,6 @@ public class MainActivity extends AppCompatActivity implements
             DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-            drugsGivenEntity.setPrimaryKey(1);
-            drugsGivenEntity.setAmountGiven(45);
-            drugsGivenEntity.setCowId("cowId");
-            drugsGivenEntity.setDate(System.currentTimeMillis());
-            baseRef.child("test").setValue(drugsGivenEntity);
-
             baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

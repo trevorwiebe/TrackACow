@@ -52,8 +52,6 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
                     new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);
 
-                    Snackbar.make(view, "Drug saved successfully!", Snackbar.LENGTH_LONG).show();
-
                     Utility.vibrate(AddNewDrugActivity.this, 50);
 
                     mDrugName.setText("");

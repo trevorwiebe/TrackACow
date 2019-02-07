@@ -22,6 +22,9 @@ public interface DrugsGivenDao {
     @Query("SELECT * FROM DrugsGiven WHERE cowId = :cowId")
     List<DrugsGivenEntity> getDrugsGivenByCowId(String cowId);
 
+    @Query("SELECT * FROM DrugsGiven WHERE penId = :penId")
+    List<DrugsGivenEntity> getDrugsGivenByPenId(String penId);
+
     @Query("SELECT * FROM DrugsGiven")
     List<DrugsGivenEntity> getDrugsGivenList();
 
