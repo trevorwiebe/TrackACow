@@ -25,13 +25,16 @@ import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.UpdatePenName;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class ManagePensActivity extends AppCompatActivity implements QueryAllPens.OnPensLoaded {
+public class ManagePensActivity extends AppCompatActivity implements
+        QueryAllPens.OnPensLoaded,
+        UpdatePenName.OnPenNameUpdated {
 
     private static final String TAG = "ManagePensActivity";
 
@@ -148,8 +151,14 @@ public class ManagePensActivity extends AppCompatActivity implements QueryAllPen
                             String updatedText = editPenEditText.getText().toString();
                             if(isPenNameAvailable(updatedText, mPenEntityList)) {
                                 selectedPenEntity.setPenName(updatedText);
-                                mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
-                                Snackbar.make(mPensRv, "Pen updated successfully", Snackbar.LENGTH_LONG).show();
+                                if(Utility.haveNetworkConnection(ManagePensActivity.this)){
+                                    mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
+                                }else{
+
+                                }
+
+                                new UpdatePenName(selectedPenEntity.getPenId(), updatedText, ManagePensActivity.this).execute(ManagePensActivity.this);
+
                             }else{
                                 Snackbar.make(mPensRv, "Pen already taken", Snackbar.LENGTH_LONG).show();
                             }
@@ -197,6 +206,11 @@ public class ManagePensActivity extends AppCompatActivity implements QueryAllPen
         }else{
             new QueryAllPens(this).execute(this);
         }
+    }
+
+    @Override
+    public void onPenNameUpdated() {
+        new QueryAllPens(this).execute(this);
     }
 
     @Override
