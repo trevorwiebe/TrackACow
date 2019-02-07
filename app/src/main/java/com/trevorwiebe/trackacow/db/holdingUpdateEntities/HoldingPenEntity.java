@@ -11,17 +11,17 @@ public class HoldingPenEntity {
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
 
+    @ColumnInfo(name = "penId")
+    private String penId;
+
     @ColumnInfo(name = "customerName")
     private String customerName;
 
     @ColumnInfo(name = "isActive")
-    private boolean isActive;
+    private int isActive;
 
     @ColumnInfo(name = "notes")
     private String notes;
-
-    @ColumnInfo(name = "penId")
-    private String penDatabaseId;
 
     @ColumnInfo(name = "penName")
     private String penName;
@@ -42,6 +42,14 @@ public class HoldingPenEntity {
         this.primaryKey = primaryKey;
     }
 
+    public String getPenId() {
+        return penId;
+    }
+
+    public void setPenId(String penId) {
+        this.penId = penId;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
@@ -50,12 +58,12 @@ public class HoldingPenEntity {
         this.customerName = customerName;
     }
 
-    public boolean isActive() {
+    public int getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
 
     public String getNotes() {
@@ -64,14 +72,6 @@ public class HoldingPenEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public String getPenDatabaseId() {
-        return penDatabaseId;
-    }
-
-    public void setPenDatabaseId(String penDatabaseId) {
-        this.penDatabaseId = penDatabaseId;
     }
 
     public String getPenName() {

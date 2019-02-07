@@ -12,7 +12,7 @@ public class HoldingCowEntity {
     private int primaryKey;
 
     @ColumnInfo(name = "isAlive")
-    private boolean isAlive;
+    private int isAlive;
 
     @ColumnInfo(name = "cowId")
     private String cowId;
@@ -42,12 +42,12 @@ public class HoldingCowEntity {
         this.primaryKey = primaryKey;
     }
 
-    public boolean isAlive() {
+    public int isAlive() {
         return isAlive;
     }
 
-    public void setAlive(boolean alive) {
-        isAlive = alive;
+    public void setIsAlive(int isAlive) {
+        this.isAlive = isAlive;
     }
 
     public void setCowId(String cowId) {

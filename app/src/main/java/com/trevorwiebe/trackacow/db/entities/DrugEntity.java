@@ -22,7 +22,6 @@ public class DrugEntity implements Parcelable {
     @ColumnInfo(name = "drugId")
     private String drugId;
 
-
     @ColumnInfo(name = "drugName")
     private String drugName;
 

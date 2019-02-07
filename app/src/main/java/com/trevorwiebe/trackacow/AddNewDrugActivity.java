@@ -34,7 +34,7 @@ public class AddNewDrugActivity extends AppCompatActivity {
         mSaveDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDrugName.length() == 0 && mDefaultAmount.length() == 0) {
+                if(mDrugName.length() == 0 || mDefaultAmount.length() == 0) {
                     Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 }else{
 
@@ -48,11 +48,11 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
                     if(Utility.haveNetworkConnection(AddNewDrugActivity.this)){
                         pushRef.setValue(drugEntity);
+                    }else{
+                        Utility.setNewDataToUpload(AddNewDrugActivity.this, true);
                     }
 
                     new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);
-
-                    Utility.vibrate(AddNewDrugActivity.this, 50);
 
                     mDrugName.setText("");
                     mDefaultAmount.setText("");

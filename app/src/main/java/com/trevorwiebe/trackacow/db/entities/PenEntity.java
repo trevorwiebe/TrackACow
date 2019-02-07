@@ -13,11 +13,6 @@ import com.google.firebase.database.annotations.NotNull;
 public class PenEntity implements Parcelable {
 
     public static final String PEN_OBJECT = "pens";
-    public static final String PEN_PEN_ID = "penId";
-    public static final String PEN_PEN_NAME = "penName";
-    public static final String PEN_CUSTOMER_NAME = "customerName";
-    public static final String PEN_TOTAL_HEAD = "totalHead";
-    public static final String PEN_IS_ACTIVE = "active";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")

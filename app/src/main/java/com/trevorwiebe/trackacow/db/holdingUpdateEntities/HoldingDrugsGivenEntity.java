@@ -11,6 +11,9 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
 
+    @ColumnInfo(name = "drugId")
+    private String drugId;
+
     @ColumnInfo(name = "amountGiven")
     private int amountGiven;
 
@@ -19,6 +22,9 @@ public class HoldingDrugsGivenEntity {
 
     @ColumnInfo(name = "cowId")
     private String cowId;
+
+    @ColumnInfo(name = "penId")
+    private String penId;
 
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
@@ -31,6 +37,14 @@ public class HoldingDrugsGivenEntity {
 
     public void setPrimaryKey(int primaryKey) {
         this.primaryKey = primaryKey;
+    }
+
+    public String getDrugId() {
+        return drugId;
+    }
+
+    public void setDrugId(String drugId) {
+        this.drugId = drugId;
     }
 
     public int getAmountGiven() {
@@ -55,6 +69,14 @@ public class HoldingDrugsGivenEntity {
 
     public void setCowId(String cowId) {
         this.cowId = cowId;
+    }
+
+    public String getPenId() {
+        return penId;
+    }
+
+    public void setPenId(String penId) {
+        this.penId = penId;
     }
 
     public int getWhatHappened() {

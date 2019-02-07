@@ -73,14 +73,14 @@ public class Utility {
     }
 
     public static void setNewDataToUpload(Activity activity, boolean isThereNewData){
-        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("isThereData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), isThereNewData);
         editor.apply();
     }
 
     public static boolean isThereNewDataToUpload(Activity activity){
-        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("isThereData", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), false);
     }
 

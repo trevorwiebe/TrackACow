@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.db.AppDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -42,7 +42,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        QueryAllPens.OnPensLoaded {
+        QueryAllPens.OnPensLoaded,
+        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 132;
@@ -87,30 +88,30 @@ public class MainActivity extends AppCompatActivity implements
 
         mPenRv.addOnItemTouchListener(new ItemClickListener(this, mPenRv,
                 new ItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
-                trackCowIntent.putExtra("penObject", mPenList.get(position));
-                startActivity(trackCowIntent);
-            }
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
+                        trackCowIntent.putExtra("penObject", mPenList.get(position));
+                        startActivity(trackCowIntent);
+                    }
 
-            @Override
-            public void onLongItemClick(View view, int position) {
+                    @Override
+                    public void onLongItemClick(View view, int position) {
 
-            }
-        }));
+                    }
+                }));
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mFirebaseAuth = firebaseAuth;
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user == null){
+                if (user == null) {
 
                     mLoadingMain.setVisibility(View.INVISIBLE);
                     mPenRv.setVisibility(View.INVISIBLE);
 
-                    if(Utility.haveNetworkConnection(MainActivity.this)) {
+                    if (Utility.haveNetworkConnection(MainActivity.this)) {
                         onSignedOutCleanUp();
 
                         // Choose authentication providers
@@ -124,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements
                                         .setAvailableProviders(providers)
                                         .build(),
                                 RC_SIGN_IN);
-                    }else{
+                    } else {
                         mNoConnectionLayout.setVisibility(View.VISIBLE);
                     }
-                }else{
+                } else {
                     onSignedInInitialized(user);
                 }
             }
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.nav_manage_drugs:
                 Intent manageDrugsIntent = new Intent(MainActivity.this, ManageDrugsActivity.class);
                 startActivity(manageDrugsIntent);
@@ -186,20 +187,28 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penObjectList) {
         mPenList = penObjectList;
-        if(mPenList.size() == 0) {
+        if (mPenList.size() == 0) {
             mNoPensTv.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mNoPensTv.setVisibility(View.INVISIBLE);
         }
         mPenRecyclerViewAdapter.swapData(mPenList);
         mPenRv.setVisibility(View.VISIBLE);
     }
 
-    public void signInButton(View view){
+    @Override
+    public void onDatabaseCloned() {
+        mCowEntityUpdateList.clear();
+        mDrugEntityUpdateList.clear();
+        mDrugsGivenEntityUpdateList.clear();
+        mPenEntityUpdateList.clear();
+    }
+
+    public void signInButton(View view) {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
 
-    private void onSignedInInitialized(FirebaseUser user){
+    private void onSignedInInitialized(FirebaseUser user) {
 
         mLoadingMain.setVisibility(View.VISIBLE);
         mNoConnectionLayout.setVisibility(View.INVISIBLE);
@@ -214,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
 
-        if(Utility.haveNetworkConnection(this)) {
+        if (Utility.haveNetworkConnection(this)) {
             DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -250,14 +259,6 @@ public class MainActivity extends AppCompatActivity implements
                                             mPenEntityUpdateList.add(penEntity);
                                         }
                                     }
-                                    mLoadingMain.setVisibility(View.INVISIBLE);
-                                    if(mPenList.size() == 0) {
-                                        mNoPensTv.setVisibility(View.VISIBLE);
-                                    }else {
-                                        mNoPensTv.setVisibility(View.INVISIBLE);
-                                    }
-                                    mPenRecyclerViewAdapter.swapData(mPenList);
-                                    mPenRv.setVisibility(View.VISIBLE);
                                     break;
                                 case "drugsGiven":
                                     break;
@@ -266,29 +267,18 @@ public class MainActivity extends AppCompatActivity implements
                             }
                         }
                     }
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
 
-                            AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                    new CloneCloudDatabaseToLocalDatabase(MainActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MainActivity.this);
 
-                            db.cowDao().deleteCowTable();
-                            db.drugDao().deleteDrugTable();
-                            db.drugsGivenDao().deleteDrugsGivenTable();
-                            db.penDao().deletePenTable();
+                    mLoadingMain.setVisibility(View.INVISIBLE);
+                    if(mPenList.size() == 0) {
+                        mNoPensTv.setVisibility(View.VISIBLE);
+                    }else {
+                        mNoPensTv.setVisibility(View.INVISIBLE);
+                    }
+                    mPenRecyclerViewAdapter.swapData(mPenList);
+                    mPenRv.setVisibility(View.VISIBLE);
 
-                            db.cowDao().insertCowList(mCowEntityUpdateList);
-                            db.drugDao().insertListDrug(mDrugEntityUpdateList);
-                            db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
-                            db.penDao().insertPenList(mPenEntityUpdateList);
-
-                            mCowEntityUpdateList.clear();
-                            mDrugEntityUpdateList.clear();
-                            mDrugsGivenEntityUpdateList.clear();
-                            mPenEntityUpdateList.clear();
-
-                        }
-                    }).start();
                 }
 
                 @Override
@@ -296,14 +286,14 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
             });
-        }else{
+        } else {
             mLoadingMain.setVisibility(View.INVISIBLE);
             new QueryAllPens(MainActivity.this).execute(MainActivity.this);
         }
 
     }
 
-    private void onSignedOutCleanUp(){
+    private void onSignedOutCleanUp() {
         mPenList.clear();
         mPenRecyclerViewAdapter.swapData(mPenList);
     }
