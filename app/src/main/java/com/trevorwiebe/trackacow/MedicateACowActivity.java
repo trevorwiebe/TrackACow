@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,7 +133,6 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
 
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setDrugId(drugsGivenKey);
                                     drugsGivenEntity.setPenId(mSelectedPen.getPenId());
 
                                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
@@ -154,7 +154,7 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                     int tagNumber = Integer.parseInt(mTagName.getText().toString());
                     String notes = mNotes.getText().toString();
 
-                    CowEntity cowObject = new CowEntity(true, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
+                    CowEntity cowObject = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
 
                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
                         pushRef.setValue(cowObject);

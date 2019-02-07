@@ -31,8 +31,8 @@ public class QueryMedicatedCowsByPenId extends AsyncTask<Context, Void, ArrayLis
     }
 
     @Override
-    protected void onPostExecute(ArrayList<CowEntity> cowObjects) {
-        super.onPostExecute(cowObjects);
-        mOnCowsLoaded.onCowsLoaded(cowObjects);
+    protected void onPostExecute(ArrayList<CowEntity> cowEntities) {
+        super.onPostExecute(cowEntities);
+        mOnCowsLoaded.onCowsLoaded(cowEntities);
     }
 }

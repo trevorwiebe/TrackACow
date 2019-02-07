@@ -11,8 +11,10 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -80,6 +82,17 @@ public class Utility {
     public static boolean isThereNewDataToUpload(Activity activity){
         SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), false);
+    }
+
+    public static ArrayList<DrugsGivenEntity> findDrugsGivenEntityByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenEntities){
+        ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
+        for(int r=0; r<drugsGivenEntities.size(); r++){
+            DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(r);
+            if(drugsGivenEntity.getCowId().equals(cowId)){
+                drugsGivenToCow.add(drugsGivenEntity);
+            }
+        }
+        return drugsGivenToCow;
     }
 
 }

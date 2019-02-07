@@ -20,7 +20,7 @@ public class CowEntity implements Parcelable {
     private int primaryKey;
 
     @ColumnInfo(name = "isAlive")
-    private boolean isAlive;
+    private int isAlive;
 
     @ColumnInfo(name = "cowId")
     private String cowId;
@@ -37,7 +37,7 @@ public class CowEntity implements Parcelable {
     @ColumnInfo(name = "penId")
     private String penId;
 
-    public CowEntity(boolean isAlive, String cowId, int tagNumber, long date, String notes, String penId) {
+    public CowEntity(int isAlive, String cowId, int tagNumber, long date, String notes, String penId) {
         this.isAlive = isAlive;
         this.cowId = cowId;
         this.tagNumber = tagNumber;
@@ -57,11 +57,11 @@ public class CowEntity implements Parcelable {
         this.primaryKey = primaryKey;
     }
 
-    public boolean isAlive() {
+    public int isAlive() {
         return isAlive;
     }
 
-    public void setAlive(boolean alive) {
+    public void setAlive(int alive) {
         isAlive = alive;
     }
 
@@ -105,7 +105,6 @@ public class CowEntity implements Parcelable {
         this.penId = penId;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -114,7 +113,7 @@ public class CowEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.primaryKey);
-        dest.writeByte(this.isAlive ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.isAlive);
         dest.writeString(this.cowId);
         dest.writeInt(this.tagNumber);
         dest.writeLong(this.date);
@@ -124,7 +123,7 @@ public class CowEntity implements Parcelable {
 
     protected CowEntity(Parcel in) {
         this.primaryKey = in.readInt();
-        this.isAlive = in.readByte() != 0;
+        this.isAlive = in.readInt();
         this.cowId = in.readString();
         this.tagNumber = in.readInt();
         this.date = in.readLong();

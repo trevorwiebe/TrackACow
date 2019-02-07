@@ -56,8 +56,6 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         String notes = cowEntity.getNotes();
         String cowId = cowEntity.getCowId();
 
-        Log.d(TAG, "onBindViewHolder: cowId: " + cowId);
-
         trackCowViewHolder.mTagNumber.setText(tagNumber);
         if (notes == null || notes.length() == 0) {
             trackCowViewHolder.mNotes.setVisibility(View.GONE);
@@ -66,10 +64,10 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             trackCowViewHolder.mNotes.setText("Notes: " + notes);
         }
 
-        if (cowEntity.isAlive()) {
+        if (cowEntity.isAlive() == 1) {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
             String message = "";
-            ArrayList<DrugsGivenEntity> drugsGivenEntities = findDrugsGivenObjectByCowId(cowId, mDrugsGivenEntities);
+            ArrayList<DrugsGivenEntity> drugsGivenEntities = Utility.findDrugsGivenEntityByCowId(cowId, mDrugsGivenEntities);
             for (int q = 0; q < drugsGivenEntities.size(); q++) {
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
 
@@ -132,14 +130,4 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         return null;
     }
 
-    private ArrayList<DrugsGivenEntity> findDrugsGivenObjectByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenObjects){
-        ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
-        for(int r=0; r<drugsGivenObjects.size(); r++){
-            DrugsGivenEntity drugsGivenEntity = drugsGivenObjects.get(r);
-            if(drugsGivenEntity.getCowId().equals(cowId)){
-                drugsGivenToCow.add(drugsGivenEntity);
-            }
-        }
-        return drugsGivenToCow;
-    }
 }

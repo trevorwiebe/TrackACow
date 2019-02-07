@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
@@ -46,7 +47,8 @@ import java.util.ArrayList;
 
 public class MedicatedCowsActivity extends AppCompatActivity implements
         QueryMedicatedCowsByPenId.OnCowsLoaded,
-        QueryDrugsGivenByPenId.OnDrugsLoaded{
+        QueryDrugsGivenByPenId.OnDrugsLoaded,
+        QueryAllDrugs.OnAllDrugsLoaded {
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -198,12 +200,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
             }
         }));
-
-        if(mIsActive){
-            setActive();
-        }else{
-            setInActive();
-        }
     }
 
     public void medicateCow(View view){
@@ -242,15 +238,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(mIsActive) {
-            if(Utility.haveNetworkConnection(this)) {
-                mTrackCow.addValueEventListener(mTrackCowListener);
-            }else{
-                mLoadMedicatedCows.setVisibility(View.INVISIBLE);
-                new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-                new QueryDrugsGivenByPenId(this, mSelectedPen.getPenId()).execute(this);
-            }
-            mMedicateACowFabMenu.setVisibility(View.VISIBLE);
+        if(mIsActive){
+            setActive();
+        }else{
+            setInActive();
         }
     }
 
@@ -322,6 +313,24 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        mDrugsGivenList = drugsGivenEntities;
+        for(int x=0; x<mDrugsGivenList.size(); x++){
+            DrugsGivenEntity drugsGivenEntity = mDrugsGivenList.get(x);
+        }
+        new QueryAllDrugs(this).execute(this);
+    }
+
+    @Override
+    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
+        mDrugList = drugEntities;
+        for(int i=0; i<mDrugList.size(); i++){
+            DrugEntity drugEntity = mDrugList.get(i);
+        }
+        new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+    }
+
+    @Override
     public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
         mTreatedCows = cowObjectList;
         mSelectedCows = cowObjectList;
@@ -331,13 +340,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         }else{
             mNoMedicatedCows.setVisibility(View.INVISIBLE);
         }
-    }
-
-    @Override
-    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mDrugsGivenList = drugsGivenEntities;
-        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
-        Log.d(TAG, "onDrugsLoaded: " + mDrugsGivenList.toString());
     }
 
     private ArrayList<CowEntity> findTags(String inputString){

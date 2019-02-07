@@ -79,7 +79,7 @@ public class MarkACowDeadActivity extends AppCompatActivity {
 
         DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
 
-        CowEntity cowEntity = new CowEntity(false, "key", tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
+        CowEntity cowEntity = new CowEntity(0, "key", tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
 
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);

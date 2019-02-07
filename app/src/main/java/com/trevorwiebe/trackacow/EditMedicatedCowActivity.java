@@ -36,7 +36,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private CowEntity mCowEntity;
-    private boolean isAlive;
+    private int isAlive;
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
@@ -75,7 +75,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity {
         mEditDate.setText(date);
         mEditNotes.setText(notes);
 
-        if(isAlive){
+        if(isAlive == 1){
             mUpdateBtn.setText("Update medicated cow");
             mDeleteBtn.setText("Delete medicated cow");
             mEditDateLayout.setVisibility(View.GONE);
