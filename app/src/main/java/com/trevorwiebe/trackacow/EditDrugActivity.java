@@ -13,7 +13,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrug;
+import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.dataLoaders.InsertDrug;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrug;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class EditDrugActivity extends AppCompatActivity {
@@ -24,6 +29,7 @@ public class EditDrugActivity extends AppCompatActivity {
     private Button mDeleteDrug;
 
     private DatabaseReference mDrugRef;
+    private DatabaseReference mBaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,8 @@ public class EditDrugActivity extends AppCompatActivity {
             finish();
         }
 
-        mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
+        mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mDrugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
 
         mUpdateDrugName = findViewById(R.id.update_drug_name);
         mUpdateDefaultAmount = findViewById(R.id.update_default_amount_given);
@@ -53,20 +60,36 @@ public class EditDrugActivity extends AppCompatActivity {
         mUpdateDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mUpdateDrug.length() == 0 && mUpdateDefaultAmount.length() == 0){
+                if(mUpdateDrug.length() == 0 || mUpdateDefaultAmount.length() == 0){
                     Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 }else{
 
                     String drugName = mUpdateDrugName.getText().toString();
                     int defaultAmount = Integer.parseInt(mUpdateDefaultAmount.getText().toString());
 
-                    if(selectedDrug != null){
-                        selectedDrug.setDrugName(drugName);
-                        selectedDrug.setDefaultAmount(defaultAmount);
+                    selectedDrug.setDrugName(drugName);
+                    selectedDrug.setDefaultAmount(defaultAmount);
+
+                    if(Utility.haveNetworkConnection(EditDrugActivity.this)) {
+
+                        DatabaseReference drugRef = mDrugRef.child(selectedDrug.getDrugId());
+                        drugRef.setValue(selectedDrug);
+
+                    }else{
+
+                        Utility.setNewDataToUpload(EditDrugActivity.this, true);
+
+                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
+                        holdingDrugEntity.setDefaultAmount(selectedDrug.getDefaultAmount());
+                        holdingDrugEntity.setDrugId(selectedDrug.getDrugId());
+                        holdingDrugEntity.setDrugName(selectedDrug.getDrugName());
+                        holdingDrugEntity.setWhatHappened(Utility.INSERT_UPDATE);
+
+                        new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
+
                     }
 
-                    DatabaseReference drugRef = mDrugRef.child(selectedDrug.getDrugId());
-                    drugRef.setValue(selectedDrug);
+                    new UpdateDrug(selectedDrug).execute(EditDrugActivity.this);
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("event", "edited");
@@ -83,7 +106,13 @@ public class EditDrugActivity extends AppCompatActivity {
                 if(Utility.haveNetworkConnection(EditDrugActivity.this)) {
                     mDrugRef.child(selectedDrug.getDrugId()).removeValue();
                 }else{
-
+                    Utility.setNewDataToUpload(EditDrugActivity.this, true);
+                    HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
+                    holdingDrugEntity.setWhatHappened(Utility.DELETE);
+                    holdingDrugEntity.setDrugName(selectedDrug.getDrugName());
+                    holdingDrugEntity.setDrugId(selectedDrug.getDrugId());
+                    holdingDrugEntity.setDefaultAmount(selectedDrug.getDefaultAmount());
+                    new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
                 }
 
                 new DeleteDrug(selectedDrug).execute(EditDrugActivity.this);

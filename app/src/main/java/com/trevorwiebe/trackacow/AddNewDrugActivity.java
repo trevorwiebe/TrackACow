@@ -11,7 +11,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.dataLoaders.InsertDrug;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class AddNewDrugActivity extends AppCompatActivity {
@@ -50,6 +52,14 @@ public class AddNewDrugActivity extends AppCompatActivity {
                         pushRef.setValue(drugEntity);
                     }else{
                         Utility.setNewDataToUpload(AddNewDrugActivity.this, true);
+
+                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
+                        holdingDrugEntity.setDefaultAmount(drugEntity.getDefaultAmount());
+                        holdingDrugEntity.setDrugId(drugEntity.getDrugId());
+                        holdingDrugEntity.setDrugName(drugEntity.getDrugName());
+                        holdingDrugEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        new InsertHoldingDrug(holdingDrugEntity).execute(AddNewDrugActivity.this);
+
                     }
 
                     new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);

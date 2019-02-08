@@ -26,6 +26,9 @@ public interface HoldingDrugDao {
     @Query("SELECT * FROM HoldingDrug")
     List<HoldingDrugEntity> getHoldingDrugList();
 
+    @Query("DELETE FROM HoldingDrug WHERE drugId = :drugId")
+    void deleteHoldingDrugById(String drugId);
+
     @Query("DELETE FROM HoldingDrug")
     void deleteHoldingDrugTable();
 

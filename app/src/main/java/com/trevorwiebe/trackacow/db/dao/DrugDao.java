@@ -1,8 +1,10 @@
 package com.trevorwiebe.trackacow.db.dao;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -25,8 +27,14 @@ public interface DrugDao {
     @Query("SELECT * FROM Drug")
     List<DrugEntity> getDrugList();
 
+    @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugId = :drugId")
+    void updateDrugById(int defaultAmount, String drugName, String drugId);
+
     @Query("DELETE FROM Drug")
     void deleteDrugTable();
+
+    @Query("DELETE FROM Drug WHERE drugId = :drugId")
+    void deleteDrugById(String drugId);
 
     @Update
     void updateDrug(DrugEntity drugEntity);

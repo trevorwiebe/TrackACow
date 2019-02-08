@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteLocalHoldingData;
+import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -43,7 +45,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         QueryAllPens.OnPensLoaded,
-        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
+        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned,
+        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
 
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 132;
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenEntity> mPenList = new ArrayList<>();
+    private DatabaseReference mBaseRef;
+
     private LinearLayout mNoConnectionLayout;
     private ProgressBar mLoadingMain;
     private TextView mNoPensTv;
@@ -197,11 +202,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onAllLocalDbInsertedToCloud() {
+        Utility.setNewDataToUpload(MainActivity.this, false);
+        new DeleteLocalHoldingData().execute(MainActivity.this);
+    }
+
+    @Override
     public void onDatabaseCloned() {
         mCowEntityUpdateList.clear();
         mDrugEntityUpdateList.clear();
         mDrugsGivenEntityUpdateList.clear();
         mPenEntityUpdateList.clear();
+
+        if(Utility.isThereNewDataToUpload(this)){
+            new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
+        }
     }
 
     public void signInButton(View view) {
@@ -214,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements
         mNoConnectionLayout.setVisibility(View.INVISIBLE);
         mPenRv.setVisibility(View.INVISIBLE);
 
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.nav_userName);
@@ -223,11 +237,10 @@ public class MainActivity extends AppCompatActivity implements
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
 
-        if (Utility.haveNetworkConnection(this)) {
-            DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users")
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        if (Utility.haveNetworkConnection(this)) {
+            mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
