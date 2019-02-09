@@ -9,9 +9,15 @@ import com.trevorwiebe.trackacow.db.entities.PenEntity;
 public class InsertPen extends AsyncTask<Context, Void, Void> {
 
     private PenEntity penEntity;
+    private OnPenInserted onPenInserted;
 
-    public InsertPen(PenEntity penEntity){
+    public InsertPen(PenEntity penEntity, OnPenInserted onPenInserted){
         this.penEntity = penEntity;
+        this.onPenInserted = onPenInserted;
+    }
+
+    public interface OnPenInserted{
+        void onPenInserted();
     }
 
     @Override
@@ -20,4 +26,9 @@ public class InsertPen extends AsyncTask<Context, Void, Void> {
         return null;
     }
 
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        onPenInserted.onPenInserted();
+    }
 }

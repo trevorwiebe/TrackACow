@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onAllLocalDbInsertedToCloud() {
         Utility.setNewDataToUpload(MainActivity.this, false);
         new DeleteLocalHoldingData().execute(MainActivity.this);
+        getCloudDataAndSetRvAndInsertToLocalDB();
     }
 
     @Override
@@ -213,10 +214,6 @@ public class MainActivity extends AppCompatActivity implements
         mDrugEntityUpdateList.clear();
         mDrugsGivenEntityUpdateList.clear();
         mPenEntityUpdateList.clear();
-
-        if(Utility.isThereNewDataToUpload(this)){
-            new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
-        }
     }
 
     public void signInButton(View view) {
@@ -240,65 +237,11 @@ public class MainActivity extends AppCompatActivity implements
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         if (Utility.haveNetworkConnection(this)) {
-            mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = snapshot.getKey();
-                        if (key != null) {
-                            switch (key) {
-                                case "cows":
-                                    for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
-                                        CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
-                                        if (cowEntity != null) {
-                                            mCowEntityUpdateList.add(cowEntity);
-                                        }
-                                    }
-                                    break;
-                                case "drugs":
-                                    for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
-                                        DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
-                                        if (drugEntity != null) {
-                                            mDrugEntityUpdateList.add(drugEntity);
-                                        }
-                                    }
-                                    break;
-                                case "pens":
-                                    mPenList.clear();
-                                    for (DataSnapshot penSnapshot : snapshot.getChildren()) {
-                                        PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
-                                        if (penEntity != null) {
-                                            mPenList.add(penEntity);
-                                            mPenEntityUpdateList.add(penEntity);
-                                        }
-                                    }
-                                    break;
-                                case "drugsGiven":
-                                    break;
-                                default:
-                                    Log.e(TAG, "onDataChange: unknown snapshot key");
-                            }
-                        }
-                    }
-
-                    new CloneCloudDatabaseToLocalDatabase(MainActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MainActivity.this);
-
-                    mLoadingMain.setVisibility(View.INVISIBLE);
-                    if(mPenList.size() == 0) {
-                        mNoPensTv.setVisibility(View.VISIBLE);
-                    }else {
-                        mNoPensTv.setVisibility(View.INVISIBLE);
-                    }
-                    mPenRecyclerViewAdapter.swapData(mPenList);
-                    mPenRv.setVisibility(View.VISIBLE);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            if(Utility.isThereNewDataToUpload(this)){
+                new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
+            }else{
+                getCloudDataAndSetRvAndInsertToLocalDB();
+            }
         } else {
             mLoadingMain.setVisibility(View.INVISIBLE);
             new QueryAllPens(MainActivity.this).execute(MainActivity.this);
@@ -311,4 +254,65 @@ public class MainActivity extends AppCompatActivity implements
         mPenRecyclerViewAdapter.swapData(mPenList);
     }
 
+    private void getCloudDataAndSetRvAndInsertToLocalDB(){
+        mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String key = snapshot.getKey();
+                    if (key != null) {
+                        switch (key) {
+                            case "cows":
+                                for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
+                                    CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
+                                    if (cowEntity != null) {
+                                        mCowEntityUpdateList.add(cowEntity);
+                                    }
+                                }
+                                break;
+                            case "drugs":
+                                for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
+                                    DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
+                                    if (drugEntity != null) {
+                                        mDrugEntityUpdateList.add(drugEntity);
+                                    }
+                                }
+                                break;
+                            case "pens":
+                                mPenList.clear();
+                                for (DataSnapshot penSnapshot : snapshot.getChildren()) {
+                                    PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
+                                    if (penEntity != null) {
+                                        mPenList.add(penEntity);
+                                        mPenEntityUpdateList.add(penEntity);
+                                    }
+                                }
+                                break;
+                            case "drugsGiven":
+                                break;
+                            default:
+                                Log.e(TAG, "onDataChange: unknown snapshot key");
+                        }
+                    }
+                }
+
+                new CloneCloudDatabaseToLocalDatabase(MainActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MainActivity.this);
+
+                mLoadingMain.setVisibility(View.INVISIBLE);
+                if(mPenList.size() == 0) {
+                    mNoPensTv.setVisibility(View.VISIBLE);
+                }else {
+                    mNoPensTv.setVisibility(View.INVISIBLE);
+                }
+                mPenRecyclerViewAdapter.swapData(mPenList);
+                mPenRv.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

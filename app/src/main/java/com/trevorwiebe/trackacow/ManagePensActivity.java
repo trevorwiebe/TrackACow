@@ -23,10 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePenName;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -34,17 +36,16 @@ import java.util.ArrayList;
 
 public class ManagePensActivity extends AppCompatActivity implements
         QueryAllPens.OnPensLoaded,
-        UpdatePenName.OnPenNameUpdated {
+        UpdatePenName.OnPenNameUpdated,
+        InsertPen.OnPenInserted {
 
     private static final String TAG = "ManagePensActivity";
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
-    private ValueEventListener mPenListener;
     private ArrayList<PenEntity> mPenEntityList = new ArrayList<>();
 
     private RecyclerView mPensRv;
-    private ProgressBar mLoadingPens;
     private TextView mEmptyTv;
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
 
@@ -54,7 +55,6 @@ public class ManagePensActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_manage_pens);
 
         mEmptyTv = findViewById(R.id.empty_pen_rv);
-        mLoadingPens = findViewById(R.id.loading_pens);
         mPensRv = findViewById(R.id.manage_pens_rv);
         mPensRv.setLayoutManager(new LinearLayoutManager(this));
         mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenEntityList, true, this);
@@ -71,11 +71,10 @@ public class ManagePensActivity extends AppCompatActivity implements
                 addNewPen.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(dialogEditTextEditText.length() == 0){
-
-                        }else{
+                        if(dialogEditTextEditText.length() != 0){
                             String penName = dialogEditTextEditText.getText().toString();
                             if(isPenNameAvailable(penName, mPenEntityList)) {
+
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
                                 PenEntity penEntity = new PenEntity(key, "", 0, "", penName, 0);
@@ -83,13 +82,20 @@ public class ManagePensActivity extends AppCompatActivity implements
                                 if(Utility.haveNetworkConnection(ManagePensActivity.this)){
                                     pushRef.setValue(penEntity);
                                 }else{
+                                    Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
+                                    HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                                    holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                                    holdingPenEntity.setPenId(penEntity.getPenId());
+                                    holdingPenEntity.setIsActive(penEntity.getIsActive());
+                                    holdingPenEntity.setPenName(penEntity.getPenName());
+                                    holdingPenEntity.setCustomerName(penEntity.getCustomerName());
+                                    holdingPenEntity.setTotalHead(penEntity.getTotalHead());
+                                    holdingPenEntity.setNotes(penEntity.getNotes());
+
+                                    new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                                 }
-
-                                new InsertPen(penEntity).execute(ManagePensActivity.this);
-
-                                new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
-
+                                new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
                             }else{
                                 Snackbar.make(view, "This name is already taken", Snackbar.LENGTH_LONG).show();
                             }
@@ -106,30 +112,6 @@ public class ManagePensActivity extends AppCompatActivity implements
             }
         });
 
-        mPenListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mPenEntityList.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    PenEntity penEntity = snapshot.getValue(PenEntity.class);
-                    if(penEntity != null){
-                        mPenEntityList.add(penEntity);
-                    }
-                }
-                mLoadingPens.setVisibility(View.INVISIBLE);
-                mPenRecyclerViewAdapter.swapData(mPenEntityList);
-                if(mPenEntityList.size() > 0){
-                    mEmptyTv.setVisibility(View.INVISIBLE);
-                }else{
-                    mEmptyTv.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
 
         mPensRv.addOnItemTouchListener(new ItemClickListener(this, mPensRv, new ItemClickListener.OnItemClickListener() {
             @Override
@@ -154,7 +136,18 @@ public class ManagePensActivity extends AppCompatActivity implements
                                 if(Utility.haveNetworkConnection(ManagePensActivity.this)){
                                     mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
                                 }else{
+                                    Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
+                                    HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                                    holdingPenEntity.setNotes(selectedPenEntity.getNotes());
+                                    holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
+                                    holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
+                                    holdingPenEntity.setPenName(selectedPenEntity.getPenName());
+                                    holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
+                                    holdingPenEntity.setPenId(selectedPenEntity.getPenId());
+                                    holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+
+                                    new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                                 }
 
                                 new UpdatePenName(selectedPenEntity.getPenId(), updatedText, ManagePensActivity.this).execute(ManagePensActivity.this);
@@ -178,12 +171,23 @@ public class ManagePensActivity extends AppCompatActivity implements
                             String id = selectedPenEntity.getPenId();
                             mPenRef.child(id).removeValue();
                         }else{
+                            Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
+                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                            holdingPenEntity.setNotes(selectedPenEntity.getNotes());
+                            holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
+                            holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
+                            holdingPenEntity.setPenName(selectedPenEntity.getPenName());
+                            holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
+                            holdingPenEntity.setPenId(selectedPenEntity.getPenId());
+                            holdingPenEntity.setWhatHappened(Utility.DELETE);
+
+                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                         }
                         new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
-                        Snackbar.make(view, "Pen deleted successfully", Snackbar.LENGTH_LONG).show();
 
                         new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
+
 
                         // TODO: 2/6/2019 find all the medicated cows with this penId and delete them
                     }
@@ -201,11 +205,12 @@ public class ManagePensActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(Utility.haveNetworkConnection(this)) {
-            mPenRef.addValueEventListener(mPenListener);
-        }else{
-            new QueryAllPens(this).execute(this);
-        }
+        new QueryAllPens(this).execute(this);
+    }
+
+    @Override
+    public void onPenInserted() {
+        new QueryAllPens(this).execute(this);
     }
 
     @Override
@@ -214,15 +219,8 @@ public class ManagePensActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onPause() {
-        mPenRef.removeEventListener(mPenListener);
-        super.onPause();
-    }
-
-    @Override
     public void onPensLoaded(ArrayList<PenEntity> penEntityList) {
         mPenEntityList = penEntityList;
-        mLoadingPens.setVisibility(View.INVISIBLE);
         mPenRecyclerViewAdapter.swapData(mPenEntityList);
         if(mPenEntityList.size() > 0){
             mEmptyTv.setVisibility(View.INVISIBLE);
