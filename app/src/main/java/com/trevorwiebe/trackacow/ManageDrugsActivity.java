@@ -31,12 +31,9 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
 
     private ManageDrugRecyclerViewAdapter mManageDrugRecyclerViewAdapter;
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
-    private ValueEventListener mDrugListener;
     private static final int UPDATE_DRUG_CALLBACK_CODE = 747;
 
     private RecyclerView mManageDrugRv;
-    private ProgressBar mLoadingDrugs;
     private TextView mDrugEmptyList;
 
     @Override
@@ -44,7 +41,6 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_drugs);
 
-        mLoadingDrugs = findViewById(R.id.load_drugs);
         mDrugEmptyList = findViewById(R.id.drug_list_empty);
 
         FloatingActionButton addNewDrugFab = findViewById(R.id.add_new_drug);
@@ -75,34 +71,6 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
 
             }
         }));
-
-        mDrugListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mDrugList.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
-                    if(drugEntity != null){
-                        mDrugList.add(drugEntity);
-                    }
-                }
-                mLoadingDrugs.setVisibility(View.INVISIBLE);
-                if(mDrugList.size() == 0){
-                    // show drug list empty
-                    mDrugEmptyList.setVisibility(View.VISIBLE);
-                }else{
-                    // hide drug list empty
-                    mDrugEmptyList.setVisibility(View.INVISIBLE);
-                }
-                mManageDrugRecyclerViewAdapter.swapData(mDrugList);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
     }
 
     @Override
@@ -122,23 +90,12 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
     @Override
     protected void onResume() {
         super.onResume();
-        if(Utility.haveNetworkConnection(this)) {
-            mDrugRef.addValueEventListener(mDrugListener);
-        }else{
-            new QueryAllDrugs(this).execute(this);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        mDrugRef.removeEventListener(mDrugListener);
-        super.onPause();
+        new QueryAllDrugs(this).execute(this);
     }
 
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
-        mLoadingDrugs.setVisibility(View.INVISIBLE);
         if(mDrugList.size() == 0){
             // show drug list empty
             mDrugEmptyList.setVisibility(View.VISIBLE);

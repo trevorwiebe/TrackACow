@@ -47,7 +47,6 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
                     DrugEntity drugEntity = new DrugEntity(defaultGiven, key, drugName);
 
-
                     if(Utility.haveNetworkConnection(AddNewDrugActivity.this)){
                         pushRef.setValue(drugEntity);
                     }else{
@@ -59,7 +58,6 @@ public class AddNewDrugActivity extends AppCompatActivity {
                         holdingDrugEntity.setDrugName(drugEntity.getDrugName());
                         holdingDrugEntity.setWhatHappened(Utility.INSERT_UPDATE);
                         new InsertHoldingDrug(holdingDrugEntity).execute(AddNewDrugActivity.this);
-
                     }
 
                     new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);
