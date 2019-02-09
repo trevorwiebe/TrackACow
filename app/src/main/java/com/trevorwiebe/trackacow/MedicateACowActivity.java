@@ -27,12 +27,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -68,32 +72,7 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
-        if(Utility.haveNetworkConnection(this)) {
-            DatabaseReference drugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
-            drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
-                        if (drugEntity != null) {
-                            addCheckBox(mDrugLayout, drugEntity);
-                            mDrugList.add(drugEntity);
-                        }
-                    }
-                    if (mDrugList.size() == 0) {
-                        mNoDrugs.setVisibility(View.VISIBLE);
-                    }
-                    mLoadDrugs.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }else{
-            new QueryAllDrugs(this).execute(this);
-        }
+        new QueryAllDrugs(this).execute(this);
 
         mSaveCow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +113,7 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
                                     drugsGivenEntity.setPenId(mSelectedPen.getPenId());
+                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
 
                                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
                                         drugsGivenPushRef.setValue(drugsGivenEntity);
@@ -158,13 +138,55 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
 
                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
                         pushRef.setValue(cowObject);
+
+                        for(int k=0; k<drugList.size(); k++){
+                            DrugsGivenEntity drugsGivenEntity = drugList.get(k);
+                            mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                        }
+
+                    }else{
+
+                        Utility.setNewDataToUpload(MedicateACowActivity.this, true);
+
+                        HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
+                        holdingCowEntity.setCowId(cowObject.getCowId());
+                        holdingCowEntity.setDate(cowObject.getDate());
+                        holdingCowEntity.setIsAlive(cowObject.isAlive());
+                        holdingCowEntity.setNotes(cowObject.getNotes());
+                        holdingCowEntity.setPenId(cowObject.getPenId());
+                        holdingCowEntity.setTagNumber(cowObject.getTagNumber());
+                        holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+
+                        new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
+
+                        // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
+                        ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+
+                        // iterate over the drugGivenEntityList
+                        for(int q=0; q<drugList.size(); q++){
+                            DrugsGivenEntity drugsGivenEntity = drugList.get(q);
+
+                            HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
+                            holdingDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
+                            holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
+                            holdingDrugsGivenEntity.setDate(drugsGivenEntity.getDate());
+                            holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
+                            holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
+                            holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                            holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
+
+                            holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                        }
+
+                        Log.d(TAG, "onClick: " + holdingDrugsGivenEntities.size());
+
+                        new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(MedicateACowActivity.this);
+
                     }
 
                     new InsertSingleCow(cowObject).execute(MedicateACowActivity.this);
                     new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
-
-                    Utility.vibrate(MedicateACowActivity.this, 50);
-
+                    
                     mTagName.setText("");
                     mTagName.requestFocus();
                     mNotes.setText("");
@@ -192,7 +214,6 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                 }
             }
         });
-
     }
 
     @Override

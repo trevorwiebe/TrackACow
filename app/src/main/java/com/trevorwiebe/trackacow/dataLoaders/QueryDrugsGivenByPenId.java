@@ -11,16 +11,16 @@ import java.util.List;
 
 public class QueryDrugsGivenByPenId extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
 
-    private OnDrugsLoaded mOnDrugsLoaded;
+    private OnDrugsGivenLoaded mOnDrugsGivenLoaded;
     private String mPenId;
 
-    public QueryDrugsGivenByPenId(OnDrugsLoaded onDrugsLoaded, String penId){
-        this.mOnDrugsLoaded = onDrugsLoaded;
+    public QueryDrugsGivenByPenId(OnDrugsGivenLoaded onDrugsGivenLoaded, String penId){
+        this.mOnDrugsGivenLoaded = onDrugsGivenLoaded;
         this.mPenId = penId;
     }
 
-    public interface OnDrugsLoaded{
-        void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities);
+    public interface OnDrugsGivenLoaded {
+        void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities);
     }
 
     @Override
@@ -32,6 +32,6 @@ public class QueryDrugsGivenByPenId extends AsyncTask<Context, Void, ArrayList<D
     @Override
     protected void onPostExecute(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         super.onPostExecute(drugsGivenEntities);
-        mOnDrugsLoaded.onDrugsLoaded(drugsGivenEntities);
+        mOnDrugsGivenLoaded.onDrugsGivenLoaded(drugsGivenEntities);
     }
 }

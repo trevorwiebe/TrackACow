@@ -288,6 +288,12 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                                 break;
                             case "drugsGiven":
+                                for(DataSnapshot drugsGivenSnapShot : snapshot.getChildren()){
+                                    DrugsGivenEntity drugsGivenEntity = drugsGivenSnapShot.getValue(DrugsGivenEntity.class);
+                                    if(drugsGivenEntity != null){
+                                        mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
+                                    }
+                                }
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key");

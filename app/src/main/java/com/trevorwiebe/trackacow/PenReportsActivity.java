@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +27,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByPenId;
-import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
@@ -44,7 +42,7 @@ import java.util.ArrayList;
 
 public class PenReportsActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryDrugsGivenByPenId.OnDrugsLoaded,
+        QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
         QueryDeadCowsByPenId.OnDeadCowsLoaded {
 
     private static final String TAG = "PenReportsActivity";
@@ -220,7 +218,7 @@ public class PenReportsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+    public void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
 
         ArrayList<DrugReportsObject> drugReports = new ArrayList<>();
 

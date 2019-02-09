@@ -11,9 +11,11 @@ import android.widget.DatePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.Calendar;
@@ -74,27 +76,37 @@ public class MarkACowDeadActivity extends AppCompatActivity {
             return;
         }
         int tagNumber = Integer.parseInt(mTagNumber.getText().toString());
-        String strDate = mDate.getText().toString();
         String notes = mNotes.getText().toString();
 
         DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
 
-        CowEntity cowEntity = new CowEntity(0, "key", tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
+        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
 
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);
         }else{
-            new InsertSingleCow(cowEntity).execute(this);
+
+            Utility.setNewDataToUpload(MarkACowDeadActivity.this, true);
+
+            HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
+            holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+            holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
+            holdingCowEntity.setPenId(cowEntity.getPenId());
+            holdingCowEntity.setNotes(cowEntity.getNotes());
+            holdingCowEntity.setIsAlive(cowEntity.isAlive());
+            holdingCowEntity.setDate(cowEntity.getDate());
+            holdingCowEntity.setCowId(cowEntity.getCowId());
+
+            new InsertHoldingCow(holdingCowEntity).execute(MarkACowDeadActivity.this);
+
         }
+
+        new InsertSingleCow(cowEntity).execute(this);
 
         mTagNumber.setText("");
         mNotes.setText("");
         mCalendar = Calendar.getInstance();
         mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
         mTagNumber.requestFocus();
-
-        Snackbar.make(view1, "Save successfully!", Snackbar.LENGTH_LONG).show();
-
-        Utility.vibrate(MarkACowDeadActivity.this, 50);
     }
 }

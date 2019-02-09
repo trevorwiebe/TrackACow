@@ -24,11 +24,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCow;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -147,8 +149,22 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
                     mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).removeValue();
+                    // TODO: 2/9/2019 delete all the drugs given to this cow too
                 }else{
+                    Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
+                    HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
+                    holdingCowEntity.setWhatHappened(Utility.DELETE);
+                    holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
+                    holdingCowEntity.setPenId(mCowEntity.getPenId());
+                    holdingCowEntity.setNotes(mCowEntity.getNotes());
+                    holdingCowEntity.setIsAlive(mCowEntity.isAlive());
+                    holdingCowEntity.setDate(mCowEntity.getDate());
+                    holdingCowEntity.setCowId(mCowEntity.getCowId());
+
+                    new InsertHoldingCow(holdingCowEntity).execute(EditMedicatedCowActivity.this);
+
+                    // TODO: 2/9/2019 mark all the drugs given to this cow to be deleted
                 }
 
                 new DeleteCow(mCowEntity).execute(EditMedicatedCowActivity.this);

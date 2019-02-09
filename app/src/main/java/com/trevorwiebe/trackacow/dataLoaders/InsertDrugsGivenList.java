@@ -8,14 +8,15 @@ import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InsertDrugsGivenList extends AsyncTask<Context, Void, Void> {
 
     private static final String TAG = "InsertDrugsGivenList";
 
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntity;
+    private List<DrugsGivenEntity> mDrugsGivenEntity;
 
-    public InsertDrugsGivenList(ArrayList<DrugsGivenEntity> drugsGivenEntities){
+    public InsertDrugsGivenList(List<DrugsGivenEntity> drugsGivenEntities){
         this.mDrugsGivenEntity = drugsGivenEntities;
     }
 

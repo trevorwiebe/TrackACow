@@ -11,6 +11,9 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
 
+    @ColumnInfo(name = "drugGivenId")
+    private String drugGivenId;
+
     @ColumnInfo(name = "drugId")
     private String drugId;
 
@@ -37,6 +40,14 @@ public class HoldingDrugsGivenEntity {
 
     public void setPrimaryKey(int primaryKey) {
         this.primaryKey = primaryKey;
+    }
+
+    public String getDrugGivenId() {
+        return drugGivenId;
+    }
+
+    public void setDrugGivenId(String drugGivenId) {
+        this.drugGivenId = drugGivenId;
     }
 
     public String getDrugId() {

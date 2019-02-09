@@ -2,18 +2,25 @@ package com.trevorwiebe.trackacow.dataLoaders;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.db.AppDatabase;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.List;
 
 public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> {
+
+    private static final String TAG = "InsertAllLocalChangeToC";
 
     private DatabaseReference baseRef;
     private OnAllLocalDbInsertedToCloud mOnAllLocalDbInsertedToCloud;
@@ -71,6 +78,46 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
             }
         }
         db.holdingPenDao().deleteHoldingPenTable();
+
+        //update cow entities
+        List<HoldingCowEntity> holdingCowEntities = db.holdingCowDao().getHoldingCowEntityList();
+        for(int c=0; c<holdingCowEntities.size(); c++){
+
+            HoldingCowEntity holdingCowEntity = holdingCowEntities.get(c);
+
+            CowEntity cowEntity = new CowEntity(holdingCowEntity.isAlive(), holdingCowEntity.getCowId(), holdingCowEntity.getTagNumber(), holdingCowEntity.getDate(), holdingCowEntity.getNotes(), holdingCowEntity.getPenId());
+
+            switch (holdingCowEntity.getWhatHappened()){
+                case Utility.INSERT_UPDATE:
+                    baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).setValue(cowEntity);
+                    break;
+                case Utility.DELETE:
+                    baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).removeValue();
+                    break;
+                default:
+                    break;
+            }
+        }
+        db.holdingCowDao().deleteHoldingCowTable();
+
+        // update drugs given entities
+        List<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = db.holdingDrugsGivenDao().getHoldingDrugsGivenList();
+        for(int d=0; d<holdingDrugsGivenEntities.size(); d++){
+
+            HoldingDrugsGivenEntity holdingDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
+
+            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getDate(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getPenId());
+
+            switch (holdingDrugsGivenEntity.getWhatHappened()){
+                case Utility.INSERT_UPDATE:
+                    baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                    break;
+                case Utility.DELETE:
+                    baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).removeValue();
+                    break;
+            }
+        }
+        db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
 
         return null;
     }

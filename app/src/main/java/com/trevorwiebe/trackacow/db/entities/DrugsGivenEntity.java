@@ -16,6 +16,9 @@ public class DrugsGivenEntity implements Parcelable {
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
 
+    @ColumnInfo(name = "drugGiveId")
+    private String drugGivenId;
+
     @ColumnInfo(name = "drugId")
     private String drugId;
 
@@ -31,8 +34,8 @@ public class DrugsGivenEntity implements Parcelable {
     @ColumnInfo(name = "penId")
     private String penId;
 
-    public DrugsGivenEntity(int primaryKey, String drugId, int amountGiven, long date, String cowId, String penId) {
-        this.primaryKey = primaryKey;
+    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, long date, String cowId, String penId) {
+        this.drugGivenId = drugGivenId;
         this.drugId = drugId;
         this.amountGiven = amountGiven;
         this.date = date;
@@ -49,6 +52,14 @@ public class DrugsGivenEntity implements Parcelable {
 
     public void setPrimaryKey(int primaryKey) {
         this.primaryKey = primaryKey;
+    }
+
+    public String getDrugGivenId() {
+        return drugGivenId;
+    }
+
+    public void setDrugGivenId(String drugGivenId) {
+        this.drugGivenId = drugGivenId;
     }
 
     public String getDrugId() {
@@ -91,6 +102,7 @@ public class DrugsGivenEntity implements Parcelable {
         this.penId = penId;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -99,6 +111,7 @@ public class DrugsGivenEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.primaryKey);
+        dest.writeString(this.drugGivenId);
         dest.writeString(this.drugId);
         dest.writeInt(this.amountGiven);
         dest.writeLong(this.date);
@@ -108,6 +121,7 @@ public class DrugsGivenEntity implements Parcelable {
 
     protected DrugsGivenEntity(Parcel in) {
         this.primaryKey = in.readInt();
+        this.drugGivenId = in.readString();
         this.drugId = in.readString();
         this.amountGiven = in.readInt();
         this.date = in.readLong();
