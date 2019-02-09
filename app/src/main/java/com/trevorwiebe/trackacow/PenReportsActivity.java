@@ -27,6 +27,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
@@ -35,6 +36,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.DecimalFormat;
@@ -86,95 +88,8 @@ public class PenReportsActivity extends AppCompatActivity implements
         mTotalHead.setText(totalHead);
         mNotes.setText(notes);
 
-        if(Utility.haveNetworkConnection(this)) {
-            DatabaseReference drugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
-            drugRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        DrugEntity drugEntity = snapshot.getValue(DrugEntity.class);
-                        if (drugEntity != null) {
-                            mDrugList.add(drugEntity);
-                        }
-                    }
-//                final Query cow = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(mSelectedPen.getPenId());
-//                cow.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                            CowEntity cowEntity = snapshot.getValue(CowEntity.class);
-//                            if(cowEntity != null){
-//
-//                                if(!cowEntity.isAlive()){
-//                                    mDeads.add(cowEntity);
-//                                }
-//
-//                                ArrayList<DrugsGivenEntity> mDrugsGivenObject = cowEntity.getmDrugList();
-//                                for(int i=0; i<mDrugsGivenObject.size(); i++){
-//                                    DrugsGivenObject drugsGivenObject = mDrugsGivenObject.get(i);
-//                                    int amountGiven = drugsGivenObject.getAmountGiven();
-//                                    String id = drugsGivenObject.getDrugId();
-//                                    if(findAndUpdateDrugReports(id, amountGiven) == 0){
-//                                        DrugReportsObject drugReportsObject = new DrugReportsObject(id, amountGiven);
-//                                        mDrugReports.add(drugReportsObject);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        mLoadingReports.setVisibility(View.GONE);
-//                        if(mDrugReports.size() == 0){
-//                            mNoDrugReports.setVisibility(View.VISIBLE);
-//                        }
-//                        for(int p=0; p<mDrugReports.size(); p++){
-//
-//                            final float scale = getResources().getDisplayMetrics().density;
-//                            int pixels16 = (int) (16 * scale + 0.5f);
-//                            int pixels8 = (int) (8 * scale + 0.5f);
-//
-//                            DrugReportsObject drugReportsObject = mDrugReports.get(p);
-//                            DrugObject drugObject = findDrugEntity(drugReportsObject.getDrugId());
-//                            String textToSet = Integer.toString(drugReportsObject.drugAmount) + " ccs of " + drugObject.getDrugName();
-//
-//                            TextView textView = new TextView(PenReportsActivity.this);
-//                            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
-//                                    ViewGroup.LayoutParams.MATCH_PARENT,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT
-//                            );
-//                            textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
-//                            textView.setTextColor(getResources().getColor(android.R.color.black));
-//                            textView.setLayoutParams(textViewParams);
-//
-//                            textView.setText(textToSet);
-//
-//                            mDrugsUsedLayout.addView(textView);
-//                        }
-//
-//                        int numberDead = mDeads.size();
-//                        int total = mSelectedPen.getTotalHead();
-//
-//                        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-//                        float percent = (numberDead * 100.f) / total;
-//
-//                        mTotalDeathLoss.setText(Integer.toString(numberDead) + " dead");
-//                        mDeathLossPercentage.setText(decimalFormat.format(percent) + "%");
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }else{
-            new QueryAllDrugs(this).execute(this);
-            new QueryDeadCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-        }
+        new QueryAllDrugs(this).execute(this);
+        new QueryDeadCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
 
         String activityTitle = "Pen " + mSelectedPen.getPenName() + " reports";
         setTitle(activityTitle);
@@ -259,7 +174,6 @@ public class PenReportsActivity extends AppCompatActivity implements
             textView.setText(textToSet);
 
             mDrugsUsedLayout.addView(textView);
-
         }
 
     }
@@ -302,6 +216,21 @@ public class PenReportsActivity extends AppCompatActivity implements
                             }
                         });
                     }else{
+
+                        Utility.setNewDataToUpload(PenReportsActivity.this, true);
+
+                        HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                        holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        holdingPenEntity.setPenId(mSelectedPen.getPenId());
+                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
+                        holdingPenEntity.setPenName(mSelectedPen.getPenName());
+                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
+                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
+                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
+
+                        new InsertHoldingPen(holdingPenEntity).execute(PenReportsActivity.this);
+
+                        // TODO: 2/9/2019 add code to delete all the drugs given in this pen 
 
                     }
 
