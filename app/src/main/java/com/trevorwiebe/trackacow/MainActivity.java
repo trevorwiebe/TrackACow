@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized(FirebaseUser user) {
 
-        mLoadingMain.setVisibility(View.VISIBLE);
         mNoConnectionLayout.setVisibility(View.INVISIBLE);
         mPenRv.setVisibility(View.INVISIBLE);
 
@@ -237,15 +236,15 @@ public class MainActivity extends AppCompatActivity implements
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         if (Utility.haveNetworkConnection(this)) {
+            mLoadingMain.setVisibility(View.VISIBLE);
             if(Utility.isThereNewDataToUpload(this)){
                 new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
             }else{
                 getCloudDataAndSetRvAndInsertToLocalDB();
             }
-        } else {
-            mLoadingMain.setVisibility(View.INVISIBLE);
-            new QueryAllPens(MainActivity.this).execute(MainActivity.this);
         }
+
+        new QueryAllPens(MainActivity.this).execute(MainActivity.this);
 
     }
 

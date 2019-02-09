@@ -9,6 +9,16 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <ProgressBar
+        android:id="@+id/loading_main"
+        android:scaleY="2"
+        android:indeterminateOnly="true"
+        android:layout_marginTop="-5dp"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_rv"
         android:layout_width="match_parent"
@@ -59,12 +69,5 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/loading_main"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 
 </android.support.design.widget.CoordinatorLayout>
