@@ -3,7 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -14,9 +17,9 @@
             android:text="Pen:"
             android:textStyle="bold"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -24,9 +27,9 @@
         <TextView
             android:id="@+id/pen"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="14sp"
             android:textColor="@android:color/black"
             android:text="Test"
             android:layout_width="wrap_content"
@@ -38,9 +41,9 @@
         android:id="@+id/is_pen_active"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

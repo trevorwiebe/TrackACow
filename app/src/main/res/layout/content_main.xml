@@ -11,9 +11,9 @@
 
     <ProgressBar
         android:id="@+id/loading_main"
-        android:scaleY="2"
+        android:scaleY="1.5"
         android:indeterminateOnly="true"
-        android:layout_marginTop="-5dp"
+        android:layout_marginTop="-7dp"
         android:visibility="invisible"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -22,9 +22,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/no_pens_tv"

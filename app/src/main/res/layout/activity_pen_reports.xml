@@ -1,178 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PenReportsActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:textSize="16sp"
-            android:text="Customer Name"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            style="@style/Base.TextAppearance.AppCompat.Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Customer Name"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/reports_customer_name"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
-            android:textSize="16sp"
-            android:text="Total head"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            style="@style/Base.TextAppearance.AppCompat.Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Total head"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/reports_total_head"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
-            android:textSize="16sp"
-            android:text="Notes"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            style="@style/Base.TextAppearance.AppCompat.Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Notes"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/reports_notes"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <LinearLayout
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/lightGray"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:layout_margin="16dp"
+                android:text="Pen Reports"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="Reports"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
 
             <TextView
-                android:textSize="16sp"
-                android:text="Drugs used"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginBottom="8dp"
+                style="@style/Base.TextAppearance.AppCompat.Button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Drugs used"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
 
             <ProgressBar
                 android:id="@+id/loading_reports"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginRight="16dp" />
 
             <TextView
                 android:id="@+id/no_drug_reports"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="No Reports"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/drugs_used_layout"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             </LinearLayout>
 
             <TextView
-                android:textSize="16sp"
-                android:text="Death loss"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                style="@style/Base.TextAppearance.AppCompat.Button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Death loss"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/reports_death_loss"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/reports_death_loss_percentage"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/reset_this_pen_btn"
-            android:text="Reset this pen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="36dp"
             android:background="@android:color/white"
-            android:textColor="@color/redText"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginBottom="36dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="Reset this pen"
+            android:textColor="@color/redText" />
 
     </LinearLayout>
 
