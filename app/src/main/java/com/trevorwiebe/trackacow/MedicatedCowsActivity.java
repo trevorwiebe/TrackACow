@@ -29,6 +29,7 @@ import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -78,7 +79,15 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
         // TODO: 1/26/2019 add the ability to edit medicated cow entries
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mSelectedPen = getIntent().getParcelableExtra("penObject");
+
+        if(mSelectedPen == null){
+            finish();
+            return;
+        }
 
         mIsActive = mSelectedPen.getIsActive() == 1;
 
@@ -258,7 +267,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_reports){
             Intent penReportsIntent = new Intent(MedicatedCowsActivity.this, PenReportsActivity.class);
-            penReportsIntent.putExtra("selectedPen", mSelectedPen);
+            penReportsIntent.putExtra("selectedPenId", mSelectedPen.getPenId());
             startActivityForResult(penReportsIntent, VIEW_PEN_REPORTS_CODE);
         }
         return super.onOptionsItemSelected(item);

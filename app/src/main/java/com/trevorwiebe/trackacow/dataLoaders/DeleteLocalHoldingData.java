@@ -7,6 +7,8 @@ import com.trevorwiebe.trackacow.db.AppDatabase;
 
 public class DeleteLocalHoldingData extends AsyncTask<Context, Void, Void> {
 
+    // TODO: 2/12/2019 set isThereDataToUpload to false
+
     @Override
     protected Void doInBackground(Context... contexts) {
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);

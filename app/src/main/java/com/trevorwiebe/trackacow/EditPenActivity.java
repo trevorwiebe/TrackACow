@@ -80,6 +80,8 @@ public class EditPenActivity extends AppCompatActivity {
 
                     new UpdatePen(mSelectedPen).execute(EditPenActivity.this);
 
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }

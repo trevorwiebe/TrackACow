@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -46,7 +48,8 @@ import java.util.ArrayList;
 public class PenReportsActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
-        QueryDeadCowsByPenId.OnDeadCowsLoaded {
+        QueryDeadCowsByPenId.OnDeadCowsLoaded,
+        QueryPenById.OnPenByIdReturned{
 
     private static final String TAG = "PenReportsActivity";
 
@@ -70,7 +73,12 @@ public class PenReportsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pen_reports);
 
-        mSelectedPen = getIntent().getParcelableExtra("selectedPen");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        String penId = getIntent().getStringExtra("selectedPenId");
+
+        new QueryPenById(penId, this).execute(this);
 
         mLoadingReports = findViewById(R.id.loading_reports);
         mNoDrugReports = findViewById(R.id.no_drug_reports);
@@ -83,18 +91,8 @@ public class PenReportsActivity extends AppCompatActivity implements
         mCustomerName = findViewById(R.id.reports_customer_name);
         mTotalHead = findViewById(R.id.reports_total_head);
         mNotes = findViewById(R.id.reports_notes);
-        String customerName = mSelectedPen.getCustomerName();
-        String totalHead = Integer.toString(mSelectedPen.getTotalHead());
-        String notes = mSelectedPen.getNotes();
-        mCustomerName.setText(customerName);
-        mTotalHead.setText(totalHead);
-        mNotes.setText(notes);
+        updateUIWithPenInfo(mSelectedPen);
 
-        new QueryAllDrugs(this).execute(this);
-        new QueryDeadCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
-
-        String activityTitle = "Pen " + mSelectedPen.getPenName() + " reports";
-        setTitle(activityTitle);
     }
 
     @Override
@@ -118,8 +116,17 @@ public class PenReportsActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == EDIT_PEN_CODE && resultCode == RESULT_OK){
-            // TODO: 2/11/2019 query pen by id and update the ui with the new pen
+            new QueryPenById(mSelectedPen.getPenId(), PenReportsActivity.this).execute(PenReportsActivity.this);
         }
+    }
+
+    @Override
+    public void onPenByIdReturned(PenEntity penEntity) {
+        mSelectedPen = penEntity;
+        Log.d(TAG, "onPenByIdReturned: " + mSelectedPen.toString());
+        new QueryAllDrugs(this).execute(this);
+        new QueryDeadCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+        updateUIWithPenInfo(penEntity);
     }
 
     @Override
@@ -186,6 +193,7 @@ public class PenReportsActivity extends AppCompatActivity implements
         }
 
     }
+
 
     private View.OnClickListener resetPenListener = new View.OnClickListener() {
         @Override
@@ -291,6 +299,19 @@ public class PenReportsActivity extends AppCompatActivity implements
             }
         }
         return 0;
+    }
+
+    private void updateUIWithPenInfo(PenEntity penEntity){
+        if(penEntity != null) {
+            String activityTitle = "Pen " + penEntity.getPenName() + " reports";
+            setTitle(activityTitle);
+            String customerName = penEntity.getCustomerName();
+            String totalHead = Integer.toString(penEntity.getTotalHead());
+            String notes = penEntity.getNotes();
+            mCustomerName.setText(customerName);
+            mTotalHead.setText(totalHead);
+            mNotes.setText(notes);
+        }
     }
 
     @Keep
