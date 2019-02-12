@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteLocalHoldingData;
 import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void onSignedOutCleanUp() {
+        new DeleteAllLocalData().execute(MainActivity.this);
         mPenList.clear();
         mPenRecyclerViewAdapter.swapData(mPenList);
     }
