@@ -38,6 +38,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 477;
+    private static final int CREATE_ACCOUNT_CODE = 848;
 
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
@@ -158,6 +159,13 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createAccountIntent = new Intent(SignInActivity.this, CreateAccountActivity.class);
+                startActivityForResult(createAccountIntent, CREATE_ACCOUNT_CODE);
+            }
+        });
     }
 
     @Override
@@ -175,6 +183,10 @@ public class SignInActivity extends AppCompatActivity {
                 showMessage("Sign In Error", errorMessage);
                 // ...
             }
+        }
+
+        if(requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK){
+            finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);

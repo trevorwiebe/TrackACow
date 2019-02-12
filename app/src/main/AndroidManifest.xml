@@ -13,7 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SignInActivity"
+        <activity android:name=".CreateAccountActivity"
+            android:label="Create Account"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SignInActivity"
             android:label="Sign In"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
