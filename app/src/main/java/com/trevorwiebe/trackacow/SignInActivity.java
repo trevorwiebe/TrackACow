@@ -10,12 +10,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -29,8 +31,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.logging.StreamHandler;
-
 public class SignInActivity extends AppCompatActivity {
 
     private static final String TAG = "SignInActivity";
@@ -42,6 +42,7 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
     private ProgressBar mSigningIn;
+    private TextView mForgotPassword;
     private Button mSignInBtn;
     private Button mSignInWithGoogle;
 
@@ -62,6 +63,7 @@ public class SignInActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.sign_in_password);
         mSignInBtn = findViewById(R.id.sign_in_btn);
         mSigningIn = findViewById(R.id.signing_in);
+        mForgotPassword = findViewById(R.id.forgot_password);
         mSignInWithGoogle = findViewById(R.id.sign_in_with_google);
         Button createAccount = findViewById(R.id.create_account);
 
@@ -94,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                 String errorMessage = task.getException().getLocalizedMessage();
 
-                                showErrorMessage(errorMessage);
+                                showMessage("Sign In Error", errorMessage);
                             }
                         }
                     });
@@ -118,6 +120,44 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        mForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder forgotPasswordDialog = new AlertDialog.Builder(SignInActivity.this);
+                forgotPasswordDialog.setTitle("Forgot your password");
+                forgotPasswordDialog.setMessage("Enter your email and we will send you a link to reset your password");
+                View view = LayoutInflater.from(SignInActivity.this).inflate(R.layout.dialog_edit_text, null);
+                final EditText emailEditText = view.findViewById(R.id.dialog_edit_text_edit_text);
+                emailEditText.setHint("Email Address");
+                forgotPasswordDialog.setView(view);
+                forgotPasswordDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                forgotPasswordDialog.setPositiveButton("Send link", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String emailAddress = emailEditText.getText().toString();
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "Email sent.");
+                                            showMessage("Success!", "The link has been sent to " + emailAddress);
+                                        }else{
+                                            showMessage("Failure", task.getException().getLocalizedMessage());
+                                        }
+                                    }
+                                });
+                    }
+                });
+                forgotPasswordDialog.show();
+            }
+        });
+
     }
 
     @Override
@@ -132,7 +172,7 @@ public class SignInActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 String errorMessage = e.getLocalizedMessage();
-                showErrorMessage(errorMessage);
+                showMessage("Sign In Error", errorMessage);
                 // ...
             }
         }
@@ -154,7 +194,7 @@ public class SignInActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             String errorMessage = task.getException().getLocalizedMessage();
-                            showErrorMessage(errorMessage);
+                            showMessage("Sign In Error", errorMessage);
                         }
 
                         // ...
@@ -163,9 +203,9 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void showErrorMessage(String errorMessage){
+    private void showMessage(String title, String errorMessage){
         AlertDialog.Builder signInError = new AlertDialog.Builder(SignInActivity.this);
-        signInError.setTitle("Sign In Error");
+        signInError.setTitle(title);
         signInError.setMessage(errorMessage);
         signInError.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
