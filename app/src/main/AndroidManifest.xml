@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.trevorwiebe.trackacow">
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -13,8 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".EditMedicatedCowActivity"
-            android:parentActivityName=".MedicatedCowsActivity"/>
+        <activity android:name=".SignInActivity"
+            android:label="Sign In"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditMedicatedCowActivity"
+            android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

@@ -3,6 +3,7 @@
     <color name="colorPrimary">#616161</color>
     <color name="colorPrimaryDark">#373737</color>
     <color name="colorAccent">#0d47a1</color>
+    <color name="colorAccentDark">#0a3982</color>
 
     <color name="mini_fab1">#1976D2</color>
     <color name="mini_fab2">#1565C0</color>
@@ -13,4 +14,6 @@
     <color name="greenText">#AED581</color>
 
     <color name="lightGray">#EEEEEE</color>
+
+    <color name="signInGray">#d1d1d1</color>
 </resources>
