@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class PenReportsActivity extends AppCompatActivity implements
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private PenEntity mSelectedPen;
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private static final int EDIT_PEN_CODE = 747;
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -108,9 +110,16 @@ public class PenReportsActivity extends AppCompatActivity implements
         if(id == R.id.reports_action_edit){
             Intent editPenIntent = new Intent(PenReportsActivity.this, EditPenActivity.class);
             editPenIntent.putExtra("selectedPen", mSelectedPen);
-            startActivity(editPenIntent);
+            startActivityForResult(editPenIntent, EDIT_PEN_CODE);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == EDIT_PEN_CODE && resultCode == RESULT_OK){
+            // TODO: 2/11/2019 query pen by id and update the ui with the new pen
+        }
     }
 
     @Override
@@ -289,8 +298,6 @@ public class PenReportsActivity extends AppCompatActivity implements
 
         private String drugId;
         private int drugAmount;
-
-        public DrugReportsObject(){}
 
         public DrugReportsObject(String drugId, int drugAmount){
             this.drugAmount = drugAmount;

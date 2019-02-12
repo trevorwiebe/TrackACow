@@ -58,7 +58,7 @@
             android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".EditPenActivity"
-            android:label="Edit pen"
+            android:label="Edit pen information"
             android:parentActivityName=".MedicatedCowsActivity" />
     </application>
 
