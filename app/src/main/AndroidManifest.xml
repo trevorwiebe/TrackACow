@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".CreateAccountActivity"
+        <activity android:name=".EditDrugsGivenActivity"
+            android:parentActivityName=".EditMedicatedCowActivity"
+            android:label="Edit drugs given"/>
+        <activity
+            android:name=".CreateAccountActivity"
             android:label="Create Account"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SignInActivity"
             android:label="Sign In"

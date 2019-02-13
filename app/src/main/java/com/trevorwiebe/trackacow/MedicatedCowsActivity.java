@@ -77,11 +77,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicated_cows);
 
-        // TODO: 1/26/2019 add the ability to edit medicated cow entries
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
         if(mSelectedPen == null){

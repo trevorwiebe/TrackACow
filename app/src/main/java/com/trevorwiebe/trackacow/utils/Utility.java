@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.text.SimpleDateFormat;
@@ -92,6 +93,16 @@ public class Utility {
             }
         }
         return drugsGivenToCow;
+    }
+
+    public static DrugEntity findDrugEntity(String drugId, ArrayList<DrugEntity> drugEntities){
+        for(int r=0; r<drugEntities.size(); r++){
+            DrugEntity drugEntity = drugEntities.get(r);
+            if(drugEntity.getDrugId().equals(drugId)){
+                return drugEntity;
+            }
+        }
+        return null;
     }
 
 }

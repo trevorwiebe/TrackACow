@@ -71,6 +71,16 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Drugs Given"
+            android:textColor="@color/colorAccent"
+            style="@style/Base.TextAppearance.AppCompat.Button"/>
+
         <LinearLayout
             android:id="@+id/edit_drugs_layout"
             android:orientation="vertical"
@@ -80,13 +90,27 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/edit_drugs_given"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@android:color/white"
+            android:text="Edit drugs given"
+            android:textColor="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
             android:id="@+id/update_medicated_cow"
             android:background="@color/colorAccent"
             android:textColor="@android:color/white"
             android:text="Update medicated cow"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
@@ -100,7 +124,7 @@
             android:text="Delete medicate cow"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"

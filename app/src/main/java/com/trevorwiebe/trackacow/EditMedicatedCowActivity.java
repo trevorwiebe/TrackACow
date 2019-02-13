@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -27,6 +28,7 @@ import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateCow;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -56,6 +58,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     private LinearLayout mDrugLayout;
     private Button mUpdateBtn;
     private Button mDeleteBtn;
+    private Button mEditDrugsGiven;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
         setTitle("Cow " + strTagNumber);
 
+        mEditDrugsGiven = findViewById(R.id.edit_drugs_given);
         mUpdateBtn = findViewById(R.id.update_medicated_cow);
         mDeleteBtn = findViewById(R.id.delete_medicated_cow);
         mDrugLayout = findViewById(R.id.edit_drugs_layout);
@@ -88,11 +92,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
         if(isAlive == 1){
             mEditDateLayout.setVisibility(View.GONE);
-            if(Utility.haveNetworkConnection(this)) {
-
-            }else{
-                new QueryAllDrugs(this).execute(this);
-            }
+            new QueryAllDrugs(this).execute(this);
         }else{
             final float scale = getResources().getDisplayMetrics().density;
             int pixels16 = (int) (16 * scale + 0.5f);
@@ -114,6 +114,15 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
             mDrugLayout.addView(textView);
         }
+
+        mEditDrugsGiven.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editDrugsGiven = new Intent(EditMedicatedCowActivity.this, EditDrugsGivenActivity.class);
+                editDrugsGiven.putExtra("cowId", mCowEntity.getCowId());
+                startActivity(editDrugsGiven);
+            }
+        });
 
         mEditDate.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -141,6 +150,33 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+                int tagNumber = Integer.parseInt(mEditTagNumber.getText().toString());
+                String notes = mEditNotes.getText().toString();
+
+                mCowEntity.setTagNumber(tagNumber);
+                mCowEntity.setNotes(notes);
+
+                if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
+                    mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).setValue(mCowEntity);
+                }else{
+                    Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
+
+                    HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
+                    holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                    holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
+                    holdingCowEntity.setPenId(mCowEntity.getPenId());
+                    holdingCowEntity.setNotes(mCowEntity.getNotes());
+                    holdingCowEntity.setIsAlive(mCowEntity.isAlive());
+                    holdingCowEntity.setDate(mCowEntity.getDate());
+                    holdingCowEntity.setCowId(mCowEntity.getCowId());
+
+                    new InsertHoldingCow(holdingCowEntity).execute(EditMedicatedCowActivity.this);
+
+                }
+
+                new UpdateCow(mCowEntity.getCowId(), mCowEntity.getTagNumber(), mCowEntity.getNotes()).execute(EditMedicatedCowActivity.this);
+
+                finish();
             }
         });
 
@@ -187,27 +223,38 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         setDrugGivenLayout(drugsGivenEntities);
     }
 
-    private DrugEntity findDrugEntity(String drugId){
-        for(int r=0; r<mDrugList.size(); r++){
-            DrugEntity drugEntity = mDrugList.get(r);
-            if(drugEntity.getDrugId().equals(drugId)){
-                return drugEntity;
-            }
-        }
-        return null;
-    }
 
     private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){
+        String holdingDate = "";
         for (int t = 0; t < drugsGivenEntities.size(); t++) {
             DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
             int amountGiven = drugsGivenEntity.getAmountGiven();
             String drugId = drugsGivenEntity.getDrugId();
+            long date = drugsGivenEntity.getDate();
 
             final float scale = getResources().getDisplayMetrics().density;
+            int pixels24 = (int) (24 * scale + 0.5f);
             int pixels16 = (int) (16 * scale + 0.5f);
             int pixels8 = (int) (8 * scale + 0.5f);
 
-            DrugEntity drugEntity = findDrugEntity(drugId);
+            String nextDate = Utility.convertMillisToDate(date);
+            if(!nextDate.equals(holdingDate)){
+                TextView textView = new TextView(EditMedicatedCowActivity.this);
+                LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                textViewParams.setMargins(pixels16, pixels24, pixels16, 0);
+                textView.setTextColor(getResources().getColor(android.R.color.black));
+                textView.setLayoutParams(textViewParams);
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+                textView.setText("On: " + nextDate);
+                mDrugLayout.addView(textView);
+            }
+
+            holdingDate = nextDate;
+
+            DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
             String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
 
             TextView textView = new TextView(EditMedicatedCowActivity.this);
@@ -215,7 +262,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
+            textViewParams.setMargins(pixels16, pixels8, pixels16, 0);
             textView.setTextColor(getResources().getColor(android.R.color.black));
             textView.setLayoutParams(textViewParams);
 
