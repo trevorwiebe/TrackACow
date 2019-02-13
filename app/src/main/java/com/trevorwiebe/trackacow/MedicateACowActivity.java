@@ -6,7 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
+import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -41,7 +44,9 @@ import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 
-public class MedicateACowActivity extends AppCompatActivity implements QueryAllDrugs.OnAllDrugsLoaded {
+public class MedicateACowActivity extends AppCompatActivity implements
+        QueryAllDrugs.OnAllDrugsLoaded,
+        QueryMedicatedCowsByPenId.OnCowsLoaded{
 
     private static final String TAG = "MedicateACowActivity";
 
@@ -53,8 +58,10 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
     private Button mSaveCow;
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private ArrayList<CowEntity> mCowEntities = new ArrayList<>();
     private PenEntity mSelectedPen;
     private DatabaseReference mBaseRef;
+    private boolean mIsCowTaken = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,7 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
         new QueryAllDrugs(this).execute(this);
+        new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
 
         mSaveCow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +89,8 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                     Snackbar.make(view, "Please add a drug first.", Snackbar.LENGTH_LONG).show();
                 }else if(mTagName.length() == 0){
                     Snackbar.make(view, "Please set the tag number", Snackbar.LENGTH_LONG).show();
+                }else if(mIsCowTaken){
+                    Snackbar.make(view, "This cow has been treated already", Snackbar.LENGTH_LONG).show();
                 }else{
 
                     DatabaseReference drugsGivenRef = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN);
@@ -134,10 +144,12 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                     int tagNumber = Integer.parseInt(mTagName.getText().toString());
                     String notes = mNotes.getText().toString();
 
-                    CowEntity cowObject = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
+                    CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
+
+                    mCowEntities.add(cowEntity);
 
                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
-                        pushRef.setValue(cowObject);
+                        pushRef.setValue(cowEntity);
 
                         for(int k=0; k<drugList.size(); k++){
                             DrugsGivenEntity drugsGivenEntity = drugList.get(k);
@@ -149,12 +161,12 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                         Utility.setNewDataToUpload(MedicateACowActivity.this, true);
 
                         HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
-                        holdingCowEntity.setCowId(cowObject.getCowId());
-                        holdingCowEntity.setDate(cowObject.getDate());
-                        holdingCowEntity.setIsAlive(cowObject.isAlive());
-                        holdingCowEntity.setNotes(cowObject.getNotes());
-                        holdingCowEntity.setPenId(cowObject.getPenId());
-                        holdingCowEntity.setTagNumber(cowObject.getTagNumber());
+                        holdingCowEntity.setCowId(cowEntity.getCowId());
+                        holdingCowEntity.setDate(cowEntity.getDate());
+                        holdingCowEntity.setIsAlive(cowEntity.isAlive());
+                        holdingCowEntity.setNotes(cowEntity.getNotes());
+                        holdingCowEntity.setPenId(cowEntity.getPenId());
+                        holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
                         holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
 
                         new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
@@ -184,7 +196,7 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
 
                     }
 
-                    new InsertSingleCow(cowObject).execute(MedicateACowActivity.this);
+                    new InsertSingleCow(cowEntity).execute(MedicateACowActivity.this);
                     new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
                     
                     mTagName.setText("");
@@ -212,6 +224,31 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
                     ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
                 }
+            }
+        });
+
+        mTagName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0) {
+                    int tagNumber = Integer.parseInt(s.toString());
+                    if (isCowTreated(tagNumber)) {
+                        mTagName.setError("This cow has been treated already");
+                        mIsCowTaken = true;
+                    } else {
+                        mIsCowTaken = false;
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -282,5 +319,20 @@ public class MedicateACowActivity extends AppCompatActivity implements QueryAllD
         linearLayout.addView(checkBox);
         linearLayout.addView(editText);
 
+    }
+
+    @Override
+    public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
+        mCowEntities = cowObjectList;
+    }
+
+    private boolean isCowTreated(int tagNumber){
+        for(int e=0; e<mCowEntities.size(); e++){
+            CowEntity cowEntity = mCowEntities.get(e);
+            if(cowEntity.getTagNumber() == tagNumber){
+                return true;
+            }
+        }
+        return false;
     }
 }
