@@ -12,6 +12,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:cardCornerRadius="3dp"
+            android:layout_margin="5dp"
+            android:id="@+id/cow_is_dead_card">
+
+            <LinearLayout
+                android:gravity="center_horizontal"
+                android:background="@color/redText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="This cow is dead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +110,7 @@
             style="@style/Base.TextAppearance.AppCompat.Button"/>
 
         <LinearLayout
-            android:id="@+id/edit_drugs_layout"
+            android:id="@+id/drug_given_layout"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -90,24 +118,10 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/edit_drugs_given"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:background="@android:color/white"
-            android:text="Edit drugs given"
-            android:textColor="@color/colorAccent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
             android:id="@+id/update_medicated_cow"
             android:background="@color/colorAccent"
             android:textColor="@android:color/white"
-            android:text="Update medicated cow"
+            android:text="Update Entry"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:layout_marginTop="16dp"
@@ -121,7 +135,7 @@
             android:id="@+id/delete_medicated_cow"
             android:background="@android:color/white"
             android:textColor="@color/redText"
-            android:text="Delete medicate cow"
+            android:text="Delete Entry"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:layout_marginTop="16dp"

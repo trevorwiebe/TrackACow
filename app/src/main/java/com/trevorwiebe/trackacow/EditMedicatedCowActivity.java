@@ -8,8 +8,10 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -51,14 +53,14 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     private Calendar mCalendar = Calendar.getInstance();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
 
+    private CardView mCowIsDead;
     private TextInputLayout mEditDateLayout;
     private TextInputEditText mEditTagNumber;
     private TextInputEditText mEditDate;
     private TextInputEditText mEditNotes;
-    private LinearLayout mDrugLayout;
+    private LinearLayout mDrugsGiven;
     private Button mUpdateBtn;
     private Button mDeleteBtn;
-    private Button mEditDrugsGiven;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +74,12 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
         setTitle("Cow " + strTagNumber);
 
-        mEditDrugsGiven = findViewById(R.id.edit_drugs_given);
+        mCowIsDead = findViewById(R.id.cow_is_dead_card);
         mUpdateBtn = findViewById(R.id.update_medicated_cow);
         mDeleteBtn = findViewById(R.id.delete_medicated_cow);
-        mDrugLayout = findViewById(R.id.edit_drugs_layout);
         mEditDateLayout = findViewById(R.id.edit_date_layout);
         mEditTagNumber = findViewById(R.id.edit_tag_number);
+        mDrugsGiven = findViewById(R.id.drug_given_layout);
         mEditDate = findViewById(R.id.edit_date);
         mEditNotes = findViewById(R.id.edit_notes);
         String tagNumber = Integer.toString(mCowEntity.getTagNumber());
@@ -87,42 +89,13 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         mEditDate.setText(date);
         mEditNotes.setText(notes);
 
-        mUpdateBtn.setText("Update entry");
-        mDeleteBtn.setText("Delete entry");
-
         if(isAlive == 1){
+            mCowIsDead.setVisibility(View.GONE);
             mEditDateLayout.setVisibility(View.GONE);
             new QueryAllDrugs(this).execute(this);
         }else{
-            final float scale = getResources().getDisplayMetrics().density;
-            int pixels16 = (int) (16 * scale + 0.5f);
-            int pixels8 = (int) (8 * scale + 0.5f);
-
-            TextView textView = new TextView(EditMedicatedCowActivity.this);
-            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
-            textView.setTextColor(getResources().getColor(android.R.color.black));
-            textView.setLayoutParams(textViewParams);
-            textView.setTypeface(null, Typeface.BOLD);
-            textView.setTextSize(19);
-            textView.setGravity(Gravity.CENTER_HORIZONTAL);
-            textView.setText("This cow is dead");
-            textView.setTextColor(getResources().getColor(R.color.redText));
-
-            mDrugLayout.addView(textView);
+            mCowIsDead.setVisibility(View.VISIBLE);
         }
-
-        mEditDrugsGiven.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent editDrugsGiven = new Intent(EditMedicatedCowActivity.this, EditDrugsGivenActivity.class);
-                editDrugsGiven.putExtra("cowId", mCowEntity.getCowId());
-                startActivity(editDrugsGiven);
-            }
-        });
 
         mEditDate.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -249,7 +222,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 textView.setLayoutParams(textViewParams);
                 textView.setTypeface(Typeface.DEFAULT_BOLD);
                 textView.setText("On: " + nextDate);
-                mDrugLayout.addView(textView);
+                mDrugsGiven.addView(textView);
             }
 
             holdingDate = nextDate;
@@ -268,7 +241,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
             textView.setText(textToSet);
 
-            mDrugLayout.addView(textView);
+            mDrugsGiven.addView(textView);
         }
     }
 }
