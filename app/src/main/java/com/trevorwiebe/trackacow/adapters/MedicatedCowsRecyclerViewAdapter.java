@@ -76,6 +76,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
                 trackCowViewHolder.mDrugsGiven.setText("No drugs given");
                 trackCowViewHolder.mDrugsGiven.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
             }else{
+                trackCowViewHolder.mDrugsGiven.setTypeface(Typeface.DEFAULT);
                 for (int q = 0; q < drugsGivenEntities.size(); q++) {
                     DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
 
