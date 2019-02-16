@@ -56,6 +56,9 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         String tagNumber = Integer.toString(cowEntity.getTagNumber());
         String notes = cowEntity.getNotes();
         String cowId = cowEntity.getCowId();
+        long date = cowEntity.getDate();
+
+        trackCowViewHolder.mDate.setText("Date: " + Utility.convertMillisToDate(date));
 
         trackCowViewHolder.mTagNumber.setText(tagNumber);
         if (notes == null || notes.length() == 0) {
@@ -113,6 +116,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
     public class TrackCowViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTagNumber;
+        private TextView mDate;
         private TextView mDrugsGiven;
         private TextView mNotes;
 
@@ -120,6 +124,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             super(view);
 
             mTagNumber = view.findViewById(R.id.medicated_cow_tag_number);
+            mDate = view.findViewById(R.id.date_treated_on);
             mDrugsGiven = view.findViewById(R.id.medication_given);
             mNotes = view.findViewById(R.id.notes);
 

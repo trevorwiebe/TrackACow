@@ -134,11 +134,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         }
                     }
 
-                    if(drugList.size() == 0){
-                        Snackbar.make(view, "You must select at least one drug before saving", Snackbar.LENGTH_LONG).show();
-                        return;
-                    }
-
                     int tagNumber = Integer.parseInt(mTagName.getText().toString());
                     String notes = mNotes.getText().toString();
 

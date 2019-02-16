@@ -28,8 +28,8 @@ public interface CowDao {
     @Query("SELECT * FROM Cow WHERE isAlive = 0 AND penId = :id")
     List<CowEntity> getDeadCowEntitiesByPenId(String id);
 
-    @Query("UPDATE Cow SET tagNumber = :tagNumber, notes =:notes WHERE cowId = :id")
-    void updateCowById(String id, int tagNumber, String notes);
+    @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
+    void updateCowById(String id, int tagNumber, long date, String notes);
 
     @Query("DELETE FROM Cow WHERE penId = :penId")
     void deleteCowsByPenId(String penId);

@@ -192,8 +192,10 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
     private void instantiateRv(ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<DrugEntity> drugEntities){
         if(drugsGivenEntities.size() == 0){
             mNoDrugsGiven.setVisibility(View.VISIBLE);
+            mDrugsGivenRv.setVisibility(View.INVISIBLE);
         }else{
             mNoDrugsGiven.setVisibility(View.INVISIBLE);
+            mDrugsGivenRv.setVisibility(View.VISIBLE);
             drugsGivenRecyclerViewAdapter.swapData(drugsGivenEntities, drugEntities);
         }
     }

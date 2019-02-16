@@ -70,6 +70,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
         mCowEntity = getIntent().getParcelableExtra("cow");
 
+        mCalendar.setTimeInMillis(mCowEntity.getDate());
+
         isAlive = mCowEntity.isAlive();
 
         String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
@@ -127,9 +129,11 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             public void onClick(View view) {
 
                 int tagNumber = Integer.parseInt(mEditTagNumber.getText().toString());
+                long date = mCalendar.getTimeInMillis();
                 String notes = mEditNotes.getText().toString();
 
                 mCowEntity.setTagNumber(tagNumber);
+                mCowEntity.setDate(date);
                 mCowEntity.setNotes(notes);
 
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
@@ -143,14 +147,14 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     holdingCowEntity.setPenId(mCowEntity.getPenId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
                     holdingCowEntity.setIsAlive(mCowEntity.isAlive());
-                    holdingCowEntity.setDate(mCowEntity.getDate());
+                    holdingCowEntity.setDate(mCalendar.getTimeInMillis());
                     holdingCowEntity.setCowId(mCowEntity.getCowId());
 
                     new InsertHoldingCow(holdingCowEntity).execute(EditMedicatedCowActivity.this);
 
                 }
 
-                new UpdateCow(mCowEntity.getCowId(), mCowEntity.getTagNumber(), mCowEntity.getNotes()).execute(EditMedicatedCowActivity.this);
+                new UpdateCow(mCowEntity.getCowId(), mCalendar.getTimeInMillis(), mCowEntity.getTagNumber(), mCowEntity.getNotes()).execute(EditMedicatedCowActivity.this);
 
                 finish();
             }
