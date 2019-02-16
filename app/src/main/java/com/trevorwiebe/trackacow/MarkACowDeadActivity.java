@@ -36,6 +36,8 @@ public class MarkACowDeadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_a_cow_dead);
 
+        // TODO: 2/16/2019 add a text watcher to search through the input to see if the cow is already dead
+
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());

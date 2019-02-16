@@ -80,6 +80,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mSaveCow = findViewById(R.id.save_medicated_cow);
         mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center);
         mViewMedications = findViewById(R.id.view_medications_given_btn);
+        // TODO: 2/16/2019 add the necessary components to show the all the drugs give for this cow
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 

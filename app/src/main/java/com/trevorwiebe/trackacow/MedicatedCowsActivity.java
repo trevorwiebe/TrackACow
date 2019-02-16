@@ -84,6 +84,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             return;
         }
 
+        // TODO: 2/16/2019 add context menu and move 'Pen Reports' and the ability to sort by tag number or date
+        // TODO: 2/16/2019 make the context menu item disappear when the search bar is open
+
         mIsActive = mSelectedPen.getIsActive() == 1;
 
         setTitle("Pen " + mSelectedPen.getPenName());

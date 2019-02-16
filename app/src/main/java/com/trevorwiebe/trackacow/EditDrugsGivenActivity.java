@@ -165,6 +165,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
             }
         }));
 
+        // TODO: 2/16/2019 add the ability to add new drugs given to a cow that has been already treated
     }
 
     @Override
