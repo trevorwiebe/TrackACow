@@ -54,11 +54,12 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
 
     private CardView mCowIsDead;
-    private TextInputLayout mEditDateLayout;
     private TextInputEditText mEditTagNumber;
     private TextInputEditText mEditDate;
     private TextInputEditText mEditNotes;
+    private LinearLayout mDrugLayout;
     private LinearLayout mDrugsGiven;
+    private Button mEditDrugsGiven;
     private Button mUpdateBtn;
     private Button mDeleteBtn;
 
@@ -77,8 +78,9 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         mCowIsDead = findViewById(R.id.cow_is_dead_card);
         mUpdateBtn = findViewById(R.id.update_medicated_cow);
         mDeleteBtn = findViewById(R.id.delete_medicated_cow);
-        mEditDateLayout = findViewById(R.id.edit_date_layout);
+        mEditDrugsGiven = findViewById(R.id.edit_drugs_given);
         mEditTagNumber = findViewById(R.id.edit_tag_number);
+        mDrugLayout = findViewById(R.id.drugs_given_layout);
         mDrugsGiven = findViewById(R.id.drug_given_layout);
         mEditDate = findViewById(R.id.edit_date);
         mEditNotes = findViewById(R.id.edit_notes);
@@ -88,14 +90,6 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         mEditTagNumber.setText(tagNumber);
         mEditDate.setText(date);
         mEditNotes.setText(notes);
-
-        if(isAlive == 1){
-            mCowIsDead.setVisibility(View.GONE);
-            mEditDateLayout.setVisibility(View.GONE);
-            new QueryAllDrugs(this).execute(this);
-        }else{
-            mCowIsDead.setVisibility(View.VISIBLE);
-        }
 
         mEditDate.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -118,6 +112,15 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 mEditDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
             }
         };
+
+        mEditDrugsGiven.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editDrugsIntent = new Intent(EditMedicatedCowActivity.this, EditDrugsGivenActivity.class);
+                editDrugsIntent.putExtra("cowId", mCowEntity.getCowId());
+                startActivity(editDrugsIntent);
+            }
+        });
 
         mUpdateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +189,19 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setDrugGivenLayout(null);
+        if(isAlive == 1){
+            mCowIsDead.setVisibility(View.GONE);
+            new QueryAllDrugs(this).execute(this);
+        }else{
+            mCowIsDead.setVisibility(View.VISIBLE);
+            mDrugLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
         new QueryDrugsGivenByCowId(this, mCowEntity.getCowId()).execute(this);
@@ -196,40 +212,28 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         setDrugGivenLayout(drugsGivenEntities);
     }
 
-
     private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){
-        String holdingDate = "";
-        for (int t = 0; t < drugsGivenEntities.size(); t++) {
-            DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
-            int amountGiven = drugsGivenEntity.getAmountGiven();
-            String drugId = drugsGivenEntity.getDrugId();
-            long date = drugsGivenEntity.getDate();
+        if(drugsGivenEntities == null){
+            mDrugsGiven.removeAllViews();
+        }else {
+            for (int t = 0; t < drugsGivenEntities.size(); t++) {
+                DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
+                int amountGiven = drugsGivenEntity.getAmountGiven();
+                String drugId = drugsGivenEntity.getDrugId();
 
-            final float scale = getResources().getDisplayMetrics().density;
-            int pixels24 = (int) (24 * scale + 0.5f);
-            int pixels16 = (int) (16 * scale + 0.5f);
-            int pixels8 = (int) (8 * scale + 0.5f);
+                final float scale = getResources().getDisplayMetrics().density;
+                int pixels16 = (int) (16 * scale + 0.5f);
+                int pixels8 = (int) (8 * scale + 0.5f);
 
-            String nextDate = Utility.convertMillisToDate(date);
-            if(!nextDate.equals(holdingDate)){
-                TextView textView = new TextView(EditMedicatedCowActivity.this);
-                LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                textViewParams.setMargins(pixels16, pixels24, pixels16, 0);
-                textView.setTextColor(getResources().getColor(android.R.color.black));
-                textView.setLayoutParams(textViewParams);
-                textView.setTypeface(Typeface.DEFAULT_BOLD);
-                textView.setText("On: " + nextDate);
-                mDrugsGiven.addView(textView);
-            }
+                DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
+                String drugName;
+                if (drugEntity != null) {
+                    drugName = drugEntity.getDrugName();
+                } else {
+                    drugName = "[drug_unavailable]";
+                }
 
-            holdingDate = nextDate;
-
-            DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
-            if(drugEntity != null) {
-                String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
+                String textToSet = Integer.toString(amountGiven) + " ccs of " + drugName;
 
                 TextView textView = new TextView(EditMedicatedCowActivity.this);
                 LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(

@@ -28,11 +28,17 @@ public interface DrugsGivenDao {
     @Query("SELECT * FROM DrugsGiven")
     List<DrugsGivenEntity> getDrugsGivenList();
 
+    @Query("UPDATE DrugsGiven SET amountGiven = :amountGiven WHERE drugGiveId = :drugGivenId")
+    void updateDrugGivenAmountGiven(int amountGiven, String drugGivenId);
+
     @Query("DELETE FROM DrugsGiven WHERE penId = :penId")
     void deleteDrugsGivenByPenId(String penId);
 
     @Query("DELETE FROM DrugsGiven WHERE cowId = :cowId")
     void deleteDrugsGivenByCowId(String cowId);
+
+    @Query("DELETE FROM DrugsGiven WHERE drugId = :drugId")
+    void deleteDrugGivenById(String drugId);
 
     @Query("DELETE FROM DrugsGiven")
     void deleteDrugsGivenTable();

@@ -50,15 +50,20 @@ public class DrugsGivenRecyclerViewAdapter extends RecyclerView.Adapter<DrugsGiv
         DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(i);
         String drugId = drugsGivenEntity.getDrugId();
         int amountGiven = drugsGivenEntity.getAmountGiven();
-        long date = drugsGivenEntity.getDate();
 
         DrugEntity drugEntity = Utility.findDrugEntity(drugId, drugEntities);
         String amountGivenStr = format.format(amountGiven);
 
-        String drugsGivenMessage =  amountGivenStr + " ccs of " + drugEntity.getDrugName();
+        String drugName;
+
+        if(drugEntity != null){
+            drugName = drugEntity.getDrugName();
+        }else{
+            drugName = "[drug_unavailable]";
+        }
+        String drugsGivenMessage =  amountGivenStr + " ccs of " + drugName;
 
         drugsGivenViewHolder.mDrugGiven.setText(drugsGivenMessage);
-        drugsGivenViewHolder.mDate.setText(Utility.convertMillisToDate(date));
     }
 
     public void swapData(ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<DrugEntity> drugEntities){
@@ -72,13 +77,11 @@ public class DrugsGivenRecyclerViewAdapter extends RecyclerView.Adapter<DrugsGiv
     public class DrugsGivenViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mDrugGiven;
-        private TextView mDate;
 
         public DrugsGivenViewHolder(View view){
             super(view);
 
             mDrugGiven = view.findViewById(R.id.drug_given_name_and_amount);
-            mDate = view.findViewById(R.id.drug_given_date);
         }
     }
 }

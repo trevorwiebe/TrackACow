@@ -20,9 +20,6 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "amountGiven")
     private int amountGiven;
 
-    @ColumnInfo(name = "date")
-    private long date;
-
     @ColumnInfo(name = "cowId")
     private String cowId;
 
@@ -64,14 +61,6 @@ public class HoldingDrugsGivenEntity {
 
     public void setAmountGiven(int amountGiven) {
         this.amountGiven = amountGiven;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
     }
 
     public String getCowId() {

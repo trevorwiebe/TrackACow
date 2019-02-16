@@ -106,7 +106,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
 
             HoldingDrugsGivenEntity holdingDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
 
-            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getDate(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getPenId());
+            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getPenId());
 
             switch (holdingDrugsGivenEntity.getWhatHappened()){
                 case Utility.INSERT_UPDATE:

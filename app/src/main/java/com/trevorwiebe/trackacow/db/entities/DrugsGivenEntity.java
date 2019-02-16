@@ -25,20 +25,16 @@ public class DrugsGivenEntity implements Parcelable {
     @ColumnInfo(name = "amountGiven")
     private int amountGiven;
 
-    @ColumnInfo(name = "date")
-    private long date;
-
     @ColumnInfo(name = "cowId")
     private String cowId;
 
     @ColumnInfo(name = "penId")
     private String penId;
 
-    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, long date, String cowId, String penId) {
+    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, String cowId, String penId) {
         this.drugGivenId = drugGivenId;
         this.drugId = drugId;
         this.amountGiven = amountGiven;
-        this.date = date;
         this.cowId = cowId;
         this.penId = penId;
     }
@@ -78,14 +74,6 @@ public class DrugsGivenEntity implements Parcelable {
         this.amountGiven = amountGiven;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
     public String getCowId() {
         return cowId;
     }
@@ -114,7 +102,6 @@ public class DrugsGivenEntity implements Parcelable {
         dest.writeString(this.drugGivenId);
         dest.writeString(this.drugId);
         dest.writeInt(this.amountGiven);
-        dest.writeLong(this.date);
         dest.writeString(this.cowId);
         dest.writeString(this.penId);
     }
@@ -123,8 +110,6 @@ public class DrugsGivenEntity implements Parcelable {
         this.primaryKey = in.readInt();
         this.drugGivenId = in.readString();
         this.drugId = in.readString();
-        this.amountGiven = in.readInt();
-        this.date = in.readLong();
         this.cowId = in.readString();
         this.penId = in.readString();
     }

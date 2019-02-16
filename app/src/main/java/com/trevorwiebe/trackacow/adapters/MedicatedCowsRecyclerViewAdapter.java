@@ -73,17 +73,17 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
 
                 String drugId = drugsGivenEntity.getDrugId();
                 int amountGiven = drugsGivenEntity.getAmountGiven();
-                long date = drugsGivenEntity.getDate();
 
                 DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
                 String drugName = "";
                 if (drugEntity != null) {
                     drugName = drugEntity.getDrugName();
+                }else{
+                    drugName = "[drug_unavailable]";
                 }
                 String amountGivenStr = Integer.toString(amountGiven);
-                String dateStr = Utility.convertMillisToDate(date);
 
-                message = message + amountGivenStr + "cc of " + drugName + " given on " + dateStr;
+                message = message + amountGivenStr + "cc of " + drugName;
                 if (drugsGivenEntities.size() != q + 1) {
                     message = message + "\n";
                 }

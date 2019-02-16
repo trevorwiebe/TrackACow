@@ -118,9 +118,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
                                     int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
                                     drugsGivenEntity.setAmountGiven(amountGiven);
 
-                                    long time = System.currentTimeMillis();
-                                    drugsGivenEntity.setDate(time);
-
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
                                     drugsGivenEntity.setPenId(mSelectedPen.getPenId());
@@ -182,7 +179,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
                             HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
                             holdingDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
                             holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
-                            holdingDrugsGivenEntity.setDate(drugsGivenEntity.getDate());
                             holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                             holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
                             holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);

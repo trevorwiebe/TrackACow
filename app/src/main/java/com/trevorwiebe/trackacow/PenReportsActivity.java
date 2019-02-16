@@ -176,7 +176,14 @@ public class PenReportsActivity extends AppCompatActivity implements
 
             DrugReportsObject drugReportsObject = drugReports.get(p);
             DrugEntity drugEntity = findDrugEntity(drugReportsObject.getDrugId());
-            String textToSet = Integer.toString(drugReportsObject.drugAmount) + " ccs of " + drugEntity.getDrugName();
+            String drugName;
+            if(drugEntity != null) {
+                drugName = drugEntity.getDrugName();
+            }else{
+                drugName = "[drug_unavailable]";
+            }
+
+            String textToSet = Integer.toString(drugReportsObject.drugAmount) + " ccs of " + drugName;
 
             TextView textView = new TextView(PenReportsActivity.this);
             LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
@@ -190,6 +197,7 @@ public class PenReportsActivity extends AppCompatActivity implements
             textView.setText(textToSet);
 
             mDrugsUsedLayout.addView(textView);
+
         }
 
     }

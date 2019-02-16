@@ -9,23 +9,10 @@
         android:id="@+id/drug_given_name_and_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="205 ccs of Nuflore"
+        android:layout_margin="16dp"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/drug_given_date"
-        android:text="Given on: 2/12/2019"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <View
         android:background="@android:color/darker_gray"
