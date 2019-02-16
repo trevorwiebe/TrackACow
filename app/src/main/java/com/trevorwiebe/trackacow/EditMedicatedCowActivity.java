@@ -228,20 +228,22 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             holdingDate = nextDate;
 
             DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
-            String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
+            if(drugEntity != null) {
+                String textToSet = Integer.toString(amountGiven) + " ccs of " + drugEntity.getDrugName();
 
-            TextView textView = new TextView(EditMedicatedCowActivity.this);
-            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            textViewParams.setMargins(pixels16, pixels8, pixels16, 0);
-            textView.setTextColor(getResources().getColor(android.R.color.black));
-            textView.setLayoutParams(textViewParams);
+                TextView textView = new TextView(EditMedicatedCowActivity.this);
+                LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                textViewParams.setMargins(pixels16, pixels8, pixels16, 0);
+                textView.setTextColor(getResources().getColor(android.R.color.black));
+                textView.setLayoutParams(textViewParams);
 
-            textView.setText(textToSet);
+                textView.setText(textToSet);
 
-            mDrugsGiven.addView(textView);
+                mDrugsGiven.addView(textView);
+            }
         }
     }
 }

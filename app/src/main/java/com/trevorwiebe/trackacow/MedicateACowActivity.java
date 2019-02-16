@@ -1,11 +1,12 @@
 package com.trevorwiebe.trackacow;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.support.annotation.NonNull;
+import android.graphics.Typeface;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -18,19 +19,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -53,6 +53,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private TextInputEditText mTagName;
     private TextInputEditText mNotes;
     private LinearLayout mDrugLayout;
+    private ConstraintLayout mCowAlreadyTreatedDrugsLayout;
+    private CardView mDrugsGivenCardView;
     private ProgressBar mLoadDrugs;
     private TextView mNoDrugs;
     private Button mSaveCow;
@@ -61,7 +63,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private ArrayList<CowEntity> mCowEntities = new ArrayList<>();
     private PenEntity mSelectedPen;
     private DatabaseReference mBaseRef;
-    private boolean mIsCowTaken = false;
+    private boolean mHasCowBeenTreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mTagName = findViewById(R.id.tag_number);
         mNotes = findViewById(R.id.notes);
         mNoDrugs = findViewById(R.id.no_drugs_added);
+        mDrugsGivenCardView = findViewById(R.id.drugs_given_card_view);
+        mCowAlreadyTreatedDrugsLayout = findViewById(R.id.cow_already_treated_drugs_layout);
         mDrugLayout = findViewById(R.id.drug_layout);
         mLoadDrugs = findViewById(R.id.medicate_loading_drugs);
         mSaveCow = findViewById(R.id.save_medicated_cow);
@@ -89,10 +93,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     Snackbar.make(view, "Please add a drug first.", Snackbar.LENGTH_LONG).show();
                 }else if(mTagName.length() == 0){
                     Snackbar.make(view, "Please set the tag number", Snackbar.LENGTH_LONG).show();
-                }else if(mIsCowTaken){
-                    Snackbar.make(view, "This cow has been treated already", Snackbar.LENGTH_LONG).show();
                 }else{
-
                     DatabaseReference drugsGivenRef = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN);
 
                     DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
@@ -237,11 +238,13 @@ public class MedicateACowActivity extends AppCompatActivity implements
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     int tagNumber = Integer.parseInt(s.toString());
-                    if (isCowTreated(tagNumber)) {
-                        mTagName.setError("This cow has been treated already");
-                        mIsCowTaken = true;
+                    CowEntity cowEntity = getCowTreated(tagNumber);
+                    if (cowEntity != null) {
+                        mHasCowBeenTreated = true;
+                        mDrugsGivenCardView.setVisibility(View.VISIBLE);
                     } else {
-                        mIsCowTaken = false;
+                        mHasCowBeenTreated = false;
+                        mDrugsGivenCardView.setVisibility(View.GONE);
                     }
                 }
             }
@@ -318,7 +321,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
         linearLayout.addView(checkBox);
         linearLayout.addView(editText);
-
     }
 
     @Override
@@ -326,13 +328,13 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mCowEntities = cowObjectList;
     }
 
-    private boolean isCowTreated(int tagNumber){
+    private CowEntity getCowTreated(int tagNumber){
         for(int e=0; e<mCowEntities.size(); e++){
             CowEntity cowEntity = mCowEntities.get(e);
             if(cowEntity.getTagNumber() == tagNumber){
-                return true;
+                return cowEntity;
             }
         }
-        return false;
+        return null;
     }
 }
