@@ -21,15 +21,13 @@
             android:id="@+id/cow_is_dead_card">
 
             <LinearLayout
-                android:gravity="center_horizontal"
                 android:background="@color/redText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
                     android:textStyle="bold"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="24dp"
+                    android:padding="16dp"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
                     android:text="This cow is dead"

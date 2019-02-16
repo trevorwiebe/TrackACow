@@ -8,6 +8,7 @@ import android.arch.persistence.room.Update;
 
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -21,6 +22,9 @@ public interface DrugsGivenDao {
 
     @Query("SELECT * FROM DrugsGiven WHERE cowId = :cowId")
     List<DrugsGivenEntity> getDrugsGivenByCowId(String cowId);
+
+    @Query("SELECT * FROM DrugsGiven WHERE cowId IN(:cowIdList)")
+    List<DrugsGivenEntity> getDrugsGivenByCowIdList(List<String> cowIdList);
 
     @Query("SELECT * FROM DrugsGiven WHERE penId = :penId")
     List<DrugsGivenEntity> getDrugsGivenByPenId(String penId);

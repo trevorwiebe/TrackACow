@@ -1,7 +1,5 @@
 package com.trevorwiebe.trackacow;
 
-import android.graphics.Typeface;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowIdList;
 import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -46,24 +43,26 @@ import java.util.ArrayList;
 
 public class MedicateACowActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryMedicatedCowsByPenId.OnCowsLoaded{
+        QueryMedicatedCowsByPenId.OnCowsLoaded,
+        QueryDrugsGivenByCowIdList.OnDrugsGivenByCowIdListLoaded{
 
     private static final String TAG = "MedicateACowActivity";
 
     private TextInputEditText mTagName;
     private TextInputEditText mNotes;
     private LinearLayout mDrugLayout;
-    private ConstraintLayout mCowAlreadyTreatedDrugsLayout;
     private CardView mDrugsGivenCardView;
     private ProgressBar mLoadDrugs;
     private TextView mNoDrugs;
     private Button mSaveCow;
+    private TextView mMedicateACowMessage;
+    private Button mViewMedications;
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<CowEntity> mCowEntities = new ArrayList<>();
+    private boolean mIsSearchForCowDead = false;
     private PenEntity mSelectedPen;
     private DatabaseReference mBaseRef;
-    private boolean mHasCowBeenTreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +75,11 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mNotes = findViewById(R.id.notes);
         mNoDrugs = findViewById(R.id.no_drugs_added);
         mDrugsGivenCardView = findViewById(R.id.drugs_given_card_view);
-        mCowAlreadyTreatedDrugsLayout = findViewById(R.id.cow_already_treated_drugs_layout);
         mDrugLayout = findViewById(R.id.drug_layout);
         mLoadDrugs = findViewById(R.id.medicate_loading_drugs);
         mSaveCow = findViewById(R.id.save_medicated_cow);
+        mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center);
+        mViewMedications = findViewById(R.id.view_medications_given_btn);
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
@@ -182,8 +182,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
                             holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                         }
 
-                        Log.d(TAG, "onClick: " + holdingDrugsGivenEntities.size());
-
                         new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(MedicateACowActivity.this);
 
                     }
@@ -194,6 +192,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     mTagName.setText("");
                     mTagName.requestFocus();
                     mNotes.setText("");
+
+                    mDrugsGivenCardView.setVisibility(View.GONE);
 
                     for(int r=0; r<mDrugLayout.getChildCount(); r++){
                         View checkBoxView = mDrugLayout.getChildAt(r);
@@ -229,12 +229,18 @@ public class MedicateACowActivity extends AppCompatActivity implements
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     int tagNumber = Integer.parseInt(s.toString());
-                    CowEntity cowEntity = getCowTreated(tagNumber);
-                    if (cowEntity != null) {
-                        mHasCowBeenTreated = true;
-                        mDrugsGivenCardView.setVisibility(View.VISIBLE);
+                    ArrayList<CowEntity> cowEntities = getCowsTreated(tagNumber);
+                    if (cowEntities.size() != 0) {
+                        ArrayList<String> cowIds = new ArrayList<>();
+                        for(int f=0; f<cowEntities.size(); f++){
+                            CowEntity cowEntity = cowEntities.get(f);
+                            cowIds.add(cowEntity.getCowId());
+                            if(cowEntity.isAlive() != 1){
+                                mIsSearchForCowDead = true;
+                            }
+                        }
+                        new QueryDrugsGivenByCowIdList(MedicateACowActivity.this, cowIds).execute(MedicateACowActivity.this);
                     } else {
-                        mHasCowBeenTreated = false;
                         mDrugsGivenCardView.setVisibility(View.GONE);
                     }
                 }
@@ -319,13 +325,40 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mCowEntities = cowObjectList;
     }
 
-    private CowEntity getCowTreated(int tagNumber){
+    @Override
+    public void onDrugsGivenByCowIdListLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        Log.d(TAG, "onDrugsGivenByCowIdListLoaded: here " + drugsGivenEntities.size() + " " + mIsSearchForCowDead);
+        if(drugsGivenEntities.size() != 0){
+            mDrugsGivenCardView.setVisibility(View.VISIBLE);
+            mViewMedications.setVisibility(View.VISIBLE);
+            if(mIsSearchForCowDead){
+                mMedicateACowMessage.setText("This cow is dead and has been medicated");
+                mDrugsGivenCardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            }else{
+                mMedicateACowMessage.setText("This cow has been medicated");
+                mDrugsGivenCardView.setCardBackgroundColor(getResources().getColor(R.color.greenText));
+            }
+        }else{
+            if(mIsSearchForCowDead){
+                mDrugsGivenCardView.setVisibility(View.VISIBLE);
+                mMedicateACowMessage.setText("This cow is dead");
+                mDrugsGivenCardView.setCardBackgroundColor(getResources().getColor(R.color.redText));
+                mViewMedications.setVisibility(View.INVISIBLE);
+            }else{
+                mDrugsGivenCardView.setVisibility(View.GONE);
+            }
+        }
+        mIsSearchForCowDead = false;
+    }
+
+    private ArrayList<CowEntity> getCowsTreated(int tagNumber){
+        ArrayList<CowEntity> cowEntities = new ArrayList<>();
         for(int e=0; e<mCowEntities.size(); e++){
             CowEntity cowEntity = mCowEntities.get(e);
             if(cowEntity.getTagNumber() == tagNumber){
-                return cowEntity;
+                cowEntities.add(cowEntity);
             }
         }
-        return null;
+        return cowEntities;
     }
 }
