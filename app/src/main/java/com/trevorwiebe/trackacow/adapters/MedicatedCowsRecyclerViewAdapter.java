@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
@@ -68,26 +69,31 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
             String message = "";
             ArrayList<DrugsGivenEntity> drugsGivenEntities = Utility.findDrugsGivenEntityByCowId(cowId, mDrugsGivenEntities);
-            for (int q = 0; q < drugsGivenEntities.size(); q++) {
-                DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
+            if(drugsGivenEntities.size() == 0){
+                trackCowViewHolder.mDrugsGiven.setText("No drugs given");
+                trackCowViewHolder.mDrugsGiven.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+            }else{
+                for (int q = 0; q < drugsGivenEntities.size(); q++) {
+                    DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
 
-                String drugId = drugsGivenEntity.getDrugId();
-                int amountGiven = drugsGivenEntity.getAmountGiven();
+                    String drugId = drugsGivenEntity.getDrugId();
+                    int amountGiven = drugsGivenEntity.getAmountGiven();
 
-                DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
-                String drugName = "";
-                if (drugEntity != null) {
-                    drugName = drugEntity.getDrugName();
-                }else{
-                    drugName = "[drug_unavailable]";
+                    DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
+                    String drugName = "";
+                    if (drugEntity != null) {
+                        drugName = drugEntity.getDrugName();
+                    }else{
+                        drugName = "[drug_unavailable]";
+                    }
+                    String amountGivenStr = Integer.toString(amountGiven);
+
+                    message = message + amountGivenStr + "cc of " + drugName;
+                    if (drugsGivenEntities.size() != q + 1) {
+                        message = message + "\n";
+                    }
+                    trackCowViewHolder.mDrugsGiven.setText(message);
                 }
-                String amountGivenStr = Integer.toString(amountGiven);
-
-                message = message + amountGivenStr + "cc of " + drugName;
-                if (drugsGivenEntities.size() != q + 1) {
-                    message = message + "\n";
-                }
-                trackCowViewHolder.mDrugsGiven.setText(message);
             }
         } else {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(R.color.redText));

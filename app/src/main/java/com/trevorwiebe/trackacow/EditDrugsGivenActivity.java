@@ -38,6 +38,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
     private DatabaseReference mBaseRef;
     private RecyclerView mDrugsGivenRv;
     private DrugsGivenRecyclerViewAdapter drugsGivenRecyclerViewAdapter;
+    private TextView mNoDrugsGiven;
 
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntities = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugEntities = new ArrayList<>();
@@ -56,6 +57,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
 
         new QueryAllDrugs(this).execute(this);
 
+        mNoDrugsGiven = findViewById(R.id.edit_drugs_no_drugs_given);
         mDrugsGivenRv = findViewById(R.id.drugs_given_rv);
         mDrugsGivenRv.setLayoutManager(new LinearLayoutManager(this));
         drugsGivenRecyclerViewAdapter = new DrugsGivenRecyclerViewAdapter(this, mDrugsGivenEntities, mDrugEntities);
@@ -174,7 +176,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
     @Override
     public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         mDrugsGivenEntities = drugsGivenEntities;
-        drugsGivenRecyclerViewAdapter.swapData(mDrugsGivenEntities, mDrugEntities);
+        instantiateRv(mDrugsGivenEntities, mDrugEntities);
     }
 
     @Override
@@ -185,5 +187,14 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
     @Override
     public void onDrugGivenInsert() {
         new QueryDrugsGivenByCowId(this, cowId).execute(this);
+    }
+
+    private void instantiateRv(ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<DrugEntity> drugEntities){
+        if(drugsGivenEntities.size() == 0){
+            mNoDrugsGiven.setVisibility(View.VISIBLE);
+        }else{
+            mNoDrugsGiven.setVisibility(View.INVISIBLE);
+            drugsGivenRecyclerViewAdapter.swapData(drugsGivenEntities, drugEntities);
+        }
     }
 }

@@ -191,7 +191,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        setDrugGivenLayout(null);
+        mDrugsGiven.removeAllViews();
         if(isAlive == 1){
             mCowIsDead.setVisibility(View.GONE);
             new QueryAllDrugs(this).execute(this);
@@ -213,17 +213,29 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     }
 
     private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){
-        if(drugsGivenEntities == null){
-            mDrugsGiven.removeAllViews();
+
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels16 = (int) (16 * scale + 0.5f);
+        int pixels8 = (int) (8 * scale + 0.5f);
+
+        if(drugsGivenEntities.size() == 0){
+            TextView textView = new TextView(EditMedicatedCowActivity.this);
+            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            textViewParams.setMargins(pixels16, pixels8, pixels16, 0);
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+            textView.setLayoutParams(textViewParams);
+
+            textView.setText("No drugs given");
+
+            mDrugsGiven.addView(textView);
         }else {
             for (int t = 0; t < drugsGivenEntities.size(); t++) {
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
                 int amountGiven = drugsGivenEntity.getAmountGiven();
                 String drugId = drugsGivenEntity.getDrugId();
-
-                final float scale = getResources().getDisplayMetrics().density;
-                int pixels16 = (int) (16 * scale + 0.5f);
-                int pixels8 = (int) (8 * scale + 0.5f);
 
                 DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
                 String drugName;
