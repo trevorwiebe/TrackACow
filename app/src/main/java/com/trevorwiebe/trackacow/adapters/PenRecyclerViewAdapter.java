@@ -52,7 +52,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
             int pixels16 = (int) (16 * scale + 0.5f);
             int pixels8 = (int) (8 * scale + 0.5f);
 
-            penViewHolder.mPen.setPadding(0, pixels16, pixels8, pixels16);
+            penViewHolder.mPen.setPadding(0, pixels8, pixels8, pixels8);
         }else {
             int isActive = penEntity.getIsActive();
             if (isActive == 1) {
