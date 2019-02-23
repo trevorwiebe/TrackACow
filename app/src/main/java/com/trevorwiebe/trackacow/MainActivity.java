@@ -169,6 +169,9 @@ public class MainActivity extends AppCompatActivity implements
                 Intent managePensIntent = new Intent(MainActivity.this, ManagePensActivity.class);
                 startActivity(managePensIntent);
                 break;
+            case R.id.nav_settings:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
             case R.id.nav_sign_out:
                 AuthUI.getInstance().signOut(this);
                 break;
