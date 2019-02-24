@@ -48,7 +48,7 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
             @Override
             public void onClick(View view) {
                 Intent addNewDrugIntent = new Intent(ManageDrugsActivity.this, AddNewDrugActivity.class);
-                startActivity(addNewDrugIntent);
+                startActivityForResult(addNewDrugIntent, UPDATE_DRUG_CALLBACK_CODE);
             }
         });
 
@@ -71,26 +71,15 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
 
             }
         }));
+
+        new QueryAllDrugs(this).execute(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == UPDATE_DRUG_CALLBACK_CODE && resultCode == RESULT_OK){
-            switch (data.getStringExtra("event")){
-                case "edited":
-                    Snackbar.make(mManageDrugRv, "Drug updated successfully!", Snackbar.LENGTH_LONG).show();
-                    break;
-                case "deleted":
-                    Snackbar.make(mManageDrugRv, "Drug deleted successfully!", Snackbar.LENGTH_LONG).show();
-                    break;
-            }
+        if (requestCode == UPDATE_DRUG_CALLBACK_CODE) {
+            new QueryAllDrugs(this).execute(this);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new QueryAllDrugs(this).execute(this);
     }
 
     @Override

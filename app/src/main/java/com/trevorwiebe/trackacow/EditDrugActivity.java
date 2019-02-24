@@ -6,6 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,19 +29,22 @@ public class EditDrugActivity extends AppCompatActivity {
     private TextInputEditText mUpdateDrugName;
     private TextInputEditText mUpdateDefaultAmount;
     private Button mUpdateDrug;
-    private Button mDeleteDrug;
 
     private DatabaseReference mDrugRef;
     private DatabaseReference mBaseRef;
+    private DrugEntity mDrugEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_drug);
 
-        final DrugEntity selectedDrug = getIntent().getParcelableExtra("drugObject");
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(selectedDrug == null){
+        mDrugEntity = getIntent().getParcelableExtra("drugObject");
+
+        if (mDrugEntity == null) {
             Intent resultIntent = new Intent();
 
             setResult(Activity.RESULT_CANCELED, resultIntent);
@@ -51,45 +57,51 @@ public class EditDrugActivity extends AppCompatActivity {
         mUpdateDrugName = findViewById(R.id.update_drug_name);
         mUpdateDefaultAmount = findViewById(R.id.update_default_amount_given);
         mUpdateDrug = findViewById(R.id.update_drug);
-        mDeleteDrug = findViewById(R.id.delete_drug);
+        Button cancelBtn = findViewById(R.id.update_drug_cancel);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
-        mUpdateDrugName.setText(selectedDrug.getDrugName());
-        mUpdateDefaultAmount.setText(Integer.toString(selectedDrug.getDefaultAmount()));
+        mUpdateDrugName.setText(mDrugEntity.getDrugName());
+        mUpdateDefaultAmount.setText(Integer.toString(mDrugEntity.getDefaultAmount()));
 
         mUpdateDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mUpdateDrug.length() == 0 || mUpdateDefaultAmount.length() == 0){
+                if (mUpdateDrug.length() == 0 || mUpdateDefaultAmount.length() == 0) {
                     Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
-                }else{
+                } else {
 
                     String drugName = mUpdateDrugName.getText().toString();
                     int defaultAmount = Integer.parseInt(mUpdateDefaultAmount.getText().toString());
 
-                    selectedDrug.setDrugName(drugName);
-                    selectedDrug.setDefaultAmount(defaultAmount);
+                    mDrugEntity.setDrugName(drugName);
+                    mDrugEntity.setDefaultAmount(defaultAmount);
 
-                    if(Utility.haveNetworkConnection(EditDrugActivity.this)) {
+                    if (Utility.haveNetworkConnection(EditDrugActivity.this)) {
 
-                        DatabaseReference drugRef = mDrugRef.child(selectedDrug.getDrugId());
-                        drugRef.setValue(selectedDrug);
+                        DatabaseReference drugRef = mDrugRef.child(mDrugEntity.getDrugId());
+                        drugRef.setValue(mDrugEntity);
 
-                    }else{
+                    } else {
 
                         Utility.setNewDataToUpload(EditDrugActivity.this, true);
 
                         HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                        holdingDrugEntity.setDefaultAmount(selectedDrug.getDefaultAmount());
-                        holdingDrugEntity.setDrugId(selectedDrug.getDrugId());
-                        holdingDrugEntity.setDrugName(selectedDrug.getDrugName());
+                        holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                        holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
+                        holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
                         holdingDrugEntity.setWhatHappened(Utility.INSERT_UPDATE);
 
                         new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
 
                     }
 
-                    new UpdateDrug(selectedDrug).execute(EditDrugActivity.this);
+                    new UpdateDrug(mDrugEntity).execute(EditDrugActivity.this);
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("event", "edited");
@@ -99,31 +111,48 @@ public class EditDrugActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        mDeleteDrug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(Utility.haveNetworkConnection(EditDrugActivity.this)) {
-                    mDrugRef.child(selectedDrug.getDrugId()).removeValue();
-                }else{
-                    Utility.setNewDataToUpload(EditDrugActivity.this, true);
-                    HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                    holdingDrugEntity.setWhatHappened(Utility.DELETE);
-                    holdingDrugEntity.setDrugName(selectedDrug.getDrugName());
-                    holdingDrugEntity.setDrugId(selectedDrug.getDrugId());
-                    holdingDrugEntity.setDefaultAmount(selectedDrug.getDefaultAmount());
-                    new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
-                }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_drug_menu, menu);
+        return true;
+    }
 
-                new DeleteDrug(selectedDrug).execute(EditDrugActivity.this);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_delete_drug) {
 
-                Intent resultIntent = new Intent();
 
-                resultIntent.putExtra("event", "deleted");
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
+            if (Utility.haveNetworkConnection(EditDrugActivity.this)) {
+                mDrugRef.child(mDrugEntity.getDrugId()).removeValue();
+            } else {
+                Utility.setNewDataToUpload(EditDrugActivity.this, true);
+                HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
+                holdingDrugEntity.setWhatHappened(Utility.DELETE);
+                holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
+                holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
+                holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
             }
-        });
 
+            new DeleteDrug(mDrugEntity).execute(EditDrugActivity.this);
+
+            Intent resultIntent = new Intent();
+
+            resultIntent.putExtra("event", "deleted");
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 }

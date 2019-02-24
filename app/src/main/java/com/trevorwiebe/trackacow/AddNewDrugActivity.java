@@ -22,18 +22,21 @@ public class AddNewDrugActivity extends AppCompatActivity {
 
     private TextInputEditText mDrugName;
     private TextInputEditText mDefaultAmount;
-    private Button mSaveDrug;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_drug);
 
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mDrugName = findViewById(R.id.add_drug_name);
         mDefaultAmount = findViewById(R.id.default_amount_given);
-        mSaveDrug = findViewById(R.id.save_drug);
+        Button saveDrug = findViewById(R.id.save_drug);
+        Button cancel = findViewById(R.id.add_new_drug_cancel);
 
-        mSaveDrug.setOnClickListener(new View.OnClickListener() {
+        saveDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mDrugName.length() == 0 || mDefaultAmount.length() == 0) {
@@ -68,6 +71,18 @@ public class AddNewDrugActivity extends AppCompatActivity {
                 }
             }
         });
-
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
+    }
+
 }
