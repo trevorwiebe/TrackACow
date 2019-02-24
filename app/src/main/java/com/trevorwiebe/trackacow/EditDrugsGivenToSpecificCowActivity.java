@@ -163,7 +163,12 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
 
     @Override
     public void onDrugByDrugIdLoaded(DrugEntity drugEntity) {
-        String drugName = drugEntity.getDrugName();
+        String drugName;
+        if (drugEntity == null) {
+            drugName = "[drug_unavailable]";
+        } else {
+            drugName = drugEntity.getDrugName();
+        }
         mDrugName.setText(drugName);
     }
 
