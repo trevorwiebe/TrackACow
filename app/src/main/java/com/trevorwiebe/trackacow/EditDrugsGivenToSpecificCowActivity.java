@@ -5,6 +5,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByDrugsGivenId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugGiven;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugByDrugId;
@@ -104,6 +108,41 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_drugs_given_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_delete_drug_given) {
+            if (Utility.haveNetworkConnection(EditDrugsGivenToSpecificCowActivity.this)) {
+                mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).removeValue();
+            } else {
+                Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
+
+                HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
+                holdingDrugsGivenEntity.setPenId(mDrugsGivenEntity.getPenId());
+                holdingDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
+                holdingDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
+                holdingDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
+                holdingDrugsGivenEntity.setWhatHappened(Utility.DELETE);
+                holdingDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugGivenId());
+
+                new InsertHoldingDrugGiven(holdingDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);
+            }
+
+            new DeleteDrugsGivenByDrugsGivenId(mDrugsGivenEntity.getDrugGivenId()).execute(EditDrugsGivenToSpecificCowActivity.this);
+
+            setResult(RESULT_OK);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCowByIdLoaded(CowEntity cowEntity) {
         mCowEntity = cowEntity;
         String tagNumber = Integer.toString(mCowEntity.getTagNumber());
@@ -132,5 +171,14 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
     public void onDrugsGivenByDrugsGivenIdLoaded(DrugsGivenEntity drugsGivenEntity) {
         mDrugsGivenEntity = drugsGivenEntity;
         new QueryDrugByDrugId(mDrugsGivenEntity.getDrugId(), EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
+
+        int amountGiven = drugsGivenEntity.getAmountGiven();
+        String amountGivenStr = Integer.toString(amountGiven);
+        int length = amountGivenStr.length();
+
+        mAmountGiven.setText(amountGivenStr);
+        mAmountGiven.setSelection(0, length);
+        mAmountGiven.requestFocus();
+
     }
 }
