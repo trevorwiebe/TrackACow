@@ -32,6 +32,9 @@ public class EditPenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_pen);
 
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mSelectedPen = getIntent().getParcelableExtra("selectedPen");
@@ -40,6 +43,13 @@ public class EditPenActivity extends AppCompatActivity {
         mTotalHead = findViewById(R.id.edit_total_head);
         mNotes = findViewById(R.id.edit_notes);
         mUpdateBtn = findViewById(R.id.update_pen_btn);
+        Button cancel = findViewById(R.id.cancel_update_pen_btn);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         mCustomerName.setText(mSelectedPen.getCustomerName());
         mTotalHead.setText(Integer.toString(mSelectedPen.getTotalHead()));
@@ -86,7 +96,12 @@ public class EditPenActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
+    }
+
 }
