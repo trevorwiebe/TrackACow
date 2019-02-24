@@ -13,12 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".AddDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".EditDrugsGivenToSpecificCowActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="Settings" />
         <activity
             android:name=".EditDrugsGivenActivity"
-            android:label="Edit drugs given"/>
+            android:label="Edit drugs given" />
         <activity
             android:name=".CreateAccountActivity"
             android:label="Create Account"
