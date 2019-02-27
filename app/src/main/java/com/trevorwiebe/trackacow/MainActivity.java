@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
+                break;
             case R.id.nav_sign_out:
                 AuthUI.getInstance().signOut(this);
                 break;
