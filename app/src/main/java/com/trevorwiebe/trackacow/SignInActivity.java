@@ -186,10 +186,18 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         if(requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK){
+            setResult(RESULT_OK);
             finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {

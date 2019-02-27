@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenEntity> mPenList = new ArrayList<>();
     private DatabaseReference mBaseRef;
+    private static final int SIGN_IN_CODE = 37;
 
     private LinearLayout mNoConnectionLayout;
     private ProgressBar mLoadingMain;
@@ -120,8 +122,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (Utility.haveNetworkConnection(MainActivity.this)) {
                         onSignedOutCleanUp();
                         Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
-                        startActivity(signInIntent);
-
+                        startActivityForResult(signInIntent, SIGN_IN_CODE);
                     } else {
                         mNoConnectionLayout.setVisibility(View.VISIBLE);
                     }
@@ -142,6 +143,13 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
         super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == SIGN_IN_CODE && resultCode == RESULT_CANCELED) {
+            finish();
+        }
     }
 
     @Override

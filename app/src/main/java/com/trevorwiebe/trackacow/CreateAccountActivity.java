@@ -3,33 +3,45 @@ package com.trevorwiebe.trackacow;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 939;
 
     private TextInputEditText mName;
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
     private ProgressBar mCreatingAccount;
     private Button mCreateAccountBtn;
+    private Button mCreateAccountWithGoogleBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +54,23 @@ public class CreateAccountActivity extends AppCompatActivity {
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         // finally change the color
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
 
         mName = findViewById(R.id.create_account_name);
         mEmail = findViewById(R.id.create_account_email);
         mPassword = findViewById(R.id.create_account_password);
         mCreatingAccount = findViewById(R.id.creating_account);
         mCreateAccountBtn = findViewById(R.id.create_account_btn);
+        mCreateAccountWithGoogleBtn = findViewById(R.id.create_account_with_google);
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
 
         mCreateAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +86,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     mPassword.setError("Please fill in password");
                 }else{
 
-                    mCreateAccountBtn.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
+                    mCreateAccountBtn.setBackgroundColor(getResources().getColor(R.color.signInGray));
                     mCreatingAccount.setVisibility(View.VISIBLE);
                     final String name = mName.getText().toString();
                     String email = mEmail.getText().toString();
@@ -111,7 +133,51 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
         });
 
+        mCreateAccountWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                String errorMessage = e.getLocalizedMessage();
+                showMessage("Create account error", errorMessage);
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            String errorMessage = task.getException().getLocalizedMessage();
+                            showMessage("Create account error", errorMessage);
+                        }
+
+                        // ...
+                    }
+                });
     }
 
     private void showMessage(String title, String errorMessage){
@@ -126,7 +192,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
         signInError.show();
 
-        mCreateAccountBtn.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
         mCreatingAccount.setVisibility(View.INVISIBLE);
     }
 }
