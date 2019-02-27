@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -73,15 +72,53 @@ public class Utility {
     }
 
     public static void setNewDataToUpload(Activity activity, boolean isThereNewData){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("isThereData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), isThereNewData);
+        editor.putBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), isThereNewData);
         editor.apply();
     }
 
     public static boolean isThereNewDataToUpload(Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("isThereData", Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload), false);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), false);
+    }
+
+    public static void setPenId(Activity activity, String penId) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.save_pen_id_name),
+                Context.MODE_PRIVATE
+        );
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(activity.getApplicationContext().getResources().getString(R.string.save_pen_id_key), penId);
+        editor.apply();
+    }
+
+    public static String getPenId(Activity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.save_pen_id_name),
+                Context.MODE_PRIVATE
+        );
+        return sharedPreferences.getString(activity.getApplicationContext().getResources().getString(R.string.save_pen_id_key), "");
+    }
+
+    public static void setCowId(Activity activity, String cowId) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.save_cow_id_name),
+                Context.MODE_PRIVATE
+        );
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(activity.getApplicationContext().getResources().getString(R.string.save_cow_id_key), cowId);
+        editor.apply();
+    }
+
+    public static String getCowId(Activity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                activity.getApplicationContext().getResources().getString(R.string.save_cow_id_name),
+                Context.MODE_PRIVATE
+        );
+        return sharedPreferences.getString(activity.getApplicationContext().getResources().getString(R.string.save_cow_id_key), "");
     }
 
     public static ArrayList<DrugsGivenEntity> findDrugsGivenEntityByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenEntities){

@@ -45,7 +45,8 @@ import java.util.ArrayList;
 public class MedicatedCowsActivity extends AppCompatActivity implements
         QueryMedicatedCowsByPenId.OnCowsLoaded,
         QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
-        QueryAllDrugs.OnAllDrugsLoaded {
+        QueryAllDrugs.OnAllDrugsLoaded,
+        QueryPenById.OnPenByIdReturned {
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -77,19 +78,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicated_cows);
 
-        mSelectedPen = getIntent().getParcelableExtra("penObject");
-
-        if(mSelectedPen == null){
-            finish();
-            return;
-        }
-
         // TODO: 2/16/2019 add context menu and move 'Pen Reports' and the ability to sort by tag number or date
         // TODO: 2/16/2019 make the context menu item disappear when the search bar is open
-
-        mIsActive = mSelectedPen.getIsActive() == 1;
-
-        setTitle("Pen " + mSelectedPen.getPenName());
 
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu);
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
@@ -156,9 +146,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CowEntity cowEntity = mSelectedCows.get(position);
+                String cowEntityId = mSelectedCows.get(position).getCowId();
+                Utility.setCowId(MedicatedCowsActivity.this, cowEntityId);
                 Intent editCowIntent = new Intent(MedicatedCowsActivity.this, EditMedicatedCowActivity.class);
-                editCowIntent.putExtra("cow", cowEntity);
+                editCowIntent.putExtra("cowEntityId", cowEntityId);
                 startActivity(editCowIntent);
             }
 
@@ -205,11 +196,15 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(mIsActive){
-            setActive();
+        String penId;
+
+        if (getIntent().getStringExtra("penEntityId") == null) {
+            penId = Utility.getPenId(MedicatedCowsActivity.this);
         }else{
-            setInActive();
+            penId = getIntent().getStringExtra("penEntityId");
         }
+
+        new QueryPenById(penId, this).execute(this);
     }
 
     @Override
@@ -272,9 +267,23 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onPenByIdReturned(PenEntity penEntity) {
+        mSelectedPen = penEntity;
+        mIsActive = mSelectedPen.getIsActive() == 1;
+
+        setTitle("Pen " + mSelectedPen.getPenName());
+
+
+        if (mIsActive) {
+            setActive();
+        } else {
+            setInActive();
+        }
+    }
+
+    @Override
     public void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         mDrugsGivenList = drugsGivenEntities;
-        Log.d(TAG, "onDrugsGivenLoaded: " + mDrugsGivenList.toString());
         new QueryAllDrugs(this).execute(this);
     }
 

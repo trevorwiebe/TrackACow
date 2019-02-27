@@ -29,6 +29,7 @@ import com.trevorwiebe.trackacow.dataLoaders.DeleteCow;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateCow;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
@@ -42,7 +43,8 @@ import java.util.Calendar;
 
 public class EditMedicatedCowActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded{
+        QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded,
+        QueryCowIdByCowId.OnCowByIdLoaded {
 
     private static final String TAG = "EditMedicatedCowActivit";
 
@@ -68,15 +70,6 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_medicated_cow);
 
-        mCowEntity = getIntent().getParcelableExtra("cow");
-
-        mCalendar.setTimeInMillis(mCowEntity.getDate());
-
-        isAlive = mCowEntity.isAlive();
-
-        String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
-        setTitle("Cow " + strTagNumber);
-
         mCowIsDead = findViewById(R.id.cow_is_dead_card);
         mUpdateBtn = findViewById(R.id.update_medicated_cow);
         mDeleteBtn = findViewById(R.id.delete_medicated_cow);
@@ -86,12 +79,6 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         mDrugsGiven = findViewById(R.id.drug_given_layout);
         mEditDate = findViewById(R.id.edit_date);
         mEditNotes = findViewById(R.id.edit_notes);
-        String tagNumber = Integer.toString(mCowEntity.getTagNumber());
-        String date = Utility.convertMillisToDate(mCowEntity.getDate());
-        String notes = mCowEntity.getNotes();
-        mEditTagNumber.setText(tagNumber);
-        mEditDate.setText(date);
-        mEditNotes.setText(notes);
 
         mEditDate.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -195,14 +182,15 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mDrugsGiven.removeAllViews();
-        if(isAlive == 1){
-            mCowIsDead.setVisibility(View.GONE);
-            new QueryAllDrugs(this).execute(this);
+        String cowId;
+
+        if (getIntent().getStringExtra("cowEntityId") == null) {
+            cowId = Utility.getCowId(this);
         }else{
-            mCowIsDead.setVisibility(View.VISIBLE);
-            mDrugLayout.setVisibility(View.GONE);
+            cowId = getIntent().getStringExtra("cowEntityId");
         }
+
+        new QueryCowIdByCowId(this, cowId).execute(this);
     }
 
     @Override
@@ -265,5 +253,32 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 mDrugsGiven.addView(textView);
             }
         }
+    }
+
+    @Override
+    public void onCowByIdLoaded(CowEntity cowEntity) {
+        mCowEntity = cowEntity;
+
+        isAlive = mCowEntity.isAlive();
+
+        String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
+        setTitle("Cow " + strTagNumber);
+        mCalendar.setTimeInMillis(mCowEntity.getDate());
+
+        mDrugsGiven.removeAllViews();
+        if (isAlive == 1) {
+            mCowIsDead.setVisibility(View.GONE);
+            new QueryAllDrugs(this).execute(this);
+        } else {
+            mCowIsDead.setVisibility(View.VISIBLE);
+            mDrugLayout.setVisibility(View.GONE);
+        }
+
+        String tagNumber = Integer.toString(mCowEntity.getTagNumber());
+        String date = Utility.convertMillisToDate(mCowEntity.getDate());
+        String notes = mCowEntity.getNotes();
+        mEditTagNumber.setText(tagNumber);
+        mEditDate.setText(date);
+        mEditNotes.setText(notes);
     }
 }

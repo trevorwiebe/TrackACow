@@ -2,10 +2,15 @@
     <string name="app_name">Track-A-Cow</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="new_data_to_upload" translatable="false">new_data_to_upload</string>
+    <string name="new_data_to_upload_key" translatable="false">new_data_to_upload</string>
+    <string name="new_data_to_upload_name" translatable="false">is_there_new_data</string>
+
+    <string name="save_pen_id_key" translatable="false">save_pen_id</string>
+    <string name="save_pen_id_name" translatable="false">save_pen_id_name</string>
+
+    <string name="save_cow_id_key" translatable="false">save_cow_id_key</string>
+    <string name="save_cow_id_name" translatable="false">save_cow_id_name</string>
 </resources>

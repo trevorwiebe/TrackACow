@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements
         InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
 
     private static final String TAG = "MainActivity";
-    private static final int RC_SIGN_IN = 132;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
@@ -99,7 +98,9 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
-                        trackCowIntent.putExtra("penObject", mPenList.get(position));
+                        String penId = mPenList.get(position).getPenId();
+                        Utility.setPenId(MainActivity.this, penId);
+                        trackCowIntent.putExtra("penEntityId", penId);
                         startActivity(trackCowIntent);
                     }
 

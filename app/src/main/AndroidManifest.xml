@@ -20,10 +20,12 @@
         <activity android:name=".EditDrugsGivenToSpecificCowActivity" />
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings" />
+            android:label="Settings"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".EditDrugsGivenActivity"
-            android:label="Edit drugs given" />
+            android:label="Edit drugs given"
+            android:parentActivityName=".EditMedicatedCowActivity" />
         <activity
             android:name=".CreateAccountActivity"
             android:label="Create Account"
@@ -32,7 +34,9 @@
             android:name=".SignInActivity"
             android:label="Sign In"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".EditMedicatedCowActivity" />
+        <activity
+            android:name=".EditMedicatedCowActivity"
+            android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -45,29 +49,39 @@
         </activity>
         <activity
             android:name=".ManageDrugsActivity"
-            android:label="Manage Drugs" />
+            android:label="Manage Drugs"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ManagePensActivity"
-            android:label="Manage Pens" />
-        <activity android:name=".MedicatedCowsActivity" />
+            android:label="Manage Pens"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".MedicatedCowsActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".AddNewDrugActivity"
-            android:label="Add new drug" />
+            android:label="Add new drug"
+            android:parentActivityName=".ManageDrugsActivity" />
         <activity
             android:name=".EditDrugActivity"
-            android:label="Edit drug" />
+            android:label="Edit drug"
+            android:parentActivityName=".ManageDrugsActivity" />
         <activity
             android:name=".MedicateACowActivity"
-            android:label="Medicate a cow" />
+            android:label="Medicate a cow"
+            android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".PenReportsActivity"
-            android:label="Pen Reports" />
+            android:label="Pen Reports"
+            android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".MarkACowDeadActivity"
-            android:label="Mark a cow dead" />
+            android:label="Mark a cow dead"
+            android:parentActivityName=".MedicatedCowsActivity" />
         <activity
             android:name=".EditPenActivity"
-            android:label="Edit pen information" />
+            android:label="Edit pen information"
+            android:parentActivityName=".MedicatedCowsActivity" />
     </application>
 
 </manifest>
