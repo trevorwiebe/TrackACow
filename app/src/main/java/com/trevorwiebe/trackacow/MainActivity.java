@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO: 2/27/2019 add a fireBase service to sync the database in the background when connected to wifi
+        // TODO: 2/27/2019 add swipe to refresh to the main screen and the medicated cows screen
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -208,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAllLocalDbInsertedToCloud() {
-        Utility.setNewDataToUpload(MainActivity.this, false);
         new DeleteLocalHoldingData().execute(MainActivity.this);
         getCloudDataAndSetRvAndInsertToLocalDB();
     }
