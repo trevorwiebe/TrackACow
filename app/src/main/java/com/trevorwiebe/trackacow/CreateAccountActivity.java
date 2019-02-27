@@ -150,7 +150,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+                fireBaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 String errorMessage = e.getLocalizedMessage();
@@ -159,7 +159,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void fireBaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -174,8 +174,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                             String errorMessage = task.getException().getLocalizedMessage();
                             showMessage("Create account error", errorMessage);
                         }
-
-                        // ...
                     }
                 });
     }

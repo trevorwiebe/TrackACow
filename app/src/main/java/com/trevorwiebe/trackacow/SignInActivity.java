@@ -90,6 +90,7 @@ public class SignInActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
+                                setResult(RESULT_OK);
                                 finish();
                             }else{
                                 mSigningIn.setVisibility(View.INVISIBLE);
@@ -174,33 +175,23 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+                fireBaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 String errorMessage = e.getLocalizedMessage();
                 showMessage("Sign In Error", errorMessage);
-                // ...
             }
         }
 
         if(requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK){
-            setResult(RESULT_OK);
+            setResult(resultCode);
             finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void fireBaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -210,6 +201,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            setResult(RESULT_OK);
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -221,7 +213,6 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void showMessage(String title, String errorMessage){
         AlertDialog.Builder signInError = new AlertDialog.Builder(SignInActivity.this);

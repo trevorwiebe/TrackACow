@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SIGN_IN_CODE && resultCode == RESULT_CANCELED) {
             finish();
         }
