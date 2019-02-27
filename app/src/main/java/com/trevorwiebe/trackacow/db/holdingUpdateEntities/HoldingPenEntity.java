@@ -3,34 +3,36 @@ package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.Keep;
 
+@Keep
 @Entity(tableName = "HoldingPen")
 public class HoldingPenEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    private int primaryKey;
+    public int primaryKey;
 
     @ColumnInfo(name = "penId")
-    private String penId;
+    public String penId;
 
     @ColumnInfo(name = "customerName")
-    private String customerName;
+    public String customerName;
 
     @ColumnInfo(name = "isActive")
-    private int isActive;
+    public int isActive;
 
     @ColumnInfo(name = "notes")
-    private String notes;
+    public String notes;
 
     @ColumnInfo(name = "penName")
-    private String penName;
+    public String penName;
 
     @ColumnInfo(name = "totalHead")
-    private int totalHead;
+    public int totalHead;
 
     @ColumnInfo(name = "whatHappened")
-    private int whatHappened;
+    public int whatHappened;
 
     public HoldingPenEntity(){}
 

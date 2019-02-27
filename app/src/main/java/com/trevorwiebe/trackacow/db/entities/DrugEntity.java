@@ -6,7 +6,9 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
+@Keep
 @Entity(tableName = "Drug")
 public class DrugEntity implements Parcelable {
 
@@ -14,16 +16,16 @@ public class DrugEntity implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    private int primaryKey;
+    public int primaryKey;
 
     @ColumnInfo(name = "defaultAmount")
-    private int defaultAmount;
+    public int defaultAmount;
 
     @ColumnInfo(name = "drugId")
-    private String drugId;
+    public String drugId;
 
     @ColumnInfo(name = "drugName")
-    private String drugName;
+    public String drugName;
 
     public DrugEntity(int defaultAmount, String drugId, String drugName){
         this.defaultAmount = defaultAmount;

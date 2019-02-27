@@ -3,25 +3,27 @@ package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.Keep;
 
+@Keep
 @Entity(tableName = "HoldingDrug")
 public class HoldingDrugEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    private int primaryKey;
+    public int primaryKey;
 
     @ColumnInfo(name = "defaultAmount")
-    private int defaultAmount;
+    public int defaultAmount;
 
     @ColumnInfo(name = "drugId")
-    private String drugId;
+    public String drugId;
 
     @ColumnInfo(name = "drugName")
-    private String drugName;
+    public String drugName;
 
     @ColumnInfo(name = "whatHappened")
-    private int whatHappened;
+    public int whatHappened;
 
     public HoldingDrugEntity() {}
 

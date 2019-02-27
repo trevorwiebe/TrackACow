@@ -13,9 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".SignInChooserActivity"
-            android:theme="@style/SignInChooserTheme" />
         <activity android:name=".AddDrugsGivenToSpecificCowActivity" />
         <activity android:name=".EditDrugsGivenToSpecificCowActivity" />
         <activity

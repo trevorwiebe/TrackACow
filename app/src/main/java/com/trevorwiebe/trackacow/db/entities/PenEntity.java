@@ -6,9 +6,11 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import com.google.firebase.database.annotations.NotNull;
 
+@Keep
 @Entity(tableName = "Pen")
 public class PenEntity implements Parcelable {
 
@@ -16,25 +18,25 @@ public class PenEntity implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    private int primaryKey;
+    public int primaryKey;
 
     @ColumnInfo(name = "penId")
-    private String penId;
+    public String penId;
 
     @ColumnInfo(name = "customerName")
-    private String customerName;
+    public String customerName;
 
     @ColumnInfo(name = "isActive")
-    private int isActive;
+    public int isActive;
 
     @ColumnInfo(name = "notes")
-    private String notes;
+    public String notes;
 
     @ColumnInfo(name = "penName")
-    private String penName;
+    public String penName;
 
     @ColumnInfo(name = "totalHead")
-    private int totalHead;
+    public int totalHead;
 
     public PenEntity(String penId, String customerName, int isActive, String notes, String penName, int totalHead) {
         this.penId = penId;
