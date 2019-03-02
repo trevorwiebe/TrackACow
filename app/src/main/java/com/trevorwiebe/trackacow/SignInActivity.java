@@ -73,13 +73,13 @@ public class SignInActivity extends AppCompatActivity {
         mSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mEmail.length() == 0){
+                if (mEmail.length() == 0) {
                     mEmail.requestFocus();
                     mEmail.setError("Please enter your email");
-                }else if(mPassword.length() == 0){
+                } else if (mPassword.length() == 0) {
                     mPassword.requestFocus();
                     mPassword.setError("Please enter your password");
-                }else{
+                } else {
 
                     mSignInBtn.setBackgroundColor(getResources().getColor(R.color.signInGray));
                     mSigningIn.setVisibility(View.VISIBLE);
@@ -89,21 +89,21 @@ public class SignInActivity extends AppCompatActivity {
 
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                setResult(RESULT_OK);
-                                finish();
-                            }else{
-                                mSigningIn.setVisibility(View.INVISIBLE);
-                                mSignInBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        setResult(RESULT_OK);
+                                        finish();
+                                    } else {
+                                        mSigningIn.setVisibility(View.INVISIBLE);
+                                        mSignInBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
 
-                                String errorMessage = task.getException().getLocalizedMessage();
+                                        String errorMessage = task.getException().getLocalizedMessage();
 
-                                showMessage("Sign In Error", errorMessage);
-                            }
-                        }
-                    });
+                                        showMessage("Sign In Error", errorMessage);
+                                    }
+                                }
+                            });
                 }
             }
         });
@@ -128,35 +128,51 @@ public class SignInActivity extends AppCompatActivity {
         mForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder forgotPasswordDialog = new AlertDialog.Builder(SignInActivity.this);
-                forgotPasswordDialog.setTitle("Forgot your password");
-                forgotPasswordDialog.setMessage("Enter your email and we will send you a link to reset your password");
-                View view = LayoutInflater.from(SignInActivity.this).inflate(R.layout.dialog_edit_text, null);
-                final EditText emailEditText = view.findViewById(R.id.dialog_edit_text_edit_text);
-                emailEditText.setHint("Email Address");
-                forgotPasswordDialog.setView(view);
-                forgotPasswordDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-                forgotPasswordDialog.setPositiveButton("Send link", new DialogInterface.OnClickListener() {
+                View editTextView = LayoutInflater.from(SignInActivity.this).inflate(R.layout.dialog_edit_text, null);
+                final TextInputEditText emailAddress = editTextView.findViewById(R.id.dialog_edit_text_edit_text);
+
+                final AlertDialog forgotPasswordDialog = new AlertDialog.Builder(SignInActivity.this)
+                        .setTitle("Forgot your password")
+                        .setCancelable(false)
+                        .setMessage("Enter your email and we will send you a link to reset your password")
+                        .setView(editTextView)
+                        .setNegativeButton("Cancel", null)
+                        .setPositiveButton("Send link", null)
+                        .create();
+
+                forgotPasswordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final String emailAddress = emailEditText.getText().toString();
-                        FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d(TAG, "Email sent.");
-                                            showMessage("Success!", "The link has been sent to " + emailAddress);
-                                        }else{
-                                            showMessage("Failure", task.getException().getLocalizedMessage());
-                                        }
-                                    }
-                                });
+                    public void onShow(DialogInterface dialogInterface) {
+
+                        Button button = (forgotPasswordDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+
+                                if (emailAddress.length() != 0) {
+                                    forgotPasswordDialog.dismiss();
+                                    String emailAddressStr = emailAddress.getText().toString();
+                                    FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddressStr)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d(TAG, "Email sent.");
+                                                        showMessage("Success!", "The link has been sent to " + emailAddress.getText().toString());
+                                                    } else {
+                                                        showMessage("Failure", task.getException().getLocalizedMessage());
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    emailAddress.requestFocus();
+                                    emailAddress.setError("Please fill the blank");
+                                }
+                            }
+                        });
                     }
                 });
                 forgotPasswordDialog.show();
@@ -186,7 +202,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
 
-        if(requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK){
+        if (requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK) {
             setResult(resultCode);
             finish();
         }
@@ -213,7 +229,7 @@ public class SignInActivity extends AppCompatActivity {
                 });
     }
 
-    private void showMessage(String title, String errorMessage){
+    private void showMessage(String title, String errorMessage) {
         AlertDialog.Builder signInError = new AlertDialog.Builder(SignInActivity.this);
         signInError.setTitle(title);
         signInError.setMessage(errorMessage);
@@ -224,6 +240,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
         signInError.show();
-        mSignInWithGoogle.setVisibility(View.INVISIBLE);
+        mSigningIn.setVisibility(View.INVISIBLE);
+        mSigningInWithGoogle.setVisibility(View.INVISIBLE);
     }
 }
