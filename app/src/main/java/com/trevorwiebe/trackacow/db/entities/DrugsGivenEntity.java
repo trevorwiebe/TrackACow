@@ -13,6 +13,7 @@ import android.support.annotation.Keep;
 public class DrugsGivenEntity implements Parcelable {
 
     public static final String DRUGS_GIVEN = "drugsGiven";
+    public static final String PEN_ID = "penId";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")

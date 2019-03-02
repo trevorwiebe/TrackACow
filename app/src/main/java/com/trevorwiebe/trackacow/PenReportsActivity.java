@@ -29,6 +29,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugGiven;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
@@ -39,6 +41,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -56,6 +59,7 @@ public class PenReportsActivity extends AppCompatActivity implements
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private PenEntity mSelectedPen;
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> mDrugGivenList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
 
     private TextView mCustomerName;
@@ -152,6 +156,7 @@ public class PenReportsActivity extends AppCompatActivity implements
     public void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
 
         ArrayList<DrugReportsObject> drugReports = new ArrayList<>();
+        mDrugGivenList = drugsGivenEntities;
 
         mLoadingReports.setVisibility(View.GONE);
 
@@ -197,7 +202,6 @@ public class PenReportsActivity extends AppCompatActivity implements
             textView.setText(textToSet);
 
             mDrugsUsedLayout.addView(textView);
-
         }
 
     }
@@ -228,10 +232,6 @@ public class PenReportsActivity extends AppCompatActivity implements
                                     snapshot.getRef().removeValue();
                                 }
 
-                                mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
-
-                                new UpdatePen(mSelectedPen).execute(PenReportsActivity.this);
-
                                 onPenReset();
                             }
 
@@ -240,6 +240,24 @@ public class PenReportsActivity extends AppCompatActivity implements
 
                             }
                         });
+
+                        Query drugsGivenQuery = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.PEN_ID).equalTo(penId);
+                        drugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    snapshot.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
+
                     }else{
 
                         Utility.setNewDataToUpload(PenReportsActivity.this, true);
@@ -255,8 +273,19 @@ public class PenReportsActivity extends AppCompatActivity implements
 
                         new InsertHoldingPen(holdingPenEntity).execute(PenReportsActivity.this);
 
-                        // TODO: 2/9/2019 add code to delete all the drugs given in this pen 
-
+                        ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+                        for (int u = 0; u < mDrugGivenList.size(); u++) {
+                            DrugsGivenEntity drugsGivenEntity = mDrugGivenList.get(u);
+                            HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
+                            holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
+                            holdingDrugsGivenEntity.setWhatHappened(Utility.DELETE);
+                            holdingDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
+                            holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
+                            holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
+                            holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
+                            holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                        }
+                        new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(PenReportsActivity.this);
                     }
 
                     new UpdatePen(mSelectedPen).execute(PenReportsActivity.this);
