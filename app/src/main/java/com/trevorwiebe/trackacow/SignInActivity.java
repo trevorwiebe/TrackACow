@@ -43,6 +43,7 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
     private ProgressBar mSigningIn;
+    private ProgressBar mSigningInWithGoogle;
     private TextView mForgotPassword;
     private Button mSignInBtn;
     private Button mSignInWithGoogle;
@@ -64,6 +65,7 @@ public class SignInActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.sign_in_password);
         mSignInBtn = findViewById(R.id.sign_in_btn);
         mSigningIn = findViewById(R.id.signing_in);
+        mSigningInWithGoogle = findViewById(R.id.signing_in_with_google);
         mForgotPassword = findViewById(R.id.forgot_password);
         mSignInWithGoogle = findViewById(R.id.sign_in_with_google);
         Button createAccount = findViewById(R.id.create_account);
@@ -117,6 +119,7 @@ public class SignInActivity extends AppCompatActivity {
         mSignInWithGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mSigningInWithGoogle.setVisibility(View.VISIBLE);
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -192,8 +195,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void fireBaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -208,8 +209,6 @@ public class SignInActivity extends AppCompatActivity {
                             String errorMessage = task.getException().getLocalizedMessage();
                             showMessage("Sign In Error", errorMessage);
                         }
-
-                        // ...
                     }
                 });
     }
@@ -225,5 +224,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
         signInError.show();
+        mSignInWithGoogle.setVisibility(View.INVISIBLE);
     }
 }

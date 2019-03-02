@@ -40,6 +40,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
     private ProgressBar mCreatingAccount;
+    private ProgressBar mCreatingAccountWithGoogle;
     private Button mCreateAccountBtn;
     private Button mCreateAccountWithGoogleBtn;
 
@@ -60,6 +61,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.create_account_email);
         mPassword = findViewById(R.id.create_account_password);
         mCreatingAccount = findViewById(R.id.creating_account);
+        mCreatingAccountWithGoogle = findViewById(R.id.creating_account_with_google);
         mCreateAccountBtn = findViewById(R.id.create_account_btn);
         mCreateAccountWithGoogleBtn = findViewById(R.id.create_account_with_google);
 
@@ -136,6 +138,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         mCreateAccountWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCreatingAccountWithGoogle.setVisibility(View.VISIBLE);
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -191,6 +194,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         signInError.show();
 
         mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
-        mCreatingAccount.setVisibility(View.INVISIBLE);
+        mCreatingAccountWithGoogle.setVisibility(View.INVISIBLE);
     }
 }

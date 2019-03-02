@@ -121,17 +121,32 @@
 
         </FrameLayout>
 
-        <Button
-            android:id="@+id/sign_in_with_google"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:text="Sign In with Google"
-            android:textColor="@android:color/white"
-            android:background="@color/colorAccentDark"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/sign_in_with_google"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:text="Sign In with Google"
+                android:textColor="@android:color/white"
+                android:background="@color/colorAccentDark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ProgressBar
+                android:layout_gravity="center"
+                android:id="@+id/signing_in_with_google"
+                android:translationZ="10dp"
+                android:visibility="invisible"
+                android:indeterminateTint="@color/lightGray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/create_account"
