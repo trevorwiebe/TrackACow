@@ -42,6 +42,8 @@ import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -200,13 +202,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penObjectList) {
         mPenList = penObjectList;
-        if (mPenList.size() == 0) {
-            mNoPensTv.setVisibility(View.VISIBLE);
-        } else {
-            mNoPensTv.setVisibility(View.INVISIBLE);
-        }
-        mPenRecyclerViewAdapter.swapData(mPenList);
-        mPenRv.setVisibility(View.VISIBLE);
+        setPenRecyclerView();
     }
 
     @Override
@@ -312,14 +308,7 @@ public class MainActivity extends AppCompatActivity implements
                 new CloneCloudDatabaseToLocalDatabase(MainActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MainActivity.this);
 
                 mLoadingMain.setVisibility(View.INVISIBLE);
-                if(mPenList.size() == 0) {
-                    mNoPensTv.setVisibility(View.VISIBLE);
-                }else {
-                    mNoPensTv.setVisibility(View.INVISIBLE);
-                }
-                mPenRecyclerViewAdapter.swapData(mPenList);
-                mPenRv.setVisibility(View.VISIBLE);
-
+                setPenRecyclerView();
             }
 
             @Override
@@ -327,5 +316,21 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
+    }
+
+    private void setPenRecyclerView() {
+        if (mPenList.size() == 0) {
+            mNoPensTv.setVisibility(View.VISIBLE);
+        } else {
+            mNoPensTv.setVisibility(View.INVISIBLE);
+        }
+        Collections.sort(mPenList, new Comparator<PenEntity>() {
+            @Override
+            public int compare(PenEntity pen1, PenEntity pen2) {
+                return pen1.getPenName().compareTo(pen2.getPenName());
+            }
+        });
+        mPenRecyclerViewAdapter.swapData(mPenList);
+        mPenRv.setVisibility(View.VISIBLE);
     }
 }
