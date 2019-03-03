@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -48,12 +49,8 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-
-import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -74,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mLoadingMain;
     private TextView mNoPensTv;
     private RecyclerView mPenRv;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mSwipeRefreshLayout = findViewById(R.id.main_swipe_refresh_layout);
         mNoPensTv = findViewById(R.id.no_pens_tv);
         mLoadingMain = findViewById(R.id.loading_main);
         mNoConnectionLayout = findViewById(R.id.no_connection_and_signed_out_layout);
@@ -148,6 +147,22 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utility.haveNetworkConnection(MainActivity.this)) {
+                    if (Utility.isThereNewDataToUpload(MainActivity.this)) {
+                        new InsertAllLocalChangeToCloud(mBaseRef, MainActivity.this).execute(MainActivity.this);
+                    } else {
+                        getCloudDataAndSetRvAndInsertToLocalDB();
+                    }
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(MainActivity.this, "Network not available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -228,6 +243,9 @@ public class MainActivity extends AppCompatActivity implements
         mDrugEntityUpdateList.clear();
         mDrugsGivenEntityUpdateList.clear();
         mPenEntityUpdateList.clear();
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void signInButton(View view) {
