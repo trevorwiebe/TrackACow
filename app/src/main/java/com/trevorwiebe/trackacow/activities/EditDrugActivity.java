@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow;
+package com.trevorwiebe.trackacow.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,9 +15,8 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrug;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
-import com.trevorwiebe.trackacow.dataLoaders.InsertDrug;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrug;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;

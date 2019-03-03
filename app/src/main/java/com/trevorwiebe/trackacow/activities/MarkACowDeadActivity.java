@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow;
+package com.trevorwiebe.trackacow.activities;
 
 import android.app.DatePickerDialog;
 import android.support.design.widget.Snackbar;
@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;

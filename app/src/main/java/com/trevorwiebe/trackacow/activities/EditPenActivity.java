@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow;
+package com.trevorwiebe.trackacow.activities;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;

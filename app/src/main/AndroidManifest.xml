@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -23,62 +23,62 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddDrugsGivenToSpecificCowActivity" />
-        <activity android:name=".EditDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".activities.AddDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".activities.EditDrugsGivenToSpecificCowActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="Settings"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".EditDrugsGivenActivity"
+            android:name=".activities.EditDrugsGivenActivity"
             android:label="Edit drugs given"
-            android:parentActivityName=".EditMedicatedCowActivity" />
+            android:parentActivityName=".activities.EditMedicatedCowActivity" />
         <activity
-            android:name=".CreateAccountActivity"
+            android:name=".activities.CreateAccountActivity"
             android:label="Create Account"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".activities.SignInActivity"
             android:label="Sign In"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EditMedicatedCowActivity"
-            android:parentActivityName=".MedicatedCowsActivity" />
+            android:name=".activities.EditMedicatedCowActivity"
+            android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
-            android:name=".ManageDrugsActivity"
+            android:name=".activities.ManageDrugsActivity"
             android:label="Manage Drugs"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".ManagePensActivity"
+            android:name=".activities.ManagePensActivity"
             android:label="Manage Pens"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".MedicatedCowsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".activities.MedicatedCowsActivity"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".AddNewDrugActivity"
+            android:name=".activities.AddNewDrugActivity"
             android:label="Add new drug"
-            android:parentActivityName=".ManageDrugsActivity" />
+            android:parentActivityName=".activities.ManageDrugsActivity" />
         <activity
-            android:name=".EditDrugActivity"
+            android:name=".activities.EditDrugActivity"
             android:label="Edit drug"
-            android:parentActivityName=".ManageDrugsActivity" />
+            android:parentActivityName=".activities.ManageDrugsActivity" />
         <activity
-            android:name=".MedicateACowActivity"
+            android:name=".activities.MedicateACowActivity"
             android:label="Medicate a cow"
-            android:parentActivityName=".MedicatedCowsActivity" />
+            android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
-            android:name=".PenReportsActivity"
+            android:name=".activities.PenReportsActivity"
             android:label="Pen Reports"
-            android:parentActivityName=".MedicatedCowsActivity" />
+            android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
-            android:name=".MarkACowDeadActivity"
+            android:name=".activities.MarkACowDeadActivity"
             android:label="Mark a cow dead"
-            android:parentActivityName=".MedicatedCowsActivity" />
+            android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
-            android:name=".EditPenActivity"
+            android:name=".activities.EditPenActivity"
             android:label="Edit pen information"
-            android:parentActivityName=".MedicatedCowsActivity" />
+            android:parentActivityName=".activities.MedicatedCowsActivity" />
 
         <service
             android:exported="false"
