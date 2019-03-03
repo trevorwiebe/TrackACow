@@ -3,15 +3,18 @@ package com.trevorwiebe.trackacow.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,13 +22,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
@@ -41,12 +50,16 @@ import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MedicatedCowsActivity extends AppCompatActivity implements
         QueryMedicatedCowsByPenId.OnCowsLoaded,
         QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryPenById.OnPenByIdReturned {
+        QueryPenById.OnPenByIdReturned,
+        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned,
+        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -61,9 +74,14 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private static final int VIEW_PEN_REPORTS_CODE = 345;
     private boolean mIsActive;
     private boolean shouldShowCouldntFindTag;
+    private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
+    private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
+    private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
 
     private TextView mNoMedicatedCows;
     private SearchView mSearchView;
+    private SwipeRefreshLayout mMedicatedCowSwipeToRefresh;
     private RecyclerView mMedicatedCows;
     private CardView mResultsNotFound;
     private FloatingActionsMenu mMedicateACowFabMenu;
@@ -138,6 +156,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             }
         });
 
+        mMedicatedCowSwipeToRefresh = findViewById(R.id.medicated_cow_swipe_to_refresh);
         mMedicatedCows = findViewById(R.id.track_cow_rv);
         mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
         mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList, mDrugsGivenList,this);
@@ -158,6 +177,22 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
             }
         }));
+
+        mMedicatedCowSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
+                    if (Utility.isThereNewDataToUpload(MedicatedCowsActivity.this)) {
+                        new InsertAllLocalChangeToCloud(mBaseRef, MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
+                    } else {
+                        getCloudDataAndSetRvAndInsertToLocalDB();
+                    }
+                } else {
+                    mMedicatedCowSwipeToRefresh.setRefreshing(false);
+                    Toast.makeText(MedicatedCowsActivity.this, "Network not available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void medicateCow(View view){
@@ -295,6 +330,12 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
     @Override
     public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
+        Collections.sort(cowObjectList, new Comparator<CowEntity>() {
+            @Override
+            public int compare(CowEntity c1, CowEntity c2) {
+                return Integer.compare(c1.getTagNumber(), c2.getTagNumber());
+            }
+        });
         mTreatedCows = cowObjectList;
         mSelectedCows = cowObjectList;
         mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
@@ -303,6 +344,72 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         }else{
             mNoMedicatedCows.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void getCloudDataAndSetRvAndInsertToLocalDB() {
+        mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String key = snapshot.getKey();
+                    if (key != null) {
+                        switch (key) {
+                            case "cows":
+                                for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
+                                    CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
+                                    if (cowEntity != null) {
+                                        mCowEntityUpdateList.add(cowEntity);
+                                    }
+                                }
+                                break;
+                            case "drugs":
+                                for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
+                                    DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
+                                    if (drugEntity != null) {
+                                        mDrugEntityUpdateList.add(drugEntity);
+                                    }
+                                }
+                                break;
+                            case "pens":
+                                for (DataSnapshot penSnapshot : snapshot.getChildren()) {
+                                    PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
+                                    if (penEntity != null) {
+                                        mPenEntityUpdateList.add(penEntity);
+                                    }
+                                }
+                                break;
+                            case "drugsGiven":
+                                for (DataSnapshot drugsGivenSnapShot : snapshot.getChildren()) {
+                                    DrugsGivenEntity drugsGivenEntity = drugsGivenSnapShot.getValue(DrugsGivenEntity.class);
+                                    if (drugsGivenEntity != null) {
+                                        mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
+                                    }
+                                }
+                                break;
+                            default:
+                                Log.e(TAG, "onDataChange: unknown snapshot key");
+                        }
+                    }
+                }
+
+                new CloneCloudDatabaseToLocalDatabase(MedicatedCowsActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MedicatedCowsActivity.this);
+
+                ArrayList<CowEntity> cowEntities = getCowEntitiesByPenId(mSelectedPen.getPenId());
+                Collections.sort(cowEntities, new Comparator<CowEntity>() {
+                    @Override
+                    public int compare(CowEntity c1, CowEntity c2) {
+                        return Integer.compare(c1.getTagNumber(), c2.getTagNumber());
+                    }
+                });
+
+                mMedicatedCowsRecyclerViewAdapter.swapData(cowEntities, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private ArrayList<CowEntity> findTags(String inputString){
@@ -335,5 +442,34 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCows.setVisibility(View.GONE);
         mPenIdleLayout.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
+    }
+
+    private ArrayList<CowEntity> getCowEntitiesByPenId(String penId) {
+        ArrayList<CowEntity> cowEntities = new ArrayList<>();
+        if (mCowEntityUpdateList != null) {
+            for (int x = 0; x < mCowEntityUpdateList.size(); x++) {
+                CowEntity cowEntity = mCowEntityUpdateList.get(x);
+                if (cowEntity.getPenId().equals(penId)) {
+                    cowEntities.add(cowEntity);
+                }
+            }
+        }
+        return cowEntities;
+    }
+
+    @Override
+    public void onAllLocalDbInsertedToCloud() {
+        getCloudDataAndSetRvAndInsertToLocalDB();
+    }
+
+    @Override
+    public void onDatabaseCloned() {
+        mCowEntityUpdateList.clear();
+        mDrugEntityUpdateList.clear();
+        mDrugsGivenEntityUpdateList.clear();
+        mPenEntityUpdateList.clear();
+        if (mMedicatedCowSwipeToRefresh.isRefreshing()) {
+            mMedicatedCowSwipeToRefresh.setRefreshing(false);
+        }
     }
 }
