@@ -1,6 +1,8 @@
 package com.trevorwiebe.trackacow.utils;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -8,6 +10,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -49,6 +53,32 @@ public class Utility {
                 //deprecated in API 26
                 v.vibrate(millisToVibrate);
             }
+        }
+    }
+
+    public static void showNotification(Context context, String channelId, String title, String contentText) {
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_notification_icon_24dp)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(2, notificationBuilder.build());
+
+    }
+
+    public static void setUpNotificationChannels(Context context, String channelId, String channelName, String channelDescription) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setDescription(channelDescription);
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 

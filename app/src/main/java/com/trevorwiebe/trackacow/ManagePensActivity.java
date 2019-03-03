@@ -20,13 +20,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteCowsByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePenName;
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -38,8 +41,6 @@ public class ManagePensActivity extends AppCompatActivity implements
         QueryAllPens.OnPensLoaded,
         UpdatePenName.OnPenNameUpdated,
         InsertPen.OnPenInserted {
-
-    private static final String TAG = "ManagePensActivity";
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
@@ -112,7 +113,6 @@ public class ManagePensActivity extends AppCompatActivity implements
             }
         });
 
-
         mPensRv.addOnItemTouchListener(new ItemClickListener(this, mPensRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(final View view, int position) {
@@ -170,6 +170,22 @@ public class ManagePensActivity extends AppCompatActivity implements
                         if(Utility.haveNetworkConnection(ManagePensActivity.this)){
                             String id = selectedPenEntity.getPenId();
                             mPenRef.child(id).removeValue();
+
+                            Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(id);
+                            cowQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        snapshot.getRef().removeValue();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }else{
                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
@@ -183,13 +199,16 @@ public class ManagePensActivity extends AppCompatActivity implements
                             holdingPenEntity.setWhatHappened(Utility.DELETE);
 
                             new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
-                        }
-                        new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
 
+                            // TODO: 3/2/2019 save all the cows in this pen to the holding database to delete later when you connected to the internet.
+                        }
+
+                        new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
                         new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
 
+                        new DeleteCowsByPenId(selectedPenEntity.getPenId()).execute(ManagePensActivity.this);
 
-                        // TODO: 2/6/2019 find all the medicated cows with this penId and delete them
+                        // TODO: 3/2/2019 delete all the drugs give on all this pen when the pen is deleted.
                     }
                 });
                 editPen.show();

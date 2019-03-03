@@ -5,6 +5,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    utility strings
     <string name="new_data_to_upload_key" translatable="false">new_data_to_upload</string>
     <string name="new_data_to_upload_name" translatable="false">is_there_new_data</string>
 
@@ -13,4 +14,6 @@
 
     <string name="save_cow_id_key" translatable="false">save_cow_id_key</string>
     <string name="save_cow_id_name" translatable="false">save_cow_id_name</string>
+
+    <string name="sync_notif_channel_id" translatable="false">sync_notif_channel_id</string>
 </resources>

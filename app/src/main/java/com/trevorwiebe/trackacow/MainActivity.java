@@ -19,6 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,6 +42,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.services.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -45,6 +52,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -78,8 +87,10 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO: 2/27/2019 add a fireBase service to sync the database in the background when connected to wifi
         // TODO: 2/27/2019 add swipe to refresh to the main screen and the medicated cows screen
+
+        String channelId = getResources().getString(R.string.sync_notif_channel_id);
+        Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -249,6 +260,23 @@ public class MainActivity extends AppCompatActivity implements
 
         new QueryAllPens(MainActivity.this).execute(MainActivity.this);
 
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+
+        Job syncDatabase = dispatcher.newJobBuilder()
+                .setService(SyncDatabase.class)
+                .setTag("sync_database_job_tag")
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(0, 86400))
+                .setConstraints(
+                        Constraint.DEVICE_CHARGING,
+                        Constraint.ON_UNMETERED_NETWORK,
+                        Constraint.DEVICE_IDLE
+                )
+                .build();
+
+        dispatcher.mustSchedule(syncDatabase);
     }
 
     private void onSignedOutCleanUp() {
