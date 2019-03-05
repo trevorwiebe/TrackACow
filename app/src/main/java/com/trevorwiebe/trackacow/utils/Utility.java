@@ -101,18 +101,19 @@ public class Utility {
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    public static void setNewDataToUpload(Activity activity, boolean isThereNewData){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
+    public static void setNewDataToUpload(Context context, boolean isThereNewData) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), isThereNewData);
+        editor.putBoolean(context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), isThereNewData);
         editor.apply();
     }
 
-    public static boolean isThereNewDataToUpload(Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(activity.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), false);
+    public static boolean isThereNewDataToUpload(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), false);
     }
 
     public static void setPenId(Activity activity, String penId) {

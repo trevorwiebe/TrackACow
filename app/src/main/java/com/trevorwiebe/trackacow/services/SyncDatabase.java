@@ -24,7 +24,8 @@ import com.trevorwiebe.trackacow.utils.Utility;
 import java.util.ArrayList;
 
 public class SyncDatabase extends JobService implements
-        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
+        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud,
+        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
 
     private static final String TAG = "SyncDatabase";
 
@@ -39,6 +40,8 @@ public class SyncDatabase extends JobService implements
     public boolean onStartJob(@NonNull JobParameters job) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
+            Utility.setNewDataToUpload(this, false);
+
             mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
@@ -104,7 +107,7 @@ public class SyncDatabase extends JobService implements
                     }
                 }
 
-                new CloneCloudDatabaseToLocalDatabase(null, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(getApplicationContext());
+                new CloneCloudDatabaseToLocalDatabase(SyncDatabase.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(getApplicationContext());
             }
 
             @Override
@@ -112,5 +115,10 @@ public class SyncDatabase extends JobService implements
 
             }
         });
+    }
+
+    @Override
+    public void onDatabaseCloned() {
+
     }
 }

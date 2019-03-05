@@ -40,9 +40,6 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
 
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);
 
-        Utility.setNewDataToUpload((Activity) contexts[0], false);
-
-
         // update drug entities
         List<HoldingDrugEntity> holdingDrugEntities = db.holdingDrugDao().getHoldingDrugList();
         for(int a=0; a<holdingDrugEntities.size(); a++){
