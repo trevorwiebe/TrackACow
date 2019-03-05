@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,6 +53,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private TextInputEditText mTagName;
     private TextInputEditText mNotes;
     private LinearLayout mDrugLayout;
+    private LinearLayout mMoreDrugsGivenLayout;
     private CardView mDrugsGivenCardView;
     private ProgressBar mLoadDrugs;
     private TextView mNoDrugs;
@@ -76,12 +78,12 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mNotes = findViewById(R.id.notes);
         mNoDrugs = findViewById(R.id.no_drugs_added);
         mDrugsGivenCardView = findViewById(R.id.drugs_given_card_view);
+        mMoreDrugsGivenLayout = findViewById(R.id.more_drugs_given_layout);
         mDrugLayout = findViewById(R.id.drug_layout);
         mLoadDrugs = findViewById(R.id.medicate_loading_drugs);
         mSaveCow = findViewById(R.id.save_medicated_cow);
         mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center);
         mViewMedications = findViewById(R.id.view_medications_given_btn);
-        // TODO: 2/16/2019 add the necessary components to show the all the drugs give for this cow
 
         mSelectedPen = getIntent().getParcelableExtra("penObject");
 
@@ -253,6 +255,19 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
             }
         });
+
+        mViewMedications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMoreDrugsGivenLayout.getVisibility() == View.VISIBLE) {
+                    mMoreDrugsGivenLayout.setVisibility(View.GONE);
+                    mViewMedications.setText("View");
+                } else {
+                    mMoreDrugsGivenLayout.setVisibility(View.VISIBLE);
+                    mViewMedications.setText("Hide");
+                }
+            }
+        });
     }
 
     @Override
@@ -329,7 +344,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
     @Override
     public void onDrugsGivenByCowIdListLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        Log.d(TAG, "onDrugsGivenByCowIdListLoaded: here " + drugsGivenEntities.size() + " " + mIsSearchForCowDead);
         if(drugsGivenEntities.size() != 0){
             mDrugsGivenCardView.setVisibility(View.VISIBLE);
             mViewMedications.setVisibility(View.VISIBLE);
@@ -339,6 +353,34 @@ public class MedicateACowActivity extends AppCompatActivity implements
             }else{
                 mMedicateACowMessage.setText("This cow has been medicated");
                 mDrugsGivenCardView.setCardBackgroundColor(getResources().getColor(R.color.greenText));
+            }
+            final float scale = getResources().getDisplayMetrics().density;
+            int pixels16 = (int) (16 * scale + 0.5f);
+            int pixels8 = (int) (8 * scale + 0.5f);
+            for (int r = 0; r < drugsGivenEntities.size(); r++) {
+                DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(r);
+                DrugEntity drugEntity = Utility.findDrugEntity(drugsGivenEntity.getDrugId(), mDrugList);
+
+                String amountGivenStr = Integer.toString(drugsGivenEntity.amountGiven);
+                String drugName;
+                if (drugEntity == null) {
+                    drugName = "[drug_unavailable]";
+                } else {
+                    drugName = drugEntity.getDrugName();
+                }
+
+                String textToSet = amountGivenStr + "ccs of " + drugName;
+                TextView textView = new TextView(MedicateACowActivity.this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(pixels16, 0, pixels16, pixels8);
+                textView.setLayoutParams(params);
+                textView.setTextColor(getResources().getColor(android.R.color.white));
+                textView.setText(textToSet);
+
+                mMoreDrugsGivenLayout.addView(textView);
             }
         }else{
             if(mIsSearchForCowDead){

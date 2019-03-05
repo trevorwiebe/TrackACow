@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.dataLoaders;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -38,6 +39,9 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
     protected Void doInBackground(Context... contexts) {
 
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);
+
+        Utility.setNewDataToUpload((Activity) contexts[0], false);
+
 
         // update drug entities
         List<HoldingDrugEntity> holdingDrugEntities = db.holdingDrugDao().getHoldingDrugList();

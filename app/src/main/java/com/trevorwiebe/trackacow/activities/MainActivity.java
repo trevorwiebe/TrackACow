@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO: 2/27/2019 add swipe to refresh to the main screen and the medicated cows screen
-
         String channelId = getResources().getString(R.string.sync_notif_channel_id);
         Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
 

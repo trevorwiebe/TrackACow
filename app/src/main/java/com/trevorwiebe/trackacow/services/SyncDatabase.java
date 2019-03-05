@@ -39,8 +39,6 @@ public class SyncDatabase extends JobService implements
     public boolean onStartJob(@NonNull JobParameters job) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            Utility.setNewDataToUpload((Activity) getApplicationContext(), false);
-
             mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
