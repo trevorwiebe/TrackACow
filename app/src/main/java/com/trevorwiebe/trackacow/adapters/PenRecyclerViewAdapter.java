@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 
 import java.util.ArrayList;
@@ -16,13 +17,13 @@ import java.util.ArrayList;
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
 
     private ArrayList<PenEntity> mPenList;
+    private ArrayList<LotEntity> mLotList;
     private Context mContext;
-    private boolean isEditing;
 
-    public PenRecyclerViewAdapter(ArrayList<PenEntity> penObjectList, boolean isEditing, Context context){
+    public PenRecyclerViewAdapter(ArrayList<PenEntity> penObjectList, ArrayList<LotEntity> lotEntities, Context context) {
         this.mPenList = penObjectList;
+        this.mLotList = lotEntities;
         this.mContext = context;
-        this.isEditing = isEditing;
     }
 
     @Override
@@ -45,23 +46,51 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         String penName = penEntity.getPenName();
         penViewHolder.mPen.setText(penName);
 
+        if (mLotList != null) {
+
+            LotEntity lotEntity = findLotEntity(penEntity.getPenId());
+            if (lotEntity != null) {
+                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.greenText));
+                String lotName = lotEntity.getLotName();
+                penViewHolder.mLotNames.setText(lotName);
+            } else {
+                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.redText));
+                penViewHolder.mLotNames.setText("No cattle in this pen");
+            }
+
+        } else {
+            penViewHolder.mLotNames.setVisibility(View.GONE);
+        }
+
     }
 
-    public void swapData(ArrayList<PenEntity> penObjects){
-        mPenList = penObjects;
-        if(mPenList != null){
-            notifyDataSetChanged();
-        }
+    public void swapData(ArrayList<PenEntity> penObjects, ArrayList<LotEntity> lotEntities) {
+        mPenList = new ArrayList<>(penObjects);
+        mLotList = new ArrayList<>(lotEntities);
+        notifyDataSetChanged();
     }
 
     public class PenViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mPen;
+        private TextView mLotNames;
 
         public PenViewHolder(View view){
             super(view);
 
             mPen = view.findViewById(R.id.pen);
+            mLotNames = view.findViewById(R.id.lot_names);
         }
     }
+
+    private LotEntity findLotEntity(String penId) {
+        for (int o = 0; o < mLotList.size(); o++) {
+            LotEntity lotEntity = mLotList.get(o);
+            if (lotEntity.getPenId().equals(penId)) {
+                return lotEntity;
+            }
+        }
+        return null;
+    }
+
 }

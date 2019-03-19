@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.MedicatedCowsActivity;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
@@ -31,10 +35,12 @@ import java.util.Comparator;
 
 public class MedicateFragment extends Fragment implements
         SyncDatabase.OnDatabaseSynced,
-        QueryAllPens.OnPensLoaded {
+        QueryAllPens.OnPensLoaded,
+        QueryLots.OnLotsLoaded {
 
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenEntity> mPenList = new ArrayList<>();
+    private ArrayList<LotEntity> mLotList = new ArrayList<>();
 
     private static final String TAG = "MedicateFragment";
 
@@ -55,7 +61,7 @@ public class MedicateFragment extends Fragment implements
         mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
         mPenRv = rootView.findViewById(R.id.main_rv);
         mPenRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, false, getContext());
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, mLotList, getContext());
         mPenRv.setAdapter(mPenRecyclerViewAdapter);
 
         mPenRv.addOnItemTouchListener(new ItemClickListener(getContext(), mPenRv, new ItemClickListener.OnItemClickListener() {
@@ -81,20 +87,25 @@ public class MedicateFragment extends Fragment implements
             }
         });
 
-        new QueryAllPens(MedicateFragment.this).execute(getContext());
+        new QueryLots(MedicateFragment.this).execute(getContext());
 
         return rootView;
     }
 
     @Override
     public void onDatabaseSynced(int resultCode) {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
+    @Override
+    public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {
+        mLotList = lotEntities;
+        new QueryAllPens(MedicateFragment.this).execute(getContext());
     }
 
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penEntitiesList) {
         mPenList = penEntitiesList;
-        Log.d(TAG, "onPensLoaded: " + penEntitiesList);
         setPenRecyclerView();
     }
 
@@ -110,7 +121,6 @@ public class MedicateFragment extends Fragment implements
                 return pen1.getPenName().compareTo(pen2.getPenName());
             }
         });
-        mPenRecyclerViewAdapter.swapData(mPenList);
-        mPenRv.setVisibility(View.VISIBLE);
+        mPenRecyclerViewAdapter.swapData(mPenList, mLotList);
     }
 }

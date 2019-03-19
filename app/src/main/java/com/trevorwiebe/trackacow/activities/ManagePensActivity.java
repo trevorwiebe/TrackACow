@@ -58,7 +58,7 @@ public class ManagePensActivity extends AppCompatActivity implements
         mEmptyTv = findViewById(R.id.empty_pen_rv);
         mPensRv = findViewById(R.id.manage_pens_rv);
         mPensRv.setLayoutManager(new LinearLayoutManager(this));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenEntityList, true, this);
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenEntityList, null, this);
         mPensRv.setAdapter(mPenRecyclerViewAdapter);
         FloatingActionButton managePensFab = findViewById(R.id.manage_pens_fab);
         managePensFab.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +239,7 @@ public class ManagePensActivity extends AppCompatActivity implements
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penEntityList) {
         mPenEntityList = penEntityList;
-        mPenRecyclerViewAdapter.swapData(mPenEntityList);
+        mPenRecyclerViewAdapter.swapData(mPenEntityList, null);
         if(mPenEntityList.size() > 0){
             mEmptyTv.setVisibility(View.INVISIBLE);
         }else{
