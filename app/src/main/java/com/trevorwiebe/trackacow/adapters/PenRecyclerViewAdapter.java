@@ -66,7 +66,9 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
     public void swapData(ArrayList<PenEntity> penObjects, ArrayList<LotEntity> lotEntities) {
         mPenList = new ArrayList<>(penObjects);
-        mLotList = new ArrayList<>(lotEntities);
+        if (lotEntities != null) {
+            mLotList = new ArrayList<>(lotEntities);
+        }
         notifyDataSetChanged();
     }
 
