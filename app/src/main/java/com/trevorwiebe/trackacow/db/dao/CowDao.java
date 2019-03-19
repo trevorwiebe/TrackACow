@@ -26,8 +26,8 @@ public interface CowDao {
     @Query("SELECT * FROM Cow WHERE lotId IN(:ids)")
     List<CowEntity> getCowEntitiesByLotIds(List<String> ids);
 
-    @Query("SELECT * FROM Cow WHERE isAlive = 0 AND lotId = :id")
-    List<CowEntity> getDeadCowEntitiesByLotId(String id);
+    @Query("SELECT * FROM Cow WHERE cowId IN(:ids) AND isAlive = 0")
+    List<CowEntity> getDeadCowEntitiesByLotIds(List<String> ids);
 
     @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
     void updateCowById(String id, int tagNumber, long date, String notes);

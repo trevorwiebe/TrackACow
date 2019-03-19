@@ -9,14 +9,14 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryDeadCowsByPenId extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
+public class QueryDeadCowsByLotIds extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
 
-    public OnDeadCowsLoaded mOnDeadCowsLoaded;
-    public String mPenId;
+    private OnDeadCowsLoaded mOnDeadCowsLoaded;
+    private ArrayList<String> mLotIds;
 
-    public QueryDeadCowsByPenId(OnDeadCowsLoaded onDeadCowsLoaded, String penId){
+    public QueryDeadCowsByLotIds(OnDeadCowsLoaded onDeadCowsLoaded, ArrayList<String> lotIds) {
         this.mOnDeadCowsLoaded = onDeadCowsLoaded;
-        this.mPenId = penId;
+        this.mLotIds = lotIds;
     }
 
     public interface OnDeadCowsLoaded{
@@ -25,7 +25,7 @@ public class QueryDeadCowsByPenId extends AsyncTask<Context, Void, ArrayList<Cow
 
     @Override
     protected ArrayList<CowEntity> doInBackground(Context... contexts) {
-        List<CowEntity> cowEntities = AppDatabase.getAppDatabase(contexts[0]).cowDao().getDeadCowEntitiesByLotId(mPenId);
+        List<CowEntity> cowEntities = AppDatabase.getAppDatabase(contexts[0]).cowDao().getDeadCowEntitiesByLotIds(mLotIds);
         return (ArrayList<CowEntity>) cowEntities;
     }
 

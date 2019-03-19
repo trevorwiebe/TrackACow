@@ -17,9 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -27,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MarkACowDeadActivity extends AppCompatActivity implements
-        QueryDeadCowsByPenId.OnDeadCowsLoaded {
+        QueryDeadCowsByLotIds.OnDeadCowsLoaded,
+        QueryLotsByPenId.OnLotsByPenIdLoaded {
 
     private CardView mDeadCowCard;
     private TextInputEditText mTagNumber;
@@ -36,7 +38,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
 
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
-    private PenEntity mSelectedPen;
+    private LotEntity mSelectedLot;
     private DatabaseReference mBaseRef;
     private ArrayList<CowEntity> mDeadCowList = new ArrayList<>();
 
@@ -45,8 +47,9 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_a_cow_dead);
 
+        String penId = getIntent().getStringExtra("penId");
 
-        mSelectedPen = getIntent().getParcelableExtra("penObject");
+        new QueryLotsByPenId(penId, this).execute(this);
 
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -56,7 +59,6 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         mNotes = findViewById(R.id.deads_notes);
 
         mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
-
         mDate.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
@@ -68,7 +70,6 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
                         .show();
             }
         });
-
         mStartDatePicker = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -104,8 +105,6 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             }
         });
 
-        new QueryDeadCowsByPenId(MarkACowDeadActivity.this, mSelectedPen.getPenId()).execute(MarkACowDeadActivity.this);
-
     }
 
     public void markAsDead(View view) {
@@ -118,7 +117,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
 
         DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
 
-        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedPen.getPenId());
+        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedLot.getLotId());
 
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);
@@ -163,5 +162,18 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             }
         }
         return null;
+    }
+
+    @Override
+    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
+        mSelectedLot = lotEntities.get(0);
+        ArrayList<String> lotIds = new ArrayList<>();
+        for (int e = 0; e < lotEntities.size(); e++) {
+            LotEntity lotEntity = lotEntities.get(e);
+            String lotId = lotEntity.getLotId();
+            lotIds.add(lotId);
+        }
+
+        new QueryDeadCowsByLotIds(MarkACowDeadActivity.this, lotIds).execute(MarkACowDeadActivity.this);
     }
 }

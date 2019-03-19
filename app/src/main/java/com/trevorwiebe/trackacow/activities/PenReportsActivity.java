@@ -33,7 +33,7 @@ import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByPenId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
 public class PenReportsActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
-        QueryDeadCowsByPenId.OnDeadCowsLoaded,
+        QueryDeadCowsByLotIds.OnDeadCowsLoaded,
         QueryPenById.OnPenByIdReturned{
 
     private static final String TAG = "PenReportsActivity";
@@ -129,7 +129,8 @@ public class PenReportsActivity extends AppCompatActivity implements
         mSelectedPen = penEntity;
         Log.d(TAG, "onPenByIdReturned: " + mSelectedPen.toString());
         new QueryAllDrugs(this).execute(this);
-        new QueryDeadCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+        // TODO: 3/19/2019 fix this: input is null
+        new QueryDeadCowsByLotIds(this, null).execute(this);
         updateUIWithPenInfo(penEntity);
     }
 
