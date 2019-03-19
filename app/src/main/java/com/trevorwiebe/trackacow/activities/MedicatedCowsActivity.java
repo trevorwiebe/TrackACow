@@ -68,8 +68,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
     private PenEntity mSelectedPen;
     private static final int MEDICATE_A_COW_CODE = 743;
-    private static final int VIEW_PEN_REPORTS_CODE = 345;
-    private boolean mIsActive;
+    private boolean mIsActive = false;
     private boolean shouldShowCouldntFindTag;
 
     private TextView mNoMedicatedCows;
@@ -120,9 +119,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 String id = lotPushRef.getKey();
                 LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId());
 
-                if(Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
+                if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
                     lotPushRef.setValue(lotEntity);
-                }else{
+                } else {
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
@@ -133,10 +132,13 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);
 
+                mNoMedicatedCows.setVisibility(View.VISIBLE);
                 setActive();
 
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
-                ab.setSubtitle(lotName);
+                if (ab != null) {
+                    ab.setSubtitle(lotName);
+                }
 
                 mLotName.setText("");
                 mCustomerName.setText("");
@@ -149,7 +151,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCowSwipeToRefresh = findViewById(R.id.medicated_cow_swipe_to_refresh);
         mMedicatedCows = findViewById(R.id.track_cow_rv);
         mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
-        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList, mDrugsGivenList,this);
+        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList, mDrugsGivenList, this);
         mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
 
         mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
@@ -186,24 +188,13 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == VIEW_PEN_REPORTS_CODE && resultCode == Activity.RESULT_OK){
-            if(data.getStringExtra("event").equals("deletion")){
-                mIsActive = false;
-                setInActive();
-                invalidateOptionsMenu();
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         String penId;
 
         if (getIntent().getStringExtra("penEntityId") == null) {
             penId = Utility.getPenId(MedicatedCowsActivity.this);
-        }else{
+        } else {
             penId = getIntent().getStringExtra("penEntityId");
         }
 
@@ -215,16 +206,13 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.track_cow_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
-        MenuItem reportsItem = menu.findItem(R.id.menu_reports);
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         if(mIsActive){
             searchItem.setVisible(true);
-            reportsItem.setVisible(true);
         }else{
             searchItem.setVisible(false);
-            reportsItem.setVisible(false);
         }
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -232,9 +220,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
-                if(s.length() >= 1) {
+                if (s.length() >= 1) {
                     mSelectedCows = findTags(s);
                     if (mSelectedCows.size() == 0 && shouldShowCouldntFindTag) {
                         mResultsNotFound.setVisibility(View.VISIBLE);
@@ -245,8 +234,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                     }
                     shouldShowCouldntFindTag = true;
                     mMedicatedCowsRecyclerViewAdapter.swapData(mSelectedCows, mDrugList, mDrugsGivenList);
-                }else{
-                    if(shouldShowCouldntFindTag) {
+                } else {
+                    if (shouldShowCouldntFindTag) {
                         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
                     }
                     mResultsNotFound.setVisibility(View.INVISIBLE);
@@ -257,16 +246,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             }
         });
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_reports){
-            Intent penReportsIntent = new Intent(MedicatedCowsActivity.this, PenReportsActivity.class);
-            penReportsIntent.putExtra("selectedPenId", mSelectedPen.getPenId());
-            startActivityForResult(penReportsIntent, VIEW_PEN_REPORTS_CODE);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -321,7 +300,12 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mTreatedCows = cowObjectList;
         mSelectedCows = cowObjectList;
 
-        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+        if (cowObjectList.size() == 0 && mIsActive) {
+            mNoMedicatedCows.setVisibility(View.VISIBLE);
+        } else {
+            mNoMedicatedCows.setVisibility(View.INVISIBLE);
+            mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+        }
     }
 
 
@@ -342,29 +326,28 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         startActivity(markCowDeadIntent);
     }
 
-    private ArrayList<CowEntity> findTags(String inputString){
+    private ArrayList<CowEntity> findTags(String inputString) {
         ArrayList<CowEntity> listToReturn = new ArrayList<>();
-        for(int e=0; e<mTreatedCows.size(); e++){
+        for (int e = 0; e < mTreatedCows.size(); e++) {
             CowEntity cowEntity = mTreatedCows.get(e);
             String tag = Integer.toString(cowEntity.getTagNumber());
-            if(tag.startsWith(inputString)){
+            if (tag.startsWith(inputString)) {
                 listToReturn.add(cowEntity);
             }
         }
         return listToReturn;
     }
 
-    private void setActive(){
+    private void setActive() {
         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-//        new QueryDrugsGivenByLotIds(this, mSelectedPen.getPenId()).execute(this);
         mPenIdleLayout.setVisibility(View.GONE);
         mMedicatedCows.setVisibility(View.VISIBLE);
         shouldShowCouldntFindTag = true;
-        invalidateOptionsMenu();
         mIsActive = true;
+        invalidateOptionsMenu();
     }
 
-    private void setInActive(){
+    private void setInActive() {
         mIsActive = false;
         mNoMedicatedCows.setVisibility(View.GONE);
         mMedicateACowFabMenu.setVisibility(View.GONE);

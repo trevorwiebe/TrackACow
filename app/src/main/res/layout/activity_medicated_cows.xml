@@ -60,7 +60,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:text="There are no medicated cows in this pen. Tap the + button to add one."
+        android:text="There are no medicated cows in this lot. Tap the + button to add one."
         android:textColor="@android:color/darker_gray"
         android:textSize="16sp"
         android:visibility="invisible" />
@@ -207,7 +207,7 @@
                 android:background="@color/colorAccent"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="Add to pen"
+                android:text="Add lot to pen"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
