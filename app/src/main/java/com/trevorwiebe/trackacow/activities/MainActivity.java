@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -38,26 +37,26 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
-import com.trevorwiebe.trackacow.dataLoaders.DeleteLocalHoldingData;
 import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.services.SyncDatabase;
+import com.trevorwiebe.trackacow.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
+import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         QueryAllPens.OnPensLoaded,
-        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned,
-        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
+        SyncDatabase.OnDatabaseSynced {
 
     private static final String TAG = "MainActivity";
 
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
     private ArrayList<PenEntity> mPenList = new ArrayList<>();
-    private DatabaseReference mBaseRef;
     private static final int SIGN_IN_CODE = 37;
 
     private LinearLayout mNoConnectionLayout;
@@ -73,11 +71,6 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mNoPensTv;
     private RecyclerView mPenRv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
-    private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,16 +143,7 @@ public class MainActivity extends AppCompatActivity implements
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (Utility.haveNetworkConnection(MainActivity.this)) {
-                    if (Utility.isThereNewDataToUpload(MainActivity.this)) {
-                        new InsertAllLocalChangeToCloud(mBaseRef, MainActivity.this).execute(MainActivity.this);
-                    } else {
-                        getCloudDataAndSetRvAndInsertToLocalDB();
-                    }
-                } else {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(MainActivity.this, "Network not available", Toast.LENGTH_SHORT).show();
-                }
+                new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
             }
         });
     }
@@ -230,23 +214,6 @@ public class MainActivity extends AppCompatActivity implements
         setPenRecyclerView();
     }
 
-    @Override
-    public void onAllLocalDbInsertedToCloud() {
-        new DeleteLocalHoldingData().execute(MainActivity.this);
-        getCloudDataAndSetRvAndInsertToLocalDB();
-    }
-
-    @Override
-    public void onDatabaseCloned() {
-        mCowEntityUpdateList.clear();
-        mDrugEntityUpdateList.clear();
-        mDrugsGivenEntityUpdateList.clear();
-        mPenEntityUpdateList.clear();
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
     public void signInButton(View view) {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
@@ -264,28 +231,22 @@ public class MainActivity extends AppCompatActivity implements
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
 
-        mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        if (Utility.haveNetworkConnection(this)) {
-            mLoadingMain.setVisibility(View.VISIBLE);
-            if(Utility.isThereNewDataToUpload(this)){
-                new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
-            }else{
-                getCloudDataAndSetRvAndInsertToLocalDB();
-            }
-        }
+        mLoadingMain.setVisibility(View.VISIBLE);
+        new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
 
         new QueryAllPens(MainActivity.this).execute(MainActivity.this);
 
-
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
+        int periodicity = (int) TimeUnit.HOURS.toSeconds(24);
+        int toleranceInterval = (int) TimeUnit.HOURS.toSeconds(3);
+
         Job syncDatabase = dispatcher.newJobBuilder()
-                .setService(SyncDatabase.class)
+                .setService(SyncDatabaseService.class)
                 .setTag("sync_database_job_tag")
                 .setRecurring(true)
                 .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(0, 86400))
+                .setTrigger(Trigger.executionWindow(periodicity, periodicity + toleranceInterval))
                 .setConstraints(
                         Constraint.DEVICE_CHARGING,
                         Constraint.ON_UNMETERED_NETWORK,
@@ -302,67 +263,6 @@ public class MainActivity extends AppCompatActivity implements
         mPenRecyclerViewAdapter.swapData(mPenList);
     }
 
-    private void getCloudDataAndSetRvAndInsertToLocalDB(){
-        mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    if (key != null) {
-                        switch (key) {
-                            case "cows":
-                                for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
-                                    CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
-                                    if (cowEntity != null) {
-                                        mCowEntityUpdateList.add(cowEntity);
-                                    }
-                                }
-                                break;
-                            case "drugs":
-                                for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
-                                    DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
-                                    if (drugEntity != null) {
-                                        mDrugEntityUpdateList.add(drugEntity);
-                                    }
-                                }
-                                break;
-                            case "pens":
-                                mPenList.clear();
-                                for (DataSnapshot penSnapshot : snapshot.getChildren()) {
-                                    PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
-                                    if (penEntity != null) {
-                                        mPenList.add(penEntity);
-                                        mPenEntityUpdateList.add(penEntity);
-                                    }
-                                }
-                                break;
-                            case "drugsGiven":
-                                for(DataSnapshot drugsGivenSnapShot : snapshot.getChildren()){
-                                    DrugsGivenEntity drugsGivenEntity = drugsGivenSnapShot.getValue(DrugsGivenEntity.class);
-                                    if(drugsGivenEntity != null){
-                                        mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
-                                    }
-                                }
-                                break;
-                            default:
-                                Log.e(TAG, "onDataChange: unknown snapshot key");
-                        }
-                    }
-                }
-
-                new CloneCloudDatabaseToLocalDatabase(MainActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MainActivity.this);
-
-                mLoadingMain.setVisibility(View.INVISIBLE);
-                setPenRecyclerView();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void setPenRecyclerView() {
         if (mPenList.size() == 0) {
             mNoPensTv.setVisibility(View.VISIBLE);
@@ -377,5 +277,11 @@ public class MainActivity extends AppCompatActivity implements
         });
         mPenRecyclerViewAdapter.swapData(mPenList);
         mPenRv.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDatabaseSynced(int resultCode) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        mLoadingMain.setVisibility(View.INVISIBLE);
     }
 }

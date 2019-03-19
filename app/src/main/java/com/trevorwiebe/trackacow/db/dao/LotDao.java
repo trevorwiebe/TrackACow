@@ -16,6 +16,9 @@ public interface LotDao {
     @Insert
     void insertLot(LotEntity lotEntity);
 
+    @Insert
+    void insertLotEntityList(List<LotEntity> lotEntities);
+
     @Query("SELECT * FROM lot")
     List<LotEntity> getLotEntityList();
 
@@ -24,6 +27,9 @@ public interface LotDao {
 
     @Update
     void updateLotEntity(LotEntity lotEntity);
+
+    @Query("DELETE FROM lot")
+    void deleteLotEntityList();
 
     @Delete
     void deleteLotEntity(LotEntity lotEntity);

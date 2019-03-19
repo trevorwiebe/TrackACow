@@ -46,14 +46,12 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CowDao cowDao();
     public abstract DrugsGivenDao drugsGivenDao();
     public abstract DrugDao drugDao();
-
     public abstract LotDao lotDao();
 
     public abstract HoldingPenDao holdingPenDao();
     public abstract HoldingCowDao holdingCowDao();
     public abstract HoldingDrugsGivenDao holdingDrugsGivenDao();
     public abstract HoldingDrugDao holdingDrugDao();
-
     public abstract HoldingLotDao holdingLotDao();
 
     public static AppDatabase getAppDatabase(Context context){

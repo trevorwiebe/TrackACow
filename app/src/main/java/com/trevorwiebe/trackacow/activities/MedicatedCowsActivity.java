@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +40,9 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -49,7 +52,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryLotsByPenId.OnLotsByPenIdLoaded,
         QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
-        QueryMedicatedCowsByLotIds.OnCowsByLotIdLoaded {
+        QueryMedicatedCowsByLotIds.OnCowsByLotIdLoaded,
+        SyncDatabase.OnDatabaseSynced {
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -65,10 +69,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private static final int VIEW_PEN_REPORTS_CODE = 345;
     private boolean mIsActive;
     private boolean shouldShowCouldntFindTag;
-    private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
-    private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
 
     private TextView mNoMedicatedCows;
     private SearchView mSearchView;
@@ -169,7 +169,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCowSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                new SyncDatabase(MedicatedCowsActivity.this, MedicatedCowsActivity.this).beginSync();
             }
         });
 
@@ -371,17 +371,11 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         invalidateOptionsMenu();
     }
 
-    private ArrayList<CowEntity> getCowEntitiesByLotId(String lotId) {
-        ArrayList<CowEntity> cowEntities = new ArrayList<>();
-        if (mCowEntityUpdateList != null) {
-            for (int x = 0; x < mCowEntityUpdateList.size(); x++) {
-                CowEntity cowEntity = mCowEntityUpdateList.get(x);
-                if (cowEntity.getLotId().equals(lotId)) {
-                    cowEntities.add(cowEntity);
-                }
-            }
+    @Override
+    public void onDatabaseSynced(int resultCode) {
+        if (resultCode != Constants.SUCCESS) {
+            Toast.makeText(this, "Failed to sync database", Toast.LENGTH_SHORT).show();
         }
-        return cowEntities;
+        mMedicatedCowSwipeToRefresh.setRefreshing(false);
     }
-
 }

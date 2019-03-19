@@ -1,68 +1,47 @@
-package com.trevorwiebe.trackacow.services;
+package com.trevorwiebe.trackacow.dataLoaders;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 
-import com.firebase.jobdispatcher.JobParameters;
-import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.utils.Utility;
+import com.trevorwiebe.trackacow.utils.Constants;
 
 import java.util.ArrayList;
 
-public class SyncDatabase extends JobService implements
-        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud,
-        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
+public class QueryAllCloudData {
 
-    private static final String TAG = "SyncDatabase";
+    private static final String TAG = "QueryAllCloudData";
 
+    private DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
     private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
+    private ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
 
-    private DatabaseReference mBaseRef;
+    public OnAllCloudDataLoaded onAllCloudDataLoaded;
 
-    @Override
-    public boolean onStartJob(@NonNull JobParameters job) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            Utility.setNewDataToUpload(this, false);
-
-            mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            new InsertAllLocalChangeToCloud(mBaseRef, this).execute(this);
-
-            return true;
-
-        } else {
-            return false;
-        }
+    public QueryAllCloudData(OnAllCloudDataLoaded onAllCloudDataLoaded) {
+        this.onAllCloudDataLoaded = onAllCloudDataLoaded;
     }
 
-    @Override
-    public boolean onStopJob(@NonNull JobParameters job) {
-        String channelId = getResources().getString(R.string.sync_notif_channel_id);
-        Utility.showNotification(this, channelId, "Database synced", "Data synced successfully");
-        return false;
+    public interface OnAllCloudDataLoaded {
+        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities);
     }
 
-    @Override
-    public void onAllLocalDbInsertedToCloud() {
-        mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void loadCloudData() {
+        baseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -101,24 +80,31 @@ public class SyncDatabase extends JobService implements
                                     }
                                 }
                                 break;
+                            case "cattleLot":
+                                for (DataSnapshot lotSnapshot : snapshot.getChildren()) {
+                                    LotEntity lotEntity = lotSnapshot.getValue(LotEntity.class);
+                                    if (lotEntity != null) {
+                                        mLotEntityList.add(lotEntity);
+                                    }
+                                }
+                                break;
                             default:
-                                Log.e(TAG, "onDataChange: unknown snapshot key");
+                                Log.e(TAG, "onDataChange: unknown snapshot key " + key);
+                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
+                                break;
                         }
                     }
                 }
 
-                new CloneCloudDatabaseToLocalDatabase(SyncDatabase.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(getApplicationContext());
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
             }
         });
-    }
-
-    @Override
-    public void onDatabaseCloned() {
 
     }
 }

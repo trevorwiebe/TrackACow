@@ -2,10 +2,13 @@ package com.trevorwiebe.trackacow.dataLoaders;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -15,28 +18,29 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.List;
 
-public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> {
+public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Integer> {
 
     private static final String TAG = "InsertAllLocalChangeToC";
 
-    private DatabaseReference baseRef;
+    private DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
     private OnAllLocalDbInsertedToCloud mOnAllLocalDbInsertedToCloud;
 
-    public InsertAllLocalChangeToCloud(DatabaseReference baseRef, OnAllLocalDbInsertedToCloud onAllLocalDbInsertedToCloud){
-        this.baseRef = baseRef;
+    public InsertAllLocalChangeToCloud(OnAllLocalDbInsertedToCloud onAllLocalDbInsertedToCloud) {
         this.mOnAllLocalDbInsertedToCloud = onAllLocalDbInsertedToCloud;
     }
 
     public interface OnAllLocalDbInsertedToCloud{
-        void onAllLocalDbInsertedToCloud();
+        void onAllLocalDbInsertedToCloud(int resultCode);
     }
 
     @Override
-    protected Void doInBackground(Context... contexts) {
+    protected Integer doInBackground(Context... contexts) {
 
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);
 
@@ -120,12 +124,12 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
         }
         db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
 
-        return null;
+        return Constants.SUCCESS;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        mOnAllLocalDbInsertedToCloud.onAllLocalDbInsertedToCloud();
+    protected void onPostExecute(Integer resultCode) {
+        super.onPostExecute(resultCode);
+        mOnAllLocalDbInsertedToCloud.onAllLocalDbInsertedToCloud(resultCode);
     }
 }
