@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_medicate"
+        android:title="Medicate"
+        android:icon="@drawable/ic_drugs_black_24dp" />
+
+    <item
+        android:id="@+id/action_feed"
+        android:title="Feed"
+        android:icon="@drawable/ic_pen_black_24dp" />
+
+    <item
+        android:id="@+id/action_reports"
+        android:title="Reports"
+        android:icon="@drawable/ic_reports_black_24dp" />
+</menu>

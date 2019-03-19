@@ -3,6 +3,9 @@ package com.trevorwiebe.trackacow.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +45,9 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.fragments.FeedFragment;
+import com.trevorwiebe.trackacow.fragments.MedicateFragment;
+import com.trevorwiebe.trackacow.fragments.ReportsFragment;
 import com.trevorwiebe.trackacow.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
@@ -55,22 +61,17 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        QueryAllPens.OnPensLoaded,
         SyncDatabase.OnDatabaseSynced {
 
     private static final String TAG = "MainActivity";
 
+    private static final int SIGN_IN_CODE = 838;
+
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-    private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
-    private ArrayList<PenEntity> mPenList = new ArrayList<>();
-    private static final int SIGN_IN_CODE = 37;
 
-    private LinearLayout mNoConnectionLayout;
-    private ProgressBar mLoadingMain;
-    private TextView mNoPensTv;
-    private RecyclerView mPenRv;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private BottomNavigationView mBottomNavigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,34 +89,43 @@ public class MainActivity extends AppCompatActivity implements
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        mBottomNavigationView = findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.setVisibility(View.INVISIBLE);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.action_medicate:
+                        Log.d(TAG, "onNavigationItemSelected: here");
+                        setTitle("Medicate");
+                        MedicateFragment medicateFragment = new MedicateFragment();
+                        FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
+                        medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
+                        medicateTransactionManager.commit();
+                        break;
+                    case R.id.action_feed:
+                        setTitle("Feed");
+                        FeedFragment feedFragment = new FeedFragment();
+                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
+                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
+                        feedTransactionManager.commit();
+                        break;
+                    case R.id.action_reports:
+                        setTitle("Reports");
+                        ReportsFragment reportsFragment = new ReportsFragment();
+                        FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
+                        reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
+                        reportsTransactionManager.commit();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        mSwipeRefreshLayout = findViewById(R.id.main_swipe_refresh_layout);
-        mNoPensTv = findViewById(R.id.no_pens_tv);
-        mLoadingMain = findViewById(R.id.loading_main);
-        mNoConnectionLayout = findViewById(R.id.no_connection_and_signed_out_layout);
-        mPenRv = findViewById(R.id.main_rv);
-        mPenRv.setLayoutManager(new LinearLayoutManager(this));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, false, this);
-        mPenRv.setAdapter(mPenRecyclerViewAdapter);
-
-        mPenRv.addOnItemTouchListener(new ItemClickListener(this, mPenRv,
-                new ItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent trackCowIntent = new Intent(MainActivity.this, MedicatedCowsActivity.class);
-                        String penId = mPenList.get(position).getPenId();
-                        Utility.setPenId(MainActivity.this, penId);
-                        trackCowIntent.putExtra("penEntityId", penId);
-                        startActivity(trackCowIntent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-                }));
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -124,28 +134,16 @@ public class MainActivity extends AppCompatActivity implements
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
 
-                    mLoadingMain.setVisibility(View.INVISIBLE);
-                    mPenRv.setVisibility(View.INVISIBLE);
-
                     if (Utility.haveNetworkConnection(MainActivity.this)) {
                         onSignedOutCleanUp();
                         Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
                         startActivityForResult(signInIntent, SIGN_IN_CODE);
-                    } else {
-                        mNoConnectionLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
                     onSignedInInitialized(user);
                 }
             }
         };
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
-            }
-        });
     }
 
     @Override
@@ -208,20 +206,7 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
-    public void onPensLoaded(ArrayList<PenEntity> penObjectList) {
-        mPenList = penObjectList;
-        setPenRecyclerView();
-    }
-
-    public void signInButton(View view) {
-        mFirebaseAuth.addAuthStateListener(mAuthListener);
-    }
-
     private void onSignedInInitialized(FirebaseUser user) {
-
-        mNoConnectionLayout.setVisibility(View.INVISIBLE);
-        mPenRv.setVisibility(View.INVISIBLE);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -231,10 +216,7 @@ public class MainActivity extends AppCompatActivity implements
         userName.setText(user.getDisplayName());
         userEmail.setText(user.getEmail());
 
-        mLoadingMain.setVisibility(View.VISIBLE);
         new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
-
-        new QueryAllPens(MainActivity.this).execute(MainActivity.this);
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
@@ -255,33 +237,24 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
         dispatcher.mustSchedule(syncDatabase);
+
+        mBottomNavigationView.setVisibility(View.VISIBLE);
+
+        // open the medicate fragment
+        setTitle("Medicate");
+        mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
+        MedicateFragment medicateFragment = new MedicateFragment();
+        FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
+        medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
+        medicateTransactionManager.commit();
     }
 
     private void onSignedOutCleanUp() {
         new DeleteAllLocalData().execute(MainActivity.this);
-        mPenList.clear();
-        mPenRecyclerViewAdapter.swapData(mPenList);
-    }
-
-    private void setPenRecyclerView() {
-        if (mPenList.size() == 0) {
-            mNoPensTv.setVisibility(View.VISIBLE);
-        } else {
-            mNoPensTv.setVisibility(View.INVISIBLE);
-        }
-        Collections.sort(mPenList, new Comparator<PenEntity>() {
-            @Override
-            public int compare(PenEntity pen1, PenEntity pen2) {
-                return pen1.getPenName().compareTo(pen2.getPenName());
-            }
-        });
-        mPenRecyclerViewAdapter.swapData(mPenList);
-        mPenRv.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onDatabaseSynced(int resultCode) {
-        mSwipeRefreshLayout.setRefreshing(false);
-        mLoadingMain.setVisibility(View.INVISIBLE);
     }
+
 }

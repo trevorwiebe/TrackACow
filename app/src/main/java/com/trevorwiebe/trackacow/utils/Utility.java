@@ -116,13 +116,13 @@ public class Utility {
         return sharedPreferences.getBoolean(context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), false);
     }
 
-    public static void setPenId(Activity activity, String penId) {
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                activity.getApplicationContext().getResources().getString(R.string.save_pen_id_name),
+    public static void setPenId(Context context, String penId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getApplicationContext().getResources().getString(R.string.save_pen_id_name),
                 Context.MODE_PRIVATE
         );
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(activity.getApplicationContext().getResources().getString(R.string.save_pen_id_key), penId);
+        editor.putString(context.getApplicationContext().getResources().getString(R.string.save_pen_id_key), penId);
         editor.apply();
     }
 
