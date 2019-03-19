@@ -99,7 +99,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                                 DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                 String drugsGivenKey = drugsGivenPushRef.getKey();
-                                drugsGivenEntity.setPenId(mCowEntity.getPenId());
+                                drugsGivenEntity.setLotId(mCowEntity.getLotId());
                                 drugsGivenEntity.setDrugGivenId(drugsGivenKey);
 
                                 if (Utility.haveNetworkConnection(AddDrugsGivenToSpecificCowActivity.this)) {
@@ -142,7 +142,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                         holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                         holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
                         holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
-                        holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
+                        holdingDrugsGivenEntity.setLotId(drugsGivenEntity.getLotId());
 
                         holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                     }

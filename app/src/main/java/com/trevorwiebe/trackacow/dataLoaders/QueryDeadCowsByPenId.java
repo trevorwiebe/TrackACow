@@ -25,7 +25,7 @@ public class QueryDeadCowsByPenId extends AsyncTask<Context, Void, ArrayList<Cow
 
     @Override
     protected ArrayList<CowEntity> doInBackground(Context... contexts) {
-        List<CowEntity> cowEntities = AppDatabase.getAppDatabase(contexts[0]).cowDao().getDeadCowEntitiesByPenId(mPenId);
+        List<CowEntity> cowEntities = AppDatabase.getAppDatabase(contexts[0]).cowDao().getDeadCowEntitiesByLotId(mPenId);
         return (ArrayList<CowEntity>) cowEntities;
     }
 

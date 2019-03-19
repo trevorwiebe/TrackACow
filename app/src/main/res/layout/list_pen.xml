@@ -17,7 +17,8 @@
             android:text="Pen:"
             android:textStyle="bold"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
             android:textSize="16sp"
             android:textColor="@android:color/black"
@@ -27,25 +28,14 @@
         <TextView
             android:id="@+id/pen"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
-            android:text="Test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/is_pen_active"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <View
         android:background="@android:color/darker_gray"

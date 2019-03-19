@@ -34,7 +34,7 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByPenId;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
@@ -50,7 +50,7 @@ import java.util.ArrayList;
 
 public class PenReportsActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
+        QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
         QueryDeadCowsByPenId.OnDeadCowsLoaded,
         QueryPenById.OnPenByIdReturned{
 
@@ -111,7 +111,7 @@ public class PenReportsActivity extends AppCompatActivity implements
         int id = item.getItemId();
         if(id == R.id.reports_action_edit){
             Intent editPenIntent = new Intent(PenReportsActivity.this, EditPenActivity.class);
-            editPenIntent.putExtra("selectedPen", mSelectedPen);
+            editPenIntent.putExtra("selectedPenId", mSelectedPen.getPenId());
             startActivityForResult(editPenIntent, EDIT_PEN_CODE);
         }
         return super.onOptionsItemSelected(item);
@@ -136,24 +136,25 @@ public class PenReportsActivity extends AppCompatActivity implements
     @Override
     public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
         int numberDead = cowEntities.size();
-        int total = mSelectedPen.getTotalHead();
+//        int total = mSelectedPen.getTotalHead();
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        float percent = (numberDead * 100.f) / total;
+//        float percent = (numberDead * 100.f) / total;
 
         mTotalDeathLoss.setText(Integer.toString(numberDead) + " dead");
-        mDeathLossPercentage.setText(decimalFormat.format(percent) + "%");
+//        mDeathLossPercentage.setText(decimalFormat.format(percent) + "%");
 
     }
 
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
-        new QueryDrugsGivenByPenId(this, mSelectedPen.getPenId()).execute(this);
+        // TODO: 3/19/2019 fix this: input is null
+        new QueryDrugsGivenByLotIds(this, null).execute(this);
     }
 
     @Override
-    public void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+    public void onDrugsGivenByLotIdLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
 
         ArrayList<DrugReportsObject> drugReports = new ArrayList<>();
         mDrugGivenList = drugsGivenEntities;
@@ -218,13 +219,14 @@ public class PenReportsActivity extends AppCompatActivity implements
                 public void onClick(DialogInterface dialogInterface, int i) {
 
                     final String penId = mSelectedPen.getPenId();
-                    mSelectedPen.setNotes("");
-                    mSelectedPen.setTotalHead(0);
-                    mSelectedPen.setCustomerName("");
-                    mSelectedPen.setIsActive(0);
+//                    mSelectedPen.setNotes("");
+//                    mSelectedPen.setTotalHead(0);
+//                    mSelectedPen.setCustomerName("");
+//                    mSelectedPen.setIsActive(0);
 
                     if(Utility.haveNetworkConnection(PenReportsActivity.this)){
-                        Query deleteCowsQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(penId);
+                        // TODO: 3/19/2019 fix: change penId to lotId
+                        Query deleteCowsQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.LOT_ID).equalTo(penId);
                         deleteCowsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -241,20 +243,21 @@ public class PenReportsActivity extends AppCompatActivity implements
                             }
                         });
 
-                        Query drugsGivenQuery = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.PEN_ID).equalTo(penId);
-                        drugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    snapshot.getRef().removeValue();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                        // TODO: 3/19/2019 fix
+//                        Query drugsGivenQuery = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.LOT_ID).equalTo(lotId);
+//                        drugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                    snapshot.getRef().removeValue();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
                         mBaseRef.child(PenEntity.PEN_OBJECT).child(penId).setValue(mSelectedPen);
 
@@ -265,11 +268,11 @@ public class PenReportsActivity extends AppCompatActivity implements
                         HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
                         holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
                         holdingPenEntity.setPenId(mSelectedPen.getPenId());
-                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
+//                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
                         holdingPenEntity.setPenName(mSelectedPen.getPenName());
-                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
-                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
-                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
+//                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
+//                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
+//                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
 
                         new InsertHoldingPen(holdingPenEntity).execute(PenReportsActivity.this);
 
@@ -282,7 +285,8 @@ public class PenReportsActivity extends AppCompatActivity implements
                             holdingDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
                             holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
                             holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
-                            holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
+                            // TODO: 3/19/2019 fix
+//                            holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
                             holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                         }
                         new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(PenReportsActivity.this);
@@ -342,12 +346,12 @@ public class PenReportsActivity extends AppCompatActivity implements
         if(penEntity != null) {
             String activityTitle = "Pen " + penEntity.getPenName() + " reports";
             setTitle(activityTitle);
-            String customerName = penEntity.getCustomerName();
-            String totalHead = Integer.toString(penEntity.getTotalHead());
-            String notes = penEntity.getNotes();
-            mCustomerName.setText(customerName);
-            mTotalHead.setText(totalHead);
-            mNotes.setText(notes);
+//            String customerName = penEntity.getCustomerName();
+//            String totalHead = Integer.toString(penEntity.getTotalHead());
+//            String notes = penEntity.getNotes();
+//            mCustomerName.setText(customerName);
+//            mTotalHead.setText(totalHead);
+//            mNotes.setText(notes);
         }
     }
 

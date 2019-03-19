@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="invisible"
         app:fab_addButtonColorNormal="@color/colorAccent"
         app:fab_addButtonColorPressed="@color/colorAccent"
         app:fab_labelStyle="@style/menu_labels_style">
@@ -121,7 +122,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginRight="16dp"
                 android:gravity="center"
-                android:text="This pen is idle"
+                android:text="This pen is empty"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
@@ -129,7 +130,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Fill in the blanks below, then mark the pen as active to continue" />
+                android:text="Fill in the blanks below, and then add the lot of cattle to the pen." />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/lot_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:ems="12"
+                    android:hint="Lot description"
+                    android:inputType="textCapWords"
+                    android:textSize="16sp" />
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
@@ -142,7 +160,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:ems="11"
+                    android:ems="12"
                     android:hint="Customer name"
                     android:inputType="textCapWords"
                     android:textSize="16sp" />
@@ -159,7 +177,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:ems="11"
+                    android:ems="12"
                     android:hint="Total head"
                     android:inputType="number"
                     android:textSize="16sp" />
@@ -189,7 +207,7 @@
                 android:background="@color/colorAccent"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="Mark as active"
+                android:text="Add to pen"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

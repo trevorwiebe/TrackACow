@@ -123,7 +123,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
                     holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
-                    holdingCowEntity.setPenId(mCowEntity.getPenId());
+                    holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
                     holdingCowEntity.setIsAlive(mCowEntity.isAlive());
                     holdingCowEntity.setDate(mCalendar.getTimeInMillis());
@@ -151,7 +151,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
                     holdingCowEntity.setWhatHappened(Utility.DELETE);
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
-                    holdingCowEntity.setPenId(mCowEntity.getPenId());
+                    holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
                     holdingCowEntity.setIsAlive(mCowEntity.isAlive());
                     holdingCowEntity.setDate(mCowEntity.getDate());

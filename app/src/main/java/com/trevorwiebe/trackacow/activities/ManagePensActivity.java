@@ -68,6 +68,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                 addNewPen.setTitle("Add new pen");
                 View dialogEditText = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_edit_text, null);
                 addNewPen.setView(dialogEditText);
+                // TODO: 3/19/2019 make this dialog its own editText
                 final EditText dialogEditTextEditText = dialogEditText.findViewById(R.id.dialog_edit_text_edit_text);
                 addNewPen.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
@@ -78,7 +79,7 @@ public class ManagePensActivity extends AppCompatActivity implements
 
                                 DatabaseReference pushRef = mPenRef.push();
                                 String key = pushRef.getKey();
-                                PenEntity penEntity = new PenEntity(key, "", 0, "", penName, 0);
+                                PenEntity penEntity = new PenEntity(key, penName);
 
                                 if(Utility.haveNetworkConnection(ManagePensActivity.this)){
                                     pushRef.setValue(penEntity);
@@ -88,16 +89,13 @@ public class ManagePensActivity extends AppCompatActivity implements
                                     HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
                                     holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
                                     holdingPenEntity.setPenId(penEntity.getPenId());
-                                    holdingPenEntity.setIsActive(penEntity.getIsActive());
                                     holdingPenEntity.setPenName(penEntity.getPenName());
-                                    holdingPenEntity.setCustomerName(penEntity.getCustomerName());
-                                    holdingPenEntity.setTotalHead(penEntity.getTotalHead());
-                                    holdingPenEntity.setNotes(penEntity.getNotes());
 
                                     new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                                 }
                                 new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
                             }else{
+                                // TODO: 3/19/2019 add error catching like in the sign in activity email format error
                                 Snackbar.make(view, "This name is already taken", Snackbar.LENGTH_LONG).show();
                             }
                         }
@@ -139,11 +137,11 @@ public class ManagePensActivity extends AppCompatActivity implements
                                     Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
                                     HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                    holdingPenEntity.setNotes(selectedPenEntity.getNotes());
-                                    holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
-                                    holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
+//                                    holdingPenEntity.setNotes(selectedPenEntity.getNotes());
+//                                    holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
+//                                    holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
                                     holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-                                    holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
+//                                    holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
                                     holdingPenEntity.setPenId(selectedPenEntity.getPenId());
                                     holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
 
@@ -171,7 +169,8 @@ public class ManagePensActivity extends AppCompatActivity implements
                             String id = selectedPenEntity.getPenId();
                             mPenRef.child(id).removeValue();
 
-                            Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.PEN_ID).equalTo(id);
+                            // TODO: 3/19/2019 fix: change id to lotId
+                            Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.LOT_ID).equalTo(id);
                             cowQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -190,11 +189,11 @@ public class ManagePensActivity extends AppCompatActivity implements
                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
                             HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                            holdingPenEntity.setNotes(selectedPenEntity.getNotes());
-                            holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
-                            holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
+//                            holdingPenEntity.setNotes(selectedPenEntity.getNotes());
+//                            holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
+//                            holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
                             holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-                            holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
+//                            holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
                             holdingPenEntity.setPenId(selectedPenEntity.getPenId());
                             holdingPenEntity.setWhatHappened(Utility.DELETE);
 

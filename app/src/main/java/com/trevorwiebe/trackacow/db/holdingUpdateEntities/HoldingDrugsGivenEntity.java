@@ -25,8 +25,8 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "cowId")
     public String cowId;
 
-    @ColumnInfo(name = "penId")
-    public String penId;
+    @ColumnInfo(name = "lotId")
+    public String lotId;
 
     @ColumnInfo(name = "whatHappened")
     public int whatHappened;
@@ -73,12 +73,12 @@ public class HoldingDrugsGivenEntity {
         this.cowId = cowId;
     }
 
-    public String getPenId() {
-        return penId;
+    public String getLotId() {
+        return lotId;
     }
 
-    public void setPenId(String penId) {
-        this.penId = penId;
+    public void setLotId(String lotId) {
+        this.lotId = lotId;
     }
 
     public int getWhatHappened() {

@@ -10,10 +10,10 @@ import android.support.annotation.Keep;
 
 @Keep
 @Entity(tableName = "DrugsGiven")
-public class DrugsGivenEntity implements Parcelable {
+public class DrugsGivenEntity {
 
     public static final String DRUGS_GIVEN = "drugsGiven";
-    public static final String PEN_ID = "penId";
+    public static final String LOT_ID = "lotId";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -31,15 +31,15 @@ public class DrugsGivenEntity implements Parcelable {
     @ColumnInfo(name = "cowId")
     public String cowId;
 
-    @ColumnInfo(name = "penId")
-    public String penId;
+    @ColumnInfo(name = "lotId")
+    public String lotId;
 
-    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, String cowId, String penId) {
+    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, String cowId, String lotId) {
         this.drugGivenId = drugGivenId;
         this.drugId = drugId;
         this.amountGiven = amountGiven;
         this.cowId = cowId;
-        this.penId = penId;
+        this.lotId = lotId;
     }
 
     @Ignore
@@ -85,47 +85,11 @@ public class DrugsGivenEntity implements Parcelable {
         this.cowId = cowId;
     }
 
-    public String getPenId() {
-        return penId;
+    public String getLotId() {
+        return lotId;
     }
 
-    public void setPenId(String penId) {
-        this.penId = penId;
+    public void setLotId(String lotId) {
+        this.lotId = lotId;
     }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.primaryKey);
-        dest.writeString(this.drugGivenId);
-        dest.writeString(this.drugId);
-        dest.writeInt(this.amountGiven);
-        dest.writeString(this.cowId);
-        dest.writeString(this.penId);
-    }
-
-    protected DrugsGivenEntity(Parcel in) {
-        this.primaryKey = in.readInt();
-        this.drugGivenId = in.readString();
-        this.drugId = in.readString();
-        this.cowId = in.readString();
-        this.penId = in.readString();
-    }
-
-    public static final Creator<DrugsGivenEntity> CREATOR = new Creator<DrugsGivenEntity>() {
-        @Override
-        public DrugsGivenEntity createFromParcel(Parcel source) {
-            return new DrugsGivenEntity(source);
-        }
-
-        @Override
-        public DrugsGivenEntity[] newArray(int size) {
-            return new DrugsGivenEntity[size];
-        }
-    };
 }

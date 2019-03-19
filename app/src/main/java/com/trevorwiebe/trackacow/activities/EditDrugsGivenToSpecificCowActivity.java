@@ -90,7 +90,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                         Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 
                         HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
-                        holdingDrugsGivenEntity.setPenId(mDrugsGivenEntity.getPenId());
+                        holdingDrugsGivenEntity.setLotId(mDrugsGivenEntity.getLotId());
                         holdingDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
                         holdingDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
                         holdingDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
@@ -124,7 +124,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                 Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 
                 HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
-                holdingDrugsGivenEntity.setPenId(mDrugsGivenEntity.getPenId());
+                holdingDrugsGivenEntity.setLotId(mDrugsGivenEntity.getLotId());
                 holdingDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
                 holdingDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
                 holdingDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());

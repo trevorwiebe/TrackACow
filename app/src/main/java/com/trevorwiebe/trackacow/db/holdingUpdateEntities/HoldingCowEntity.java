@@ -28,8 +28,8 @@ public class HoldingCowEntity {
     @ColumnInfo(name = "notes")
     public String notes;
 
-    @ColumnInfo(name = "penId")
-    public String penId;
+    @ColumnInfo(name = "lotId")
+    public String lotId;
 
     @ColumnInfo(name = "whatHappened")
     public int whatHappened;
@@ -84,12 +84,12 @@ public class HoldingCowEntity {
         this.notes = notes;
     }
 
-    public String getPenId() {
-        return penId;
+    public String getLotId() {
+        return lotId;
     }
 
-    public void setPenId(String penId) {
-        this.penId = penId;
+    public void setLotId(String lotId) {
+        this.lotId = lotId;
     }
 
     public int getWhatHappened() {

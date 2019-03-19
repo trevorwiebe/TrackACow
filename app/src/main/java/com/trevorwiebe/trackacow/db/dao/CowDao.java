@@ -8,6 +8,7 @@ import android.arch.persistence.room.Update;
 
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -22,17 +23,17 @@ public interface CowDao {
     @Query("SELECT * FROM Cow WHERE cowId = :id")
     CowEntity getCowById(String id);
 
-    @Query("SELECT * FROM Cow WHERE penId = :id")
-    List<CowEntity> getCowEntitiesByPenId(String id);
+    @Query("SELECT * FROM Cow WHERE lotId IN(:ids)")
+    List<CowEntity> getCowEntitiesByLotIds(List<String> ids);
 
-    @Query("SELECT * FROM Cow WHERE isAlive = 0 AND penId = :id")
-    List<CowEntity> getDeadCowEntitiesByPenId(String id);
+    @Query("SELECT * FROM Cow WHERE isAlive = 0 AND lotId = :id")
+    List<CowEntity> getDeadCowEntitiesByLotId(String id);
 
     @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
     void updateCowById(String id, int tagNumber, long date, String notes);
 
-    @Query("DELETE FROM Cow WHERE penId = :penId")
-    void deleteCowsByPenId(String penId);
+    @Query("DELETE FROM Cow WHERE lotId = :lotId")
+    void deleteCowsByLotId(String lotId);
 
     @Query("DELETE FROM cow")
     void deleteCowTable();

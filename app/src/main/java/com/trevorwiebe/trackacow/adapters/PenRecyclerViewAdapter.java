@@ -45,25 +45,6 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         String penName = penEntity.getPenName();
         penViewHolder.mPen.setText(penName);
 
-        if(isEditing){
-            penViewHolder.mIsPenActive.setVisibility(View.GONE);
-
-            final float scale = mContext.getResources().getDisplayMetrics().density;
-            int pixels16 = (int) (16 * scale + 0.5f);
-            int pixels8 = (int) (8 * scale + 0.5f);
-
-            penViewHolder.mPen.setPadding(0, pixels8, pixels8, pixels8);
-        }else {
-            int isActive = penEntity.getIsActive();
-            if (isActive == 1) {
-                penViewHolder.mIsPenActive.setText("Pen is active");
-                penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.greenText));
-            } else {
-                penViewHolder.mIsPenActive.setText("Pen is idle");
-                penViewHolder.mIsPenActive.setTextColor(mContext.getResources().getColor(R.color.redText));
-            }
-        }
-
     }
 
     public void swapData(ArrayList<PenEntity> penObjects){
@@ -76,13 +57,11 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
     public class PenViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mPen;
-        private TextView mIsPenActive;
 
         public PenViewHolder(View view){
             super(view);
 
             mPen = view.findViewById(R.id.pen);
-            mIsPenActive = view.findViewById(R.id.is_pen_active);
         }
     }
 }

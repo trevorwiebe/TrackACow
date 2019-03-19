@@ -129,7 +129,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
             holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
             holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
-            holdingCowEntity.setPenId(cowEntity.getPenId());
+            holdingCowEntity.setLotId(cowEntity.getLotId());
             holdingCowEntity.setNotes(cowEntity.getNotes());
             holdingCowEntity.setIsAlive(cowEntity.isAlive());
             holdingCowEntity.setDate(cowEntity.getDate());

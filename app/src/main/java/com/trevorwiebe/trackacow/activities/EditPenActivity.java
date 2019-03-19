@@ -52,9 +52,9 @@ public class EditPenActivity extends AppCompatActivity {
             }
         });
 
-        mCustomerName.setText(mSelectedPen.getCustomerName());
-        mTotalHead.setText(Integer.toString(mSelectedPen.getTotalHead()));
-        mNotes.setText(mSelectedPen.getNotes());
+//        mCustomerName.setText(mSelectedPen.getCustomerName());
+//        mTotalHead.setText(Integer.toString(mSelectedPen.getTotalHead()));
+//        mNotes.setText(mSelectedPen.getNotes());
 
         mUpdateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,9 +67,9 @@ public class EditPenActivity extends AppCompatActivity {
                     int totalHead = Integer.parseInt(mTotalHead.getText().toString());
                     String notes = mNotes.getText().toString();
 
-                    mSelectedPen.setCustomerName(customerName);
-                    mSelectedPen.setTotalHead(totalHead);
-                    mSelectedPen.setNotes(notes);
+//                    mSelectedPen.setCustomerName(customerName);
+//                    mSelectedPen.setTotalHead(totalHead);
+//                    mSelectedPen.setNotes(notes);
 
                     if(Utility.haveNetworkConnection(EditPenActivity.this)){
                         mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
@@ -78,11 +78,11 @@ public class EditPenActivity extends AppCompatActivity {
                         Utility.setNewDataToUpload(EditPenActivity.this, true);
 
                         HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
-                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
-                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
+//                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
+//                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
+//                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
                         holdingPenEntity.setPenName(mSelectedPen.getPenName());
-                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
+//                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
                         holdingPenEntity.setPenId(mSelectedPen.getPenId());
                         holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
 

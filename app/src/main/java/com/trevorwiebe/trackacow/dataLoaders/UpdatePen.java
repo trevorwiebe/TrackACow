@@ -18,12 +18,12 @@ public class UpdatePen extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        String customerName = penEntity.getCustomerName();
-        int totalHead = penEntity.getTotalHead();
-        String notes = penEntity.getNotes();
-        String penId = penEntity.getPenId();
-        int isActive = penEntity.getIsActive();
-        AppDatabase.getAppDatabase(contexts[0]).penDao().updatePenByFields(customerName, isActive, totalHead, notes, penId);
+//        String customerName = penEntity.getCustomerName();
+//        int totalHead = penEntity.getTotalHead();
+//        String notes = penEntity.getNotes();
+//        String penId = penEntity.getPenId();
+//        int isActive = penEntity.getIsActive();
+//        AppDatabase.getAppDatabase(contexts[0]).penDao().updatePenByFields(customerName, isActive, totalHead, notes, penId);
         return null;
     }
 }

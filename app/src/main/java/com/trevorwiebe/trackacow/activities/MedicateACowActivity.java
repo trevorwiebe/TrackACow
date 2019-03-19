@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.Layout;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +28,12 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowIdList;
-import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByLotIds;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
@@ -45,8 +44,9 @@ import java.util.ArrayList;
 
 public class MedicateACowActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryMedicatedCowsByPenId.OnCowsLoaded,
-        QueryDrugsGivenByCowIdList.OnDrugsGivenByCowIdListLoaded{
+        QueryMedicatedCowsByLotIds.OnCowsByLotIdLoaded,
+        QueryDrugsGivenByCowIdList.OnDrugsGivenByCowIdListLoaded,
+        QueryLotsByPenId.OnLotsByPenIdLoaded {
 
     private static final String TAG = "MedicateACowActivity";
 
@@ -64,7 +64,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<CowEntity> mCowEntities = new ArrayList<>();
     private boolean mIsSearchForCowDead = false;
-    private PenEntity mSelectedPen;
+    private LotEntity mSelectedLot;
     private DatabaseReference mBaseRef;
 
     @Override
@@ -85,10 +85,11 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center);
         mViewMedications = findViewById(R.id.view_medications_given_btn);
 
-        mSelectedPen = getIntent().getParcelableExtra("penObject");
+        String penId = getIntent().getStringExtra("penId");
+
+        new QueryLotsByPenId(penId, this).execute(MedicateACowActivity.this);
 
         new QueryAllDrugs(this).execute(this);
-        new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
 
         mSaveCow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +125,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setPenId(mSelectedPen.getPenId());
+                                    drugsGivenEntity.setLotId(mSelectedLot.getLotId());
                                     drugsGivenEntity.setDrugGivenId(drugsGivenKey);
 
                                     if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
@@ -141,7 +142,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     int tagNumber = Integer.parseInt(mTagName.getText().toString());
                     String notes = mNotes.getText().toString();
 
-                    CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedPen.getPenId());
+                    CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotId());
 
                     mCowEntities.add(cowEntity);
 
@@ -162,7 +163,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         holdingCowEntity.setDate(cowEntity.getDate());
                         holdingCowEntity.setIsAlive(cowEntity.isAlive());
                         holdingCowEntity.setNotes(cowEntity.getNotes());
-                        holdingCowEntity.setPenId(cowEntity.getPenId());
+                        holdingCowEntity.setLotId(cowEntity.getLotId());
                         holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
                         holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
 
@@ -181,7 +182,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                             holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                             holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
                             holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
-                            holdingDrugsGivenEntity.setPenId(drugsGivenEntity.getPenId());
+                            // TODO: 3/19/2019 add field for lot id
 
                             holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                         }
@@ -338,7 +339,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
+    public void onCowsByLotIdLoaded(ArrayList<CowEntity> cowObjectList) {
         mCowEntities = cowObjectList;
     }
 
@@ -404,5 +405,18 @@ public class MedicateACowActivity extends AppCompatActivity implements
             }
         }
         return cowEntities;
+    }
+
+    @Override
+    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
+        mSelectedLot = lotEntities.get(0);
+        ArrayList<String> lotIds = new ArrayList<>();
+        for (int x = 0; x < lotEntities.size(); x++) {
+            LotEntity lotEntity = lotEntities.get(x);
+            String lotId = lotEntity.getLotId();
+            lotIds.add(lotId);
+        }
+        new QueryMedicatedCowsByLotIds(this, lotIds).execute(this);
+
     }
 }

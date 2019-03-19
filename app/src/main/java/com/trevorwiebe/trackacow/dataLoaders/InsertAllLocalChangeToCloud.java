@@ -65,7 +65,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
         for(int b=0; b<holdingPenEntities.size(); b++){
             HoldingPenEntity holdingPenEntity = holdingPenEntities.get(b);
 
-            PenEntity penEntity = new PenEntity(holdingPenEntity.getPenId(), holdingPenEntity.getCustomerName(), holdingPenEntity.getIsActive(), holdingPenEntity.getNotes(), holdingPenEntity.getPenName(), holdingPenEntity.getTotalHead());
+            PenEntity penEntity = new PenEntity(holdingPenEntity.getPenId(), holdingPenEntity.getPenName());
 
             switch (holdingPenEntity.getWhatHappened()){
                 case Utility.INSERT_UPDATE:
@@ -86,7 +86,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
 
             HoldingCowEntity holdingCowEntity = holdingCowEntities.get(c);
 
-            CowEntity cowEntity = new CowEntity(holdingCowEntity.isAlive(), holdingCowEntity.getCowId(), holdingCowEntity.getTagNumber(), holdingCowEntity.getDate(), holdingCowEntity.getNotes(), holdingCowEntity.getPenId());
+            CowEntity cowEntity = new CowEntity(holdingCowEntity.isAlive(), holdingCowEntity.getCowId(), holdingCowEntity.getTagNumber(), holdingCowEntity.getDate(), holdingCowEntity.getNotes(), holdingCowEntity.getLotId());
 
             switch (holdingCowEntity.getWhatHappened()){
                 case Utility.INSERT_UPDATE:
@@ -107,7 +107,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Void> 
 
             HoldingDrugsGivenEntity holdingDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
 
-            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getPenId());
+            DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getLotId());
 
             switch (holdingDrugsGivenEntity.getWhatHappened()){
                 case Utility.INSERT_UPDATE:

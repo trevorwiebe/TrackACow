@@ -10,12 +10,12 @@ import android.support.annotation.Keep;
 
 @Keep
 @Entity(tableName = "Cow")
-public class CowEntity implements Parcelable {
+public class CowEntity {
 
     public static final String COW = "cows";
     public static final String COW_NUMBER = "cowNumber";
     public static final String COW_ID = "cowId";
-    public static final String PEN_ID = "penId";
+    public static final String LOT_ID = "lotId";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -36,16 +36,16 @@ public class CowEntity implements Parcelable {
     @ColumnInfo(name = "notes")
     public String notes;
 
-    @ColumnInfo(name = "penId")
-    public String penId;
+    @ColumnInfo(name = "lotId")
+    public String lotId;
 
-    public CowEntity(int isAlive, String cowId, int tagNumber, long date, String notes, String penId) {
+    public CowEntity(int isAlive, String cowId, int tagNumber, long date, String notes, String lotId) {
         this.isAlive = isAlive;
         this.cowId = cowId;
         this.tagNumber = tagNumber;
         this.date = date;
         this.notes = notes;
-        this.penId = penId;
+        this.lotId = lotId;
     }
 
     @Ignore
@@ -99,49 +99,11 @@ public class CowEntity implements Parcelable {
         this.notes = notes;
     }
 
-    public String getPenId() {
-        return penId;
+    public String getLotId() {
+        return lotId;
     }
 
-    public void setPenId(String penId) {
-        this.penId = penId;
+    public void setLotId(String lotId) {
+        this.lotId = lotId;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.primaryKey);
-        dest.writeInt(this.isAlive);
-        dest.writeString(this.cowId);
-        dest.writeInt(this.tagNumber);
-        dest.writeLong(this.date);
-        dest.writeString(this.notes);
-        dest.writeString(this.penId);
-    }
-
-    protected CowEntity(Parcel in) {
-        this.primaryKey = in.readInt();
-        this.isAlive = in.readInt();
-        this.cowId = in.readString();
-        this.tagNumber = in.readInt();
-        this.date = in.readLong();
-        this.notes = in.readString();
-        this.penId = in.readString();
-    }
-
-    public static final Creator<CowEntity> CREATOR = new Creator<CowEntity>() {
-        @Override
-        public CowEntity createFromParcel(Parcel source) {
-            return new CowEntity(source);
-        }
-
-        @Override
-        public CowEntity[] newArray(int size) {
-            return new CowEntity[size];
-        }
-    };
 }

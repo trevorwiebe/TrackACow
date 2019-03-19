@@ -15,21 +15,8 @@ public class HoldingPenEntity {
 
     @ColumnInfo(name = "penId")
     public String penId;
-
-    @ColumnInfo(name = "customerName")
-    public String customerName;
-
-    @ColumnInfo(name = "isActive")
-    public int isActive;
-
-    @ColumnInfo(name = "notes")
-    public String notes;
-
     @ColumnInfo(name = "penName")
     public String penName;
-
-    @ColumnInfo(name = "totalHead")
-    public int totalHead;
 
     @ColumnInfo(name = "whatHappened")
     public int whatHappened;
@@ -52,44 +39,12 @@ public class HoldingPenEntity {
         this.penId = penId;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public int getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(int isActive) {
-        this.isActive = isActive;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public String getPenName() {
         return penName;
     }
 
     public void setPenName(String penName) {
         this.penName = penName;
-    }
-
-    public int getTotalHead() {
-        return totalHead;
-    }
-
-    public void setTotalHead(int totalHead) {
-        this.totalHead = totalHead;
     }
 
     public int getWhatHappened() {

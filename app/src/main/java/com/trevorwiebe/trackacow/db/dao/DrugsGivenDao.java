@@ -26,8 +26,8 @@ public interface DrugsGivenDao {
     @Query("SELECT * FROM DrugsGiven WHERE cowId IN(:cowIdList)")
     List<DrugsGivenEntity> getDrugsGivenByCowIdList(List<String> cowIdList);
 
-    @Query("SELECT * FROM DrugsGiven WHERE penId = :penId")
-    List<DrugsGivenEntity> getDrugsGivenByPenId(String penId);
+    @Query("SELECT * FROM DrugsGiven WHERE lotId IN(:lotIds)")
+    List<DrugsGivenEntity> getDrugsGivenByLotIds(List<String> lotIds);
 
     @Query("SELECT * FROM DrugsGiven WHERE drugGiveId = :drugGivenId")
     DrugsGivenEntity getDrugGivenByDrugGivenId(String drugGivenId);
@@ -38,8 +38,8 @@ public interface DrugsGivenDao {
     @Query("UPDATE DrugsGiven SET amountGiven = :amountGiven WHERE drugGiveId = :drugGivenId")
     void updateDrugGivenAmountGiven(int amountGiven, String drugGivenId);
 
-    @Query("DELETE FROM DrugsGiven WHERE penId = :penId")
-    void deleteDrugsGivenByPenId(String penId);
+    @Query("DELETE FROM DrugsGiven WHERE lotId = :lotId")
+    void deleteDrugsGivenByLotId(String lotId);
 
     @Query("DELETE FROM DrugsGiven WHERE cowId = :cowId")
     void deleteDrugsGivenByCowId(String cowId);

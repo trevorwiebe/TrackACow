@@ -15,7 +15,7 @@ public class DeleteDrugsGivenByPenId extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).drugsGivenDao().deleteDrugsGivenByPenId(penId);
+        AppDatabase.getAppDatabase(contexts[0]).drugsGivenDao().deleteDrugsGivenByLotId(penId);
         return null;
     }
 }

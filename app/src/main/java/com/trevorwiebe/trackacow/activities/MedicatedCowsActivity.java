@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -14,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,44 +20,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
+import com.trevorwiebe.trackacow.dataLoaders.InsertLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
-import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.dataLoaders.QueryMedicatedCowsByPenId;
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class MedicatedCowsActivity extends AppCompatActivity implements
-        QueryMedicatedCowsByPenId.OnCowsLoaded,
-        QueryDrugsGivenByPenId.OnDrugsGivenLoaded,
-        QueryAllDrugs.OnAllDrugsLoaded,
         QueryPenById.OnPenByIdReturned,
-        CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned,
-        InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
+        QueryAllDrugs.OnAllDrugsLoaded,
+        QueryLotsByPenId.OnLotsByPenIdLoaded,
+        QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
+        QueryMedicatedCowsByLotIds.OnCowsByLotIdLoaded {
 
     private static final String TAG = "MedicatedCowsActivity";
 
@@ -68,6 +58,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private ArrayList<CowEntity> mTreatedCows = new ArrayList<>();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
+    private ArrayList<String> mLotIds = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
     private PenEntity mSelectedPen;
     private static final int MEDICATE_A_COW_CODE = 743;
@@ -87,6 +78,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private FloatingActionsMenu mMedicateACowFabMenu;
     private Button mMarkAsActive;
     private ScrollView mPenIdleLayout;
+    private TextInputEditText mLotName;
     private TextInputEditText mCustomerName;
     private TextInputEditText mTotalCount;
     private TextInputEditText mNotes;
@@ -104,6 +96,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mResultsNotFound = findViewById(R.id.result_not_found);
         mMarkAsActive = findViewById(R.id.mark_as_active);
         mPenIdleLayout = findViewById(R.id.pen_idle);
+        mLotName = findViewById(R.id.lot_name);
         mCustomerName = findViewById(R.id.customer_name);
         mTotalCount = findViewById(R.id.total_head);
         mNotes = findViewById(R.id.pen_notes);
@@ -111,44 +104,39 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMarkAsActive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mCustomerName.length() == 0 || mTotalCount.length() == 0){
+                if (mLotName.length() == 0 || mCustomerName.length() == 0 || mTotalCount.length() == 0) {
                     Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
+                String lotName = mLotName.getText().toString();
                 String customerName = mCustomerName.getText().toString();
                 int totalHead = Integer.parseInt(mTotalCount.getText().toString());
                 String notes = mNotes.getText().toString();
 
-                mSelectedPen.setIsActive(1);
-                mSelectedPen.setCustomerName(customerName);
-                mSelectedPen.setTotalHead(totalHead);
-                mSelectedPen.setNotes(notes);
+                DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
+                String id = lotPushRef.getKey();
+                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId());
 
                 if(Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
-                    mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                    lotPushRef.setValue(lotEntity);
                 }else{
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
 
-                    holdingPenEntity.setNotes(mSelectedPen.getNotes());
-                    holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
-                    holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
-                    holdingPenEntity.setPenName(mSelectedPen.getPenName());
-                    holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
-                    holdingPenEntity.setPenId(mSelectedPen.getPenId());
-                    holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
-
-                    new InsertHoldingPen(holdingPenEntity).execute(MedicatedCowsActivity.this);
-
+                    // TODO: 3/19/2019 insert holdingLotEntity
                 }
 
-                new UpdatePen(mSelectedPen).execute(MedicatedCowsActivity.this);
+                new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);
 
                 setActive();
 
+                android.support.v7.app.ActionBar ab = getSupportActionBar();
+                ab.setSubtitle(lotName);
+
+                mLotName.setText("");
                 mCustomerName.setText("");
                 mTotalCount.setText("");
                 mNotes.setText("");
@@ -181,32 +169,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicatedCowSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
-                    if (Utility.isThereNewDataToUpload(MedicatedCowsActivity.this)) {
-                        new InsertAllLocalChangeToCloud(mBaseRef, MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
-                    } else {
-                        getCloudDataAndSetRvAndInsertToLocalDB();
-                    }
-                } else {
-                    mMedicatedCowSwipeToRefresh.setRefreshing(false);
-                    Toast.makeText(MedicatedCowsActivity.this, "Network not available", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
-    }
 
-    public void medicateCow(View view){
-        mMedicateACowFabMenu.collapse();
-        Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
-        medicateCowIntent.putExtra("penObject", mSelectedPen);
-        startActivityForResult(medicateCowIntent, MEDICATE_A_COW_CODE);
-    }
-
-    public void markACowDead(View view){
-        mMedicateACowFabMenu.collapse();
-        Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
-        markCowDeadIntent.putExtra("penObject", mSelectedPen);
-        startActivity(markCowDeadIntent);
     }
 
     @Override
@@ -301,115 +267,76 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+
+    /*
+    Database return callbacks
+     */
     @Override
     public void onPenByIdReturned(PenEntity penEntity) {
         mSelectedPen = penEntity;
-        mIsActive = mSelectedPen.getIsActive() == 1;
+        String activityTitle = "Pen: " + mSelectedPen.getPenName();
+        setTitle(activityTitle);
 
-        setTitle("Pen " + mSelectedPen.getPenName());
-
-
-        if (mIsActive) {
-            setActive();
-        } else {
-            setInActive();
-        }
+        new QueryLotsByPenId(mSelectedPen.getPenId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
     }
 
     @Override
-    public void onDrugsGivenLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mDrugsGivenList = drugsGivenEntities;
-        new QueryAllDrugs(this).execute(this);
+    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
+        String lotNameTitle = "";
+        mLotIds.clear();
+        for (int t = 0; t < lotEntities.size(); t++) {
+            LotEntity lotEntity = lotEntities.get(t);
+            mLotIds.add(lotEntity.getLotId());
+            String lotName = lotEntity.getLotName();
+            lotNameTitle = lotNameTitle + lotName;
+        }
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        if (lotNameTitle.length() == 0) {
+            setInActive();
+        } else {
+            ab.setSubtitle(lotNameTitle);
+            setActive();
+        }
+
+        new QueryAllDrugs(MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
     }
 
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
-        new QueryMedicatedCowsByPenId(this, mSelectedPen.getPenId()).execute(this);
+        new QueryDrugsGivenByLotIds(MedicatedCowsActivity.this, mLotIds).execute(MedicatedCowsActivity.this);
     }
 
     @Override
-    public void onCowsLoaded(ArrayList<CowEntity> cowObjectList) {
-        Collections.sort(cowObjectList, new Comparator<CowEntity>() {
-            @Override
-            public int compare(CowEntity c1, CowEntity c2) {
-                return Integer.compare(c1.getTagNumber(), c2.getTagNumber());
-            }
-        });
-        mTreatedCows = cowObjectList;
-        mSelectedCows = cowObjectList;
-        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
-        if(mTreatedCows.size() == 0){
-            mNoMedicatedCows.setVisibility(View.VISIBLE);
-        }else{
-            mNoMedicatedCows.setVisibility(View.INVISIBLE);
-        }
+    public void onDrugsGivenByLotIdLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        mDrugsGivenList = drugsGivenEntities;
+
+        new QueryMedicatedCowsByLotIds(MedicatedCowsActivity.this, mLotIds).execute(MedicatedCowsActivity.this);
     }
 
-    private void getCloudDataAndSetRvAndInsertToLocalDB() {
-        mBaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    if (key != null) {
-                        switch (key) {
-                            case "cows":
-                                for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
-                                    CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
-                                    if (cowEntity != null) {
-                                        mCowEntityUpdateList.add(cowEntity);
-                                    }
-                                }
-                                break;
-                            case "drugs":
-                                for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
-                                    DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
-                                    if (drugEntity != null) {
-                                        mDrugEntityUpdateList.add(drugEntity);
-                                    }
-                                }
-                                break;
-                            case "pens":
-                                for (DataSnapshot penSnapshot : snapshot.getChildren()) {
-                                    PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
-                                    if (penEntity != null) {
-                                        mPenEntityUpdateList.add(penEntity);
-                                    }
-                                }
-                                break;
-                            case "drugsGiven":
-                                for (DataSnapshot drugsGivenSnapShot : snapshot.getChildren()) {
-                                    DrugsGivenEntity drugsGivenEntity = drugsGivenSnapShot.getValue(DrugsGivenEntity.class);
-                                    if (drugsGivenEntity != null) {
-                                        mDrugsGivenEntityUpdateList.add(drugsGivenEntity);
-                                    }
-                                }
-                                break;
-                            default:
-                                Log.e(TAG, "onDataChange: unknown snapshot key");
-                        }
-                    }
-                }
+    @Override
+    public void onCowsByLotIdLoaded(ArrayList<CowEntity> cowObjectList) {
+        mTreatedCows = cowObjectList;
 
-                new CloneCloudDatabaseToLocalDatabase(MedicatedCowsActivity.this, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList).execute(MedicatedCowsActivity.this);
+        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+    }
 
-                ArrayList<CowEntity> cowEntities = getCowEntitiesByPenId(mSelectedPen.getPenId());
-                Collections.sort(cowEntities, new Comparator<CowEntity>() {
-                    @Override
-                    public int compare(CowEntity c1, CowEntity c2) {
-                        return Integer.compare(c1.getTagNumber(), c2.getTagNumber());
-                    }
-                });
 
-                mMedicatedCowsRecyclerViewAdapter.swapData(cowEntities, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList);
-            }
+    /*
+    private methods
+     */
+    public void medicateCow(View view) {
+        mMedicateACowFabMenu.collapse();
+        Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
+        medicateCowIntent.putExtra("penId", mSelectedPen.getPenId());
+        startActivityForResult(medicateCowIntent, MEDICATE_A_COW_CODE);
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+    public void markACowDead(View view) {
+        mMedicateACowFabMenu.collapse();
+        Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
+        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenId());
+        startActivity(markCowDeadIntent);
     }
 
     private ArrayList<CowEntity> findTags(String inputString){
@@ -426,7 +353,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
     private void setActive(){
         mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-        new QueryDrugsGivenByPenId(this, mSelectedPen.getPenId()).execute(this);
+//        new QueryDrugsGivenByLotIds(this, mSelectedPen.getPenId()).execute(this);
         mPenIdleLayout.setVisibility(View.GONE);
         mMedicatedCows.setVisibility(View.VISIBLE);
         shouldShowCouldntFindTag = true;
@@ -444,12 +371,12 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         invalidateOptionsMenu();
     }
 
-    private ArrayList<CowEntity> getCowEntitiesByPenId(String penId) {
+    private ArrayList<CowEntity> getCowEntitiesByLotId(String lotId) {
         ArrayList<CowEntity> cowEntities = new ArrayList<>();
         if (mCowEntityUpdateList != null) {
             for (int x = 0; x < mCowEntityUpdateList.size(); x++) {
                 CowEntity cowEntity = mCowEntityUpdateList.get(x);
-                if (cowEntity.getPenId().equals(penId)) {
+                if (cowEntity.getLotId().equals(lotId)) {
                     cowEntities.add(cowEntity);
                 }
             }
@@ -457,19 +384,4 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         return cowEntities;
     }
 
-    @Override
-    public void onAllLocalDbInsertedToCloud() {
-        getCloudDataAndSetRvAndInsertToLocalDB();
-    }
-
-    @Override
-    public void onDatabaseCloned() {
-        mCowEntityUpdateList.clear();
-        mDrugEntityUpdateList.clear();
-        mDrugsGivenEntityUpdateList.clear();
-        mPenEntityUpdateList.clear();
-        if (mMedicatedCowSwipeToRefresh.isRefreshing()) {
-            mMedicatedCowSwipeToRefresh.setRefreshing(false);
-        }
-    }
 }
