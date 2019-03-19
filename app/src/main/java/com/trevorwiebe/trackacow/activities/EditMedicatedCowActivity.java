@@ -186,6 +186,33 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onCowByIdLoaded(CowEntity cowEntity) {
+        mCowEntity = cowEntity;
+
+        isAlive = mCowEntity.isAlive();
+
+        String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
+        setTitle("Cow " + strTagNumber);
+        mCalendar.setTimeInMillis(mCowEntity.getDate());
+
+        mDrugsGiven.removeAllViews();
+        if (isAlive == 1) {
+            mCowIsDead.setVisibility(View.GONE);
+            new QueryAllDrugs(this).execute(this);
+        } else {
+            mCowIsDead.setVisibility(View.VISIBLE);
+            mDrugLayout.setVisibility(View.GONE);
+        }
+
+        String tagNumber = Integer.toString(mCowEntity.getTagNumber());
+        String date = Utility.convertMillisToDate(mCowEntity.getDate());
+        String notes = mCowEntity.getNotes();
+        mEditTagNumber.setText(tagNumber);
+        mEditDate.setText(date);
+        mEditNotes.setText(notes);
+    }
+
+    @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
         new QueryDrugsGivenByCowId(this, mCowEntity.getCowId()).execute(this);
@@ -245,32 +272,5 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 mDrugsGiven.addView(textView);
             }
         }
-    }
-
-    @Override
-    public void onCowByIdLoaded(CowEntity cowEntity) {
-        mCowEntity = cowEntity;
-
-        isAlive = mCowEntity.isAlive();
-
-        String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
-        setTitle("Cow " + strTagNumber);
-        mCalendar.setTimeInMillis(mCowEntity.getDate());
-
-        mDrugsGiven.removeAllViews();
-        if (isAlive == 1) {
-            mCowIsDead.setVisibility(View.GONE);
-            new QueryAllDrugs(this).execute(this);
-        } else {
-            mCowIsDead.setVisibility(View.VISIBLE);
-            mDrugLayout.setVisibility(View.GONE);
-        }
-
-        String tagNumber = Integer.toString(mCowEntity.getTagNumber());
-        String date = Utility.convertMillisToDate(mCowEntity.getDate());
-        String notes = mCowEntity.getNotes();
-        mEditTagNumber.setText(tagNumber);
-        mEditDate.setText(date);
-        mEditNotes.setText(notes);
     }
 }

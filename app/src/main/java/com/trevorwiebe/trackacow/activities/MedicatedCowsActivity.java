@@ -317,6 +317,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     @Override
     public void onCowsByLotIdLoaded(ArrayList<CowEntity> cowObjectList) {
         mTreatedCows = cowObjectList;
+        mSelectedCows = cowObjectList;
 
         mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
     }
