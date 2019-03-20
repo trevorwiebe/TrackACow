@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,14 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
@@ -48,6 +44,10 @@ public class MedicateFragment extends Fragment implements
     private RecyclerView mPenRv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private boolean test = true;
+
+    private Context mContext;
+
     public MedicateFragment() {
     }
 
@@ -60,16 +60,16 @@ public class MedicateFragment extends Fragment implements
         mSwipeRefreshLayout = rootView.findViewById(R.id.main_swipe_refresh_layout);
         mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
         mPenRv = rootView.findViewById(R.id.main_rv);
-        mPenRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, mLotList, getContext());
+        mPenRv.setLayoutManager(new LinearLayoutManager(mContext));
+        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, mLotList, mContext);
         mPenRv.setAdapter(mPenRecyclerViewAdapter);
 
-        mPenRv.addOnItemTouchListener(new ItemClickListener(getContext(), mPenRv, new ItemClickListener.OnItemClickListener() {
+        mPenRv.addOnItemTouchListener(new ItemClickListener(mContext, mPenRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent trackCowIntent = new Intent(getContext(), MedicatedCowsActivity.class);
+                Intent trackCowIntent = new Intent(mContext, MedicatedCowsActivity.class);
                 String penId = mPenList.get(position).getPenId();
-                Utility.setPenId(getContext(), penId);
+                Utility.setPenId(mContext, penId);
                 trackCowIntent.putExtra("penEntityId", penId);
                 startActivity(trackCowIntent);
             }
@@ -83,30 +83,50 @@ public class MedicateFragment extends Fragment implements
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new SyncDatabase(MedicateFragment.this, getContext()).beginSync();
+                new SyncDatabase(MedicateFragment.this, mContext).beginSync();
             }
         });
-
-        new QueryLots(MedicateFragment.this).execute(getContext());
 
         return rootView;
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+
+    @Override
+    public void onResume() {
+
+        new QueryLots(MedicateFragment.this).execute(mContext);
+
+        super.onResume();
+    }
+
+    @Override
     public void onDatabaseSynced(int resultCode) {
         mSwipeRefreshLayout.setRefreshing(false);
+        new QueryLots(MedicateFragment.this).execute(mContext);
     }
 
     @Override
     public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {
         mLotList = lotEntities;
-        new QueryAllPens(MedicateFragment.this).execute(getContext());
+        new QueryAllPens(MedicateFragment.this).execute(mContext);
     }
 
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penEntitiesList) {
-        mPenList = penEntitiesList;
-        setPenRecyclerView();
+        if (penEntitiesList.size() == 0 && test) {
+            test = false;
+            mSwipeRefreshLayout.setRefreshing(true);
+            new SyncDatabase(MedicateFragment.this, mContext).beginSync();
+        } else {
+            mPenList = penEntitiesList;
+            setPenRecyclerView();
+        }
     }
 
     private void setPenRecyclerView() {
