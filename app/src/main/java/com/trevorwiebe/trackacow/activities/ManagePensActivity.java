@@ -113,6 +113,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                                         }
                                         new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
 
+                                        addNewPenDialog.dismiss();
                                     } else {
                                         penName.requestFocus();
                                         penName.setError("Name used already");
