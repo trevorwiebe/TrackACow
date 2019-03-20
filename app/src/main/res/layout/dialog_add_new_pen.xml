@@ -7,16 +7,18 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/dialog_edit_text_edit_text"
+            android:id="@+id/dialog_add_new_pen_edit_text"
             android:layout_marginRight="24dp"
             android:layout_marginLeft="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
-            android:inputType="textEmailAddress"
-            android:hint="Email address"
+            android:inputType="textCapSentences"
+            android:hint="Pen name"
+            android:textSize="16sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

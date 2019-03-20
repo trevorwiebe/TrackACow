@@ -4,16 +4,21 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,152 +69,186 @@ public class ManagePensActivity extends AppCompatActivity implements
         managePensFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                AlertDialog.Builder addNewPen = new AlertDialog.Builder(ManagePensActivity.this);
-                addNewPen.setTitle("Add new pen");
-                View dialogEditText = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_edit_text, null);
-                addNewPen.setView(dialogEditText);
-                // TODO: 3/19/2019 make this dialog its own editText
-                final EditText dialogEditTextEditText = dialogEditText.findViewById(R.id.dialog_edit_text_edit_text);
-                addNewPen.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+                View editTextView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_add_new_pen, null);
+                final TextInputEditText penName = editTextView.findViewById(R.id.dialog_add_new_pen_edit_text);
+
+                final AlertDialog addNewPenDialog = new AlertDialog.Builder(ManagePensActivity.this)
+                        .setTitle("Add new pen")
+                        .setView(editTextView)
+                        .setPositiveButton("Save", null)
+                        .create();
+
+                addNewPenDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(dialogEditTextEditText.length() != 0){
-                            String penName = dialogEditTextEditText.getText().toString();
-                            if(isPenNameAvailable(penName, mPenEntityList)) {
+                    public void onShow(DialogInterface dialogInterface) {
 
-                                DatabaseReference pushRef = mPenRef.push();
-                                String key = pushRef.getKey();
-                                PenEntity penEntity = new PenEntity(key, penName);
+                        Button button = (addNewPenDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener() {
 
-                                if(Utility.haveNetworkConnection(ManagePensActivity.this)){
-                                    pushRef.setValue(penEntity);
-                                }else{
-                                    Utility.setNewDataToUpload(ManagePensActivity.this, true);
+                            @Override
+                            public void onClick(View view) {
 
-                                    HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                    holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
-                                    holdingPenEntity.setPenId(penEntity.getPenId());
-                                    holdingPenEntity.setPenName(penEntity.getPenName());
 
-                                    new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                if (penName.length() != 0) {
+                                    String penText = penName.getText().toString();
+                                    if (isPenNameAvailable(penText, mPenEntityList)) {
+
+                                        DatabaseReference pushRef = mPenRef.push();
+                                        String key = pushRef.getKey();
+                                        PenEntity penEntity = new PenEntity(key, penText);
+
+                                        if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
+                                            pushRef.setValue(penEntity);
+                                        } else {
+                                            Utility.setNewDataToUpload(ManagePensActivity.this, true);
+
+                                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                                            holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                                            holdingPenEntity.setPenId(penEntity.getPenId());
+                                            holdingPenEntity.setPenName(penEntity.getPenName());
+
+                                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                        }
+                                        new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
+
+                                    } else {
+                                        penName.requestFocus();
+                                        penName.setError("Name used already");
+                                    }
+
+                                } else {
+                                    penName.requestFocus();
+                                    penName.setError("Please fill the blank");
                                 }
-                                new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
-                            }else{
-                                // TODO: 3/19/2019 add error catching like in the sign in activity email format error
-                                Snackbar.make(view, "This name is already taken", Snackbar.LENGTH_LONG).show();
+
+
                             }
-                        }
-                    }
-                });
-                addNewPen.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                        });
+
 
                     }
                 });
-                addNewPen.show();
+                addNewPenDialog.show();
+
             }
         });
 
         mPensRv.addOnItemTouchListener(new ItemClickListener(this, mPensRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(final View view, int position) {
+
                 final PenEntity selectedPenEntity = mPenEntityList.get(position);
-                AlertDialog.Builder editPen = new AlertDialog.Builder(ManagePensActivity.this);
-                editPen.setTitle("Edit pen");
-                View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_edit_text, null);
-                final EditText editPenEditText = dialogView.findViewById(R.id.dialog_edit_text_edit_text);
-                editPen.setView(dialogView);
+
+                View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_add_new_pen, null);
+                final EditText editPenEditText = dialogView.findViewById(R.id.dialog_add_new_pen_edit_text);
                 editPenEditText.setText(selectedPenEntity.getPenName());
                 editPenEditText.setSelection(selectedPenEntity.getPenName().length());
-                editPen.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+
+                final AlertDialog editPen = new AlertDialog.Builder(ManagePensActivity.this)
+                        .setTitle("Edit pen")
+                        .setView(dialogView)
+                        .setPositiveButton("Update", null)
+                        .setNegativeButton("Cancel", null)
+                        .setNeutralButton("Delete", null)
+                        .create();
+
+                editPen.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(editPenEditText.length() == 0){
-                            Snackbar.make(mPensRv, "Please fill the blank", Snackbar.LENGTH_LONG).show();
-                        }else{
-                            String updatedText = editPenEditText.getText().toString();
-                            if(isPenNameAvailable(updatedText, mPenEntityList)) {
-                                selectedPenEntity.setPenName(updatedText);
-                                if(Utility.haveNetworkConnection(ManagePensActivity.this)){
-                                    mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
-                                }else{
+                    public void onShow(final DialogInterface dialog) {
+
+                        Button pos_button = (editPen).getButton(AlertDialog.BUTTON_POSITIVE);
+                        pos_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (editPenEditText.length() == 0) {
+                                    editPenEditText.requestFocus();
+                                    editPenEditText.setError("Please fill the blank");
+                                } else {
+                                    String updatedText = editPenEditText.getText().toString();
+                                    if (isPenNameAvailable(updatedText, mPenEntityList)) {
+                                        selectedPenEntity.setPenName(updatedText);
+                                        if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
+                                            mPenRef.child(selectedPenEntity.getPenId()).setValue(selectedPenEntity);
+                                        } else {
+                                            Utility.setNewDataToUpload(ManagePensActivity.this, true);
+
+                                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                                            holdingPenEntity.setPenName(selectedPenEntity.getPenName());
+                                            holdingPenEntity.setPenId(selectedPenEntity.getPenId());
+                                            holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+
+                                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                        }
+
+                                        new UpdatePenName(selectedPenEntity.getPenId(), updatedText, ManagePensActivity.this).execute(ManagePensActivity.this);
+
+                                        editPen.dismiss();
+                                    } else {
+                                        editPenEditText.requestFocus();
+                                        editPenEditText.setError("Name already taken");
+                                    }
+                                }
+                            }
+                        });
+
+                        Button neg_button = (editPen).getButton(AlertDialog.BUTTON_NEGATIVE);
+                        neg_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        Button neu_button = (editPen).getButton(AlertDialog.BUTTON_NEUTRAL);
+                        neu_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
+                                    String id = selectedPenEntity.getPenId();
+                                    mPenRef.child(id).removeValue();
+
+                                    // TODO: 3/19/2019 fix: change id to lotId
+                                    Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.LOT_ID).equalTo(id);
+                                    cowQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                snapshot.getRef().removeValue();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                } else {
                                     Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
                                     HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-//                                    holdingPenEntity.setNotes(selectedPenEntity.getNotes());
-//                                    holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
-//                                    holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
                                     holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-//                                    holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
                                     holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                    holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                                    holdingPenEntity.setWhatHappened(Utility.DELETE);
 
                                     new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+
+                                    // TODO: 3/2/2019 save all the cows in this pen to the holding database to delete later when you connected to the internet.
                                 }
 
-                                new UpdatePenName(selectedPenEntity.getPenId(), updatedText, ManagePensActivity.this).execute(ManagePensActivity.this);
+                                new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
+                                new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
 
-                            }else{
-                                Snackbar.make(mPensRv, "Pen already taken", Snackbar.LENGTH_LONG).show();
+                                new DeleteCowsByPenId(selectedPenEntity.getPenId()).execute(ManagePensActivity.this);
+
+                                // TODO: 3/2/2019 delete all the drugs give on all this pen when the pen is deleted.
                             }
-                        }
+                        });
                     }
                 });
-                editPen.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                    }
-                });
-                editPen.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(Utility.haveNetworkConnection(ManagePensActivity.this)){
-                            String id = selectedPenEntity.getPenId();
-                            mPenRef.child(id).removeValue();
-
-                            // TODO: 3/19/2019 fix: change id to lotId
-                            Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.LOT_ID).equalTo(id);
-                            cowQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        snapshot.getRef().removeValue();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }else{
-                            Utility.setNewDataToUpload(ManagePensActivity.this, true);
-
-                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-//                            holdingPenEntity.setNotes(selectedPenEntity.getNotes());
-//                            holdingPenEntity.setTotalHead(selectedPenEntity.getTotalHead());
-//                            holdingPenEntity.setCustomerName(selectedPenEntity.getCustomerName());
-                            holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-//                            holdingPenEntity.setIsActive(selectedPenEntity.getIsActive());
-                            holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                            holdingPenEntity.setWhatHappened(Utility.DELETE);
-
-                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
-
-                            // TODO: 3/2/2019 save all the cows in this pen to the holding database to delete later when you connected to the internet.
-                        }
-
-                        new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
-                        new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
-
-                        new DeleteCowsByPenId(selectedPenEntity.getPenId()).execute(ManagePensActivity.this);
-
-                        // TODO: 3/2/2019 delete all the drugs give on all this pen when the pen is deleted.
-                    }
-                });
                 editPen.show();
             }
 
@@ -240,17 +279,17 @@ public class ManagePensActivity extends AppCompatActivity implements
     public void onPensLoaded(ArrayList<PenEntity> penEntityList) {
         mPenEntityList = penEntityList;
         mPenRecyclerViewAdapter.swapData(mPenEntityList, null);
-        if(mPenEntityList.size() > 0){
+        if (mPenEntityList.size() > 0) {
             mEmptyTv.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             mEmptyTv.setVisibility(View.VISIBLE);
         }
     }
 
-    private boolean isPenNameAvailable(String penName, ArrayList<PenEntity> penList){
-        for(int r=0; r<penList.size(); r++){
+    private boolean isPenNameAvailable(String penName, ArrayList<PenEntity> penList) {
+        for (int r = 0; r < penList.size(); r++) {
             PenEntity penEntity = penList.get(r);
-            if(penEntity.getPenName().equals(penName))return false;
+            if (penEntity.getPenName().equals(penName)) return false;
         }
         return true;
     }

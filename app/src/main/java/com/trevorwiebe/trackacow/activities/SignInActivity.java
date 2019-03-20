@@ -129,7 +129,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                View editTextView = LayoutInflater.from(SignInActivity.this).inflate(R.layout.dialog_edit_text, null);
+                View editTextView = LayoutInflater.from(SignInActivity.this).inflate(R.layout.dialog_email_edit_text, null);
                 final TextInputEditText emailAddress = editTextView.findViewById(R.id.dialog_edit_text_edit_text);
 
                 final AlertDialog forgotPasswordDialog = new AlertDialog.Builder(SignInActivity.this)
