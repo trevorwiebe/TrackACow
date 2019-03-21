@@ -135,12 +135,6 @@ public class MedicateFragment extends Fragment implements
         } else {
             mNoPensTv.setVisibility(View.INVISIBLE);
         }
-        Collections.sort(mPenList, new Comparator<PenEntity>() {
-            @Override
-            public int compare(PenEntity pen1, PenEntity pen2) {
-                return pen1.getPenName().compareTo(pen2.getPenName());
-            }
-        });
         mPenRecyclerViewAdapter.swapData(mPenList, mLotList);
     }
 }
