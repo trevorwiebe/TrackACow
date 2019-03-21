@@ -182,7 +182,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                             holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                             holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
                             holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
-                            // TODO: 3/19/2019 add field for lot id
+                            holdingDrugsGivenEntity.setLotId(mSelectedLot.getLotId());
 
                             holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                         }

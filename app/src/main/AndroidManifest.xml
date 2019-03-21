@@ -72,10 +72,6 @@
             android:label="Medicate a cow"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
-            android:name=".activities.PenReportsActivity"
-            android:label="Pen Reports"
-            android:parentActivityName=".activities.MedicatedCowsActivity" />
-        <activity
             android:name=".activities.MarkACowDeadActivity"
             android:label="Mark a cow dead"
             android:parentActivityName=".activities.MedicatedCowsActivity" />

@@ -25,4 +25,7 @@ public interface HoldingLotDao {
     @Delete
     void deleteHoldingLot(HoldingLotEntity holdingLotEntity);
 
+    @Query("DELETE FROM holdingLot")
+    void deleteHoldingLotTable();
+
 }

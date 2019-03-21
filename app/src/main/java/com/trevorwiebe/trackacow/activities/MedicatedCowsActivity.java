@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.InsertLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
@@ -89,8 +90,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicated_cows);
 
-        // TODO: 2/16/2019 add context menu and move 'Pen Reports' and the ability to sort by tag number or date
-        // TODO: 2/16/2019 make the context menu item disappear when the search bar is open
+        // TODO: 2/16/2019 add context menu and the ability to sort by tag number or date
 
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu);
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
@@ -127,7 +127,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
 
-                    // TODO: 3/19/2019 insert holdingLotEntity
+                    new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
+
                 }
 
                 new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);

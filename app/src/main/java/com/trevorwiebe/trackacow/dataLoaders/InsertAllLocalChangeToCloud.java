@@ -13,10 +13,12 @@ import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -123,6 +125,24 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
         }
         db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
+
+        // update lot entities
+        List<HoldingLotEntity> holdingLotEntities = db.holdingLotDao().getHoldingLotList();
+        for (int e = 0; e < holdingLotEntities.size(); e++) {
+
+            HoldingLotEntity holdingLotEntity = holdingLotEntities.get(e);
+
+            LotEntity lotEntity = new LotEntity(holdingLotEntity);
+            switch (holdingLotEntity.getWhatHappened()) {
+                case Utility.INSERT_UPDATE:
+                    baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).setValue(lotEntity);
+                    break;
+                case Utility.DELETE:
+                    baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).removeValue();
+                    break;
+            }
+        }
+        db.holdingLotDao().deleteHoldingLotTable();
 
         return Constants.SUCCESS;
     }

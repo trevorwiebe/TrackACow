@@ -6,6 +6,8 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Keep;
 
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+
 @Keep
 @Entity(tableName = "lot")
 public class LotEntity {
@@ -41,6 +43,15 @@ public class LotEntity {
         this.totalHead = totalHead;
         this.notes = notes;
         this.penId = penId;
+    }
+
+    public LotEntity(HoldingLotEntity holdingLotEntity) {
+        this.lotName = holdingLotEntity.getLotName();
+        this.lotId = holdingLotEntity.getLotId();
+        this.customerName = holdingLotEntity.getCustomerName();
+        this.totalHead = holdingLotEntity.getTotalHead();
+        this.notes = holdingLotEntity.getNotes();
+        this.penId = holdingLotEntity.getPenId();
     }
 
     @Ignore

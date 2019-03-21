@@ -33,8 +33,11 @@ import com.trevorwiebe.trackacow.dataLoaders.DeletePen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
 import com.trevorwiebe.trackacow.dataLoaders.InsertPen;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.dataLoaders.UpdatePenName;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -45,11 +48,13 @@ import java.util.ArrayList;
 public class ManagePensActivity extends AppCompatActivity implements
         QueryAllPens.OnPensLoaded,
         UpdatePenName.OnPenNameUpdated,
-        InsertPen.OnPenInserted {
+        InsertPen.OnPenInserted,
+        QueryLotsByPenId.OnLotsByPenIdLoaded {
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
     private ArrayList<PenEntity> mPenEntityList = new ArrayList<>();
+    private ArrayList<LotEntity> mLotEntities = new ArrayList<>();
 
     private RecyclerView mPensRv;
     private TextView mEmptyTv;
@@ -142,6 +147,8 @@ public class ManagePensActivity extends AppCompatActivity implements
 
                 final PenEntity selectedPenEntity = mPenEntityList.get(position);
 
+                new QueryLotsByPenId(selectedPenEntity.getPenId(), ManagePensActivity.this).execute(ManagePensActivity.this);
+
                 View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_add_new_pen, null);
                 final EditText editPenEditText = dialogView.findViewById(R.id.dialog_add_new_pen_edit_text);
                 editPenEditText.setText(selectedPenEntity.getPenName());
@@ -206,45 +213,38 @@ public class ManagePensActivity extends AppCompatActivity implements
                         neu_button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
-                                    String id = selectedPenEntity.getPenId();
-                                    mPenRef.child(id).removeValue();
+                                if (mLotEntities.size() == 0) {
+                                    if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
+                                        String id = selectedPenEntity.getPenId();
+                                        mPenRef.child(id).removeValue();
+                                    } else {
+                                        Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                    // TODO: 3/19/2019 fix: change id to lotId
-                                    Query cowQuery = mBaseRef.child(CowEntity.COW).orderByChild(CowEntity.LOT_ID).equalTo(id);
-                                    cowQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                snapshot.getRef().removeValue();
-                                            }
-                                        }
+                                        HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
+                                        holdingPenEntity.setPenName(selectedPenEntity.getPenName());
+                                        holdingPenEntity.setPenId(selectedPenEntity.getPenId());
+                                        holdingPenEntity.setWhatHappened(Utility.DELETE);
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                    }
 
-                                        }
-                                    });
+                                    new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
+                                    new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
+
+                                    editPen.dismiss();
 
                                 } else {
-                                    Utility.setNewDataToUpload(ManagePensActivity.this, true);
-
-                                    HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                    holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-                                    holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                    holdingPenEntity.setWhatHappened(Utility.DELETE);
-
-                                    new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
-
-                                    // TODO: 3/2/2019 save all the cows in this pen to the holding database to delete later when you connected to the internet.
+                                    AlertDialog.Builder lotOfCowsInThisPen = new AlertDialog.Builder(ManagePensActivity.this);
+                                    lotOfCowsInThisPen.setTitle("There are cows in this pen");
+                                    lotOfCowsInThisPen.setMessage("You can't delete this pen when there are still cows in it.  Move the cows to continue with deletion.");
+                                    lotOfCowsInThisPen.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            editPen.dismiss();
+                                        }
+                                    });
+                                    lotOfCowsInThisPen.show();
                                 }
-
-                                new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);
-                                new QueryAllPens(ManagePensActivity.this).execute(ManagePensActivity.this);
-
-                                new DeleteCowsByPenId(selectedPenEntity.getPenId()).execute(ManagePensActivity.this);
-
-                                // TODO: 3/2/2019 delete all the drugs give on all this pen when the pen is deleted.
                             }
                         });
                     }
@@ -293,5 +293,10 @@ public class ManagePensActivity extends AppCompatActivity implements
             if (penEntity.getPenName().equals(penName)) return false;
         }
         return true;
+    }
+
+    @Override
+    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
+        mLotEntities = lotEntities;
     }
 }
