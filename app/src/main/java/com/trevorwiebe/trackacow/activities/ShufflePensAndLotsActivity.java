@@ -85,7 +85,7 @@ public class ShufflePensAndLotsActivity extends AppCompatActivity implements
             }
         }
 
-        mShuffleAdapter.setShuffleList(shuffleObjects);
+        mShuffleAdapter.setAdapterVariables(shuffleObjects, ShufflePensAndLotsActivity.this);
 
     }
 

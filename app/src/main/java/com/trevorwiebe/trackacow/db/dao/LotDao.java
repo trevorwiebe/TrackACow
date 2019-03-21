@@ -28,6 +28,9 @@ public interface LotDao {
     @Update
     void updateLotEntity(LotEntity lotEntity);
 
+    @Query("UPDATE lot SET penId = :penId WHERE lotId = :lotId")
+    void updateLotWithNewPenId(String lotId, String penId);
+
     @Query("DELETE FROM lot")
     void deleteLotEntityList();
 

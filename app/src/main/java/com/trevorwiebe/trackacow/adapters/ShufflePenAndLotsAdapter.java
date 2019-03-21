@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -9,12 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateLotWithNewPenId;
+import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.objects.ShuffleObject;
 import com.trevorwiebe.trackacow.utils.DragHelper;
 import com.trevorwiebe.trackacow.utils.LotViewHolder;
 import com.trevorwiebe.trackacow.utils.PenViewHolder;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 
 public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
@@ -25,6 +29,7 @@ public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.
     public static final int LOT_NAME = 1;
     public static final int PEN_NAME = 2;
     private ArrayList<ShuffleObject> shuffleObjects = new ArrayList<>();
+    private Context context;
     private ItemTouchHelper touchHelper;
 
     @Override
@@ -81,21 +86,44 @@ public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.
         return shuffleObject.getType();
     }
 
-    public void setShuffleList(ArrayList<ShuffleObject> shuffleObjects) {
+    public void setAdapterVariables(ArrayList<ShuffleObject> shuffleObjects, Context context) {
         this.shuffleObjects = new ArrayList<>(shuffleObjects);
+        this.context = context;
         notifyDataSetChanged();
     }
 
     @Override
     public void onViewMoved(int oldPosition, int newPosition) {
-        ShuffleObject oldShuffleObject = shuffleObjects.get(oldPosition);
-        ShuffleObject newShuffleObject = new ShuffleObject(oldShuffleObject);
-        shuffleObjects.remove(oldPosition);
-        shuffleObjects.add(newPosition, newShuffleObject);
-        notifyItemMoved(oldPosition, newPosition);
+
+        if (newPosition != 0) {
+
+            ShuffleObject lotShuffleObject = shuffleObjects.get(oldPosition);
+            String lotId = lotShuffleObject.getId();
+
+            shuffleObjects.remove(oldPosition);
+            shuffleObjects.add(newPosition, lotShuffleObject);
+            notifyItemMoved(oldPosition, newPosition);
+
+            ShuffleObject penShuffleObject = findNearestPen(newPosition);
+            if (penShuffleObject != null) {
+                String penId = penShuffleObject.getId();
+                new UpdateLotWithNewPenId(lotId, penId).execute(context);
+            }
+
+        }
     }
 
     public void setTouchHelper(ItemTouchHelper touchHelper) {
         this.touchHelper = touchHelper;
+    }
+
+    private ShuffleObject findNearestPen(int position) {
+        for (int i = position; i < shuffleObjects.size(); i--) {
+            ShuffleObject shuffleObject = shuffleObjects.get(i);
+            if (shuffleObject.getType() == PEN_NAME) {
+                return shuffleObject;
+            }
+        }
+        return null;
     }
 }

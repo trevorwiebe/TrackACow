@@ -16,7 +16,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.ShufflePensAndLotsActivity"
-            android:label="Rearrange" />
+            android:label="Move" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
