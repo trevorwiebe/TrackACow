@@ -24,13 +24,13 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
-import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.fragments.FeedFragment;
 import com.trevorwiebe.trackacow.fragments.MedicateFragment;
+import com.trevorwiebe.trackacow.fragments.MoreFragment;
 import com.trevorwiebe.trackacow.fragments.ReportsFragment;
 import com.trevorwiebe.trackacow.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
@@ -39,7 +39,6 @@ import com.trevorwiebe.trackacow.utils.Utility;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
         SyncDatabase.OnDatabaseSynced {
 
     private static final String TAG = "MainActivity";
@@ -61,12 +60,6 @@ public class MainActivity extends AppCompatActivity implements
 
         String channelId = getResources().getString(R.string.sync_notif_channel_id);
         Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
@@ -97,14 +90,19 @@ public class MainActivity extends AppCompatActivity implements
                         reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
                         reportsTransactionManager.commit();
                         break;
+                    case R.id.action_more:
+                        setTitle("More");
+                        MoreFragment moreFragment = new MoreFragment();
+                        FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
+                        moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
+                        moreTransactionManager.commit();
+                        break;
                     default:
                         break;
                 }
                 return true;
             }
         });
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -161,56 +159,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.nav_manage_drugs:
-                Intent manageDrugsIntent = new Intent(MainActivity.this, ManageDrugsActivity.class);
-                startActivity(manageDrugsIntent);
-                break;
-            case R.id.nav_manage_pens:
-                Intent managePensIntent = new Intent(MainActivity.this, ManagePensActivity.class);
-                startActivity(managePensIntent);
-                break;
-            case R.id.nav_settings:
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                break;
-            case R.id.nav_sign_out:
-                AuthUI.getInstance().signOut(this);
-                break;
-            default:
-                Log.e(TAG, "onNavigationItemSelected: unknown menu id");
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     private void onSignedInInitialized(FirebaseUser user) {
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        TextView userName = headerView.findViewById(R.id.nav_userName);
-        TextView userEmail = headerView.findViewById(R.id.nav_userEmail);
-
-        userName.setText(user.getDisplayName());
-        userEmail.setText(user.getEmail());
 
         new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
 
