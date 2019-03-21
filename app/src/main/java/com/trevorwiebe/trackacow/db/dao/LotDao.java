@@ -25,6 +25,9 @@ public interface LotDao {
     @Query("SELECT * FROM lot WHERE penId = :penId")
     List<LotEntity> getLotEntitiesByPenId(String penId);
 
+    @Query("SELECT * FROM lot WHERE lotId = :lotId")
+    LotEntity getLotEntityById(String lotId);
+
     @Update
     void updateLotEntity(LotEntity lotEntity);
 
