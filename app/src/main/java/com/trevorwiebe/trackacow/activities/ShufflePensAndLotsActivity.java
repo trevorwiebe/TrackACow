@@ -76,26 +76,31 @@ public class ShufflePensAndLotsActivity extends AppCompatActivity implements
             ShuffleObject penShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.PEN_NAME, penName, penId);
             shuffleObjects.add(penShuffleObject);
 
-            LotEntity lotEntity = getLotEntity(penEntity.getPenId(), lotEntities);
-            if (lotEntity != null) {
-                String lotName = lotEntity.getLotName();
-                String lotId = lotEntity.getLotId();
-                ShuffleObject lotShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.LOT_NAME, lotName, lotId);
-                shuffleObjects.add(lotShuffleObject);
+            ArrayList<LotEntity> selectedLotEntities = getLotEntities(penEntity.getPenId(), lotEntities);
+            if (selectedLotEntities.size() != 0) {
+                for (int p = 0; p < selectedLotEntities.size(); p++) {
+                    LotEntity lotEntity = selectedLotEntities.get(p);
+                    String lotName = lotEntity.getLotName();
+                    String lotId = lotEntity.getLotId();
+                    ShuffleObject lotShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.LOT_NAME, lotName, lotId);
+                    shuffleObjects.add(lotShuffleObject);
+                }
             }
+
         }
 
         mShuffleAdapter.setAdapterVariables(shuffleObjects, ShufflePensAndLotsActivity.this);
 
     }
 
-    private LotEntity getLotEntity(String penId, ArrayList<LotEntity> lotEntities) {
+    private ArrayList<LotEntity> getLotEntities(String penId, ArrayList<LotEntity> lotEntities) {
+        ArrayList<LotEntity> selectedLotEntities = new ArrayList<>();
         for (int o = 0; o < lotEntities.size(); o++) {
             LotEntity lotEntity = lotEntities.get(o);
             if (lotEntity.getPenId().equals(penId)) {
-                return lotEntity;
+                selectedLotEntities.add(lotEntity);
             }
         }
-        return null;
+        return selectedLotEntities;
     }
 }
