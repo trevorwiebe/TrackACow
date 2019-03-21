@@ -66,15 +66,19 @@ public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         if (itemViewType == LOT_NAME) {
             String lotName = shuffleObject.getName();
-            LotViewHolder lotViewHolder = (LotViewHolder) holder;
+            final LotViewHolder lotViewHolder = (LotViewHolder) holder;
             lotViewHolder.lotName.setText(lotName);
             lotViewHolder.reorder.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                         touchHelper.startDrag(holder);
+                        lotViewHolder.lotMoveView.setVisibility(View.VISIBLE);
+                        return true;
+                    } else {
+                        lotViewHolder.lotMoveView.setVisibility(View.INVISIBLE);
+                        return true;
                     }
-                    return false;
                 }
             });
         } else {
