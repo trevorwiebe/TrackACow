@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
@@ -14,6 +13,7 @@ import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
 
@@ -49,11 +49,17 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
         if (mLotList != null) {
 
-            LotEntity lotEntity = findLotEntity(penEntity.getPenId());
-            if (lotEntity != null) {
+            ArrayList<LotEntity> lotEntities = findLotEntities(penEntity.getPenId());
+            if (lotEntities.size() != 0) {
                 penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.greenText));
-                String lotName = lotEntity.getLotName();
-                penViewHolder.mLotNames.setText(lotName);
+                String lotTextName = "";
+                ListIterator iterator = lotEntities.listIterator();
+                while (iterator.hasNext()) {
+                    LotEntity lotEntity = (LotEntity) iterator.next();
+                    String lotName = lotEntity.getLotName();
+                    lotTextName = lotTextName + "  " + lotName;
+                }
+                penViewHolder.mLotNames.setText(lotTextName);
             } else {
                 penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.redText));
                 penViewHolder.mLotNames.setText("No cattle in this pen");
@@ -86,14 +92,15 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         }
     }
 
-    private LotEntity findLotEntity(String penId) {
+    private ArrayList<LotEntity> findLotEntities(String penId) {
+        ArrayList<LotEntity> lotEntities = new ArrayList<>();
         for (int o = 0; o < mLotList.size(); o++) {
             LotEntity lotEntity = mLotList.get(o);
             if (lotEntity.getPenId().equals(penId)) {
-                return lotEntity;
+                lotEntities.add(lotEntity);
             }
         }
-        return null;
+        return lotEntities;
     }
 
 }
