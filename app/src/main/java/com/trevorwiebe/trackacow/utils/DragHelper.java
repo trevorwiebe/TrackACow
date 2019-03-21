@@ -18,8 +18,8 @@ public class DragHelper extends ItemTouchHelper.Callback {
             return 0;
         }
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        int swipeFlags = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
-        return makeMovementFlags(dragFlags, swipeFlags);
+//        int swipeFlags = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+        return makeMovementFlags(dragFlags, 0);
     }
 
     @Override
