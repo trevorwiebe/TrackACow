@@ -101,6 +101,18 @@ public class Utility {
         return haveConnectedWifi || haveConnectedMobile;
     }
 
+    public static void saveLastUsedScreen(Context context, int lastUsedScreen) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_used_screen_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(context.getResources().getString(R.string.last_used_screen_key), lastUsedScreen);
+        editor.apply();
+    }
+
+    public static int getLastUsedScreen(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_used_screen_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(context.getResources().getString(R.string.last_used_screen_key), Constants.MEDICATE);
+    }
+
     public static void setNewDataToUpload(Context context, boolean isThereNewData) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(

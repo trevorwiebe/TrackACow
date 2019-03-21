@@ -16,4 +16,8 @@
     <string name="save_cow_id_name" translatable="false">save_cow_id_name</string>
 
     <string name="sync_notif_channel_id" translatable="false">sync_notif_channel_id</string>
+
+    <string name="last_used_screen_name" translatable="false">last_used_screen_name</string>
+    <string name="last_used_screen_key" translatable="false">last_used_screen_key</string>
+
 </resources>

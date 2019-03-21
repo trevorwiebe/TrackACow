@@ -34,6 +34,7 @@ import com.trevorwiebe.trackacow.fragments.MoreFragment;
 import com.trevorwiebe.trackacow.fragments.MoveFragment;
 import com.trevorwiebe.trackacow.fragments.ReportsFragment;
 import com.trevorwiebe.trackacow.services.SyncDatabaseService;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements
                         FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
                         medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
                         medicateTransactionManager.commit();
+                        Utility.saveLastUsedScreen(MainActivity.this, Constants.MEDICATE);
                         break;
                     case R.id.action_feed:
                         setTitle("Feed");
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
                         FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                         feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
                         feedTransactionManager.commit();
+                        Utility.saveLastUsedScreen(MainActivity.this, Constants.FEED);
                         break;
                     case R.id.action_move:
                         setTitle("Move");
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
                         FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
                         moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
                         moveTransactionManager.commit();
+                        Utility.saveLastUsedScreen(MainActivity.this, Constants.MOVE);
                         break;
                     case R.id.action_reports:
                         setTitle("Reports");
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
                         FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
                         reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
                         reportsTransactionManager.commit();
+                        Utility.saveLastUsedScreen(MainActivity.this, Constants.REPORTS);
                         break;
                     case R.id.action_more:
                         setTitle("More");
@@ -104,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements
                         FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
                         moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
                         moreTransactionManager.commit();
+                        Utility.saveLastUsedScreen(MainActivity.this, Constants.MORE);
                         break;
                     default:
                         break;
@@ -145,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStop() {
+        Utility.saveLastUsedScreen(this, Constants.MEDICATE);
+        super.onStop();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SIGN_IN_CODE && resultCode == RESULT_CANCELED) {
             finish();
@@ -178,12 +190,58 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationView.setVisibility(View.VISIBLE);
 
         // open the medicate fragment
-        setTitle("Medicate");
-        mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
-        MedicateFragment medicateFragment = new MedicateFragment();
-        FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
-        medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
-        medicateTransactionManager.commit();
+        int lastUsedScreen = Utility.getLastUsedScreen(MainActivity.this);
+        switch (lastUsedScreen) {
+            case Constants.MEDICATE:
+                setTitle("Medicate");
+                MedicateFragment medicateFragment = new MedicateFragment();
+                FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
+                medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
+                medicateTransactionManager.commit();
+                Utility.saveLastUsedScreen(MainActivity.this, Constants.MEDICATE);
+                break;
+            case Constants.FEED:
+                setTitle("Feed");
+                FeedFragment feedFragment = new FeedFragment();
+                FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
+                feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
+                feedTransactionManager.commit();
+                Utility.saveLastUsedScreen(MainActivity.this, Constants.FEED);
+                break;
+            case Constants.MOVE:
+                setTitle("Move");
+                MoveFragment moveFragment = new MoveFragment();
+                FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
+                moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
+                moveTransactionManager.commit();
+                Utility.saveLastUsedScreen(MainActivity.this, Constants.MOVE);
+                break;
+            case Constants.REPORTS:
+                setTitle("Reports");
+                ReportsFragment reportsFragment = new ReportsFragment();
+                FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
+                reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
+                reportsTransactionManager.commit();
+                Utility.saveLastUsedScreen(MainActivity.this, Constants.REPORTS);
+                break;
+            case Constants.MORE:
+                setTitle("More");
+                MoreFragment moreFragment = new MoreFragment();
+                FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
+                moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
+                moreTransactionManager.commit();
+                Utility.saveLastUsedScreen(MainActivity.this, Constants.MORE);
+                break;
+            default:
+                setTitle("Medicate");
+                mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
+                MedicateFragment medicateFragmentD = new MedicateFragment();
+                FragmentTransaction medicateTransactionManagerD = getSupportFragmentManager().beginTransaction();
+                medicateTransactionManagerD.replace(R.id.main_fragment_container, medicateFragmentD);
+                medicateTransactionManagerD.commit();
+                break;
+
+        }
     }
 
     private void onSignedOutCleanUp() {
