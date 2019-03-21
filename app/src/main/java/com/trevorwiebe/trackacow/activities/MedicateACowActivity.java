@@ -284,19 +284,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mLoadDrugs.setVisibility(View.GONE);
     }
 
-    private CompoundButton.OnCheckedChangeListener checkBoxListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            String drugId = compoundButton.getTag().toString();
-            EditText editText = mDrugLayout.findViewWithTag(drugId + "_editText");
-            if(isChecked){
-                editText.setVisibility(View.VISIBLE);
-            }else{
-                editText.setVisibility(View.GONE);
-            }
-        }
-    };
-
     private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity){
 
         String drugName = drugEntity.getDrugName();
@@ -317,7 +304,6 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         checkBoxParams.setMargins(pixels16, pixels24, pixels16, pixels8);
-        checkBox.setOnCheckedChangeListener(checkBoxListener);
         checkBox.setLayoutParams(checkBoxParams);
 
         EditText editText = new EditText(this);
@@ -326,11 +312,10 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         editTextParams.setMargins(pixels24, 0, pixels24, pixels16);
-        editText.setEms(5);
+        editText.setEms(4);
         editText.setGravity(Gravity.CENTER);
         editText.setTag(drugId + "_editText");
         editText.setText(defaultAmountStr);
-        editText.setVisibility(View.GONE);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
