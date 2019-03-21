@@ -269,7 +269,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             LotEntity lotEntity = lotEntities.get(t);
             mLotIds.add(lotEntity.getLotId());
             String lotName = lotEntity.getLotName();
-            lotNameTitle = lotNameTitle + lotName;
+            lotNameTitle = lotNameTitle + "  " + lotName;
         }
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         if (lotNameTitle.length() == 0) {
