@@ -31,6 +31,7 @@ import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.fragments.FeedFragment;
 import com.trevorwiebe.trackacow.fragments.MedicateFragment;
 import com.trevorwiebe.trackacow.fragments.MoreFragment;
+import com.trevorwiebe.trackacow.fragments.MoveFragment;
 import com.trevorwiebe.trackacow.fragments.ReportsFragment;
 import com.trevorwiebe.trackacow.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
@@ -83,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements
                         feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
                         feedTransactionManager.commit();
                         break;
+                    case R.id.action_move:
+                        setTitle("Move");
+                        MoveFragment moveFragment = new MoveFragment();
+                        FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
+                        moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
+                        moveTransactionManager.commit();
+                        break;
                     case R.id.action_reports:
                         setTitle("Reports");
                         ReportsFragment reportsFragment = new ReportsFragment();
@@ -123,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -133,23 +142,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
         super.onPause();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_shuffle) {
-            Intent shufflePensAndLotsIntent = new Intent(MainActivity.this, ShufflePensAndLotsActivity.class);
-            startActivity(shufflePensAndLotsIntent);
-        }
-        return true;
     }
 
     @Override
