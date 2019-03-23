@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.activities.LotReportActivity;
 import com.trevorwiebe.trackacow.adapters.ReportsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,8 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
 
     private ReportsRecyclerViewAdapter mReportsRvAdapter;
 
+    private ArrayList<LotEntity> mLotList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,6 +43,21 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
         reportsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mReportsRvAdapter = new ReportsRecyclerViewAdapter();
         reportsRv.setAdapter(mReportsRvAdapter);
+
+        reportsRv.addOnItemTouchListener(new ItemClickListener(getContext(), reportsRv, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent reportsIntent = new Intent(getContext(), LotReportActivity.class);
+                String lotId = mLotList.get(position).getLotId();
+                reportsIntent.putExtra("lotId", lotId);
+                startActivity(reportsIntent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
         return rootView;
     }
@@ -50,6 +70,7 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
 
     @Override
     public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {
-        mReportsRvAdapter.swapLotData(lotEntities);
+        mLotList = lotEntities;
+        mReportsRvAdapter.swapLotData(mLotList);
     }
 }

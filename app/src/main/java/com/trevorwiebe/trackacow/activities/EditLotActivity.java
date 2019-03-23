@@ -18,7 +18,7 @@ import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
-public class EditPenActivity extends AppCompatActivity {
+public class EditLotActivity extends AppCompatActivity {
 
     private DatabaseReference mBaseRef;
     private PenEntity mSelectedPen;
@@ -71,11 +71,11 @@ public class EditPenActivity extends AppCompatActivity {
 //                    mSelectedPen.setTotalHead(totalHead);
 //                    mSelectedPen.setNotes(notes);
 
-                    if(Utility.haveNetworkConnection(EditPenActivity.this)){
+                    if (Utility.haveNetworkConnection(EditLotActivity.this)) {
                         mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
                     }else{
 
-                        Utility.setNewDataToUpload(EditPenActivity.this, true);
+                        Utility.setNewDataToUpload(EditLotActivity.this, true);
 
                         HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
 //                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
@@ -86,10 +86,10 @@ public class EditPenActivity extends AppCompatActivity {
                         holdingPenEntity.setPenId(mSelectedPen.getPenId());
                         holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
 
-                        new InsertHoldingPen(holdingPenEntity).execute(EditPenActivity.this);
+                        new InsertHoldingPen(holdingPenEntity).execute(EditLotActivity.this);
                     }
 
-                    new UpdatePen(mSelectedPen).execute(EditPenActivity.this);
+                    new UpdatePen(mSelectedPen).execute(EditLotActivity.this);
 
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);

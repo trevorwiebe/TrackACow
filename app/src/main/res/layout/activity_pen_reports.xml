@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.PenReportsActivity">
+    tools:context=".activities.LotReportActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_margin="16dp"
-                android:text="Pen Reports"
+                android:text="Lot Reports"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -167,7 +167,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/reset_this_pen_btn"
+            android:id="@+id/archive_this_lot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -177,7 +177,7 @@
             android:background="@android:color/white"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:text="Reset this pen"
+            android:text="Archive this lot"
             android:textColor="@color/redText" />
 
     </LinearLayout>
