@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Keep;
 
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+
 @Keep
 @Entity(tableName = "HoldingDrugsGiven")
 public class HoldingDrugsGivenEntity {
@@ -32,6 +34,15 @@ public class HoldingDrugsGivenEntity {
     public int whatHappened;
 
     public HoldingDrugsGivenEntity(){}
+
+    public HoldingDrugsGivenEntity(DrugsGivenEntity drugsGivenEntity, int whatHappened) {
+        this.drugGivenId = drugsGivenEntity.getDrugGivenId();
+        this.drugId = drugsGivenEntity.getDrugId();
+        this.amountGiven = drugsGivenEntity.getAmountGiven();
+        this.cowId = drugsGivenEntity.getCowId();
+        this.lotId = drugsGivenEntity.getLotId();
+        this.whatHappened = whatHappened;
+    }
 
     public int getPrimaryKey() {
         return primaryKey;

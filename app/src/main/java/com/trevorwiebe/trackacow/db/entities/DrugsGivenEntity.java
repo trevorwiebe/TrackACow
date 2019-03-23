@@ -14,6 +14,7 @@ public class DrugsGivenEntity {
 
     public static final String DRUGS_GIVEN = "drugsGiven";
     public static final String LOT_ID = "lotId";
+    public static final String COW_ID = "cowId";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")

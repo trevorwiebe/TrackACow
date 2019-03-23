@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCow;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
@@ -28,10 +34,13 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ListIterator;
 
 public class EditMedicatedCowActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
@@ -46,6 +55,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
+    private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
 
     private CardView mCowIsDead;
     private TextInputEditText mEditTagNumber;
@@ -143,8 +153,22 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
-                    mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).removeValue();
-                    // TODO: 2/9/2019 delete all the drugs given to this cow too
+                    String cowId = mCowEntity.getCowId();
+                    mBaseRef.child(CowEntity.COW).child(cowId).removeValue();
+                    Query deleteDrugsGivenQuery = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.COW_ID).equalTo(cowId);
+                    deleteDrugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                snapshot.getRef().removeValue();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }else{
                     Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
@@ -159,7 +183,15 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
                     new InsertHoldingCow(holdingCowEntity).execute(EditMedicatedCowActivity.this);
 
-                    // TODO: 2/9/2019 mark all the drugs given to this cow to be deleted
+                    ListIterator iterator = mDrugsGivenList.listIterator();
+                    ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        DrugsGivenEntity drugsGivenEntity = (DrugsGivenEntity) iterator.next();
+                        HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Utility.DELETE);
+                        holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                    }
+                    new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(EditMedicatedCowActivity.this);
+
                 }
 
                 new DeleteCow(mCowEntity).execute(EditMedicatedCowActivity.this);
@@ -220,7 +252,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
     @Override
     public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        setDrugGivenLayout(drugsGivenEntities);
+        mDrugsGivenList = drugsGivenEntities;
+        setDrugGivenLayout(mDrugsGivenList);
     }
 
     private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){

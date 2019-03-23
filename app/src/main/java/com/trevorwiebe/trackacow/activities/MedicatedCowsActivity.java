@@ -90,8 +90,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicated_cows);
 
-        // TODO: 2/16/2019 add context menu and the ability to sort by tag number or date
-
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu);
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
         mResultsNotFound = findViewById(R.id.result_not_found);
