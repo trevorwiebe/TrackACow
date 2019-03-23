@@ -193,7 +193,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
         signInError.show();
 
-        mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
         mCreatingAccountWithGoogle.setVisibility(View.INVISIBLE);
+
+        mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
+        mCreatingAccount.setVisibility(View.INVISIBLE);
     }
 }
