@@ -106,12 +106,10 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
     }
 
     public void swapData(ArrayList<CowEntity> cowObjectsList, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mCowList = cowObjectsList;
-        mDrugList = drugEntities;
-        mDrugsGivenEntities = drugsGivenEntities;
-        if (mCowList != null && mDrugList != null && mDrugsGivenEntities != null) {
-            notifyDataSetChanged();
-        }
+        mCowList = new ArrayList<>(cowObjectsList);
+        mDrugList = new ArrayList<>(drugEntities);
+        mDrugsGivenEntities = new ArrayList<>(drugsGivenEntities);
+        notifyDataSetChanged();
     }
 
     public class TrackCowViewHolder extends RecyclerView.ViewHolder {

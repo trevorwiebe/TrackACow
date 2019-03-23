@@ -303,8 +303,10 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             mNoMedicatedCows.setVisibility(View.VISIBLE);
         } else {
             mNoMedicatedCows.setVisibility(View.INVISIBLE);
-            mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
         }
+
+        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+
     }
 
 
