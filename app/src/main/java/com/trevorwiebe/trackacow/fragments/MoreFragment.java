@@ -1,10 +1,13 @@
 package com.trevorwiebe.trackacow.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +18,14 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.ManageDrugsActivity;
 import com.trevorwiebe.trackacow.activities.ManagePensActivity;
 import com.trevorwiebe.trackacow.activities.SettingsActivity;
+import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.utils.Utility;
 
-public class MoreFragment extends Fragment {
+public class MoreFragment extends Fragment implements InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
+
+    private static final String TAG = "MoreFragment";
+
+    private AlertDialog.Builder mBackingUpData;
 
     @Nullable
     @Override
@@ -55,9 +64,36 @@ public class MoreFragment extends Fragment {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                if (getActivity() != null) {
-                    getActivity().finish();
+                boolean isThereLocalData = Utility.isThereNewDataToUpload(getContext());
+                if (isThereLocalData) {
+                    AlertDialog.Builder thereIsDataDialog = new AlertDialog.Builder(getContext());
+                    thereIsDataDialog.setPositiveButton("Backup and sign out", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mBackingUpData = new AlertDialog.Builder(getContext());
+                            View dialogLoadingLayout = LayoutInflater.from(getContext()).inflate(R.layout.dialog_inserting_data_to_cloud, null);
+                            mBackingUpData.setView(dialogLoadingLayout);
+                            mBackingUpData.show();
+                            new InsertAllLocalChangeToCloud(MoreFragment.this).execute(getContext());
+                        }
+                    });
+                    thereIsDataDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseAuth.getInstance().signOut();
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                        }
+                    });
+                    thereIsDataDialog.setTitle("Information will be lost");
+                    thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.");
+                    thereIsDataDialog.show();
+                } else {
+                    FirebaseAuth.getInstance().signOut();
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
                 }
             }
         });
@@ -66,4 +102,16 @@ public class MoreFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAllLocalDbInsertedToCloud(int resultCode) {
+        if (mBackingUpData != null) {
+            AlertDialog createDialog = mBackingUpData.create();
+            createDialog.dismiss();
+        }
+        FirebaseAuth.getInstance().signOut();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+        Utility.setNewDataToUpload(getContext(), false);
+    }
 }

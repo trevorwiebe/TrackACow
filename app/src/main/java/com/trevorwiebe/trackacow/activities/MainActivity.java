@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void onSignedOutCleanUp() {
+        Utility.saveLastUsedScreen(MainActivity.this, Constants.MEDICATE);
         new DeleteAllLocalData().execute(MainActivity.this);
     }
 
