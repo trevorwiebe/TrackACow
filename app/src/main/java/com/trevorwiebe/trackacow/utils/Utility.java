@@ -34,28 +34,6 @@ public class Utility {
         return format.format(date);
     }
 
-    public static Long convertDateToMillis(String date){
-        SimpleDateFormat formatter = new SimpleDateFormat("M/d/y", Locale.getDefault());
-        try {
-            Date date_value = formatter.parse(date);
-            return date_value.getTime();
-        }catch(Exception e){
-            return null;
-        }
-    }
-
-    public static void vibrate(Context context, long millisToVibrate){
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if(v != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                v.vibrate(VibrationEffect.createOneShot(millisToVibrate, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                //deprecated in API 26
-                v.vibrate(millisToVibrate);
-            }
-        }
-    }
-
     public static void showNotification(Context context, String channelId, String title, String contentText) {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId)
