@@ -247,6 +247,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         new QueryDrugsGivenByCowIdList(MedicateACowActivity.this, cowIds).execute(MedicateACowActivity.this);
                     } else {
                         mDrugsGivenCardView.setVisibility(View.GONE);
+                        mMoreDrugsGivenLayout.removeAllViews();
                     }
                 }
             }
