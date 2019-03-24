@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.activities.ArchivesActivity;
 import com.trevorwiebe.trackacow.activities.ManageDrugsActivity;
 import com.trevorwiebe.trackacow.activities.ManagePensActivity;
 import com.trevorwiebe.trackacow.activities.SettingsActivity;
@@ -57,6 +58,15 @@ public class MoreFragment extends Fragment implements InsertAllLocalChangeToClou
             public void onClick(View v) {
                 Intent settingsIntent = new Intent(getContext(), SettingsActivity.class);
                 startActivity(settingsIntent);
+            }
+        });
+
+        LinearLayout archives = rootView.findViewById(R.id.archive_layout);
+        archives.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent archivesIntent = new Intent(getContext(), ArchivesActivity.class);
+                startActivity(archivesIntent);
             }
         });
 

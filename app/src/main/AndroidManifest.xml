@@ -15,6 +15,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".activities.ArchivesActivity"
+            android:label="Archives"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
             android:name=".activities.LotReportActivity"
             android:parentActivityName=".activities.MainActivity" />
         <activity
