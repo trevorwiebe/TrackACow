@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@android:color/white">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/reports_rv"
+        android:id="@+id/shuffle_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/empty_reports_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
-        android:text="This is where the reports for each of your lots will be."
+        android:id="@+id/empty_move_tv"
+        android:visibility="invisible"
         android:textColor="@android:color/darker_gray"
         android:textSize="16sp"
-        android:visibility="invisible" />
+        android:text="This is where you will be able to move your lots from one pen to another"
+        android:layout_marginTop="36dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </android.support.design.widget.CoordinatorLayout>

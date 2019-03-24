@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.ShufflePenAndLotsAdapter;
@@ -28,6 +29,7 @@ public class MoveFragment extends Fragment implements
         QueryLots.OnLotsLoaded {
 
     private RecyclerView mMoveRv;
+    private TextView mEmptyMoveList;
 
     private ArrayList<PenEntity> mPenEntities = new ArrayList<>();
     private ShufflePenAndLotsAdapter mShuffleAdapter;
@@ -36,9 +38,10 @@ public class MoveFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.move_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_move, container, false);
 
         mMoveRv = rootView.findViewById(R.id.shuffle_rv);
+        mEmptyMoveList = rootView.findViewById(R.id.empty_move_tv);
 
         return rootView;
     }
@@ -99,6 +102,11 @@ public class MoveFragment extends Fragment implements
 
         }
 
+        if (shuffleObjects.size() == 0) {
+            mEmptyMoveList.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyMoveList.setVisibility(View.INVISIBLE);
+        }
         mShuffleAdapter.setAdapterVariables(shuffleObjects, mContext);
 
     }

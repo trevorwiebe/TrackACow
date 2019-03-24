@@ -35,7 +35,7 @@
         android:textColor="@android:color/darker_gray"
         android:gravity="center_horizontal"
         android:visibility="invisible"
-        android:text="To begin add your cattle pens.  You can do so in the navigation drawer under Pens"
+        android:text="To begin add your cattle pens.  To do so, select the three little dots in the bottom right corner then select Manage Pens."
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

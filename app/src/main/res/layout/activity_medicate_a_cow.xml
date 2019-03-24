@@ -128,7 +128,7 @@
             android:textSize="16sp"
             android:textColor="@color/redText"
             android:visibility="gone"
-            android:text="You need to add some drugs first.  Go to the navigation drawer and select Drugs"
+            android:text="You need to add some drugs first.  To do so, go back to the main screen, select the three little dots in the bottom right corner, then select Manage Drugs."
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"

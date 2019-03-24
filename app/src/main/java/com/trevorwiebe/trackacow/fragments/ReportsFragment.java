@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.LotReportActivity;
@@ -30,6 +31,7 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
     }
 
     private ReportsRecyclerViewAdapter mReportsRvAdapter;
+    private TextView mNoReportsTv;
 
     private ArrayList<LotEntity> mLotList = new ArrayList<>();
 
@@ -38,6 +40,8 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_reports, container, false);
+
+        mNoReportsTv = rootView.findViewById(R.id.empty_reports_tv);
 
         RecyclerView reportsRv = rootView.findViewById(R.id.reports_rv);
         reportsRv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -71,6 +75,11 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
     @Override
     public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {
         mLotList = lotEntities;
+        if (mLotList.size() == 0) {
+            mNoReportsTv.setVisibility(View.VISIBLE);
+        } else {
+            mNoReportsTv.setVisibility(View.INVISIBLE);
+        }
         mReportsRvAdapter.swapLotData(mLotList);
     }
 }

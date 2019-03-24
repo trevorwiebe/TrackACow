@@ -26,8 +26,6 @@ import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class MedicateFragment extends Fragment implements
         SyncDatabase.OnDatabaseSynced,
@@ -55,7 +53,7 @@ public class MedicateFragment extends Fragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.medicate_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_medicate, container, false);
 
         mSwipeRefreshLayout = rootView.findViewById(R.id.main_swipe_refresh_layout);
         mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
