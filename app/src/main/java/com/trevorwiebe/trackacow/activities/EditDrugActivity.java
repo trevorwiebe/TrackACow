@@ -21,6 +21,7 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrug;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateDrug;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class EditDrugActivity extends AppCompatActivity {
@@ -94,7 +95,7 @@ public class EditDrugActivity extends AppCompatActivity {
                         holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
                         holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
                         holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                        holdingDrugEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        holdingDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
 
                         new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
 
@@ -130,7 +131,7 @@ public class EditDrugActivity extends AppCompatActivity {
             } else {
                 Utility.setNewDataToUpload(EditDrugActivity.this, true);
                 HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                holdingDrugEntity.setWhatHappened(Utility.DELETE);
+                holdingDrugEntity.setWhatHappened(Constants.DELETE);
                 holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
                 holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
                 holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());

@@ -38,6 +38,7 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.InsertSingleCow;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -165,7 +166,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         holdingCowEntity.setNotes(cowEntity.getNotes());
                         holdingCowEntity.setLotId(cowEntity.getLotId());
                         holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
-                        holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        holdingCowEntity.setWhatHappened(Constants.INSERT_UPDATE);
 
                         new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
 
@@ -181,7 +182,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                             holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
                             holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                             holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
-                            holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                            holdingDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
                             holdingDrugsGivenEntity.setLotId(mSelectedLot.getLotId());
 
                             holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);

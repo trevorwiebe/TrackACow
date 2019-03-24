@@ -134,7 +134,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
+                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId(), Constants.INSERT_UPDATE);
 
                     new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
 

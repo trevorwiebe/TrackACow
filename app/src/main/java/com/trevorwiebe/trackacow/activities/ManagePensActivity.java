@@ -40,6 +40,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -110,7 +111,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
                                             HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                            holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                                            holdingPenEntity.setWhatHappened(Constants.INSERT_UPDATE);
                                             holdingPenEntity.setPenId(penEntity.getPenId());
                                             holdingPenEntity.setPenName(penEntity.getPenName());
 
@@ -185,7 +186,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                                             HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
                                             holdingPenEntity.setPenName(selectedPenEntity.getPenName());
                                             holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                            holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                                            holdingPenEntity.setWhatHappened(Constants.INSERT_UPDATE);
 
                                             new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                                         }
@@ -223,7 +224,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                                         HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
                                         holdingPenEntity.setPenName(selectedPenEntity.getPenName());
                                         holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                        holdingPenEntity.setWhatHappened(Utility.DELETE);
+                                        holdingPenEntity.setWhatHappened(Constants.DELETE);
 
                                         new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
                                     }

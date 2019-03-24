@@ -25,6 +25,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity implements
@@ -94,7 +95,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                         holdingDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
                         holdingDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
                         holdingDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
-                        holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        holdingDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
                         holdingDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugGivenId());
 
                         new InsertHoldingDrugGiven(holdingDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);
@@ -128,7 +129,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                 holdingDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
                 holdingDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
                 holdingDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
-                holdingDrugsGivenEntity.setWhatHappened(Utility.DELETE);
+                holdingDrugsGivenEntity.setWhatHappened(Constants.DELETE);
                 holdingDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugGivenId());
 
                 new InsertHoldingDrugGiven(holdingDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);

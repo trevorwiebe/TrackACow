@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
@@ -26,7 +27,7 @@ public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
         LotEntity lotEntity = db.lotDao().getLotEntityById(lotId);
         lotEntity.setPenId(penId);
 
-        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotEntity, Utility.INSERT_UPDATE);
+        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotEntity, Constants.INSERT_UPDATE);
 
         db.holdingLotDao().insertHoldingLot(holdingLotEntity);
 

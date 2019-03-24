@@ -24,10 +24,6 @@ import java.util.Locale;
 
 public class Utility {
 
-    /* holding entity 'what happened' keys */
-    public static final int INSERT_UPDATE = 1;
-    public static final int DELETE = 3;
-
     public static String convertMillisToDate(long longDate){
         SimpleDateFormat format = new SimpleDateFormat("M/d/y", Locale.getDefault());
         Date date = new Date(longDate);

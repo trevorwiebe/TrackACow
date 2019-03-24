@@ -131,7 +131,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
                     HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
-                    holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                    holdingCowEntity.setWhatHappened(Constants.INSERT_UPDATE);
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
@@ -173,7 +173,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
                     HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
-                    holdingCowEntity.setWhatHappened(Utility.DELETE);
+                    holdingCowEntity.setWhatHappened(Constants.DELETE);
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
@@ -187,7 +187,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
                     while (iterator.hasNext()) {
                         DrugsGivenEntity drugsGivenEntity = (DrugsGivenEntity) iterator.next();
-                        HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Utility.DELETE);
+                        HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Constants.DELETE);
                         holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
                     }
                     new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(EditMedicatedCowActivity.this);

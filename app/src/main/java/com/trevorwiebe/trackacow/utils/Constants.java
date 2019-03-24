@@ -12,4 +12,7 @@ public class Constants {
     public static final int REPORTS = 4;
     public static final int MORE = 5;
 
+    /* holding entity 'what happened' keys */
+    public static final int INSERT_UPDATE = 1;
+    public static final int DELETE = 3;
 }

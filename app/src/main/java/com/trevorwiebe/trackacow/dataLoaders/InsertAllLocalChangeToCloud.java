@@ -54,10 +54,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             DrugEntity drugEntity = new DrugEntity(holdingDrugEntity.getDefaultAmount(), holdingDrugEntity.getDrugId(), holdingDrugEntity.getDrugName());
 
             switch (holdingDrugEntity.getWhatHappened()){
-                case Utility.INSERT_UPDATE:
+                case Constants.INSERT_UPDATE:
                     baseRef.child(DrugEntity.DRUG_OBJECT).child(drugEntity.getDrugId()).setValue(drugEntity);
                     break;
-                case Utility.DELETE:
+                case Constants.DELETE:
                     baseRef.child(DrugEntity.DRUG_OBJECT).child(drugEntity.getDrugId()).removeValue();
                     break;
                 default:
@@ -74,10 +74,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             PenEntity penEntity = new PenEntity(holdingPenEntity.getPenId(), holdingPenEntity.getPenName());
 
             switch (holdingPenEntity.getWhatHappened()){
-                case Utility.INSERT_UPDATE:
+                case Constants.INSERT_UPDATE:
                     baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).setValue(penEntity);
                     break;
-                case Utility.DELETE:
+                case Constants.DELETE:
                     baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).removeValue();
                     break;
                 default:
@@ -95,10 +95,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             CowEntity cowEntity = new CowEntity(holdingCowEntity.isAlive(), holdingCowEntity.getCowId(), holdingCowEntity.getTagNumber(), holdingCowEntity.getDate(), holdingCowEntity.getNotes(), holdingCowEntity.getLotId());
 
             switch (holdingCowEntity.getWhatHappened()){
-                case Utility.INSERT_UPDATE:
+                case Constants.INSERT_UPDATE:
                     baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).setValue(cowEntity);
                     break;
-                case Utility.DELETE:
+                case Constants.DELETE:
                     baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).removeValue();
                     break;
                 default:
@@ -116,10 +116,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getLotId());
 
             switch (holdingDrugsGivenEntity.getWhatHappened()){
-                case Utility.INSERT_UPDATE:
+                case Constants.INSERT_UPDATE:
                     baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
                     break;
-                case Utility.DELETE:
+                case Constants.DELETE:
                     baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).removeValue();
                     break;
             }
@@ -134,10 +134,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
             LotEntity lotEntity = new LotEntity(holdingLotEntity);
             switch (holdingLotEntity.getWhatHappened()) {
-                case Utility.INSERT_UPDATE:
+                case Constants.INSERT_UPDATE:
                     baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).setValue(lotEntity);
                     break;
-                case Utility.DELETE:
+                case Constants.DELETE:
                     baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).removeValue();
                     break;
             }

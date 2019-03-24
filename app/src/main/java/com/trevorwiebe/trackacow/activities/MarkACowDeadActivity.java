@@ -22,6 +22,7 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -126,7 +127,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             Utility.setNewDataToUpload(MarkACowDeadActivity.this, true);
 
             HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
-            holdingCowEntity.setWhatHappened(Utility.INSERT_UPDATE);
+            holdingCowEntity.setWhatHappened(Constants.INSERT_UPDATE);
             holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
             holdingCowEntity.setLotId(cowEntity.getLotId());
             holdingCowEntity.setNotes(cowEntity.getNotes());

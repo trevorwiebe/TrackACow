@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateLot;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.NumberFormat;
@@ -113,7 +114,7 @@ public class EditLotActivity extends AppCompatActivity implements
 
                         Utility.setNewDataToUpload(EditLotActivity.this, true);
 
-                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLot, Utility.INSERT_UPDATE);
+                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLot, Constants.INSERT_UPDATE);
 
                         new InsertHoldingLot(holdingLotEntity).execute(EditLotActivity.this);
                     }

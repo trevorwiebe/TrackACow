@@ -26,6 +26,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                         holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
                         holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
                         holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
-                        holdingDrugsGivenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        holdingDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
                         holdingDrugsGivenEntity.setLotId(drugsGivenEntity.getLotId());
 
                         holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
