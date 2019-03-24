@@ -31,18 +31,22 @@ public class HoldingLotEntity {
     @ColumnInfo(name = "notes")
     private String notes;
 
+    @ColumnInfo(name = "date")
+    private long date;
+
     @ColumnInfo(name = "penId")
     private String penId;
 
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-    public HoldingLotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, String penId, int whatHappened) {
+    public HoldingLotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, long date, String penId, int whatHappened) {
         this.lotName = lotName;
         this.lotId = lotId;
         this.customerName = customerName;
         this.totalHead = totalHead;
         this.notes = notes;
+        this.date = date;
         this.penId = penId;
         this.whatHappened = whatHappened;
     }
@@ -53,6 +57,7 @@ public class HoldingLotEntity {
         this.customerName = lotEntity.getCustomerName();
         this.totalHead = lotEntity.getTotalHead();
         this.notes = lotEntity.getNotes();
+        this.date = lotEntity.getDate();
         this.penId = lotEntity.getPenId();
         this.whatHappened = whatHappened;
     }
@@ -107,6 +112,14 @@ public class HoldingLotEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public String getPenId() {

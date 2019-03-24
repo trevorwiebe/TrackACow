@@ -33,15 +33,19 @@ public class LotEntity {
     @ColumnInfo(name = "notes")
     private String notes;
 
+    @ColumnInfo(name = "date")
+    private long date;
+
     @ColumnInfo(name = "penId")
     private String penId;
 
-    public LotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, String penId) {
+    public LotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, long date, String penId) {
         this.lotName = lotName;
         this.lotId = lotId;
         this.customerName = customerName;
         this.totalHead = totalHead;
         this.notes = notes;
+        this.date = date;
         this.penId = penId;
     }
 
@@ -51,6 +55,7 @@ public class LotEntity {
         this.customerName = holdingLotEntity.getCustomerName();
         this.totalHead = holdingLotEntity.getTotalHead();
         this.notes = holdingLotEntity.getNotes();
+        this.date = holdingLotEntity.getDate();
         this.penId = holdingLotEntity.getPenId();
     }
 
@@ -104,6 +109,14 @@ public class LotEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public String getPenId() {

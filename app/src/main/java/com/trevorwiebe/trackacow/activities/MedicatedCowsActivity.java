@@ -115,7 +115,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, System.currentTimeMillis(), mSelectedPen.getPenId());
 
                 if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
                     lotPushRef.setValue(lotEntity);
@@ -123,7 +123,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
+                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, System.currentTimeMillis(), mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
 
                     new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
 
