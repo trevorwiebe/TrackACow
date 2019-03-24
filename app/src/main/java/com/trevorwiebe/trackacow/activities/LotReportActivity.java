@@ -89,9 +89,9 @@ public class LotReportActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.reports_action_edit) {
-            Intent editPenIntent = new Intent(LotReportActivity.this, EditLotActivity.class);
-//            editPenIntent.putExtra("selectedPenId", mSelectedPen.getPenId());
-            startActivityForResult(editPenIntent, EDIT_PEN_CODE);
+            Intent editLotIntent = new Intent(LotReportActivity.this, EditLotActivity.class);
+            editLotIntent.putExtra("lotId", mSelectedLotEntity.getLotId());
+            startActivityForResult(editLotIntent, EDIT_PEN_CODE);
         }
         return super.onOptionsItemSelected(item);
     }

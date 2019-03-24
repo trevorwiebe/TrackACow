@@ -12,17 +12,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingPen;
-import com.trevorwiebe.trackacow.dataLoaders.UpdatePen;
-import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateLot;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
-public class EditLotActivity extends AppCompatActivity {
+import java.text.NumberFormat;
+import java.util.Locale;
 
-    private DatabaseReference mBaseRef;
-    private PenEntity mSelectedPen;
+public class EditLotActivity extends AppCompatActivity implements
+        QueryLotByLotId.OnLotByLotIdLoaded {
 
+    private LotEntity mSelectedLot;
+    private NumberFormat formatter = NumberFormat.getNumberInstance(Locale.getDefault());
+
+    private TextInputEditText mLotDescription;
     private TextInputEditText mCustomerName;
     private TextInputEditText mTotalHead;
     private TextInputEditText mNotes;
@@ -31,15 +37,16 @@ public class EditLotActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_pen);
+        setContentView(R.layout.activity_edit_lot);
 
         this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        String lotId = getIntent().getStringExtra("lotId");
 
-        mSelectedPen = getIntent().getParcelableExtra("selectedPen");
+        new QueryLotByLotId(lotId, this).execute(this);
 
+        mLotDescription = findViewById(R.id.edit_lot_description);
         mCustomerName = findViewById(R.id.edit_customer_name);
         mTotalHead = findViewById(R.id.edit_total_head);
         mNotes = findViewById(R.id.edit_notes);
@@ -52,10 +59,6 @@ public class EditLotActivity extends AppCompatActivity {
             }
         });
 
-//        mCustomerName.setText(mSelectedPen.getCustomerName());
-//        mTotalHead.setText(Integer.toString(mSelectedPen.getTotalHead()));
-//        mNotes.setText(mSelectedPen.getNotes());
-
         mUpdateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,33 +66,29 @@ public class EditLotActivity extends AppCompatActivity {
                     Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 }else{
 
+                    String lotDescription = mLotDescription.getText().toString();
                     String customerName = mCustomerName.getText().toString();
                     int totalHead = Integer.parseInt(mTotalHead.getText().toString());
                     String notes = mNotes.getText().toString();
 
-//                    mSelectedPen.setCustomerName(customerName);
-//                    mSelectedPen.setTotalHead(totalHead);
-//                    mSelectedPen.setNotes(notes);
+                    mSelectedLot.setLotName(lotDescription);
+                    mSelectedLot.setCustomerName(customerName);
+                    mSelectedLot.setTotalHead(totalHead);
+                    mSelectedLot.setNotes(notes);
 
                     if (Utility.haveNetworkConnection(EditLotActivity.this)) {
-                        mBaseRef.child(PenEntity.PEN_OBJECT).child(mSelectedPen.getPenId()).setValue(mSelectedPen);
+                        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        baseRef.child(LotEntity.LOT).child(mSelectedLot.getLotId()).setValue(mSelectedLot);
                     }else{
 
                         Utility.setNewDataToUpload(EditLotActivity.this, true);
 
-                        HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-//                        holdingPenEntity.setNotes(mSelectedPen.getNotes());
-//                        holdingPenEntity.setTotalHead(mSelectedPen.getTotalHead());
-//                        holdingPenEntity.setCustomerName(mSelectedPen.getCustomerName());
-                        holdingPenEntity.setPenName(mSelectedPen.getPenName());
-//                        holdingPenEntity.setIsActive(mSelectedPen.getIsActive());
-                        holdingPenEntity.setPenId(mSelectedPen.getPenId());
-                        holdingPenEntity.setWhatHappened(Utility.INSERT_UPDATE);
+                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLot, Utility.INSERT_UPDATE);
 
-                        new InsertHoldingPen(holdingPenEntity).execute(EditLotActivity.this);
+                        new InsertHoldingLot(holdingLotEntity).execute(EditLotActivity.this);
                     }
 
-                    new UpdatePen(mSelectedPen).execute(EditLotActivity.this);
+                    new UpdateLot(mSelectedLot).execute(EditLotActivity.this);
 
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
@@ -105,4 +104,14 @@ public class EditLotActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public void onLotByLotIdLoaded(LotEntity lotEntity) {
+        mSelectedLot = lotEntity;
+
+        mLotDescription.setText(mSelectedLot.getLotName());
+        mCustomerName.setText(mSelectedLot.getCustomerName());
+        mTotalHead.setText(formatter.format(mSelectedLot.getTotalHead()));
+        mNotes.setText(mSelectedLot.getNotes());
+
+    }
 }
