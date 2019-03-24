@@ -143,6 +143,8 @@ public class LotReportActivity extends AppCompatActivity implements
     @Override
     public void onDrugsGivenByLotIdLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
 
+        mDrugsUsedLayout.removeAllViews();
+
         ArrayList<DrugReportsObject> drugReports = new ArrayList<>();
         mDrugGivenList = drugsGivenEntities;
 
