@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
@@ -16,9 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
@@ -28,6 +24,7 @@ import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,14 +36,13 @@ public class LotReportActivity extends AppCompatActivity implements
         QueryLotByLotId.OnLotByLotIdLoaded {
     private static final String TAG = "LotReportActivity";
 
-    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
-    private ArrayList<DrugsGivenEntity> mDrugGivenList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private LotEntity mSelectedLotEntity;
 
     private TextView mCustomerName;
     private TextView mTotalHead;
+    private TextView mDate;
     private TextView mNotes;
     private TextView mTotalDeathLoss;
     private TextView mDeathLossPercentage;
@@ -58,7 +54,7 @@ public class LotReportActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pen_reports);
+        setContentView(R.layout.activity_lot_reports);
 
         String lotId = getIntent().getStringExtra("lotId");
 
@@ -74,6 +70,7 @@ public class LotReportActivity extends AppCompatActivity implements
         mDeathLossPercentage = findViewById(R.id.reports_death_loss_percentage);
         mCustomerName = findViewById(R.id.reports_customer_name);
         mTotalHead = findViewById(R.id.reports_total_head);
+        mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
 
     }
@@ -146,7 +143,6 @@ public class LotReportActivity extends AppCompatActivity implements
         mDrugsUsedLayout.removeAllViews();
 
         ArrayList<DrugReportsObject> drugReports = new ArrayList<>();
-        mDrugGivenList = drugsGivenEntities;
 
         mLoadingReports.setVisibility(View.GONE);
 
@@ -196,7 +192,6 @@ public class LotReportActivity extends AppCompatActivity implements
 
     }
 
-
     private View.OnClickListener resetPenListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -235,8 +230,10 @@ public class LotReportActivity extends AppCompatActivity implements
             String customerName = lotEntity.getCustomerName();
             String totalHead = Integer.toString(lotEntity.getTotalHead());
             String notes = lotEntity.getNotes();
+            String date = Utility.convertMillisToDate(lotEntity.getDate());
             mCustomerName.setText(customerName);
             mTotalHead.setText(totalHead);
+            mDate.setText(date);
             mNotes.setText(notes);
         }
     }
