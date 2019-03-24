@@ -81,7 +81,7 @@
             android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
             android:name=".activities.EditLotActivity"
-            android:label="Edit pen information"
+            android:label="Edit lot information"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
 
         <service

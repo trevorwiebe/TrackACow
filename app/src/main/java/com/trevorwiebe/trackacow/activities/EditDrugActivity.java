@@ -145,8 +145,11 @@ public class EditDrugActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
 
+            return true;
+
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     @Override
