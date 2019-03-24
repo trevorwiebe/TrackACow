@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,7 @@ import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MedicatedCowsActivity extends AppCompatActivity implements
         QueryPenById.OnPenByIdReturned,
@@ -71,6 +74,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private static final int MEDICATE_A_COW_CODE = 743;
     private boolean mIsActive = false;
     private boolean shouldShowCouldntFindTag;
+    private Calendar mCalendar = Calendar.getInstance();
+    private DatePickerDialog.OnDateSetListener mDatePicker;
 
     private TextView mNoMedicatedCows;
     private SearchView mSearchView;
@@ -83,6 +88,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private TextInputEditText mLotName;
     private TextInputEditText mCustomerName;
     private TextInputEditText mTotalCount;
+    private TextInputEditText mDate;
     private TextInputEditText mNotes;
 
     @Override
@@ -98,7 +104,11 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mLotName = findViewById(R.id.lot_name);
         mCustomerName = findViewById(R.id.customer_name);
         mTotalCount = findViewById(R.id.total_head);
+        mDate = findViewById(R.id.lot_date);
         mNotes = findViewById(R.id.pen_notes);
+
+        String todayDate = Utility.convertMillisToDate(System.currentTimeMillis());
+        mDate.setText(todayDate);
 
         mMarkAsActive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,10 +122,11 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 String customerName = mCustomerName.getText().toString();
                 int totalHead = Integer.parseInt(mTotalCount.getText().toString());
                 String notes = mNotes.getText().toString();
+                long date = mCalendar.getTimeInMillis();
 
                 DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, System.currentTimeMillis(), mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId());
 
                 if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
                     lotPushRef.setValue(lotEntity);
@@ -123,7 +134,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, System.currentTimeMillis(), mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
+                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId(), Utility.INSERT_UPDATE);
 
                     new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
 
@@ -168,6 +179,28 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
             }
         }));
+
+        mDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MedicatedCowsActivity.this,
+                        mDatePicker,
+                        mCalendar.get(Calendar.YEAR),
+                        mCalendar.get(Calendar.MONTH),
+                        mCalendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
+
+        mDatePicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                mCalendar.set(Calendar.YEAR, year);
+                mCalendar.set(Calendar.MONTH, month);
+                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
+            }
+        };
 
         mMedicatedCowSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

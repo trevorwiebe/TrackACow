@@ -40,8 +40,12 @@ public class AddNewDrugActivity extends AppCompatActivity {
         saveDrug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDrugName.length() == 0 || mDefaultAmount.length() == 0) {
-                    Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
+                if (mDrugName.length() == 0) {
+                    mDrugName.setError("Please fill the blank");
+                    mDrugName.requestFocus();
+                } else if (mDefaultAmount.length() == 0) {
+                    mDefaultAmount.setError("Please fill the blank");
+                    mDefaultAmount.requestFocus();
                 }else{
 
                     DatabaseReference pushRef = mDrugRef.push();
