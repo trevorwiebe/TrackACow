@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (Utility.haveNetworkConnection(MainActivity.this)) {
                         onSignedOutCleanUp();
                         Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
-                        startActivityForResult(signInIntent, SIGN_IN_CODE);
+                        MainActivity.this.startActivityForResult(signInIntent, SIGN_IN_CODE);
                     }
                 } else {
                     onSignedInInitialized();
@@ -155,13 +155,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
         super.onPause();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SIGN_IN_CODE && resultCode == RESULT_CANCELED) {
-            finish();
-        }
     }
 
     private void onSignedInInitialized() {

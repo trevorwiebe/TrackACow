@@ -48,6 +48,7 @@
         <activity
             android:name=".activities.SignInActivity"
             android:label="Sign In"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.EditMedicatedCowActivity"

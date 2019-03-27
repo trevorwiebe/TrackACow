@@ -243,4 +243,9 @@ public class SignInActivity extends AppCompatActivity {
         mSigningIn.setVisibility(View.INVISIBLE);
         mSigningInWithGoogle.setVisibility(View.INVISIBLE);
     }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
 }
