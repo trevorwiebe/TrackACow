@@ -1,8 +1,10 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
@@ -34,7 +37,6 @@ public class LotReportActivity extends AppCompatActivity implements
         QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
         QueryDeadCowsByLotIds.OnDeadCowsLoaded,
         QueryLotByLotId.OnLotByLotIdLoaded {
-    private static final String TAG = "LotReportActivity";
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
@@ -49,7 +51,6 @@ public class LotReportActivity extends AppCompatActivity implements
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
-    private Button mResetPenBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +63,8 @@ public class LotReportActivity extends AppCompatActivity implements
 
         mLoadingReports = findViewById(R.id.loading_reports);
         mNoDrugReports = findViewById(R.id.no_drug_reports);
-        mResetPenBtn = findViewById(R.id.archive_this_lot);
-        mResetPenBtn.setOnClickListener(resetPenListener);
+        Button resetLotBtn = findViewById(R.id.archive_this_lot);
+        resetLotBtn.setOnClickListener(archiveLotListener);
 
         mDrugsUsedLayout = findViewById(R.id.drugs_used_layout);
         mTotalDeathLoss = findViewById(R.id.reports_death_loss);
@@ -192,10 +193,19 @@ public class LotReportActivity extends AppCompatActivity implements
 
     }
 
-    private View.OnClickListener resetPenListener = new View.OnClickListener() {
+    private View.OnClickListener archiveLotListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            AlertDialog.Builder lotArchived = new AlertDialog.Builder(LotReportActivity.this);
+            lotArchived.setMessage("Lot has been archived successfully.");
+            lotArchived.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
+                }
+            });
+//            lotArchived.show();
+            Toast.makeText(LotReportActivity.this, "Not completed yet", Toast.LENGTH_SHORT).show();
         }
     };
 
