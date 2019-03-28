@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.db.AppDatabase;
+import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -19,19 +20,21 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList;
     private ArrayList<PenEntity> mPenEntityUpdateList;
     private ArrayList<LotEntity> mLotEntityList;
+    private ArrayList<ArchivedLotEntity> mArchivedLotEntityList;
     private OnDatabaseCloned onDatabaseCloned;
 
     public interface OnDatabaseCloned{
         void onDatabaseCloned();
     }
 
-    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities) {
+    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities) {
         this.onDatabaseCloned = onDatabaseCloned;
         this.mCowEntityUpdateList = cowEntities;
         this.mDrugEntityUpdateList = drugEntities;
         this.mDrugsGivenEntityUpdateList = drugsGivenEntities;
         this.mPenEntityUpdateList = penEntities;
         this.mLotEntityList = lotEntities;
+        this.mArchivedLotEntityList = archivedLotEntities;
     }
 
     @Override
@@ -43,13 +46,16 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.drugDao().deleteDrugTable();
         db.drugsGivenDao().deleteDrugsGivenTable();
         db.penDao().deletePenTable();
-        db.lotDao().deleteLotEntityList();
+        db.lotDao().deleteLotEntityTable();
+        db.archivedLotDao().deleteArchivedLotTable();
+        ;
 
         db.cowDao().insertCowList(mCowEntityUpdateList);
         db.drugDao().insertListDrug(mDrugEntityUpdateList);
         db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
         db.penDao().insertPenList(mPenEntityUpdateList);
         db.lotDao().insertLotEntityList(mLotEntityList);
+        db.archivedLotDao().insertArchivedLotEntityList(mArchivedLotEntityList);
 
         return null;
     }

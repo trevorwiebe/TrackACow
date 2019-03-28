@@ -38,9 +38,9 @@ public interface LotDao {
     void updateLotWithNewPenId(String lotId, String penId);
 
     @Query("DELETE FROM lot")
-    void deleteLotEntityList();
+    void deleteLotEntityTable();
 
-    @Delete
-    void deleteLotEntity(LotEntity lotEntity);
+    @Query("DELETE FROM lot WHERE lotId = :lotId")
+    void deleteLotEntity(String lotId);
 
 }

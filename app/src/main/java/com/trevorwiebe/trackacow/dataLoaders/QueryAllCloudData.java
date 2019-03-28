@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -29,6 +30,7 @@ public class QueryAllCloudData {
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
     private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
     private ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
+    private ArrayList<ArchivedLotEntity> mArchivedLotList = new ArrayList<>();
 
     public OnAllCloudDataLoaded onAllCloudDataLoaded;
 
@@ -37,7 +39,7 @@ public class QueryAllCloudData {
     }
 
     public interface OnAllCloudDataLoaded {
-        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities);
+        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities);
     }
 
     public void loadCloudData() {
@@ -48,7 +50,7 @@ public class QueryAllCloudData {
                     String key = snapshot.getKey();
                     if (key != null) {
                         switch (key) {
-                            case "cows":
+                            case CowEntity.COW:
                                 for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
                                     CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
                                     if (cowEntity != null) {
@@ -56,7 +58,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case "drugs":
+                            case DrugEntity.DRUG_OBJECT:
                                 for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
                                     DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
                                     if (drugEntity != null) {
@@ -64,7 +66,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case "pens":
+                            case PenEntity.PEN_OBJECT:
                                 for (DataSnapshot penSnapshot : snapshot.getChildren()) {
                                     PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
                                     if (penEntity != null) {
@@ -72,7 +74,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case "drugsGiven":
+                            case DrugsGivenEntity.DRUGS_GIVEN:
                                 for (DataSnapshot drugsGivenSnapShot : snapshot.getChildren()) {
                                     DrugsGivenEntity drugsGivenEntity = drugsGivenSnapShot.getValue(DrugsGivenEntity.class);
                                     if (drugsGivenEntity != null) {
@@ -80,7 +82,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case "cattleLot":
+                            case LotEntity.LOT:
                                 for (DataSnapshot lotSnapshot : snapshot.getChildren()) {
                                     LotEntity lotEntity = lotSnapshot.getValue(LotEntity.class);
                                     if (lotEntity != null) {
@@ -88,21 +90,29 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
+                            case ArchivedLotEntity.ARCHIVED_LOT:
+                                for (DataSnapshot archiveLotSnapShot : snapshot.getChildren()) {
+                                    ArchivedLotEntity archivedLotEntity = archiveLotSnapShot.getValue(ArchivedLotEntity.class);
+                                    if (archivedLotEntity != null) {
+                                        mArchivedLotList.add(archivedLotEntity);
+                                    }
+                                }
+                                break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key " + key);
-                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
+                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
                                 break;
                         }
                     }
                 }
 
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList);
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
             }
         });
 

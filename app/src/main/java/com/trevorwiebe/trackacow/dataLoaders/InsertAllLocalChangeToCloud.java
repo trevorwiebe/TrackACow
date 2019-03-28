@@ -10,11 +10,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.db.AppDatabase;
+import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
@@ -143,6 +145,24 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
         }
         db.holdingLotDao().deleteHoldingLotTable();
+
+
+        List<HoldingArchivedLotEntity> holdingArchivedLotEntities = db.holdingArchivedLotDao().getHoldingArchivedLotList();
+        for (int f = 0; f < holdingArchivedLotEntities.size(); f++) {
+
+            HoldingArchivedLotEntity holdingArchivedLotEntity = holdingArchivedLotEntities.get(f);
+
+            ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(holdingArchivedLotEntity);
+            switch (holdingArchivedLotEntity.getWhatHappened()) {
+                case Constants.INSERT_UPDATE:
+                    baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
+                    break;
+                case Constants.DELETE:
+                    baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).removeValue();
+                    break;
+            }
+        }
+        db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
 
         return Constants.SUCCESS;
     }

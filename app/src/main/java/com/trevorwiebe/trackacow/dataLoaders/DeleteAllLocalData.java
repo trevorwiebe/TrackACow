@@ -16,11 +16,15 @@ public class DeleteAllLocalData extends AsyncTask<Context, Void, Void> {
         db.drugDao().deleteDrugTable();
         db.drugsGivenDao().deleteDrugsGivenTable();
         db.penDao().deletePenTable();
+        db.lotDao().deleteLotEntityTable();
+        db.archivedLotDao().deleteArchivedLotTable();
 
         db.holdingCowDao().deleteHoldingCowTable();
         db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
         db.holdingDrugDao().deleteHoldingDrugTable();
         db.holdingPenDao().deleteHoldingPenTable();
+        db.holdingLotDao().deleteHoldingLotTable();
+        db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
 
         return null;
     }

@@ -12,6 +12,8 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEnti
 @Entity(tableName = "archivedLot")
 public class ArchivedLotEntity {
 
+    public static final String ARCHIVED_LOT = "archivedLot";
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
@@ -56,6 +58,17 @@ public class ArchivedLotEntity {
         this.notes = holdingArchivedLotEntity.getNotes();
         this.dateStarted = holdingArchivedLotEntity.getDateStarted();
         this.dateEnded = holdingArchivedLotEntity.getDateEnded();
+    }
+
+    @Ignore
+    public ArchivedLotEntity(LotEntity lotEntity, long dateEnded) {
+        this.lotName = lotEntity.getLotName();
+        this.lotId = lotEntity.getLotId();
+        this.customerName = lotEntity.getCustomerName();
+        this.totalHead = lotEntity.getTotalHead();
+        this.notes = lotEntity.getNotes();
+        this.dateStarted = lotEntity.getDate();
+        this.dateEnded = dateEnded;
     }
 
     @Ignore

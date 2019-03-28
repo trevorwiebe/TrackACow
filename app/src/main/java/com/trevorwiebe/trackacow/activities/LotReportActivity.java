@@ -18,15 +18,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteLotEntity;
+import com.trevorwiebe.trackacow.dataLoaders.InsertArchivedLotEntity;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingArchivedLot;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
+import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.DecimalFormat;
@@ -196,16 +207,43 @@ public class LotReportActivity extends AppCompatActivity implements
     private View.OnClickListener archiveLotListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
+            ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(mSelectedLotEntity, System.currentTimeMillis());
+
+
+            if (Utility.haveNetworkConnection(LotReportActivity.this)) {
+                DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                // delete the lot entity
+                baseRef.child(LotEntity.LOT).child(mSelectedLotEntity.getLotId()).removeValue();
+
+                // push archived lot to the cloud;
+                baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
+
+            } else {
+
+                HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLotEntity, Constants.DELETE);
+                new InsertHoldingLot(holdingLotEntity).execute(LotReportActivity.this);
+
+                HoldingArchivedLotEntity holdingArchivedLotEntity = new HoldingArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
+                new InsertHoldingArchivedLot(holdingArchivedLotEntity).execute(LotReportActivity.this);
+
+            }
+
+            new DeleteLotEntity(mSelectedLotEntity.getLotId()).execute(LotReportActivity.this);
+
+            new InsertArchivedLotEntity(archivedLotEntity).execute(LotReportActivity.this);
+
             AlertDialog.Builder lotArchived = new AlertDialog.Builder(LotReportActivity.this);
             lotArchived.setMessage("Lot has been archived successfully.");
+            lotArchived.setCancelable(false);
             lotArchived.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    finish();
                 }
             });
-//            lotArchived.show();
-            Toast.makeText(LotReportActivity.this, "Not completed yet", Toast.LENGTH_SHORT).show();
+            lotArchived.show();
         }
     };
 
