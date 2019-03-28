@@ -36,7 +36,7 @@ public class Utility {
                 .setSmallIcon(R.drawable.ic_notification_icon_24dp)
                 .setContentTitle(title)
                 .setContentText(contentText)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_LOW);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(2, notificationBuilder.build());

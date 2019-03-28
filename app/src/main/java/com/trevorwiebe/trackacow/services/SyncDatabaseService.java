@@ -32,7 +32,7 @@ public class SyncDatabaseService extends JobService implements SyncDatabase.OnDa
     public boolean onStartJob(@NonNull JobParameters job) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            new SyncDatabase(this, this);
+            new SyncDatabase(this, this).beginSync();
             return true;
         } else {
             return false;
@@ -57,6 +57,8 @@ public class SyncDatabaseService extends JobService implements SyncDatabase.OnDa
             case Constants.NO_NETWORK_CONNECTION:
                 Utility.showNotification(this, channelId, "Sync failed", "Tried to sync with no network");
                 break;
+            default:
+                Utility.showNotification(this, channelId, "Sync Failed", "Unknown error occurred");
         }
     }
 }
