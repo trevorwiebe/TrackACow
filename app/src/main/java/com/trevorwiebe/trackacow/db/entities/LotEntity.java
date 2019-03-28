@@ -59,6 +59,16 @@ public class LotEntity {
         this.penId = holdingLotEntity.getPenId();
     }
 
+    public LotEntity(ArchivedLotEntity archivedLotEntity) {
+        this.lotName = archivedLotEntity.getLotName();
+        this.lotId = archivedLotEntity.getLotId();
+        this.customerName = archivedLotEntity.getCustomerName();
+        this.totalHead = archivedLotEntity.getTotalHead();
+        this.notes = archivedLotEntity.getNotes();
+        this.date = archivedLotEntity.getDateStarted();
+        this.penId = "";
+    }
+
     @Ignore
     public LotEntity() {
     }

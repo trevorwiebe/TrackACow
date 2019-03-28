@@ -22,6 +22,9 @@ public interface ArchivedLotDao {
     @Query("SELECT * FROM archivedLot")
     List<ArchivedLotEntity> getArchiveLots();
 
+    @Query("SELECT * FROM archivedLot WHERE lotId = :lotId")
+    ArchivedLotEntity getArchivedLotById(String lotId);
+
     @Update
     void updateArchivedLot(ArchivedLotEntity archivedLotEntity);
 

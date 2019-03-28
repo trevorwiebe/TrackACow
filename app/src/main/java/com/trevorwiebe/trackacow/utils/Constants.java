@@ -15,4 +15,7 @@ public class Constants {
     /* holding entity 'what happened' keys */
     public static final int INSERT_UPDATE = 1;
     public static final int DELETE = 3;
+
+    public static final int LOT = 1;
+    public static final int ARCHIVE = 2;
 }

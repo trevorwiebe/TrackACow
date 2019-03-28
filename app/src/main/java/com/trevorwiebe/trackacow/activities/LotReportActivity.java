@@ -27,6 +27,7 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertArchivedLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingArchivedLot;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLotsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
@@ -47,11 +48,13 @@ public class LotReportActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
         QueryDeadCowsByLotIds.OnDeadCowsLoaded,
-        QueryLotByLotId.OnLotByLotIdLoaded {
+        QueryLotByLotId.OnLotByLotIdLoaded,
+        QueryArchivedLotsByLotId.OnArchivedLotLoaded {
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private LotEntity mSelectedLotEntity;
+    private int reportType;
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -69,13 +72,24 @@ public class LotReportActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_lot_reports);
 
         String lotId = getIntent().getStringExtra("lotId");
+        reportType = getIntent().getIntExtra("reportType", 0);
 
-        new QueryLotByLotId(lotId, this).execute(this);
+        if (reportType == Constants.LOT) {
+            new QueryLotByLotId(lotId, this).execute(this);
+        } else if (reportType == Constants.ARCHIVE) {
+            new QueryArchivedLotsByLotId(lotId, this).execute(this);
+        } else {
+
+        }
 
         mLoadingReports = findViewById(R.id.loading_reports);
         mNoDrugReports = findViewById(R.id.no_drug_reports);
         Button resetLotBtn = findViewById(R.id.archive_this_lot);
         resetLotBtn.setOnClickListener(archiveLotListener);
+
+        if (reportType == Constants.ARCHIVE) {
+            resetLotBtn.setVisibility(View.GONE);
+        }
 
         mDrugsUsedLayout = findViewById(R.id.drugs_used_layout);
         mTotalDeathLoss = findViewById(R.id.reports_death_loss);
@@ -91,6 +105,10 @@ public class LotReportActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pen_reports_menu, menu);
+        MenuItem item = menu.findItem(R.id.reports_action_edit);
+        if (reportType == Constants.ARCHIVE) {
+            item.setVisible(false);
+        }
         return true;
     }
 
@@ -126,6 +144,20 @@ public class LotReportActivity extends AppCompatActivity implements
         new QueryDeadCowsByLotIds(this, lotIds).execute(this);
     }
 
+    @Override
+    public void onArchivedLotLoaded(ArchivedLotEntity archivedLotEntity) {
+
+        mSelectedLotEntity = new LotEntity(archivedLotEntity);
+
+        updateUIWithPenInfo(mSelectedLotEntity);
+
+        new QueryAllDrugs(this).execute(this);
+
+        ArrayList<String> lotIds = new ArrayList<>();
+        lotIds.add(mSelectedLotEntity.getLotId());
+
+        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
+    }
     @Override
     public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
         int numberDead = cowEntities.size();
@@ -208,39 +240,44 @@ public class LotReportActivity extends AppCompatActivity implements
         @Override
         public void onClick(View view) {
 
-            ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(mSelectedLotEntity, System.currentTimeMillis());
-
-
-            if (Utility.haveNetworkConnection(LotReportActivity.this)) {
-                DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                // delete the lot entity
-                baseRef.child(LotEntity.LOT).child(mSelectedLotEntity.getLotId()).removeValue();
-
-                // push archived lot to the cloud;
-                baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
-
-            } else {
-
-                HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLotEntity, Constants.DELETE);
-                new InsertHoldingLot(holdingLotEntity).execute(LotReportActivity.this);
-
-                HoldingArchivedLotEntity holdingArchivedLotEntity = new HoldingArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
-                new InsertHoldingArchivedLot(holdingArchivedLotEntity).execute(LotReportActivity.this);
-
-            }
-
-            new DeleteLotEntity(mSelectedLotEntity.getLotId()).execute(LotReportActivity.this);
-
-            new InsertArchivedLotEntity(archivedLotEntity).execute(LotReportActivity.this);
-
             AlertDialog.Builder lotArchived = new AlertDialog.Builder(LotReportActivity.this);
-            lotArchived.setMessage("Lot has been archived successfully.");
-            lotArchived.setCancelable(false);
-            lotArchived.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            lotArchived.setTitle("Are you sure you want to archive lot?");
+            lotArchived.setMessage("This action cannot be undone.  You will be able to view this lot's reports under Archives.");
+            lotArchived.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
+                    ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(mSelectedLotEntity, System.currentTimeMillis());
+
+                    if (Utility.haveNetworkConnection(LotReportActivity.this)) {
+                        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        // delete the lot entity
+                        baseRef.child(LotEntity.LOT).child(mSelectedLotEntity.getLotId()).removeValue();
+
+                        // push archived lot to the cloud;
+                        baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
+
+                    } else {
+
+                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLotEntity, Constants.DELETE);
+                        new InsertHoldingLot(holdingLotEntity).execute(LotReportActivity.this);
+
+                        HoldingArchivedLotEntity holdingArchivedLotEntity = new HoldingArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
+                        new InsertHoldingArchivedLot(holdingArchivedLotEntity).execute(LotReportActivity.this);
+
+                    }
+
+                    new DeleteLotEntity(mSelectedLotEntity.getLotId()).execute(LotReportActivity.this);
+                    new InsertArchivedLotEntity(archivedLotEntity).execute(LotReportActivity.this);
+
                     finish();
+                }
+            });
+            lotArchived.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
                 }
             });
             lotArchived.show();

@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.activities.LotReportActivity;
 import com.trevorwiebe.trackacow.adapters.ReportsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
                 Intent reportsIntent = new Intent(getContext(), LotReportActivity.class);
                 String lotId = mLotList.get(position).getLotId();
                 reportsIntent.putExtra("lotId", lotId);
+                reportsIntent.putExtra("reportType", Constants.LOT);
                 startActivity(reportsIntent);
             }
 
