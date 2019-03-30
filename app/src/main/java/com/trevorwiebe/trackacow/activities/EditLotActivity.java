@@ -139,7 +139,10 @@ public class EditLotActivity extends AppCompatActivity implements
     public void onLotByLotIdLoaded(LotEntity lotEntity) {
         mSelectedLot = lotEntity;
 
-        String date = Utility.convertMillisToDate(mSelectedLot.getDate());
+        long longDate = mSelectedLot.getDate();
+        mCalendar.setTimeInMillis(longDate);
+
+        String date = Utility.convertMillisToDate(longDate);
 
         mLotDescription.setText(mSelectedLot.getLotName());
         mCustomerName.setText(mSelectedLot.getCustomerName());
