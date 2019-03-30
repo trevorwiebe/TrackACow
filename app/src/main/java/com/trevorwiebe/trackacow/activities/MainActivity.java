@@ -168,10 +168,11 @@ public class MainActivity extends AppCompatActivity implements
 
         Job syncDatabase = dispatcher.newJobBuilder()
                 .setService(SyncDatabaseService.class)
-                .setTag("sync_database")
+                .setTag("sync_database_job_tag")
                 .setRecurring(true)
                 .setLifetime(Lifetime.FOREVER)
                 .setTrigger(Trigger.executionWindow(periodicity, toleranceInterval + periodicity))
+                .setConstraints(Constraint.ON_UNMETERED_NETWORK)
                 .build();
 
         dispatcher.mustSchedule(syncDatabase);
