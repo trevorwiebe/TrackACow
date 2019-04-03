@@ -46,7 +46,7 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
         long date = mDateList.get(i);
 
-        String friendlyDate = Utility.convertMillisToDate(date);
+        String friendlyDate = Utility.convertMillisToFriendlyDate(date);
         feedPenViewHolder.mDate.setText(friendlyDate);
 
         feedPenViewHolder.mCall.addTextChangedListener(new TextWatcher() {

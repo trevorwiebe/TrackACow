@@ -18,6 +18,7 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -78,8 +79,16 @@ public class PenFeedFragment extends Fragment implements QueryLotsByPenId.OnLots
 
     }
 
-    private ArrayList<Long> getDaysList(long dateStarted) {
+    private ArrayList<Long> getDaysList(long roughDateStarted) {
         ArrayList<Long> days = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(roughDateStarted);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long dateStarted = c.getTimeInMillis();
 
         days.add(dateStarted);
 

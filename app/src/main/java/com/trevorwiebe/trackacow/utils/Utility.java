@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -157,6 +158,31 @@ public class Utility {
             }
         }
         return null;
+    }
+
+    public static String convertMillisToFriendlyDate(long date) {
+        Calendar today = Calendar.getInstance();
+        today = clearTimes(today);
+
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        yesterday = clearTimes(yesterday);
+
+        if (date >= today.getTimeInMillis()) {
+            return "Today";
+        } else if (date >= yesterday.getTimeInMillis()) {
+            return "Yesterday";
+        } else {
+            return convertMillisToDate(date);
+        }
+    }
+
+    private static Calendar clearTimes(Calendar c) {
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
     }
 
 }
