@@ -25,6 +25,9 @@ public interface CallDao {
     @Query("SELECT * FROM call WHERE id = :id")
     CallEntity getCallEntity(String id);
 
+    @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId")
+    CallEntity getCallEntityByDateAndLotId(long date, String lotId);
+
     @Query("UPDATE call SET amountFed = :amountFed WHERE id = :callId")
     void updateCallByCallId(String callId, int amountFed);
 

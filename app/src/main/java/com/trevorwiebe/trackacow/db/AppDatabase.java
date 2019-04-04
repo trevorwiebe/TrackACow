@@ -57,7 +57,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract DrugDao drugDao();
     public abstract LotDao lotDao();
     public abstract ArchivedLotDao archivedLotDao();
-
     public abstract CallDao callDao();
 
     public abstract HoldingPenDao holdingPenDao();
