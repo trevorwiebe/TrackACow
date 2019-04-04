@@ -69,20 +69,11 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
     public class FeedPenViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mDate;
-        private EditText mCall;
-        private EditText mFed;
-        private TextView mLeftToFeedTv;
-        private TextView mTotalFeedTv;
 
         public FeedPenViewHolder(View view) {
             super(view);
 
-            mDate = view.findViewById(R.id.feed_pen_date_text);
-            mCall = view.findViewById(R.id.feed_pen_call_edit_text);
-            mFed = view.findViewById(R.id.fed_edit_text);
-            mLeftToFeedTv = view.findViewById(R.id.left_to_feed_text);
-            mTotalFeedTv = view.findViewById(R.id.total_feed_text);
-
+            mDate = view.findViewById(R.id.feed_pen_date);
         }
     }
 }
