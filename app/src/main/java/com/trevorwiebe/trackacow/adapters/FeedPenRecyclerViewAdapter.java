@@ -1,9 +1,9 @@
 package com.trevorwiebe.trackacow.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.CollapsibleActionView;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -12,7 +12,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.InsertCallEntity;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateCallById;
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.NumberFormat;
@@ -22,10 +26,20 @@ import java.util.Locale;
 public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecyclerViewAdapter.FeedPenViewHolder> {
 
     private ArrayList<Long> mDateList;
+    private ArrayList<CallEntity> mCallEntities;
+    private boolean hasNetworkConnection;
+    private DatabaseReference mBaseRef;
+    private Context mContext;
+
+    private String mCallId;
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
-    public FeedPenRecyclerViewAdapter(ArrayList<Long> dateList) {
+    public FeedPenRecyclerViewAdapter(ArrayList<Long> dateList, ArrayList<CallEntity> callEntities, boolean hasNetworkConnection, DatabaseReference databaseReference, Context context) {
+        this.hasNetworkConnection = hasNetworkConnection;
+        this.mCallEntities = callEntities;
         this.mDateList = dateList;
+        this.mBaseRef = databaseReference;
+        this.mContext = context;
     }
 
     @Override
@@ -45,77 +59,10 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
     public void onBindViewHolder(@NonNull final FeedPenViewHolder feedPenViewHolder, int i) {
 
         long date = mDateList.get(i);
+        mCallId = null;
 
         String friendlyDate = Utility.convertMillisToFriendlyDate(date);
         feedPenViewHolder.mDate.setText(friendlyDate);
-
-        feedPenViewHolder.mCall.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0) {
-                    feedPenViewHolder.mLeftToFeedTv.setText("0");
-                } else {
-                    String callStr = s.toString();
-                    int call = Integer.parseInt(callStr);
-
-                    int leftToFeed;
-
-                    String fedStr = feedPenViewHolder.mFed.getText().toString();
-                    if (fedStr.length() != 0) {
-                        int amountFed = Integer.parseInt(fedStr);
-
-                        leftToFeed = call - amountFed;
-                    } else {
-                        leftToFeed = call;
-                    }
-
-                    feedPenViewHolder.mLeftToFeedTv.setText(numberFormat.format(leftToFeed));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        feedPenViewHolder.mFed.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                String callStr = feedPenViewHolder.mCall.getText().toString();
-                if (callStr.length() == 0) {
-                    callStr = "0";
-                }
-
-                int call = Integer.parseInt(callStr);
-
-                if (s.length() != 0) {
-                    int fed = Integer.parseInt(s.toString());
-
-                    int leftToFeed = call - fed;
-
-                    feedPenViewHolder.mLeftToFeedTv.setText(numberFormat.format(leftToFeed));
-                } else {
-                    feedPenViewHolder.mLeftToFeedTv.setText(numberFormat.format(call));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
     }
 

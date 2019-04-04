@@ -6,12 +6,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.trevorwiebe.trackacow.db.dao.ArchivedLotDao;
+import com.trevorwiebe.trackacow.db.dao.CallDao;
 import com.trevorwiebe.trackacow.db.dao.CowDao;
 import com.trevorwiebe.trackacow.db.dao.DrugDao;
 import com.trevorwiebe.trackacow.db.dao.DrugsGivenDao;
 import com.trevorwiebe.trackacow.db.dao.LotDao;
 import com.trevorwiebe.trackacow.db.dao.PenDao;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -37,6 +39,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
         DrugEntity.class,
         LotEntity.class,
         ArchivedLotEntity.class,
+        CallEntity.class,
         HoldingPenEntity.class,
         HoldingCowEntity.class,
         HoldingDrugsGivenEntity.class,
@@ -53,8 +56,9 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract DrugsGivenDao drugsGivenDao();
     public abstract DrugDao drugDao();
     public abstract LotDao lotDao();
-
     public abstract ArchivedLotDao archivedLotDao();
+
+    public abstract CallDao callDao();
 
     public abstract HoldingPenDao holdingPenDao();
     public abstract HoldingCowDao holdingCowDao();
