@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.trevorwiebe.trackacow">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -15,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.FeedLotActivity"></activity>
+        <activity
+            android:name=".activities.FeedLotActivity"
+            android:label="Feed Lot"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ArchivesActivity"
             android:label="Archives"

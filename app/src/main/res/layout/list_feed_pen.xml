@@ -54,13 +54,14 @@
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
                         android:layout_marginLeft="8dp"
+                        android:id="@+id/feed_lot_call"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:text="Times fed"
+                        android:text="Times Fed"
                         android:textColor="@color/colorAccent"
                         android:textSize="16sp"
                         android:layout_margin="8dp"
@@ -73,6 +74,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
+                        android:id="@+id/feed_lot_times_fed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -100,6 +102,7 @@
                         android:textColor="@android:color/black"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
+                        android:id="@+id/feed_lot_fed"
                         android:layout_marginBottom="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -115,7 +118,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Left to feed"
+                        android:text="Left to Feed"
                         android:textColor="@color/colorAccent"
                         android:textSize="16sp"
                         android:layout_margin="8dp"
@@ -128,12 +131,13 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
+                        android:id="@+id/feed_lot_left_to_feed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
 
                     <TextView
-                        android:text="Total fed"
+                        android:text="Total Fed"
                         android:textColor="@color/colorAccent"
                         android:textSize="16sp"
                         android:layout_margin="8dp"
@@ -147,6 +151,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
+                        android:id="@+id/feed_lot_total_fed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 

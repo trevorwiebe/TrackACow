@@ -21,8 +21,10 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.FeedLotActivity;
 import com.trevorwiebe.trackacow.adapters.FeedPenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCallsByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryFeedsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
+import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -35,7 +37,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PenFeedFragment extends Fragment implements
         QueryLotsByPenId.OnLotsByPenIdLoaded,
-        QueryCallsByLotId.OnCallsByLotIdReturned {
+        QueryCallsByLotId.OnCallsByLotIdReturned,
+        QueryFeedsByLotId.OnFeedsByLotIdReturned {
 
     String mPenId;
 
@@ -43,6 +46,7 @@ public class PenFeedFragment extends Fragment implements
 
     private TextView mEmptyPen;
     private RecyclerView mFeedPenRv;
+    private FeedPenRecyclerViewAdapter feedPenRecyclerViewAdapter;
 
     private LotEntity mSelectedLotEntity;
     private ArrayList<Long> mDatesList = new ArrayList<>();
@@ -71,6 +75,8 @@ public class PenFeedFragment extends Fragment implements
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
         mFeedPenRv.setLayoutManager(linearLayoutManager);
+        feedPenRecyclerViewAdapter = new FeedPenRecyclerViewAdapter();
+        mFeedPenRv.setAdapter(feedPenRecyclerViewAdapter);
 
         mFeedPenRv.addOnItemTouchListener(new ItemClickListener(getContext(), mFeedPenRv, new ItemClickListener.OnItemClickListener() {
             @Override
@@ -83,6 +89,7 @@ public class PenFeedFragment extends Fragment implements
                 feedLotIntent.putExtra("date", date);
                 feedLotIntent.putExtra("lotId", lotId);
                 startActivity(feedLotIntent);
+
             }
 
             @Override
@@ -108,8 +115,20 @@ public class PenFeedFragment extends Fragment implements
             String lotId = mSelectedLotEntity.getLotId();
 
             new QueryCallsByLotId(lotId, PenFeedFragment.this).execute(getContext());
+            new QueryFeedsByLotId(lotId, PenFeedFragment.this).execute(getContext());
 
         }
+    }
+
+    @Override
+    public void onCallsByLotIdReturned(ArrayList<CallEntity> callEntities) {
+
+        long dateStarted = mSelectedLotEntity.getDate();
+        mDatesList = getDaysList(dateStarted);
+        Collections.reverse(mDatesList);
+
+        feedPenRecyclerViewAdapter.setDateList(mDatesList);
+        feedPenRecyclerViewAdapter.setCallList(callEntities);
     }
 
     private ArrayList<Long> getDaysList(long roughDateStarted) {
@@ -137,16 +156,8 @@ public class PenFeedFragment extends Fragment implements
     }
 
     @Override
-    public void onCallsByLotIdReturned(ArrayList<CallEntity> callEntities) {
-
-        long dateStarted = mSelectedLotEntity.getDate();
-        mDatesList = getDaysList(dateStarted);
-        Collections.reverse(mDatesList);
-
-        boolean hasNetworkConnection = Utility.haveNetworkConnection(getContext());
-        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        mFeedPenRv.setAdapter(new FeedPenRecyclerViewAdapter(mDatesList, callEntities, hasNetworkConnection, baseRef, getContext()));
-
+    public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
+        Log.d(TAG, "onFeedsByLotIdReturned: " + feedEntities.toString());
+        feedPenRecyclerViewAdapter.setFeedList(feedEntities);
     }
 }

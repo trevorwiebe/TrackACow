@@ -1,7 +1,12 @@
 package com.trevorwiebe.trackacow.utils;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class Constants {
 
+    public static final DatabaseReference BASE_REFERENCE = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;
     public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;
