@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.db.dao;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -27,6 +28,9 @@ public interface FeedDao {
 
     @Query("SELECT * FROM feed WHERE lotId = :lotId AND date = :date")
     List<FeedEntity> getFeedEntitiesByLotAndDate(String lotId, long date);
+
+    @Query("DELETE FROM feed WHERE date = :date AND lotId = :lotId")
+    int deleteFeedEntitiesByDateAndLotId(long date, String lotId);
 
     @Update
     void updateFeedEntity(FeedEntity feedEntity);

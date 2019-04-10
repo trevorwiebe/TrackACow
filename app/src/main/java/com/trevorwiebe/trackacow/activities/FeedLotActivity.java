@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteFeedEntitiesByDateAndLotId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertCallEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertFeedEntities;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCallByLotIdAndDate;
@@ -34,6 +35,7 @@ import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -41,7 +43,8 @@ import java.util.Locale;
 public class FeedLotActivity extends AppCompatActivity implements
         QueryCallByLotIdAndDate.OnCallByLotIdAndDateLoaded,
         QueryLotByLotId.OnLotByLotIdLoaded,
-        QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded {
+        QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded,
+        DeleteFeedEntitiesByDateAndLotId.OnFeedEntitiesByDateAndLotIdDeleted {
 
     private static final String TAG = "FeedLotActivity";
 
@@ -50,9 +53,11 @@ public class FeedLotActivity extends AppCompatActivity implements
     private Button mSave;
 
     private CallEntity mSelectedCallEntity;
-    private int mFeedAgainNumber;
+    private int mFeedAgainNumber = 0;
+    private boolean isLoadingMore;
     private long mDate;
-    private boolean mShouldAddNewFeedEditText = true;
+    private String mLotId;
+    private boolean mShouldAddNewFeedEditText = false;
     private TextWatcher mFeedTextWatcher;
     private NumberFormat numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault());
     private ArrayList<FeedEntity> mFeedEntities = new ArrayList<>();
@@ -65,7 +70,7 @@ public class FeedLotActivity extends AppCompatActivity implements
         Intent intent = getIntent();
 
         mDate = intent.getLongExtra("date", 0);
-        final String lotId = intent.getStringExtra("lotId");
+        mLotId = intent.getStringExtra("lotId");
 
         mCall = findViewById(R.id.feed_lot_call_et);
         mFeedAgainLayout = findViewById(R.id.feed_again_layout);
@@ -105,7 +110,7 @@ public class FeedLotActivity extends AppCompatActivity implements
                     int call = Integer.parseInt(mCall.getText().toString());
 
                     String callKey;
-                    CallEntity callEntity = new CallEntity(call, mDate, lotId, "id");
+                    CallEntity callEntity = new CallEntity(call, mDate, mLotId, "id");
 
                     if (mSelectedCallEntity == null) {
                         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CallEntity.CALL).push();
@@ -119,36 +124,17 @@ public class FeedLotActivity extends AppCompatActivity implements
 
                     mCall.setText("");
 
-
-                    // code for updating the feed entities
-                    ArrayList<Integer> feedsIntList = getFeedsFromLayout();
-                    ListIterator feedsIterator = feedsIntList.listIterator();
-                    while (feedsIterator.hasNext()) {
-                        int amountFed = (int) feedsIterator.next();
-                        int position = feedsIterator.nextIndex();
-                        if (mFeedEntities.size() > position) {
-                            FeedEntity feedEntity = mFeedEntities.get(position);
-                            feedEntity.setFeed(amountFed);
-                            mFeedEntities.remove(position);
-                            mFeedEntities.add(position, feedEntity);
-                        } else {
-                            DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED).push();
-                            String feedEntityId = feedRef.getKey();
-                            FeedEntity feedEntity = new FeedEntity(amountFed, mDate, feedEntityId, lotId);
-                            mFeedEntities.add(feedEntity);
-                        }
-                    }
-
-                    new InsertFeedEntities(mFeedEntities).execute(FeedLotActivity.this);
+                    // first we delete the old feed entities
+                    new DeleteFeedEntitiesByDateAndLotId(mDate, mLotId, FeedLotActivity.this).execute(FeedLotActivity.this);
 
                 }
 
             }
         });
 
-        new QueryCallByLotIdAndDate(mDate, lotId, this).execute(this);
-        new QueryFeedByLotIdAndDate(mDate, lotId, this).execute(this);
-        new QueryLotByLotId(lotId, this).execute(this);
+        new QueryCallByLotIdAndDate(mDate, mLotId, this).execute(this);
+        new QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this);
+        new QueryLotByLotId(mLotId, this).execute(this);
     }
 
     @Override
@@ -168,13 +154,15 @@ public class FeedLotActivity extends AppCompatActivity implements
     @Override
     public void onFeedByLotIdAndDateLoaded(ArrayList<FeedEntity> feedEntities) {
         mFeedEntities = feedEntities;
-        ListIterator iterator = feedEntities.listIterator();
-        while (iterator.hasNext()) {
-            FeedEntity feedEntity = (FeedEntity) iterator.next();
-            String feed = numberFormatter.format(feedEntity.getFeed());
-            addNewFeedEditText(feed);
+        isLoadingMore = true;
+        for (int o = 0; o < mFeedEntities.size(); o++) {
+            FeedEntity feedEntity = mFeedEntities.get(o);
+            int amountFed = feedEntity.getFeed();
+            String amountFedStr = numberFormatter.format(amountFed);
+            addNewFeedEditText(amountFedStr);
         }
         addNewFeedEditText(null);
+        isLoadingMore = false;
     }
 
     @Override
@@ -219,6 +207,7 @@ public class FeedLotActivity extends AppCompatActivity implements
         if (text != null) {
             textInputEditText.setText(text);
         }
+        textInputEditText.setEms(6);
         textInputEditText.addTextChangedListener(mFeedTextWatcher);
         textInputEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         textInputEditText.setTextSize(16f);
@@ -257,18 +246,13 @@ public class FeedLotActivity extends AppCompatActivity implements
         deleteButton.setLayoutParams(deleteBtnParams);
 
         linearLayout.addView(textInputLayout);
-
-        if (mFeedAgainNumber >= 2) {
-            textInputEditText.setEms(6);
-            linearLayout.addView(deleteButton);
-        } else {
-            textInputEditText.setEms(8);
-        }
+        linearLayout.addView(deleteButton);
 
         mFeedAgainLayout.addView(linearLayout);
     }
 
     private boolean shouldAddAnotherEditText() {
+        if (isLoadingMore) return false;
         for (int i = 0; i < mFeedAgainLayout.getChildCount(); i++) {
             View v = mFeedAgainLayout.getChildAt(i);
             LinearLayout linearLayout = (LinearLayout) v;
@@ -289,9 +273,37 @@ public class FeedLotActivity extends AppCompatActivity implements
             TextInputLayout textInputLayout = (TextInputLayout) textLayout;
             String text = textInputLayout.getEditText().getText().toString();
             if (text.length() != 0) {
-                feedIntList.add(Integer.parseInt(text));
+                try {
+                    int amountFed = numberFormatter.parse(text).intValue();
+                    Log.d(TAG, "getFeedsFromLayout: " + amountFed);
+                    feedIntList.add(amountFed);
+                } catch (ParseException e) {
+                    Log.e(TAG, "getFeedsFromLayout: ", e);
+                }
             }
         }
         return feedIntList;
+    }
+
+    @Override
+    public void onFeedEntitiesByDateAndLotIdDeleted() {
+        // code for updating the feed entities
+        ArrayList<Integer> feedsIntList = getFeedsFromLayout();
+        ArrayList<FeedEntity> newFeedEntityList = new ArrayList<>();
+        for (int n = 0; n < feedsIntList.size(); n++) {
+
+            int amountFed = feedsIntList.get(n);
+            if (mFeedEntities.size() > n) {
+                FeedEntity feedEntity = mFeedEntities.get(n);
+                feedEntity.setFeed(amountFed);
+                newFeedEntityList.add(feedEntity);
+            } else {
+                DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED).push();
+                String feedEntityId = feedRef.getKey();
+                FeedEntity feedEntity = new FeedEntity(amountFed, mDate, feedEntityId, mLotId);
+                newFeedEntityList.add(feedEntity);
+            }
+        }
+        new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
     }
 }

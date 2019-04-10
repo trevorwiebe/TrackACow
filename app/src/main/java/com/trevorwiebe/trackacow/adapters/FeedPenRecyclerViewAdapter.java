@@ -60,21 +60,43 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
         feedPenViewHolder.mDate.setText(friendlyDate);
 
         CallEntity callEntity = getCallByDate(date);
+        int call = 0;
         if (callEntity != null) {
-            String call = numberFormat.format(callEntity.getAmountFed());
-            feedPenViewHolder.mCall.setText(call);
+
+            call = callEntity.getAmountFed();
+
+            String callStr = numberFormat.format(call);
+            feedPenViewHolder.mCall.setText(callStr);
         } else {
             feedPenViewHolder.mCall.setText("0");
         }
 
         ArrayList<FeedEntity> feedEntities = getFeedEntitiesByDate(date);
         if (feedEntities != null) {
+            int totalFed = 0;
             for (int t = 0; t < feedEntities.size(); t++) {
                 FeedEntity feedEntity = feedEntities.get(t);
-                String amountFed = numberFormat.format(feedEntity.getFeed());
-                feedPenViewHolder.mFed.append(amountFed);
+
+                int amountFed = feedEntity.getFeed();
+                totalFed = totalFed + amountFed;
+
+                String amountFedStr = numberFormat.format(amountFed);
+                feedPenViewHolder.mFed.append(amountFedStr);
                 feedPenViewHolder.mFed.append("\n");
             }
+
+            String totalFedStr = numberFormat.format(totalFed);
+            feedPenViewHolder.mTotalFed.setText(totalFedStr);
+
+            int leftToFeed = call - totalFed;
+            String leftToFeedStr = numberFormat.format(leftToFeed);
+            feedPenViewHolder.mLeftToFeed.setText(leftToFeedStr);
+        }
+
+        if (feedEntities != null) {
+            int timesFed = feedEntities.size();
+            String timesFedStr = numberFormat.format(timesFed);
+            feedPenViewHolder.mTimesFed.setText(timesFedStr);
         }
 
     }
