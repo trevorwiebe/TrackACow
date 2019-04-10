@@ -67,22 +67,25 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
             String callStr = numberFormat.format(call);
             feedPenViewHolder.mCall.setText(callStr);
-        } else {
-            feedPenViewHolder.mCall.setText("0");
         }
 
         ArrayList<FeedEntity> feedEntities = getFeedEntitiesByDate(date);
         if (feedEntities != null) {
             int totalFed = 0;
-            for (int t = 0; t < feedEntities.size(); t++) {
-                FeedEntity feedEntity = feedEntities.get(t);
+            feedPenViewHolder.mFed.setText("");
+            if (feedEntities.size() == 0) {
+                feedPenViewHolder.mFed.setText("0");
+            } else {
+                for (int t = 0; t < feedEntities.size(); t++) {
+                    FeedEntity feedEntity = feedEntities.get(t);
 
-                int amountFed = feedEntity.getFeed();
-                totalFed = totalFed + amountFed;
+                    int amountFed = feedEntity.getFeed();
+                    totalFed = totalFed + amountFed;
 
-                String amountFedStr = numberFormat.format(amountFed);
-                feedPenViewHolder.mFed.append(amountFedStr);
-                feedPenViewHolder.mFed.append("\n");
+                    String amountFedStr = numberFormat.format(amountFed);
+                    feedPenViewHolder.mFed.append(amountFedStr);
+                    feedPenViewHolder.mFed.append("\n");
+                }
             }
 
             String totalFedStr = numberFormat.format(totalFed);

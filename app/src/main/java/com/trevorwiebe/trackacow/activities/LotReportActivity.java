@@ -30,11 +30,13 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLotsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
+import com.trevorwiebe.trackacow.dataLoaders.QueryFeedsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
@@ -42,19 +44,23 @@ import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class LotReportActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
         QueryDeadCowsByLotIds.OnDeadCowsLoaded,
         QueryLotByLotId.OnLotByLotIdLoaded,
-        QueryArchivedLotsByLotId.OnArchivedLotLoaded {
+        QueryArchivedLotsByLotId.OnArchivedLotLoaded,
+        QueryFeedsByLotId.OnFeedsByLotIdReturned {
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private LotEntity mSelectedLotEntity;
     private int reportType;
+    private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -62,6 +68,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private TextView mNotes;
     private TextView mTotalDeathLoss;
     private TextView mDeathLossPercentage;
+    private TextView mFeedReports;
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
@@ -94,6 +101,7 @@ public class LotReportActivity extends AppCompatActivity implements
         mDrugsUsedLayout = findViewById(R.id.drugs_used_layout);
         mTotalDeathLoss = findViewById(R.id.reports_death_loss);
         mDeathLossPercentage = findViewById(R.id.reports_death_loss_percentage);
+        mFeedReports = findViewById(R.id.feed_reports);
         mCustomerName = findViewById(R.id.reports_customer_name);
         mTotalHead = findViewById(R.id.reports_total_head);
         mDate = findViewById(R.id.reports_date);
@@ -138,10 +146,14 @@ public class LotReportActivity extends AppCompatActivity implements
 
         new QueryAllDrugs(this).execute(this);
 
+        String lotId = mSelectedLotEntity.getLotId();
+
         ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(mSelectedLotEntity.getLotId());
+        lotIds.add(lotId);
 
         new QueryDeadCowsByLotIds(this, lotIds).execute(this);
+
+        new QueryFeedsByLotId(lotId, this).execute(this);
     }
 
     @Override
@@ -153,10 +165,15 @@ public class LotReportActivity extends AppCompatActivity implements
 
         new QueryAllDrugs(this).execute(this);
 
+        String lotId = mSelectedLotEntity.getLotId();
+
         ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(mSelectedLotEntity.getLotId());
+        lotIds.add(lotId);
 
         new QueryDeadCowsByLotIds(this, lotIds).execute(this);
+
+        new QueryFeedsByLotId(lotId, this).execute(this);
+
     }
     @Override
     public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
@@ -166,8 +183,10 @@ public class LotReportActivity extends AppCompatActivity implements
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         float percent = (numberDead * 100.f) / total;
 
-        mTotalDeathLoss.setText(Integer.toString(numberDead) + " dead");
-        mDeathLossPercentage.setText(decimalFormat.format(percent) + "%");
+        String deadText = numberFormat.format(numberDead) + " dead";
+        String percentDeadText = decimalFormat.format(percent) + "%";
+        mTotalDeathLoss.setText(deadText);
+        mDeathLossPercentage.setText(percentDeadText);
 
     }
 
@@ -226,6 +245,7 @@ public class LotReportActivity extends AppCompatActivity implements
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
+            textView.setTextSize(16f);
             textView.setTextColor(getResources().getColor(android.R.color.black));
             textView.setLayoutParams(textViewParams);
 
@@ -321,6 +341,19 @@ public class LotReportActivity extends AppCompatActivity implements
             mDate.setText(date);
             mNotes.setText(notes);
         }
+    }
+
+    @Override
+    public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
+        int totalAmountFed = 0;
+        for (int y = 0; y < feedEntities.size(); y++) {
+            FeedEntity feedEntity = feedEntities.get(y);
+            int amountFed = feedEntity.getFeed();
+            totalAmountFed = totalAmountFed + amountFed;
+        }
+        String amountFedStr = numberFormat.format(totalAmountFed);
+        String amountFedText = amountFedStr + " lbs";
+        mFeedReports.setText(amountFedText);
     }
 
     @Keep
