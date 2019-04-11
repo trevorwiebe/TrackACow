@@ -122,8 +122,6 @@ public class FeedLotActivity extends AppCompatActivity implements
                         new UpdateCallById(call, callKey).execute(FeedLotActivity.this);
                     }
 
-                    mCall.setText("");
-
                     // first we delete the old feed entities
                     new DeleteFeedEntitiesByDateAndLotId(mDate, mLotId, FeedLotActivity.this).execute(FeedLotActivity.this);
 
@@ -141,9 +139,9 @@ public class FeedLotActivity extends AppCompatActivity implements
     public void onCallByLotIdAndDateLoaded(CallEntity callEntity) {
         mSelectedCallEntity = callEntity;
         if (callEntity == null) {
-            mSave.setText("Save and Next Pen");
+            mSave.setText("Save");
         } else {
-            mSave.setText("Update and Next Pen");
+            mSave.setText("Update");
             int call = mSelectedCallEntity.getAmountFed();
             String callStr = Integer.toString(call);
             mCall.setText(callStr);
@@ -305,5 +303,7 @@ public class FeedLotActivity extends AppCompatActivity implements
             }
         }
         new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
+
+        finish();
     }
 }

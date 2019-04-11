@@ -88,6 +88,18 @@ public class Utility {
         return sharedPreferences.getInt(context.getResources().getString(R.string.last_used_screen_key), Constants.MEDICATE);
     }
 
+    public static void saveLastFeedPen(Context context, int lastFeedPen) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_used_feed_pen_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(context.getResources().getString(R.string.last_used_feed_pen_key), lastFeedPen);
+        editor.apply();
+    }
+
+    public static int getLastFeedPen(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_used_feed_pen_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(context.getResources().getString(R.string.last_used_feed_pen_key), 2);
+    }
+
     public static void setNewDataToUpload(Context context, boolean isThereNewData) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(

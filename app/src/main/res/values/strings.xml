@@ -20,4 +20,8 @@
     <string name="last_used_screen_name" translatable="false">last_used_screen_name</string>
     <string name="last_used_screen_key" translatable="false">last_used_screen_key</string>
 
+    <string name="last_used_feed_pen_name" translatable="false">last_used_feed_pen_name</string>
+    <string name="last_used_feed_pen_key" translatable="false">last_used_feed_pen_key</string>
+
+
 </resources>

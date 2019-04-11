@@ -157,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Utility.saveLastFeedPen(this, 0);
+    }
+
     private void onSignedInInitialized() {
 
         new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
