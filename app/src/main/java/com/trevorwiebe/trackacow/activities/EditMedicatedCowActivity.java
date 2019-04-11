@@ -135,7 +135,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
-                    holdingCowEntity.setIsAlive(mCowEntity.isAlive());
+                    holdingCowEntity.setIsAlive(mCowEntity.getIsAlive());
                     holdingCowEntity.setDate(mCalendar.getTimeInMillis());
                     holdingCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -177,7 +177,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     holdingCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     holdingCowEntity.setLotId(mCowEntity.getLotId());
                     holdingCowEntity.setNotes(mCowEntity.getNotes());
-                    holdingCowEntity.setIsAlive(mCowEntity.isAlive());
+                    holdingCowEntity.setIsAlive(mCowEntity.getIsAlive());
                     holdingCowEntity.setDate(mCowEntity.getDate());
                     holdingCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -221,7 +221,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     public void onCowByIdLoaded(CowEntity cowEntity) {
         mCowEntity = cowEntity;
 
-        isAlive = mCowEntity.isAlive();
+        isAlive = mCowEntity.getIsAlive();
 
         String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
         setTitle("Cow " + strTagNumber);

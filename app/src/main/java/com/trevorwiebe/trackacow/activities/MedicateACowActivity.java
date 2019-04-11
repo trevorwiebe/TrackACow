@@ -162,7 +162,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
                         holdingCowEntity.setCowId(cowEntity.getCowId());
                         holdingCowEntity.setDate(cowEntity.getDate());
-                        holdingCowEntity.setIsAlive(cowEntity.isAlive());
+                        holdingCowEntity.setIsAlive(cowEntity.getIsAlive());
                         holdingCowEntity.setNotes(cowEntity.getNotes());
                         holdingCowEntity.setLotId(cowEntity.getLotId());
                         holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
@@ -241,7 +241,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         for(int f=0; f<cowEntities.size(); f++){
                             CowEntity cowEntity = cowEntities.get(f);
                             cowIds.add(cowEntity.getCowId());
-                            if(cowEntity.isAlive() != 1){
+                            if (cowEntity.getIsAlive() != 1) {
                                 mIsSearchForCowDead = true;
                             }
                         }

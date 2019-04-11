@@ -59,12 +59,12 @@ public class CowEntity {
         this.primaryKey = primaryKey;
     }
 
-    public int isAlive() {
+    public int getIsAlive() {
         return isAlive;
     }
 
-    public void setAlive(int alive) {
-        isAlive = alive;
+    public void setIsAlive(int isAlive) {
+        this.isAlive = isAlive;
     }
 
     public void setCowId(String cowId) {
