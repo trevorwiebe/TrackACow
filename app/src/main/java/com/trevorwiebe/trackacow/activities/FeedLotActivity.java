@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.activities;
 
-import android.arch.persistence.room.Query;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -38,7 +37,6 @@ import com.trevorwiebe.trackacow.utils.Utility;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Locale;
 
 public class FeedLotActivity extends AppCompatActivity implements
@@ -49,7 +47,7 @@ public class FeedLotActivity extends AppCompatActivity implements
 
     private static final String TAG = "FeedLotActivity";
 
-    private TextInputEditText mCall;
+    private TextInputEditText mCallET;
     private LinearLayout mFeedAgainLayout;
     private TextView mTotalFed;
     private TextView mLeftToFeed;
@@ -75,11 +73,28 @@ public class FeedLotActivity extends AppCompatActivity implements
         mDate = intent.getLongExtra("date", 0);
         mLotId = intent.getStringExtra("lotId");
 
-        mCall = findViewById(R.id.feed_lot_call_et);
+        mCallET = findViewById(R.id.feed_lot_call_et);
         mFeedAgainLayout = findViewById(R.id.feed_again_layout);
         mTotalFed = findViewById(R.id.pen_total_fed);
         mLeftToFeed = findViewById(R.id.pen_left_to_feed);
         mSave = findViewById(R.id.save_feed_lot_btn);
+
+        mCallET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateReports();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         mFeedTextWatcher = new TextWatcher() {
             @Override
@@ -95,6 +110,7 @@ public class FeedLotActivity extends AppCompatActivity implements
                         addNewFeedEditText(null);
                     }
                 }
+                updateReports();
             }
 
             @Override
@@ -106,13 +122,13 @@ public class FeedLotActivity extends AppCompatActivity implements
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCall.length() == 0) {
-                    mCall.requestFocus();
-                    mCall.setError("Please fill this blank");
+                if (mCallET.length() == 0) {
+                    mCallET.requestFocus();
+                    mCallET.setError("Please fill this blank");
                 } else {
 
                     // code for updating the call entity
-                    int call = Integer.parseInt(mCall.getText().toString());
+                    int call = Integer.parseInt(mCallET.getText().toString());
 
                     String callKey;
                     CallEntity callEntity = new CallEntity(call, mDate, mLotId, "id");
@@ -149,7 +165,7 @@ public class FeedLotActivity extends AppCompatActivity implements
             mSave.setText("Update");
             int call = mSelectedCallEntity.getAmountFed();
             String callStr = Integer.toString(call);
-            mCall.setText(callStr);
+            mCallET.setText(callStr);
         }
     }
 
@@ -244,6 +260,8 @@ public class FeedLotActivity extends AppCompatActivity implements
                     }
                 }
 
+                updateReports();
+
             }
         });
         deleteButton.setLayoutParams(deleteBtnParams);
@@ -310,5 +328,25 @@ public class FeedLotActivity extends AppCompatActivity implements
         new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
 
         finish();
+    }
+
+    private void updateReports() {
+        ArrayList<Integer> feedList = getFeedsFromLayout();
+        int sum = 0;
+        for (Integer i : feedList) sum += i;
+
+        String totalFedStr = numberFormatter.format(sum);
+        mTotalFed.setText(totalFedStr);
+
+        String callStr;
+        if (mCallET.length() == 0) {
+            callStr = "0";
+        } else {
+            callStr = mCallET.getText().toString();
+        }
+        int call = Integer.parseInt(callStr);
+        int leftToFeed = call - sum;
+        String leftToFeedStr = numberFormatter.format(leftToFeed);
+        mLeftToFeed.setText(leftToFeedStr);
     }
 }

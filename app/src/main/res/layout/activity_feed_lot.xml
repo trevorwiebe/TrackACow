@@ -75,7 +75,6 @@
                     android:id="@+id/pen_total_fed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4,500"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
@@ -95,7 +94,6 @@
 
                 <TextView
                     android:id="@+id/pen_left_to_feed"
-                    android:text="2,500"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
