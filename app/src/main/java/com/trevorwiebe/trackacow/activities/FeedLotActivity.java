@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +51,8 @@ public class FeedLotActivity extends AppCompatActivity implements
 
     private TextInputEditText mCall;
     private LinearLayout mFeedAgainLayout;
+    private TextView mTotalFed;
+    private TextView mLeftToFeed;
     private Button mSave;
 
     private CallEntity mSelectedCallEntity;
@@ -74,6 +77,8 @@ public class FeedLotActivity extends AppCompatActivity implements
 
         mCall = findViewById(R.id.feed_lot_call_et);
         mFeedAgainLayout = findViewById(R.id.feed_again_layout);
+        mTotalFed = findViewById(R.id.pen_total_fed);
+        mLeftToFeed = findViewById(R.id.pen_left_to_feed);
         mSave = findViewById(R.id.save_feed_lot_btn);
 
         mFeedTextWatcher = new TextWatcher() {

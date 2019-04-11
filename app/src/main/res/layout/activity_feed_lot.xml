@@ -7,35 +7,105 @@
     tools:context=".activities.FeedLotActivity">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/feed_lot_call_et"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                android:ems="8"
-                android:hint="Call"
-                android:inputType="number"
-                android:textSize="16sp" />
-
-        </android.support.design.widget.TextInputLayout>
-
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/feed_again_layout"
+            android:baselineAligned="false"
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/feed_lot_call_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="8"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:hint="Call"
+                        android:inputType="number"
+                        android:textSize="16sp" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/feed_again_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Total Fed"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/pen_total_fed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4,500"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Left To Feed"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/pen_left_to_feed"
+                    android:text="2,500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
