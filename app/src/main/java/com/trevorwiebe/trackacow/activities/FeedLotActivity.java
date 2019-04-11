@@ -344,7 +344,13 @@ public class FeedLotActivity extends AppCompatActivity implements
         } else {
             callStr = mCallET.getText().toString();
         }
-        int call = Integer.parseInt(callStr);
+        int call;
+        try {
+            call = numberFormatter.parse(callStr).intValue();
+        } catch (ParseException e) {
+            Log.e(TAG, "updateReports: ", e);
+            call = 0;
+        }
         int leftToFeed = call - sum;
         String leftToFeedStr = numberFormatter.format(leftToFeed);
         mLeftToFeed.setText(leftToFeedStr);
