@@ -40,7 +40,8 @@ public class ArchiveRvAdapter extends RecyclerView.Adapter<ArchiveRvAdapter.Arch
         String strDate = Utility.convertMillisToDate(date);
 
         archiveViewHolder.mArchiveLotName.setText(name);
-        archiveViewHolder.mDateArchived.setText(strDate);
+        String dateString = "Archived: " + strDate;
+        archiveViewHolder.mDateArchived.setText(dateString);
     }
 
     public void swapArchivedLots(ArrayList<ArchivedLotEntity> archivedLotEntities) {
