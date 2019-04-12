@@ -32,6 +32,9 @@ public interface FeedDao {
     @Query("DELETE FROM feed WHERE date = :date AND lotId = :lotId")
     int deleteFeedEntitiesByDateAndLotId(long date, String lotId);
 
+    @Query("DELETE FROM feed")
+    void deleteFeedTable();
+
     @Update
     void updateFeedEntity(FeedEntity feedEntity);
 

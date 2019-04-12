@@ -18,6 +18,7 @@ import com.trevorwiebe.trackacow.activities.ArchivesActivity;
 import com.trevorwiebe.trackacow.activities.ManageDrugsActivity;
 import com.trevorwiebe.trackacow.activities.ManagePensActivity;
 import com.trevorwiebe.trackacow.activities.SettingsActivity;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -79,6 +80,7 @@ public class MoreFragment extends Fragment implements InsertAllLocalChangeToClou
                     thereIsDataDialog.setPositiveButton("Backup and sign out", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            Utility.setNewDataToUpload(getContext(), false);
                             mBackingUpData = new AlertDialog.Builder(getContext());
                             View dialogLoadingLayout = LayoutInflater.from(getContext()).inflate(R.layout.dialog_inserting_data_to_cloud, null);
                             mBackingUpData.setView(dialogLoadingLayout);
@@ -89,6 +91,8 @@ public class MoreFragment extends Fragment implements InsertAllLocalChangeToClou
                     thereIsDataDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            Utility.setNewDataToUpload(getContext(), false);
+                            new DeleteAllLocalData().execute(getContext());
                             FirebaseAuth.getInstance().signOut();
                             if (getActivity() != null) {
                                 getActivity().finish();
@@ -99,6 +103,8 @@ public class MoreFragment extends Fragment implements InsertAllLocalChangeToClou
                     thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.");
                     thereIsDataDialog.show();
                 } else {
+                    Utility.setNewDataToUpload(getContext(), false);
+                    new DeleteAllLocalData().execute(getContext());
                     FirebaseAuth.getInstance().signOut();
                     if (getActivity() != null) {
                         getActivity().finish();

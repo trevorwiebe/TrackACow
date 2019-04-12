@@ -34,6 +34,9 @@ public interface CallDao {
     @Query("SELECT * FROM call WHERE lotId = :lotId")
     List<CallEntity> getCallEntitiesByLotId(String lotId);
 
+    @Query("DELETE FROM call")
+    void deleteCallTable();
+
     @Update
     void updateCallEntity(CallEntity callEntity);
 

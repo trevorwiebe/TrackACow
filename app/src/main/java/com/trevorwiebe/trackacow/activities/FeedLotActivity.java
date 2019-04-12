@@ -130,13 +130,24 @@ public class FeedLotActivity extends AppCompatActivity implements
                     // code for updating the call entity
                     int call = Integer.parseInt(mCallET.getText().toString());
 
-                    String callKey;
-                    CallEntity callEntity = new CallEntity(call, mDate, mLotId, "id");
+                    DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CallEntity.CALL);
+                    DatabaseReference pushRef = baseRef.push();
+
+                    String callKey = pushRef.getKey();
+                    CallEntity callEntity = new CallEntity(call, mDate, mLotId, callKey);
+
+                    if (Utility.haveNetworkConnection(FeedLotActivity.this)) {
+                        if (mSelectedCallEntity == null) {
+                            pushRef.setValue(callEntity);
+                        } else {
+                            mSelectedCallEntity.setAmountFed(call);
+                            baseRef.child(mSelectedCallEntity.getId()).setValue(mSelectedCallEntity);
+                        }
+                    } else {
+
+                    }
 
                     if (mSelectedCallEntity == null) {
-                        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CallEntity.CALL).push();
-                        callKey = baseRef.getKey();
-                        callEntity.setId(callKey);
                         new InsertCallEntity(callEntity).execute(FeedLotActivity.this);
                     } else {
                         callKey = mSelectedCallEntity.getId();
