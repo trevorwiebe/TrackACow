@@ -84,31 +84,40 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                 for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
                     DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
                     drugsGivenEntity.setCowId(mCowId);
-                    View checkBoxView = mDrugLayout.getChildAt(r);
-                    if (checkBoxView instanceof CheckBox) {
-                        CheckBox checkBox = (CheckBox) checkBoxView;
-                        drugsGivenEntity.setDrugId(checkBox.getTag().toString());
-                        if (checkBox.isChecked()) {
-                            r++;
-                            View editText = mDrugLayout.getChildAt(r);
 
-                            if (editText instanceof EditText) {
+                    View linearLayout = mDrugLayout.getChildAt(r);
 
-                                EditText textViewAmountGiven = (EditText) editText;
-                                int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                drugsGivenEntity.setAmountGiven(amountGiven);
+                    if (linearLayout instanceof LinearLayout) {
 
-                                DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
-                                String drugsGivenKey = drugsGivenPushRef.getKey();
-                                drugsGivenEntity.setLotId(mCowEntity.getLotId());
-                                drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+                        LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
 
-                                if (Utility.haveNetworkConnection(AddDrugsGivenToSpecificCowActivity.this)) {
-                                    drugsGivenPushRef.setValue(drugsGivenEntity);
+                        View checkBoxView = confirmedLinearLayout.getChildAt(0);
+                        if (checkBoxView instanceof CheckBox) {
+
+                            CheckBox checkBox = (CheckBox) checkBoxView;
+                            drugsGivenEntity.setDrugId(checkBox.getTag().toString());
+                            if (checkBox.isChecked()) {
+
+                                View editText = confirmedLinearLayout.getChildAt(1);
+
+                                if (editText instanceof EditText) {
+
+                                    EditText textViewAmountGiven = (EditText) editText;
+                                    int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
+                                    drugsGivenEntity.setAmountGiven(amountGiven);
+
+                                    DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                    String drugsGivenKey = drugsGivenPushRef.getKey();
+                                    drugsGivenEntity.setLotId(mCowEntity.getLotId());
+                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+
+                                    if (Utility.haveNetworkConnection(AddDrugsGivenToSpecificCowActivity.this)) {
+                                        drugsGivenPushRef.setValue(drugsGivenEntity);
+                                    }
+
+                                    drugList.add(drugsGivenEntity);
+
                                 }
-
-                                drugList.add(drugsGivenEntity);
-
                             }
                         }
                     }
@@ -188,7 +197,6 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
     }
 
     private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity) {
-
         String drugName = drugEntity.getDrugName();
         String drugId = drugEntity.getDrugId();
         int defaultAmount = drugEntity.getDefaultAmount();
@@ -199,15 +207,23 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
         int pixels16 = (int) (16 * scale + 0.5f);
         int pixels8 = (int) (8 * scale + 0.5f);
 
+
+        LinearLayout containerLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        containerLayout.setOrientation(LinearLayout.HORIZONTAL);
+        containerLayout.setLayoutParams(containerParams);
+
         CheckBox checkBox = new CheckBox(this);
         checkBox.setText(drugName);
         checkBox.setTag(drugId);
         LinearLayout.LayoutParams checkBoxParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         checkBoxParams.setMargins(pixels16, pixels24, pixels16, pixels8);
-        checkBox.setOnCheckedChangeListener(checkBoxListener);
         checkBox.setLayoutParams(checkBoxParams);
 
         EditText editText = new EditText(this);
@@ -215,17 +231,18 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        editTextParams.setMargins(pixels24, 0, pixels24, pixels16);
-        editText.setEms(5);
+        editTextParams.setMargins(pixels16, pixels24, pixels16, pixels8);
+        editText.setEms(4);
         editText.setGravity(Gravity.CENTER);
         editText.setTag(drugId + "_editText");
         editText.setText(defaultAmountStr);
-        editText.setVisibility(View.GONE);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
-        linearLayout.addView(checkBox);
-        linearLayout.addView(editText);
+        containerLayout.addView(checkBox);
+        containerLayout.addView(editText);
+
+        linearLayout.addView(containerLayout);
     }
 
     private CompoundButton.OnCheckedChangeListener checkBoxListener = new CompoundButton.OnCheckedChangeListener() {

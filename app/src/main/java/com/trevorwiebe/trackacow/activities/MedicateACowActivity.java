@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,31 +111,40 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     for(int r=0; r<mDrugLayout.getChildCount(); r++){
                         DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
                         drugsGivenEntity.setCowId(cowId);
-                        View checkBoxView = mDrugLayout.getChildAt(r);
-                        if(checkBoxView instanceof CheckBox){
-                            CheckBox checkBox = (CheckBox) checkBoxView;
-                            drugsGivenEntity.setDrugId(checkBox.getTag().toString());
-                            if(checkBox.isChecked()){
-                                r++;
-                                View  editText = mDrugLayout.getChildAt(r);
 
-                                if(editText instanceof EditText){
+                        View linearLayout = mDrugLayout.getChildAt(r);
 
-                                    EditText textViewAmountGiven = (EditText) editText;
-                                    int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                    drugsGivenEntity.setAmountGiven(amountGiven);
+                        if (linearLayout instanceof LinearLayout) {
 
-                                    DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
-                                    String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setLotId(mSelectedLot.getLotId());
-                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+                            LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
 
-                                    if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
-                                        drugsGivenPushRef.setValue(drugsGivenEntity);
+                            View checkBoxView = confirmedLinearLayout.getChildAt(0);
+                            if (checkBoxView instanceof CheckBox) {
+
+                                CheckBox checkBox = (CheckBox) checkBoxView;
+                                drugsGivenEntity.setDrugId(checkBox.getTag().toString());
+                                if (checkBox.isChecked()) {
+
+                                    View editText = confirmedLinearLayout.getChildAt(1);
+
+                                    if (editText instanceof EditText) {
+
+                                        EditText textViewAmountGiven = (EditText) editText;
+                                        int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
+                                        drugsGivenEntity.setAmountGiven(amountGiven);
+
+                                        DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                        String drugsGivenKey = drugsGivenPushRef.getKey();
+                                        drugsGivenEntity.setLotId(mSelectedLot.getLotId());
+                                        drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+
+                                        if (Utility.haveNetworkConnection(MedicateACowActivity.this)) {
+                                            drugsGivenPushRef.setValue(drugsGivenEntity);
+                                        }
+
+                                        drugList.add(drugsGivenEntity);
+
                                     }
-
-                                    drugList.add(drugsGivenEntity);
-
                                 }
                             }
                         }
@@ -202,19 +212,13 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     mDrugsGivenCardView.setVisibility(View.GONE);
 
                     for(int r=0; r<mDrugLayout.getChildCount(); r++){
-                        View checkBoxView = mDrugLayout.getChildAt(r);
-                        if(checkBoxView instanceof CheckBox){
-                            CheckBox checkBox = (CheckBox) checkBoxView;
-                            checkBox.setChecked(false);
-                            if(checkBox.isChecked()){
-                                r++;
-                                View  editText = mDrugLayout.getChildAt(r);
-
-                                if(editText instanceof EditText){
-
-                                    EditText textViewAmountGiven = (EditText) editText;
-                                    textViewAmountGiven.setVisibility(View.GONE);
-                                }
+                        View linearLayout = mDrugLayout.getChildAt(r);
+                        if (linearLayout instanceof LinearLayout) {
+                            LinearLayout linearLayout1 = (LinearLayout) linearLayout;
+                            View checkBoxView = linearLayout1.getChildAt(0);
+                            if (checkBoxView instanceof CheckBox) {
+                                CheckBox checkBox = (CheckBox) checkBoxView;
+                                checkBox.setChecked(false);
                             }
                         }
                     }
@@ -298,11 +302,20 @@ public class MedicateACowActivity extends AppCompatActivity implements
         int pixels16 = (int) (16 * scale + 0.5f);
         int pixels8 = (int) (8 * scale + 0.5f);
 
+
+        LinearLayout containerLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        containerLayout.setOrientation(LinearLayout.HORIZONTAL);
+        containerLayout.setLayoutParams(containerParams);
+
         CheckBox checkBox = new CheckBox(this);
         checkBox.setText(drugName);
         checkBox.setTag(drugId);
         LinearLayout.LayoutParams checkBoxParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         checkBoxParams.setMargins(pixels16, pixels24, pixels16, pixels8);
@@ -313,7 +326,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        editTextParams.setMargins(pixels24, 0, pixels24, pixels16);
+        editTextParams.setMargins(pixels16, pixels24, pixels16, pixels8);
         editText.setEms(4);
         editText.setGravity(Gravity.CENTER);
         editText.setTag(drugId + "_editText");
@@ -321,8 +334,10 @@ public class MedicateACowActivity extends AppCompatActivity implements
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
-        linearLayout.addView(checkBox);
-        linearLayout.addView(editText);
+        containerLayout.addView(checkBox);
+        containerLayout.addView(editText);
+
+        linearLayout.addView(containerLayout);
     }
 
     @Override
