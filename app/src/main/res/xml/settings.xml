@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        app:key="feedback"
-        app:title="Send feedback"
-        app:summary="Report technical issues or suggest new features" />
+        android:key="feedback"
+        android:title="Sen feedback"
+        android:summary="Report technical issues or suggest new features">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="@string/contact_developer_uri">
+            <extra
+                android:name="android.intent.extra.SUBJECT"
+                android:value="Feedback about Track-A-Cow Android App" />
+        </intent>
+    </Preference>
 
 </PreferenceScreen>
