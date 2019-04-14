@@ -6,10 +6,10 @@
         android:title="Medicate"
         android:icon="@drawable/ic_drugs_black_24dp" />
 
-    <item
-        android:id="@+id/action_feed"
-        android:title="Feed"
-        android:icon="@drawable/ic_pen_black_24dp" />
+    <!--<item-->
+    <!--android:id="@+id/action_feed"-->
+    <!--android:title="Feed"-->
+    <!--android:icon="@drawable/ic_pen_black_24dp" />-->
 
     <item
         android:id="@+id/action_move"

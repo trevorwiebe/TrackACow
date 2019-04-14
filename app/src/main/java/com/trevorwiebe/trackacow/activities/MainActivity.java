@@ -80,14 +80,14 @@ public class MainActivity extends AppCompatActivity implements
                         medicateTransactionManager.commit();
                         mLastUsedScreen = Constants.MEDICATE;
                         break;
-                    case R.id.action_feed:
-                        setTitle("Feed");
-                        FeedFragment feedFragment = new FeedFragment();
-                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
-                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
-                        feedTransactionManager.commit();
-                        mLastUsedScreen = Constants.FEED;
-                        break;
+//                    case R.id.action_feed:
+//                        setTitle("Feed");
+//                        FeedFragment feedFragment = new FeedFragment();
+//                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
+//                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
+//                        feedTransactionManager.commit();
+//                        mLastUsedScreen = Constants.FEED;
+//                        break;
                     case R.id.action_move:
                         setTitle("Move");
                         MoveFragment moveFragment = new MoveFragment();
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Constants.FEED:
                 setTitle("Feed");
-                mBottomNavigationView.setSelectedItemId(R.id.action_feed);
+//                mBottomNavigationView.setSelectedItemId(R.id.action_feed);
                 FeedFragment feedFragment = new FeedFragment();
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                 feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);

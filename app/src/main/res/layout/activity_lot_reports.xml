@@ -161,12 +161,53 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
+                        android:text="Drugs used"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
+
+                    <ProgressBar
+                        android:id="@+id/loading_reports"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <TextView
+                        android:id="@+id/no_drug_reports"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:text="No Reports"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/drugs_used_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:visibility="gone"
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
                         android:text="Feed"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/feed_reports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -216,44 +257,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="Drugs used"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
-
-                    <ProgressBar
-                        android:id="@+id/loading_reports"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp" />
-
-                    <TextView
-                        android:id="@+id/no_drug_reports"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="No Reports"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:id="@+id/drugs_used_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
 
 
                 </LinearLayout>
