@@ -49,16 +49,16 @@ public class SyncDatabaseService extends JobService implements SyncDatabase.OnDa
         String channelId = getResources().getString(R.string.sync_notif_channel_id);
         switch (resultCode) {
             case Constants.SUCCESS:
-                Utility.showNotification(this, channelId, "Synced successfully", "Data synced successfully");
+//                Utility.showNotification(this, channelId, "Synced successfully", "Data synced successfully");
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
-                Utility.showNotification(this, channelId, "Sync failed", "Failed to fetch data from the cloud");
+//                Utility.showNotification(this, channelId, "Sync failed", "Failed to fetch data from the cloud");
                 break;
             case Constants.NO_NETWORK_CONNECTION:
-                Utility.showNotification(this, channelId, "Sync failed", "Tried to sync with no network");
+//                Utility.showNotification(this, channelId, "Sync failed", "Tried to sync with no network");
                 break;
             default:
-                Utility.showNotification(this, channelId, "Sync Failed", "Unknown error occurred");
+//                Utility.showNotification(this, channelId, "Sync Failed", "Unknown error occurred");
         }
     }
 }

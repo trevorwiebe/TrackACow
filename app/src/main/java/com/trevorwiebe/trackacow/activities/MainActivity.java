@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         String channelId = getResources().getString(R.string.sync_notif_channel_id);
-        Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
+//        Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
 
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
