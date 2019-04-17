@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.trevorwiebe.trackacow">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -48,6 +47,7 @@
         <activity
             android:name=".activities.CreateAccountActivity"
             android:label="Create Account"
+            android:parentActivityName=".activities.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SignInActivity"

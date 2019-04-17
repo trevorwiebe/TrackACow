@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
-    private static final int SIGN_IN_CODE = 838;
+    private static final int SIGNIN_IN_CODE = 435;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
@@ -134,8 +134,9 @@ public class MainActivity extends AppCompatActivity implements
                     if (Utility.haveNetworkConnection(MainActivity.this)) {
                         onSignedOutCleanUp();
                         Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
-                        MainActivity.this.startActivityForResult(signInIntent, SIGN_IN_CODE);
+                        MainActivity.this.startActivityForResult(signInIntent, SIGNIN_IN_CODE);
                     }
+
                 } else {
                     onSignedInInitialized();
                 }

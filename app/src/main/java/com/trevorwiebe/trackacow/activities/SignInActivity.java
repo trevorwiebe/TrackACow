@@ -92,15 +92,16 @@ public class SignInActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        setResult(RESULT_OK);
-                                        finish();
+                                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
                                     } else {
                                         mSigningIn.setVisibility(View.INVISIBLE);
                                         mSignInBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
 
                                         String errorMessage = task.getException().getLocalizedMessage();
 
-                                        showMessage("Sign In Error", errorMessage);
+                                        showMessage("Error signing in", errorMessage);
                                     }
                                 }
                             });
@@ -198,13 +199,8 @@ public class SignInActivity extends AppCompatActivity {
                 fireBaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 String errorMessage = e.getLocalizedMessage();
-                showMessage("Sign In Error", errorMessage);
+                showMessage("Error signing in", errorMessage);
             }
-        }
-
-        if (requestCode == CREATE_ACCOUNT_CODE && resultCode == RESULT_OK) {
-            setResult(resultCode);
-            finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -218,12 +214,13 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            setResult(RESULT_OK);
-                            finish();
+                            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             String errorMessage = task.getException().getLocalizedMessage();
-                            showMessage("Sign In Error", errorMessage);
+                            showMessage("Error signing in", errorMessage);
                         }
                     }
                 });

@@ -112,9 +112,9 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
-                                                                Intent data = new Intent();
-                                                                setResult(RESULT_OK, data);
-                                                                finish();
+                                                                Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                startActivity(intent);
                                                             }else{
                                                                 String errorMessage = task.getException().getLocalizedMessage();
                                                                 showMessage("Could not set name to account", errorMessage);
@@ -157,7 +157,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 String errorMessage = e.getLocalizedMessage();
-                showMessage("Create account error", errorMessage);
+                showMessage("Error creating account", errorMessage);
             }
         }
     }
@@ -170,12 +170,13 @@ public class CreateAccountActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            setResult(RESULT_OK);
-                            finish();
+                            Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             String errorMessage = task.getException().getLocalizedMessage();
-                            showMessage("Create account error", errorMessage);
+                            showMessage("Error creating account", errorMessage);
                         }
                     }
                 });
