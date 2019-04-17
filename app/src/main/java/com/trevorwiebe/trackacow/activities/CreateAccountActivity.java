@@ -15,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -28,7 +30,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.InsertNewUser;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
+import com.trevorwiebe.trackacow.utils.Utility;
+
+import java.util.Calendar;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -77,32 +86,32 @@ public class CreateAccountActivity extends AppCompatActivity {
         mCreateAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mName.length() == 0){
+                if (mName.length() == 0) {
                     mName.requestFocus();
                     mName.setError("Please fill in name");
-                }else if(mEmail.length() == 0){
+                } else if (mEmail.length() == 0) {
                     mEmail.requestFocus();
                     mEmail.setError("Please fill in email");
-                }else if(mPassword.length() == 0){
+                } else if (mPassword.length() == 0) {
                     mPassword.requestFocus();
                     mPassword.setError("Please fill in password");
-                }else{
+                } else {
 
                     mCreateAccountBtn.setBackgroundColor(getResources().getColor(R.color.signInGray));
                     mCreatingAccount.setVisibility(View.VISIBLE);
                     final String name = mName.getText().toString();
-                    String email = mEmail.getText().toString();
+                    final String email = mEmail.getText().toString();
                     String password = mPassword.getText().toString();
 
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()){
+                                    if (task.isSuccessful()) {
 
-                                        FirebaseUser user = task.getResult().getUser();
+                                        final FirebaseUser user = task.getResult().getUser();
 
-                                        if(user != null) {
+                                        if (user != null) {
                                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                                     .setDisplayName(name)
                                                     .build();
@@ -112,19 +121,31 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
+
+                                                                String uid = user.getUid();
+                                                                int accountType = UserEntity.FREE_TRIAL;
+                                                                long dateCreated = System.currentTimeMillis();
+
+                                                                Calendar calendar = Calendar.getInstance();
+                                                                calendar.add(Calendar.MONTH, 1);
+
+                                                                UserEntity userEntity = new UserEntity(dateCreated, accountType, name, email, calendar.getTimeInMillis(), uid);
+                                                                saveUserToDatabase(userEntity);
+
+
                                                                 Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
                                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                                 startActivity(intent);
-                                                            }else{
+                                                            } else {
                                                                 String errorMessage = task.getException().getLocalizedMessage();
                                                                 showMessage("Could not set name to account", errorMessage);
                                                             }
                                                         }
                                                     });
-                                        }else{
+                                        } else {
                                             showMessage("User was null", "");
                                         }
-                                    }else{
+                                    } else {
                                         String errorMessage = task.getException().getLocalizedMessage();
                                         showMessage("There was an error", errorMessage);
                                     }
@@ -164,12 +185,25 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void fireBaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        final String name = acct.getDisplayName();
+        final String email = acct.getEmail();
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+
+                            String uid = task.getResult().getUser().getUid();
+                            int accountType = UserEntity.FREE_TRIAL;
+                            long dateCreated = System.currentTimeMillis();
+
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.add(Calendar.MONTH, 1);
+
+                            UserEntity userEntity = new UserEntity(dateCreated, accountType, name, email, calendar.getTimeInMillis(), uid);
+                            saveUserToDatabase(userEntity);
+
                             Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
@@ -182,7 +216,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 });
     }
 
-    private void showMessage(String title, String errorMessage){
+    private void showMessage(String title, String errorMessage) {
         AlertDialog.Builder signInError = new AlertDialog.Builder(CreateAccountActivity.this);
         signInError.setTitle(title);
         signInError.setMessage(errorMessage);
@@ -198,5 +232,17 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
         mCreatingAccount.setVisibility(View.INVISIBLE);
+    }
+
+    private void saveUserToDatabase(UserEntity userEntity) {
+
+        if (Utility.haveNetworkConnection(CreateAccountActivity.this)) {
+            DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
+            databaseReference.setValue(userEntity);
+        } else {
+
+        }
+
+        new InsertNewUser(userEntity).execute(CreateAccountActivity.this);
     }
 }
