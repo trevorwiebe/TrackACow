@@ -14,6 +14,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".activities.ManageSubscriptionActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:label="Manage Subscription" />
+        <activity
             android:name=".activities.FeedLotActivity"
             android:label="Feed Lot"
             android:parentActivityName=".activities.MainActivity" />

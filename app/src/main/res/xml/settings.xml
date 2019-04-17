@@ -15,4 +15,13 @@
         </intent>
     </Preference>
 
+    <Preference
+        android:key="subscription"
+        android:title="Manage subscription">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.trevorwiebe.trackacow"
+            android:targetClass="com.trevorwiebe.trackacow.activities.ManageSubscriptionActivity" />
+    </Preference>
+
 </PreferenceScreen>
