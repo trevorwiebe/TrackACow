@@ -43,7 +43,6 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Monthly Subscriber"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
@@ -66,7 +65,6 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
-                    android:text="April 21, 2019"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 

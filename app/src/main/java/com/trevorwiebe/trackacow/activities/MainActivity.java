@@ -27,8 +27,13 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingUserEntity;
+import com.trevorwiebe.trackacow.dataLoaders.InsertNewUser;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 import com.trevorwiebe.trackacow.fragments.FeedFragment;
 import com.trevorwiebe.trackacow.fragments.MedicateFragment;
 import com.trevorwiebe.trackacow.fragments.MoreFragment;
@@ -39,6 +44,7 @@ import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements
@@ -166,6 +172,16 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized() {
 
+        String uid = "<uid>";
+        int accountType = UserEntity.FREE_TRIAL;
+        long dateCreated = System.currentTimeMillis();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+
+        UserEntity userEntity = new UserEntity(dateCreated, accountType, "Name", "Email", calendar.getTimeInMillis(), uid);
+        saveUserToDatabase(userEntity);
+
         new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
@@ -249,6 +265,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onDatabaseSynced(int resultCode) {
+    }
+
+    private void saveUserToDatabase(UserEntity userEntity) {
+
+        if (Utility.haveNetworkConnection(MainActivity.this)) {
+            DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
+            databaseReference.setValue(userEntity);
+        } else {
+            Log.d(TAG, "saveUserToDatabase: here");
+            HoldingUserEntity holdingUserEntity = new HoldingUserEntity(userEntity, Constants.INSERT_UPDATE);
+            new InsertHoldingUserEntity(holdingUserEntity).execute(MainActivity.this);
+        }
+
+        new InsertNewUser(userEntity).execute(MainActivity.this);
     }
 
 }

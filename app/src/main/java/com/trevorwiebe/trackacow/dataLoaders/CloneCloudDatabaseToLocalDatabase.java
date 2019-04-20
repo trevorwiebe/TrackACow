@@ -48,7 +48,6 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.penDao().deletePenTable();
         db.lotDao().deleteLotEntityTable();
         db.archivedLotDao().deleteArchivedLotTable();
-        ;
 
         db.cowDao().insertCowList(mCowEntityUpdateList);
         db.drugDao().insertListDrug(mDrugEntityUpdateList);

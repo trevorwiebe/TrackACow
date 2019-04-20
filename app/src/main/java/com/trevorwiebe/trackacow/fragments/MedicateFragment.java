@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +106,7 @@ public class MedicateFragment extends Fragment implements
 
     @Override
     public void onDatabaseSynced(int resultCode) {
+        Log.d(TAG, "onDatabaseSynced: " + resultCode);
         mSwipeRefreshLayout.setRefreshing(false);
         new QueryLots(MedicateFragment.this).execute(mContext);
     }

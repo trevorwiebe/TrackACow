@@ -32,8 +32,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingUserEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertNewUser;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -240,7 +242,8 @@ public class CreateAccountActivity extends AppCompatActivity {
             DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
             databaseReference.setValue(userEntity);
         } else {
-
+            HoldingUserEntity holdingUserEntity = new HoldingUserEntity(userEntity, Constants.INSERT_UPDATE);
+            new InsertHoldingUserEntity(holdingUserEntity).execute(CreateAccountActivity.this);
         }
 
         new InsertNewUser(userEntity).execute(CreateAccountActivity.this);

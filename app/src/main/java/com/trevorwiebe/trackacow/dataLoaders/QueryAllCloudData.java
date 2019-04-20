@@ -16,6 +16,7 @@ import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 
 import java.util.ArrayList;
@@ -97,6 +98,8 @@ public class QueryAllCloudData {
                                         mArchivedLotList.add(archivedLotEntity);
                                     }
                                 }
+                                break;
+                            case UserEntity.USER:
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key " + key);

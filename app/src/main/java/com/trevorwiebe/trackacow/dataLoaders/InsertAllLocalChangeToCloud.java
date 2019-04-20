@@ -16,12 +16,14 @@ import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -163,6 +165,26 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
         }
         db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
+
+        List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();
+        Log.d(TAG, "doInBackground: " + holdingUserEntities.size());
+        for (int g = 0; g < holdingUserEntities.size(); g++) {
+
+            HoldingUserEntity holdingUserEntity = holdingUserEntities.get(g);
+
+            Log.d(TAG, "doInBackground: " + holdingUserEntity);
+
+            UserEntity userEntity = new UserEntity(holdingUserEntity);
+            switch (holdingUserEntity.getWhatHappened()) {
+                case Constants.INSERT_UPDATE:
+                    baseRef.child(UserEntity.USER).setValue(userEntity);
+                    break;
+                case Constants.DELETE:
+                    baseRef.child(UserEntity.USER).removeValue();
+                    break;
+            }
+        }
+//        db.holdingUserDao().deleteHoldingUserTable();
 
         return Constants.SUCCESS;
     }

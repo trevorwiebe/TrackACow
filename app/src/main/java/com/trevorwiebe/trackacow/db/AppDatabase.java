@@ -30,12 +30,14 @@ import com.trevorwiebe.trackacow.db.holdingDao.HoldingDrugDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingDrugsGivenDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingLotDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingPenDao;
+import com.trevorwiebe.trackacow.db.holdingDao.HoldingUserDao;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 
 @Database(entities = {
         PenEntity.class,
@@ -52,7 +54,8 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
         HoldingDrugsGivenEntity.class,
         HoldingDrugEntity.class,
         HoldingLotEntity.class,
-        HoldingArchivedLotEntity.class
+        HoldingArchivedLotEntity.class,
+        HoldingUserEntity.class
                     }, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -66,7 +69,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ArchivedLotDao archivedLotDao();
     public abstract CallDao callDao();
     public abstract FeedDao feedDao();
-
     public abstract UserDao userDao();
 
     public abstract HoldingPenDao holdingPenDao();
@@ -74,6 +76,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HoldingDrugsGivenDao holdingDrugsGivenDao();
     public abstract HoldingDrugDao holdingDrugDao();
     public abstract HoldingLotDao holdingLotDao();
+
+    public abstract HoldingUserDao holdingUserDao();
 
     public abstract HoldingArchivedLotDao holdingArchivedLotDao();
 

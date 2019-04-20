@@ -1,24 +1,14 @@
-package com.trevorwiebe.trackacow.db.entities;
+package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
 
-@Entity(tableName = "user")
-public class UserEntity {
-
-    public static final String USER = "user";
-
-    public static final int FREE_TRIAL = 0;
-    public static final int MONTHLY_SUBSCRIPTION = 1;
-    public static final int ANNUAL_SUBSCRIPTION = 2;
-    public static final int GRACE_PERIOD = 3;
-    public static final int HOLD = 5;
-    public static final int CANCELED = 6;
+@Entity(tableName = "holdingUser")
+public class HoldingUserEntity {
 
     @ColumnInfo(name = "primaryKey")
     @PrimaryKey(autoGenerate = true)
@@ -42,27 +32,32 @@ public class UserEntity {
     @ColumnInfo(name = "uid")
     private String uid;
 
-    public UserEntity(long dateCreated, int accountType, String name, String email, long renewalDate, String uid) {
+    @ColumnInfo(name = "whatHappened")
+    private int whatHappened;
+
+    public HoldingUserEntity(long dateCreated, int accountType, String name, String email, long renewalDate, String uid, int whatHappened) {
         this.dateCreated = dateCreated;
         this.accountType = accountType;
         this.name = name;
         this.email = email;
         this.renewalDate = renewalDate;
         this.uid = uid;
+        this.whatHappened = whatHappened;
     }
 
     @Ignore
-    public UserEntity(HoldingUserEntity holdingUserEntity) {
-        this.dateCreated = holdingUserEntity.getDateCreated();
-        this.accountType = holdingUserEntity.getAccountType();
-        this.name = holdingUserEntity.getName();
-        this.email = holdingUserEntity.getEmail();
-        this.renewalDate = holdingUserEntity.getRenewalDate();
-        this.uid = holdingUserEntity.getUid();
+    public HoldingUserEntity(UserEntity userEntity, int whatHappened) {
+        this.dateCreated = userEntity.getDateCreated();
+        this.accountType = userEntity.getAccountType();
+        this.name = userEntity.getName();
+        this.email = userEntity.getEmail();
+        this.renewalDate = userEntity.getRenewalDate();
+        this.uid = userEntity.getUid();
+        this.whatHappened = whatHappened;
     }
 
     @Ignore
-    public UserEntity() {
+    public HoldingUserEntity() {
     }
 
     public int getPrimaryKey() {
@@ -119,5 +114,13 @@ public class UserEntity {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public int getWhatHappened() {
+        return whatHappened;
+    }
+
+    public void setWhatHappened(int whatHappened) {
+        this.whatHappened = whatHappened;
     }
 }

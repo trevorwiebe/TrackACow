@@ -180,9 +180,15 @@ public class Utility {
         yesterday.add(Calendar.DAY_OF_YEAR, -1);
         yesterday = clearTimes(yesterday);
 
-        if (date >= today.getTimeInMillis()) {
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        tomorrow = clearTimes(tomorrow);
+
+        if (date >= tomorrow.getTimeInMillis() && tomorrow.getTimeInMillis() >= date) {
+            return "Tomorrow";
+        } else if (date >= today.getTimeInMillis() && today.getTimeInMillis() >= date) {
             return "Today";
-        } else if (date >= yesterday.getTimeInMillis()) {
+        } else if (date >= yesterday.getTimeInMillis() && yesterday.getTimeInMillis() >= date) {
             return "Yesterday";
         } else {
             return convertMillisToDate(date);
