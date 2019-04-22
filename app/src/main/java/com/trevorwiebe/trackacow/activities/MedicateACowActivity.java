@@ -74,6 +74,9 @@ public class MedicateACowActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicate_a_cow);
 
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mTagName = findViewById(R.id.tag_number);
@@ -275,6 +278,12 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 
     @Override

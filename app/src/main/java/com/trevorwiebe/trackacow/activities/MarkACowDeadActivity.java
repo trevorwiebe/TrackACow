@@ -48,6 +48,9 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_a_cow_dead);
 
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         String penId = getIntent().getStringExtra("penId");
 
         new QueryLotsByPenId(penId, this).execute(this);
@@ -106,6 +109,12 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 
     public void markAsDead(View view) {

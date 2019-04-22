@@ -161,37 +161,54 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="Drugs used"
+                        android:layout_marginBottom="8dp"
+                        android:text="Death loss"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
-                    <ProgressBar
-                        android:id="@+id/loading_reports"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp" />
-
                     <TextView
-                        android:id="@+id/no_drug_reports"
-                        android:layout_width="match_parent"
+                        android:id="@+id/reports_death_loss"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="No Reports"
+                        android:layout_marginBottom="8dp"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
+                        android:textSize="16sp" />
 
-                    <LinearLayout
-                        android:id="@+id/drugs_used_layout"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/reports_death_loss_percentage"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
-                    </LinearLayout>
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Head days"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/reports_head_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="342"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
 
                     <TextView
                         android:visibility="gone"
@@ -232,34 +249,78 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Death loss"
+                        android:text="Drugs used"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/reports_death_loss"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
+                    <ProgressBar
+                        android:id="@+id/loading_reports"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp" />
 
                     <TextView
-                        android:id="@+id/reports_death_loss_percentage"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/no_drug_reports"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:text="No Reports"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/drugs_used_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp" />
+
+            <RelativeLayout
+                android:background="?selectableItemBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="View cattle received"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:layout_margin="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_expand_more_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp" />
 
         </LinearLayout>
 
