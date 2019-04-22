@@ -64,6 +64,8 @@ public class LotReportActivity extends AppCompatActivity implements
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
+    private int mTotalHeadInt;
+    private String mLotId;
     private LotEntity mSelectedLotEntity;
     private int reportType;
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
@@ -71,6 +73,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
     private TextView mCustomerName;
     private TextView mTotalHead;
+    private TextView mCurrentHead;
     private TextView mDate;
     private TextView mNotes;
     private TextView mTotalDeathLoss;
@@ -110,12 +113,12 @@ public class LotReportActivity extends AppCompatActivity implements
         mFeedReports = findViewById(R.id.feed_reports);
         mCustomerName = findViewById(R.id.reports_customer_name);
         mTotalHead = findViewById(R.id.reports_total_head);
+        mCurrentHead = findViewById(R.id.reports_current_head);
         mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
         mViewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
         mViewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
         mViewLoadsOfCattle.setAdapter(cattleListAdapter);
-
 
     }
 
@@ -158,21 +161,6 @@ public class LotReportActivity extends AppCompatActivity implements
     public void onArchivedLotLoaded(ArchivedLotEntity archivedLotEntity) {
         mSelectedLotEntity = new LotEntity(archivedLotEntity);
         lotEntityLoaded(mSelectedLotEntity);
-    }
-
-    @Override
-    public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
-        int numberDead = cowEntities.size();
-        int total = mSelectedLotEntity.getTotalHead();
-
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        float percent = (numberDead * 100.f) / total;
-
-        String deadText = numberFormat.format(numberDead) + " dead";
-        String percentDeadText = decimalFormat.format(percent) + "%";
-        mTotalDeathLoss.setText(deadText);
-        mDeathLossPercentage.setText(percentDeadText);
-
     }
 
     @Override
@@ -238,6 +226,56 @@ public class LotReportActivity extends AppCompatActivity implements
 
             mDrugsUsedLayout.addView(textView);
         }
+
+    }
+
+    @Override
+    public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
+        int totalAmountFed = 0;
+        for (int y = 0; y < feedEntities.size(); y++) {
+            FeedEntity feedEntity = feedEntities.get(y);
+            int amountFed = feedEntity.getFeed();
+            totalAmountFed = totalAmountFed + amountFed;
+        }
+        String amountFedStr = numberFormat.format(totalAmountFed);
+        String amountFedText = amountFedStr + " lbs";
+        mFeedReports.setText(amountFedText);
+    }
+
+    @Override
+    public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
+        cattleListAdapter.setData(loadEntities);
+        mTotalHeadInt = 0;
+        for (int a = 0; a < loadEntities.size(); a++) {
+            LoadEntity loadEntity = loadEntities.get(a);
+            int numberOfHead = loadEntity.getNumberOfHead();
+            mTotalHeadInt = mTotalHeadInt + numberOfHead;
+        }
+        String totalHeadStr = numberFormat.format(mTotalHeadInt);
+        mTotalHead.setText(totalHeadStr);
+
+        ArrayList<String> lotIds = new ArrayList<>();
+        lotIds.add(mLotId);
+
+        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
+
+    }
+
+    @Override
+    public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
+        int numberDead = cowEntities.size();
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        float percent = (numberDead * 100.f) / mTotalHeadInt;
+
+        String deadText = numberFormat.format(numberDead) + " dead";
+        String percentDeadText = decimalFormat.format(percent) + "%";
+        mTotalDeathLoss.setText(deadText);
+        mDeathLossPercentage.setText(percentDeadText);
+
+        int currentHead = mTotalHeadInt - numberDead;
+        String currentHeadStr = numberFormat.format(currentHead);
+        mCurrentHead.setText(currentHeadStr);
 
     }
 
@@ -318,11 +356,9 @@ public class LotReportActivity extends AppCompatActivity implements
         if (lotEntity != null) {
             setTitle(lotEntity.getLotName());
             String customerName = lotEntity.getCustomerName();
-            String totalHead = Integer.toString(lotEntity.getTotalHead());
             String notes = lotEntity.getNotes();
             String date = Utility.convertMillisToDate(lotEntity.getDate());
             mCustomerName.setText(customerName);
-            mTotalHead.setText(totalHead);
             mDate.setText(date);
             mNotes.setText(notes);
         }
@@ -334,41 +370,12 @@ public class LotReportActivity extends AppCompatActivity implements
 
         new QueryAllDrugs(this).execute(this);
 
-        String lotId = lotEntity.getLotId();
+        mLotId = lotEntity.getLotId();
 
-        ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(lotId);
-
-        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
-        new QueryFeedsByLotId(lotId, this).execute(this);
-        new QueryLoadsByLotId(lotId, this).execute(this);
+        new QueryFeedsByLotId(mLotId, this).execute(this);
+        new QueryLoadsByLotId(mLotId, this).execute(this);
     }
 
-    @Override
-    public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
-        int totalAmountFed = 0;
-        for (int y = 0; y < feedEntities.size(); y++) {
-            FeedEntity feedEntity = feedEntities.get(y);
-            int amountFed = feedEntity.getFeed();
-            totalAmountFed = totalAmountFed + amountFed;
-        }
-        String amountFedStr = numberFormat.format(totalAmountFed);
-        String amountFedText = amountFedStr + " lbs";
-        mFeedReports.setText(amountFedText);
-    }
-
-    @Override
-    public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
-        cattleListAdapter.setData(loadEntities);
-        int totalHead = 0;
-        for (int a = 0; a < loadEntities.size(); a++) {
-            LoadEntity loadEntity = loadEntities.get(a);
-            int numberOfHead = loadEntity.getNumberOfHead();
-            totalHead = totalHead + numberOfHead;
-        }
-        String totalHeadStr = numberFormat.format(totalHead);
-        mTotalHead.setText(totalHeadStr);
-    }
 
     @Keep
     private class DrugReportsObject {

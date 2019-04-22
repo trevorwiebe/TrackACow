@@ -30,13 +30,11 @@ public class EditLotActivity extends AppCompatActivity implements
         QueryLotByLotId.OnLotByLotIdLoaded {
 
     private LotEntity mSelectedLot;
-    private NumberFormat formatter = NumberFormat.getNumberInstance(Locale.getDefault());
     private Calendar mCalendar = Calendar.getInstance();
     private DatePickerDialog.OnDateSetListener mDatePicker;
 
     private TextInputEditText mLotDescription;
     private TextInputEditText mCustomerName;
-    private TextInputEditText mTotalHead;
     private TextInputEditText mDate;
     private TextInputEditText mNotes;
 
@@ -54,7 +52,6 @@ public class EditLotActivity extends AppCompatActivity implements
 
         mLotDescription = findViewById(R.id.edit_lot_description);
         mCustomerName = findViewById(R.id.edit_customer_name);
-        mTotalHead = findViewById(R.id.edit_total_head);
         mDate = findViewById(R.id.edit_lot_date);
         mNotes = findViewById(R.id.edit_notes);
         Button updateBtn = findViewById(R.id.update_pen_btn);
@@ -91,19 +88,17 @@ public class EditLotActivity extends AppCompatActivity implements
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCustomerName.length() == 0 || mTotalHead.length() == 0){
+                if (mCustomerName.length() == 0) {
                     Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 }else{
 
                     String lotDescription = mLotDescription.getText().toString();
                     String customerName = mCustomerName.getText().toString();
-                    int totalHead = Integer.parseInt(mTotalHead.getText().toString());
                     long date = mCalendar.getTimeInMillis();
                     String notes = mNotes.getText().toString();
 
                     mSelectedLot.setLotName(lotDescription);
                     mSelectedLot.setCustomerName(customerName);
-                    mSelectedLot.setTotalHead(totalHead);
                     mSelectedLot.setDate(date);
                     mSelectedLot.setNotes(notes);
 
@@ -146,7 +141,6 @@ public class EditLotActivity extends AppCompatActivity implements
 
         mLotDescription.setText(mSelectedLot.getLotName());
         mCustomerName.setText(mSelectedLot.getCustomerName());
-        mTotalHead.setText(formatter.format(mSelectedLot.getTotalHead()));
         mDate.setText(date);
         mNotes.setText(mSelectedLot.getNotes());
 

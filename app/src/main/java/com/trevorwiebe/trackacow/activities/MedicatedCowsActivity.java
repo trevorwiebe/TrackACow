@@ -141,7 +141,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(lotName, id, customerName, 0, notes, date, mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(lotName, id, customerName, notes, date, mSelectedPen.getPenId());
 
                 String loadDescription = mLoadMemo.getText().toString();
                 DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();

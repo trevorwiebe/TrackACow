@@ -65,7 +65,6 @@ public class ArchivedLotEntity {
         this.lotName = lotEntity.getLotName();
         this.lotId = lotEntity.getLotId();
         this.customerName = lotEntity.getCustomerName();
-        this.totalHead = lotEntity.getTotalHead();
         this.notes = lotEntity.getNotes();
         this.dateStarted = lotEntity.getDate();
         this.dateEnded = dateEnded;

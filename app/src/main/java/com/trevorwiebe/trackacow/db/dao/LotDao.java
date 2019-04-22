@@ -31,8 +31,8 @@ public interface LotDao {
     @Update
     void updateLotEntity(LotEntity lotEntity);
 
-    @Query("UPDATE lot SET lotName = :lotName, customerName = :customerName, totalHead = :totalHead, date = :date, notes = :notes WHERE lotId = :lotId")
-    void updateLotByFields(String lotName, String customerName, int totalHead, String notes, long date, String lotId);
+    @Query("UPDATE lot SET lotName = :lotName, customerName = :customerName, date = :date, notes = :notes WHERE lotId = :lotId")
+    void updateLotByFields(String lotName, String customerName, String notes, long date, String lotId);
 
     @Query("UPDATE lot SET penId = :penId WHERE lotId = :lotId")
     void updateLotWithNewPenId(String lotId, String penId);

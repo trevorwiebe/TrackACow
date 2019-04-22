@@ -18,11 +18,10 @@ public class UpdateLot extends AsyncTask<Context, Void, Void> {
     protected Void doInBackground(Context... contexts) {
         String lotName = lotEntity.getLotName();
         String customerName = lotEntity.getCustomerName();
-        int totalHead = lotEntity.getTotalHead();
         String notes = lotEntity.getNotes();
         long date = lotEntity.getDate();
         String lotId = lotEntity.getLotId();
-        AppDatabase.getAppDatabase(contexts[0]).lotDao().updateLotByFields(lotName, customerName, totalHead, notes, date, lotId);
+        AppDatabase.getAppDatabase(contexts[0]).lotDao().updateLotByFields(lotName, customerName, notes, date, lotId);
         return null;
     }
 }

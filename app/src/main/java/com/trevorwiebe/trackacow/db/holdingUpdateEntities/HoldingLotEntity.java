@@ -25,9 +25,6 @@ public class HoldingLotEntity {
     @ColumnInfo(name = "customerName")
     private String customerName;
 
-    @ColumnInfo(name = "totalHead")
-    private int totalHead;
-
     @ColumnInfo(name = "notes")
     private String notes;
 
@@ -40,11 +37,10 @@ public class HoldingLotEntity {
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-    public HoldingLotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, long date, String penId, int whatHappened) {
+    public HoldingLotEntity(String lotName, String lotId, String customerName, String notes, long date, String penId, int whatHappened) {
         this.lotName = lotName;
         this.lotId = lotId;
         this.customerName = customerName;
-        this.totalHead = totalHead;
         this.notes = notes;
         this.date = date;
         this.penId = penId;
@@ -55,7 +51,6 @@ public class HoldingLotEntity {
         this.lotName = lotEntity.getLotName();
         this.lotId = lotEntity.getLotId();
         this.customerName = lotEntity.getCustomerName();
-        this.totalHead = lotEntity.getTotalHead();
         this.notes = lotEntity.getNotes();
         this.date = lotEntity.getDate();
         this.penId = lotEntity.getPenId();
@@ -96,14 +91,6 @@ public class HoldingLotEntity {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
-    }
-
-    public int getTotalHead() {
-        return totalHead;
-    }
-
-    public void setTotalHead(int totalHead) {
-        this.totalHead = totalHead;
     }
 
     public String getNotes() {
