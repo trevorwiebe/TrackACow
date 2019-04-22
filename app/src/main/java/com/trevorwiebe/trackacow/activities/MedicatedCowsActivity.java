@@ -29,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.MedicatedCowsRecyclerViewAdapter;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
+import com.trevorwiebe.trackacow.dataLoaders.InsertLoadEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
@@ -39,8 +41,10 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryPenById;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
@@ -72,7 +76,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private boolean mIsActive = false;
     private boolean shouldShowCouldntFindTag;
     private Calendar mCalendar = Calendar.getInstance();
+    private Calendar mLoadCalender = Calendar.getInstance();
     private DatePickerDialog.OnDateSetListener mDatePicker;
+    private DatePickerDialog.OnDateSetListener mLoadDatePicker;
 
     private TextView mNoMedicatedCows;
     private SearchView mSearchView;
@@ -82,11 +88,16 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private FloatingActionsMenu mMedicateACowFabMenu;
     private Button mMarkAsActive;
     private ScrollView mPenIdleLayout;
+
     private TextInputEditText mLotName;
     private TextInputEditText mCustomerName;
-    private TextInputEditText mTotalCount;
     private TextInputEditText mDate;
     private TextInputEditText mNotes;
+
+    private TextInputEditText mTotalCount;
+    private TextInputEditText mLoadDate;
+    private TextInputEditText mLoadMemo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +109,19 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mResultsNotFound = findViewById(R.id.result_not_found);
         mMarkAsActive = findViewById(R.id.mark_as_active);
         mPenIdleLayout = findViewById(R.id.pen_idle);
+
         mLotName = findViewById(R.id.lot_name);
         mCustomerName = findViewById(R.id.customer_name);
-        mTotalCount = findViewById(R.id.total_head);
         mDate = findViewById(R.id.lot_date);
         mNotes = findViewById(R.id.lot_memo);
 
+        mTotalCount = findViewById(R.id.first_load_head_count);
+        mLoadDate = findViewById(R.id.first_load_date);
+        mLoadMemo = findViewById(R.id.first_load_memo);
+
         String todayDate = Utility.convertMillisToDate(System.currentTimeMillis());
         mDate.setText(todayDate);
+        mLoadDate.setText(todayDate);
 
         mMarkAsActive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,21 +139,29 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(lotName, id, customerName, 0, notes, date, mSelectedPen.getPenId());
+
+                String loadDescription = mLoadMemo.getText().toString();
+                DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();
+                String loadId = loadPushRef.getKey();
+                LoadEntity loadEntity = new LoadEntity(totalHead, date, loadDescription, id, loadId);
 
                 if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
                     lotPushRef.setValue(lotEntity);
+                    loadPushRef.setValue(loadEntity);
                 } else {
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotName, id, customerName, totalHead, notes, date, mSelectedPen.getPenId(), Constants.INSERT_UPDATE);
-
+                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotEntity, Constants.INSERT_UPDATE);
                     new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
 
+                    HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                    new InsertHoldingLoad(holdingLoadEntity).execute(MedicatedCowsActivity.this);
                 }
 
                 new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);
+                new InsertLoadEntity(loadEntity).execute(MedicatedCowsActivity.this);
 
                 mNoMedicatedCows.setVisibility(View.VISIBLE);
                 setActive();
@@ -188,6 +212,17 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                         .show();
             }
         });
+        mLoadDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MedicatedCowsActivity.this,
+                        mLoadDatePicker,
+                        mLoadCalender.get(Calendar.YEAR),
+                        mLoadCalender.get(Calendar.MONTH),
+                        mLoadCalender.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
 
         mDatePicker = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -196,6 +231,15 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 mCalendar.set(Calendar.MONTH, month);
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
+            }
+        };
+        mLoadDatePicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                mLoadCalender.set(Calendar.YEAR, year);
+                mLoadCalender.set(Calendar.MONTH, month);
+                mLoadCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mLoadDate.setText(Utility.convertMillisToDate(mLoadCalender.getTimeInMillis()));
             }
         };
 

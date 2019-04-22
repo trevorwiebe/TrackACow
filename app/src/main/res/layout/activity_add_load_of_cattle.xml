@@ -59,6 +59,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="top"
+                android:id="@+id/load_memo"
                 android:hint="Memo"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textSize="16sp" />
