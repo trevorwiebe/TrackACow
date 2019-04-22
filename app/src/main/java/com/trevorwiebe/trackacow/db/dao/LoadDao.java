@@ -16,6 +16,9 @@ public interface LoadDao {
     @Insert
     void insertLoad(LoadEntity loadEntity);
 
+    @Insert
+    void insertLoadList(List<LoadEntity> loadEntities);
+
     @Query("SELECT * FROM load WHERE lotId = :lotId")
     List<LoadEntity> getLoadsByLotId(String lotId);
 
@@ -24,5 +27,8 @@ public interface LoadDao {
 
     @Delete
     void deleteLoad(LoadEntity loadEntity);
+
+    @Query("DELETE FROM load")
+    void deleteLoadTable();
 
 }

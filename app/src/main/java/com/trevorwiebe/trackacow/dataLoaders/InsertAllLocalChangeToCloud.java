@@ -14,6 +14,7 @@ import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
@@ -21,6 +22,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEnti
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
@@ -166,6 +168,23 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
         }
         db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
 
+        List<HoldingLoadEntity> holdingLoadEntities = db.holdingLoadDao().getHoldingLoadList();
+        for (int h = 0; h < holdingLoadEntities.size(); h++) {
+
+            HoldingLoadEntity holdingLoadEntity = holdingLoadEntities.get(h);
+
+            LoadEntity loadEntity = new LoadEntity(holdingLoadEntity);
+            switch (holdingLoadEntity.getWhatHappened()) {
+                case Constants.INSERT_UPDATE:
+                    baseRef.child(LoadEntity.LOAD).child(loadEntity.getLoadId()).setValue(loadEntity);
+                    break;
+                case Constants.DELETE:
+                    baseRef.child(LoadEntity.LOAD).child(loadEntity.getLoadId()).removeValue();
+                    break;
+            }
+        }
+        db.holdingLoadDao().deleteHoldingLoadTable();
+
         List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();
         Log.d(TAG, "doInBackground: " + holdingUserEntities.size());
         for (int g = 0; g < holdingUserEntities.size(); g++) {
@@ -184,7 +203,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                     break;
             }
         }
-//        db.holdingUserDao().deleteHoldingUserTable();
+        db.holdingUserDao().deleteHoldingUserTable();
 
         return Constants.SUCCESS;
     }

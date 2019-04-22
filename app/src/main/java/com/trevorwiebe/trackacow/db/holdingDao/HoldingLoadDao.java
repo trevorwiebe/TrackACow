@@ -25,4 +25,7 @@ public interface HoldingLoadDao {
     @Delete
     void deleteHoldingLoad(HoldingLoadEntity holdingLoadEntity);
 
+    @Query("DELETE FROM holdingLoad")
+    void deleteHoldingLoadTable();
+
 }

@@ -14,6 +14,7 @@ import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
@@ -32,6 +33,7 @@ public class QueryAllCloudData {
     private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
     private ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
     private ArrayList<ArchivedLotEntity> mArchivedLotList = new ArrayList<>();
+    private ArrayList<LoadEntity> mLoadList = new ArrayList<>();
 
     public OnAllCloudDataLoaded onAllCloudDataLoaded;
 
@@ -40,7 +42,7 @@ public class QueryAllCloudData {
     }
 
     public interface OnAllCloudDataLoaded {
-        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities);
+        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities);
     }
 
     public void loadCloudData() {
@@ -99,23 +101,30 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
+                            case LoadEntity.LOAD:
+                                for (DataSnapshot loadSnapShot : snapshot.getChildren()) {
+                                    LoadEntity loadEntity = loadSnapShot.getValue(LoadEntity.class);
+                                    if (loadEntity != null) {
+                                        mLoadList.add(loadEntity);
+                                    }
+                                }
                             case UserEntity.USER:
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key " + key);
-                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
+                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList);
                                 break;
                         }
                     }
                 }
 
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList);
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList);
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList);
             }
         });
 
