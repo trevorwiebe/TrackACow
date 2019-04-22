@@ -52,7 +52,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Notes"
+                    android:text="Memo"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
@@ -272,6 +272,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
                         android:text="Drugs used"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -313,9 +314,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
                 android:text="Cattle received"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
