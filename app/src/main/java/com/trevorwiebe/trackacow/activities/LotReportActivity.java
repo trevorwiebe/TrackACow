@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.adapters.ViewCattleListAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertArchivedLotEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingArchivedLot;
@@ -31,12 +34,14 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLotsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.dataLoaders.QueryFeedsByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLoadsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
+import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
@@ -54,13 +59,15 @@ public class LotReportActivity extends AppCompatActivity implements
         QueryDeadCowsByLotIds.OnDeadCowsLoaded,
         QueryLotByLotId.OnLotByLotIdLoaded,
         QueryArchivedLotsByLotId.OnArchivedLotLoaded,
-        QueryFeedsByLotId.OnFeedsByLotIdReturned {
+        QueryFeedsByLotId.OnFeedsByLotIdReturned,
+        QueryLoadsByLotId.OnLoadsByLotIdLoaded {
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private LotEntity mSelectedLotEntity;
     private int reportType;
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+    private ViewCattleListAdapter cattleListAdapter = new ViewCattleListAdapter();
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -72,6 +79,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
+    private RecyclerView mViewLoadsOfCattle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +93,6 @@ public class LotReportActivity extends AppCompatActivity implements
             new QueryLotByLotId(lotId, this).execute(this);
         } else if (reportType == Constants.ARCHIVE) {
             new QueryArchivedLotsByLotId(lotId, this).execute(this);
-        } else {
-
         }
 
         mLoadingReports = findViewById(R.id.loading_reports);
@@ -106,6 +112,10 @@ public class LotReportActivity extends AppCompatActivity implements
         mTotalHead = findViewById(R.id.reports_total_head);
         mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
+        mViewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
+        mViewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
+        mViewLoadsOfCattle.setAdapter(cattleListAdapter);
+
 
     }
 
@@ -141,40 +151,15 @@ public class LotReportActivity extends AppCompatActivity implements
     @Override
     public void onLotByLotIdLoaded(LotEntity lotEntity) {
         mSelectedLotEntity = lotEntity;
-
-        updateUIWithPenInfo(lotEntity);
-
-        new QueryAllDrugs(this).execute(this);
-
-        String lotId = mSelectedLotEntity.getLotId();
-
-        ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(lotId);
-
-        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
-
-        new QueryFeedsByLotId(lotId, this).execute(this);
+        lotEntityLoaded(mSelectedLotEntity);
     }
 
     @Override
     public void onArchivedLotLoaded(ArchivedLotEntity archivedLotEntity) {
-
         mSelectedLotEntity = new LotEntity(archivedLotEntity);
-
-        updateUIWithPenInfo(mSelectedLotEntity);
-
-        new QueryAllDrugs(this).execute(this);
-
-        String lotId = mSelectedLotEntity.getLotId();
-
-        ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(lotId);
-
-        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
-
-        new QueryFeedsByLotId(lotId, this).execute(this);
-
+        lotEntityLoaded(mSelectedLotEntity);
     }
+
     @Override
     public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
         int numberDead = cowEntities.size();
@@ -343,6 +328,22 @@ public class LotReportActivity extends AppCompatActivity implements
         }
     }
 
+    private void lotEntityLoaded(LotEntity lotEntity) {
+
+        updateUIWithPenInfo(lotEntity);
+
+        new QueryAllDrugs(this).execute(this);
+
+        String lotId = lotEntity.getLotId();
+
+        ArrayList<String> lotIds = new ArrayList<>();
+        lotIds.add(lotId);
+
+        new QueryDeadCowsByLotIds(this, lotIds).execute(this);
+        new QueryFeedsByLotId(lotId, this).execute(this);
+        new QueryLoadsByLotId(lotId, this).execute(this);
+    }
+
     @Override
     public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
         int totalAmountFed = 0;
@@ -354,6 +355,19 @@ public class LotReportActivity extends AppCompatActivity implements
         String amountFedStr = numberFormat.format(totalAmountFed);
         String amountFedText = amountFedStr + " lbs";
         mFeedReports.setText(amountFedText);
+    }
+
+    @Override
+    public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
+        cattleListAdapter.setData(loadEntities);
+        int totalHead = 0;
+        for (int a = 0; a < loadEntities.size(); a++) {
+            LoadEntity loadEntity = loadEntities.get(a);
+            int numberOfHead = loadEntity.getNumberOfHead();
+            totalHead = totalHead + numberOfHead;
+        }
+        String totalHeadStr = numberFormat.format(totalHead);
+        mTotalHead.setText(totalHeadStr);
     }
 
     @Keep

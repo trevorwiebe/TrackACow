@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,16 +11,16 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:weightSum="2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <LinearLayout
-                android:layout_weight="1"
-                android:orientation="vertical"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/Base.TextAppearance.AppCompat.Button"
@@ -69,10 +69,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="1"
-                android:orientation="vertical"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/Base.TextAppearance.AppCompat.Button"
@@ -125,34 +125,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:background="@color/lightGray"
             android:orientation="vertical"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:layout_marginBottom="16dp">
+            android:paddingBottom="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:layout_margin="16dp"
+                android:gravity="center_horizontal"
                 android:text="Lot Reports"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:weightSum="2">
 
                 <LinearLayout
-                    android:layout_weight="1"
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/Base.TextAppearance.AppCompat.Button"
@@ -211,7 +211,6 @@
 
 
                     <TextView
-                        android:visibility="gone"
                         style="@style/Base.TextAppearance.AppCompat.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -221,10 +220,10 @@
                         android:layout_marginBottom="8dp"
                         android:text="Feed"
                         android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/feed_reports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,15 +231,16 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_weight="1"
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/Base.TextAppearance.AppCompat.Button"
@@ -257,10 +257,10 @@
                         android:id="@+id/loading_reports"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
                         android:id="@+id/no_drug_reports"
@@ -285,42 +285,24 @@
 
             </LinearLayout>
 
-            <View
-                android:background="@android:color/darker_gray"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp" />
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Cattle received"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
 
-            <RelativeLayout
-                android:background="?selectableItemBackground"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/view_loads_of_cattle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="View cattle received"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp" />
-
-                <ImageButton
-                    android:layout_margin="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/ic_expand_more_black_24dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-            <View
-                android:background="@android:color/darker_gray"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp" />
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
 
@@ -340,4 +322,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>
