@@ -80,12 +80,13 @@
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/edit_notes"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:hint="Notes"
-                    android:inputType="textCapSentences"
+                    android:gravity="top"
+                    android:hint="Memo"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:textSize="16sp" />
 
             </android.support.design.widget.TextInputLayout>
