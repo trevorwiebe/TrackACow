@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +19,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +52,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class LotReportActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
@@ -62,6 +63,8 @@ public class LotReportActivity extends AppCompatActivity implements
         QueryFeedsByLotId.OnFeedsByLotIdReturned,
         QueryLoadsByLotId.OnLoadsByLotIdLoaded {
 
+    private static final String TAG = "LotReportActivity";
+
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private int mTotalHeadInt;
@@ -70,6 +73,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private int reportType;
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
     private ViewCattleListAdapter cattleListAdapter = new ViewCattleListAdapter();
+    private int mCurrentHeadDays;
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -82,6 +86,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
+    private TextView mHeadDays;
     private RecyclerView mViewLoadsOfCattle;
 
     @Override
@@ -116,6 +121,7 @@ public class LotReportActivity extends AppCompatActivity implements
         mCurrentHead = findViewById(R.id.reports_current_head);
         mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
+        mHeadDays = findViewById(R.id.reports_head_days);
         mViewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
         mViewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
         mViewLoadsOfCattle.setAdapter(cattleListAdapter);
@@ -246,11 +252,17 @@ public class LotReportActivity extends AppCompatActivity implements
     public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
         cattleListAdapter.setData(loadEntities);
         mTotalHeadInt = 0;
+        mCurrentHeadDays = 0;
         for (int a = 0; a < loadEntities.size(); a++) {
             LoadEntity loadEntity = loadEntities.get(a);
             int numberOfHead = loadEntity.getNumberOfHead();
             mTotalHeadInt = mTotalHeadInt + numberOfHead;
+
+            int daysHadLoad = getDaysSinceFromMillis(loadEntity.getDate(), false);
+            int thisLoadsHeadDays = daysHadLoad * numberOfHead;
+            mCurrentHeadDays = mCurrentHeadDays + thisLoadsHeadDays;
         }
+
         String totalHeadStr = numberFormat.format(mTotalHeadInt);
         mTotalHead.setText(totalHeadStr);
 
@@ -263,6 +275,19 @@ public class LotReportActivity extends AppCompatActivity implements
 
     @Override
     public void onDeadCowsLoaded(ArrayList<CowEntity> cowEntities) {
+
+        int numberOfHeadDaysToSubtract = 0;
+        for (int r = 0; r < cowEntities.size(); r++) {
+            CowEntity cowEntity = cowEntities.get(r);
+            int daysSinceDied = getDaysSinceFromMillis(cowEntity.date, true);
+            numberOfHeadDaysToSubtract = numberOfHeadDaysToSubtract + daysSinceDied;
+        }
+
+        int currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract;
+
+        String headDaysStr = numberFormat.format(currentHeadDays);
+        mHeadDays.setText(headDaysStr);
+
         int numberDead = cowEntities.size();
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -374,6 +399,18 @@ public class LotReportActivity extends AppCompatActivity implements
 
         new QueryFeedsByLotId(mLotId, this).execute(this);
         new QueryLoadsByLotId(mLotId, this).execute(this);
+    }
+
+    private int getDaysSinceFromMillis(long startDate, boolean isCowDead) {
+        long millisInOnDay = TimeUnit.DAYS.toMillis(1);
+        long currentTime = System.currentTimeMillis();
+        long timeElapsed = currentTime - startDate;
+        if (timeElapsed < millisInOnDay) {
+            return 1;
+        } else {
+            long daysElapsed = timeElapsed / millisInOnDay;
+            return (int) daysElapsed + 1;
+        }
     }
 
 

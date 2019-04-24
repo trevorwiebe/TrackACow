@@ -141,6 +141,50 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
+                        android:text="Current head"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/reports_current_head"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Total head"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/reports_total_head"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
                         android:text="Death loss"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -164,30 +208,6 @@
                         android:layout_marginBottom="16dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Head days"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/reports_head_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="342"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp" />
-
 
                     <TextView
                         style="@style/Base.TextAppearance.AppCompat.Button"
@@ -229,34 +249,12 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Current head"
+                        android:text="Head days"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/reports_current_head"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Total head"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/reports_total_head"
+                        android:id="@+id/reports_head_days"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
