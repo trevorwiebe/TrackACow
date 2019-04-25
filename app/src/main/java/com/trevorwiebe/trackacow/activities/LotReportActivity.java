@@ -132,11 +132,13 @@ public class LotReportActivity extends AppCompatActivity implements
         viewLoadsOfCattle.addOnItemTouchListener(new ItemClickListener(this, viewLoadsOfCattle, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                LoadEntity loadEntity = mLoadEntities.get(position);
-                String loadId = loadEntity.getLoadId();
-                Intent editLoadIntent = new Intent(LotReportActivity.this, EditLoadActivity.class);
-                editLoadIntent.putExtra("loadId", loadId);
-                startActivityForResult(editLoadIntent, EDIT_LOAD_CODE);
+                if (reportType == Constants.LOT) {
+                    LoadEntity loadEntity = mLoadEntities.get(position);
+                    String loadId = loadEntity.getLoadId();
+                    Intent editLoadIntent = new Intent(LotReportActivity.this, EditLoadActivity.class);
+                    editLoadIntent.putExtra("loadId", loadId);
+                    startActivityForResult(editLoadIntent, EDIT_LOAD_CODE);
+                }
             }
 
             @Override
@@ -344,7 +346,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
             AlertDialog.Builder lotArchived = new AlertDialog.Builder(LotReportActivity.this);
             lotArchived.setTitle("Are you sure you want to archive lot?");
-            lotArchived.setMessage("This action cannot be undone.  You will be able to view this lot's reports under Archives.");
+            lotArchived.setMessage("This action cannot be undone.  You will not be able to edit these reports after they are archived.  You will be able to view this lot's reports under Archives.");
             lotArchived.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
