@@ -22,6 +22,12 @@ public interface LoadDao {
     @Query("SELECT * FROM load WHERE lotId = :lotId")
     List<LoadEntity> getLoadsByLotId(String lotId);
 
+    @Query("SELECT * FROM load WHERE loadId = :loadId")
+    LoadEntity getLoadByLoadId(String loadId);
+
+    @Query("UPDATE load SET numberOfHead = :headCount, date = :date, description = :memo WHERE loadId = :loadId")
+    void updateLoadByFields(int headCount, long date, String memo, String loadId);
+
     @Update
     void updateLoad(LoadEntity loadEntity);
 

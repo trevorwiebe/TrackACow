@@ -19,25 +19,25 @@ public class CowEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    public int primaryKey;
+    private int primaryKey;
 
     @ColumnInfo(name = "isAlive")
-    public int isAlive;
+    private int isAlive;
 
     @ColumnInfo(name = "cowId")
-    public String cowId;
+    private String cowId;
 
     @ColumnInfo(name = "tagNumber")
-    public int tagNumber;
+    private int tagNumber;
 
     @ColumnInfo(name = "date")
-    public long date;
+    private long date;
 
     @ColumnInfo(name = "notes")
-    public String notes;
+    private String notes;
 
     @ColumnInfo(name = "lotId")
-    public String lotId;
+    private String lotId;
 
     public CowEntity(int isAlive, String cowId, int tagNumber, long date, String notes, String lotId) {
         this.isAlive = isAlive;

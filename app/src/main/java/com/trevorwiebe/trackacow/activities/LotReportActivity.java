@@ -46,6 +46,7 @@ import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
+import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.text.DecimalFormat;
@@ -67,6 +68,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
+    private static final int EDIT_LOAD_CODE = 472;
     private int mTotalHeadInt;
     private String mLotId;
     private LotEntity mSelectedLotEntity;
@@ -74,6 +76,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
     private ViewCattleListAdapter cattleListAdapter = new ViewCattleListAdapter();
     private int mCurrentHeadDays;
+    private ArrayList<LoadEntity> mLoadEntities = new ArrayList<>();
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -125,6 +128,21 @@ public class LotReportActivity extends AppCompatActivity implements
         mViewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
         mViewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
         mViewLoadsOfCattle.setAdapter(cattleListAdapter);
+        mViewLoadsOfCattle.addOnItemTouchListener(new ItemClickListener(this, mViewLoadsOfCattle, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                LoadEntity loadEntity = mLoadEntities.get(position);
+                String loadId = loadEntity.getLoadId();
+                Intent editLoadIntent = new Intent(LotReportActivity.this, EditLoadActivity.class);
+                editLoadIntent.putExtra("loadId", loadId);
+                startActivityForResult(editLoadIntent, EDIT_LOAD_CODE);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
     }
 
@@ -152,7 +170,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == EDIT_PEN_CODE && resultCode == RESULT_OK) {
+        if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE) && resultCode == RESULT_OK) {
             new QueryLotByLotId(mSelectedLotEntity.getLotId(), LotReportActivity.this).execute(LotReportActivity.this);
         }
     }
@@ -250,15 +268,18 @@ public class LotReportActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
-        cattleListAdapter.setData(loadEntities);
+
+        mLoadEntities = loadEntities;
+        cattleListAdapter.setData(mLoadEntities);
         mTotalHeadInt = 0;
         mCurrentHeadDays = 0;
-        for (int a = 0; a < loadEntities.size(); a++) {
-            LoadEntity loadEntity = loadEntities.get(a);
+
+        for (int a = 0; a < mLoadEntities.size(); a++) {
+            LoadEntity loadEntity = mLoadEntities.get(a);
             int numberOfHead = loadEntity.getNumberOfHead();
             mTotalHeadInt = mTotalHeadInt + numberOfHead;
 
-            int daysHadLoad = getDaysSinceFromMillis(loadEntity.getDate(), false);
+            int daysHadLoad = getDaysSinceFromMillis(loadEntity.getDate());
             int thisLoadsHeadDays = daysHadLoad * numberOfHead;
             mCurrentHeadDays = mCurrentHeadDays + thisLoadsHeadDays;
         }
@@ -279,7 +300,7 @@ public class LotReportActivity extends AppCompatActivity implements
         int numberOfHeadDaysToSubtract = 0;
         for (int r = 0; r < cowEntities.size(); r++) {
             CowEntity cowEntity = cowEntities.get(r);
-            int daysSinceDied = getDaysSinceFromMillis(cowEntity.date, true);
+            int daysSinceDied = getDaysSinceFromMillis(cowEntity.getDate());
             numberOfHeadDaysToSubtract = numberOfHeadDaysToSubtract + daysSinceDied;
         }
 
@@ -401,11 +422,16 @@ public class LotReportActivity extends AppCompatActivity implements
         new QueryLoadsByLotId(mLotId, this).execute(this);
     }
 
-    private int getDaysSinceFromMillis(long startDate, boolean isCowDead) {
+    private int getDaysSinceFromMillis(long startDate) {
         long millisInOnDay = TimeUnit.DAYS.toMillis(1);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - startDate;
-        if (timeElapsed < millisInOnDay) {
+        Log.d(TAG, "getDaysSinceFromMillis: millisInOneDay " + millisInOnDay);
+        Log.d(TAG, "getDaysSinceFromMillis: currentTime " + currentTime);
+        Log.d(TAG, "getDaysSinceFromMillis: timeElapsed " + timeElapsed);
+        if (timeElapsed < 0) {
+            return 0;
+        } else if (millisInOnDay >= timeElapsed) {
             return 1;
         } else {
             long daysElapsed = timeElapsed / millisInOnDay;

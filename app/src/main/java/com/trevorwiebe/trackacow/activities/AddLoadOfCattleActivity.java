@@ -80,6 +80,12 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
                 DatabaseReference loadPushRef = Constants.BASE_REFERENCE.child(LoadEntity.LOAD).push();
 
                 int totalHead = Integer.parseInt(mHeadCount.getText().toString());
+
+                mCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                mCalendar.set(Calendar.MINUTE, 0);
+                mCalendar.set(Calendar.SECOND, 0);
+                mCalendar.set(Calendar.MILLISECOND, 0);
+
                 long longDate = mCalendar.getTimeInMillis();
                 String loadDescription = mMemo.getText().toString();
                 String loadId = loadPushRef.getKey();
