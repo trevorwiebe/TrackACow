@@ -2,8 +2,11 @@ package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Keep;
+
+import com.trevorwiebe.trackacow.db.entities.CowEntity;
 
 @Keep
 @Entity(tableName = "HoldingCow")
@@ -11,30 +14,41 @@ public class HoldingCowEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
-    public int primaryKey;
+    private int primaryKey;
 
     @ColumnInfo(name = "isAlive")
-    public int isAlive;
+    private int isAlive;
 
     @ColumnInfo(name = "cowId")
-    public String cowId;
+    private String cowId;
 
     @ColumnInfo(name = "tagNumber")
-    public int tagNumber;
+    private int tagNumber;
 
     @ColumnInfo(name = "date")
-    public long date;
+    private long date;
 
     @ColumnInfo(name = "notes")
-    public String notes;
+    private String notes;
 
     @ColumnInfo(name = "lotId")
-    public String lotId;
+    private String lotId;
 
     @ColumnInfo(name = "whatHappened")
-    public int whatHappened;
+    private int whatHappened;
 
     public HoldingCowEntity(){}
+
+    @Ignore
+    public HoldingCowEntity(CowEntity cowEntity, int whatHappened) {
+        this.isAlive = cowEntity.getIsAlive();
+        this.cowId = cowEntity.getCowId();
+        this.tagNumber = cowEntity.getTagNumber();
+        this.date = cowEntity.getDate();
+        this.notes = cowEntity.getNotes();
+        this.lotId = cowEntity.getLotId();
+        this.whatHappened = whatHappened;
+    }
 
     public int getPrimaryKey() {
         return primaryKey;

@@ -237,7 +237,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                                 } else {
                                     AlertDialog.Builder lotOfCowsInThisPen = new AlertDialog.Builder(ManagePensActivity.this);
                                     lotOfCowsInThisPen.setTitle("There are cows in this pen");
-                                    lotOfCowsInThisPen.setMessage("You can't delete this pen when there are still cows in it.  Move the cows to continue with deletion.");
+                                    lotOfCowsInThisPen.setMessage("You can't delete this pen when there are still cows in it.  Move or archive the lot of cows to continue with deletion.");
                                     lotOfCowsInThisPen.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {

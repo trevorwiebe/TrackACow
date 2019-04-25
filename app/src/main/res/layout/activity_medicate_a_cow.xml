@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_scroll_view"
     tools:context=".activities.MedicateACowActivity">
 
     <LinearLayout
@@ -54,6 +55,7 @@
                             android:text="View"
                             style="?buttonBarButtonStyle"
                             android:textStyle="bold"
+                            android:layout_marginTop="3dp"
                             android:textColor="@android:color/white"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -87,6 +89,10 @@
                     android:id="@+id/tag_number"
                     android:hint="Tag number"
                     android:textSize="16sp"
+                    android:nextFocusLeft="@+id/save_medicated_cow"
+                    android:nextFocusRight="@+id/save_medicated_cow"
+                    android:nextFocusUp="@+id/save_medicated_cow"
+                    android:nextFocusDown="@id/save_medicated_cow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -101,12 +107,13 @@
                 android:layout_marginBottom="16dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:inputType="textCapSentences"
                     android:id="@+id/notes"
-                    android:hint="Notes"
-                    android:textSize="16sp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent"
+                    android:gravity="top"
+                    android:hint="Memo"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:textSize="16sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -117,6 +124,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:text="Drugs"
             android:textSize="18sp"
             android:textColor="@android:color/black"

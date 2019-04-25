@@ -3,7 +3,9 @@ package com.trevorwiebe.trackacow.activities;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,40 +85,43 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                 for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
                     DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                    drugsGivenEntity.setCowId(mCowId);
+                    drugsGivenEntity.setCowId(mCowEntity.getCowId());
 
-                    View linearLayout = mDrugLayout.getChildAt(r);
+                    View cardView = mDrugLayout.getChildAt(r);
 
-                    if (linearLayout instanceof LinearLayout) {
+                    if (cardView instanceof CardView) {
 
-                        LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
+                        View linearLayout = ((CardView) cardView).getChildAt(0);
 
-                        View checkBoxView = confirmedLinearLayout.getChildAt(0);
-                        if (checkBoxView instanceof CheckBox) {
+                        if (linearLayout instanceof LinearLayout) {
 
-                            CheckBox checkBox = (CheckBox) checkBoxView;
-                            drugsGivenEntity.setDrugId(checkBox.getTag().toString());
-                            if (checkBox.isChecked()) {
+                            LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
 
-                                View editText = confirmedLinearLayout.getChildAt(1);
+                            View checkBoxView = confirmedLinearLayout.getChildAt(0);
+                            if (checkBoxView instanceof CheckBox) {
 
-                                if (editText instanceof EditText) {
+                                CheckBox checkBox = (CheckBox) checkBoxView;
+                                String drugId = checkBox.getTag().toString().split("_")[0];
+                                drugsGivenEntity.setDrugId(drugId);
 
-                                    EditText textViewAmountGiven = (EditText) editText;
-                                    int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                    drugsGivenEntity.setAmountGiven(amountGiven);
+                                if (checkBox.isChecked()) {
 
-                                    DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
-                                    String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setLotId(mCowEntity.getLotId());
-                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+                                    View editText = confirmedLinearLayout.getChildAt(2);
 
-                                    if (Utility.haveNetworkConnection(AddDrugsGivenToSpecificCowActivity.this)) {
-                                        drugsGivenPushRef.setValue(drugsGivenEntity);
+                                    if (editText instanceof EditText) {
+
+                                        EditText textViewAmountGiven = (EditText) editText;
+                                        int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
+                                        drugsGivenEntity.setAmountGiven(amountGiven);
+
+                                        DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                        String drugsGivenKey = drugsGivenPushRef.getKey();
+                                        drugsGivenEntity.setLotId(mCowEntity.getLotId());
+                                        drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+
+                                        drugList.add(drugsGivenEntity);
+
                                     }
-
-                                    drugList.add(drugsGivenEntity);
-
                                 }
                             }
                         }
@@ -197,6 +202,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
     }
 
     private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity) {
+
         String drugName = drugEntity.getDrugName();
         String drugId = drugEntity.getDrugId();
         int defaultAmount = drugEntity.getDefaultAmount();
@@ -207,14 +213,26 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
         int pixels16 = (int) (16 * scale + 0.5f);
         int pixels8 = (int) (8 * scale + 0.5f);
 
+        CardView cardView = new CardView(this);
+        LinearLayout.LayoutParams cardViewParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        cardViewParams.setMargins(pixels8, pixels8, pixels8, pixels8);
+        cardView.setLayoutParams(cardViewParams);
+        cardView.setTag(drugId + "_cardView");
+        cardView.setOnClickListener(cardViewClickListener);
 
         LinearLayout containerLayout = new LinearLayout(this);
         LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
+        containerLayout.setTag(drugId + "_linearLayout");
         containerLayout.setOrientation(LinearLayout.HORIZONTAL);
         containerLayout.setLayoutParams(containerParams);
+
+        cardView.addView(containerLayout);
 
         CheckBox checkBox = new CheckBox(this);
         checkBox.setText(drugName);
@@ -223,27 +241,71 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        checkBoxParams.setMargins(pixels16, pixels24, pixels16, pixels8);
+        checkBoxParams.setMargins(pixels24, pixels8, pixels24, pixels8);
+        checkBox.setTag(drugId + "_checkBox");
+        checkBox.setOnCheckedChangeListener(checkedChangeListener);
         checkBox.setLayoutParams(checkBoxParams);
+
+        View view = new View(this);
+        LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(
+                0,
+                0,
+                1
+        );
+        view.setLayoutParams(viewParams);
 
         EditText editText = new EditText(this);
         LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        editTextParams.setMargins(pixels16, pixels24, pixels16, pixels8);
+        editTextParams.setMargins(pixels24, pixels8, pixels24, pixels8);
         editText.setEms(4);
         editText.setGravity(Gravity.CENTER);
         editText.setTag(drugId + "_editText");
         editText.setText(defaultAmountStr);
+        editText.setSelectAllOnFocus(true);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
         containerLayout.addView(checkBox);
+        containerLayout.addView(view);
         containerLayout.addView(editText);
 
-        linearLayout.addView(containerLayout);
+        linearLayout.addView(cardView);
     }
+
+    View.OnClickListener cardViewClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String cardViewTag = v.getTag().toString();
+            String drugId = cardViewTag.split("_")[0];
+
+            LinearLayout linearLayout = v.findViewWithTag(drugId + "_linearLayout");
+            CheckBox checkBox = linearLayout.findViewWithTag(drugId + "_checkBox");
+            if (checkBox.isChecked()) {
+                checkBox.setChecked(false);
+                v.setBackgroundColor(getResources().getColor(android.R.color.white));
+            } else {
+                checkBox.setChecked(true);
+                v.setBackgroundColor(getResources().getColor(R.color.colorAccentVeryLight));
+            }
+        }
+    };
+
+    CheckBox.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            LinearLayout linearLayout = (LinearLayout) buttonView.getParent();
+            CardView cardView = (CardView) linearLayout.getParent();
+            if (isChecked) {
+                cardView.setBackgroundColor(getResources().getColor(R.color.colorAccentVeryLight));
+            } else {
+                cardView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+        }
+    };
+
 
     private CompoundButton.OnCheckedChangeListener checkBoxListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
