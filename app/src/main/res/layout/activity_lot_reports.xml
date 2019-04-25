@@ -324,6 +324,16 @@
 
             </android.support.v7.widget.RecyclerView>
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/no_cattle_received_tv"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="No cattle have been received."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <Button

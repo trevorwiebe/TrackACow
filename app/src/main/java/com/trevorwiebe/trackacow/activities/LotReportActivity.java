@@ -90,7 +90,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
     private TextView mHeadDays;
-    private RecyclerView mViewLoadsOfCattle;
+    private TextView mNoCattleReceived;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,10 +125,11 @@ public class LotReportActivity extends AppCompatActivity implements
         mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
         mHeadDays = findViewById(R.id.reports_head_days);
-        mViewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
-        mViewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
-        mViewLoadsOfCattle.setAdapter(cattleListAdapter);
-        mViewLoadsOfCattle.addOnItemTouchListener(new ItemClickListener(this, mViewLoadsOfCattle, new ItemClickListener.OnItemClickListener() {
+        RecyclerView viewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
+        mNoCattleReceived = findViewById(R.id.no_cattle_received_tv);
+        viewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
+        viewLoadsOfCattle.setAdapter(cattleListAdapter);
+        viewLoadsOfCattle.addOnItemTouchListener(new ItemClickListener(this, viewLoadsOfCattle, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 LoadEntity loadEntity = mLoadEntities.get(position);
@@ -269,6 +270,12 @@ public class LotReportActivity extends AppCompatActivity implements
     @Override
     public void onLoadsByLotIdLoaded(ArrayList<LoadEntity> loadEntities) {
 
+        if (loadEntities.size() == 0) {
+            mNoCattleReceived.setVisibility(View.VISIBLE);
+        } else {
+            mNoCattleReceived.setVisibility(View.GONE);
+        }
+
         mLoadEntities = loadEntities;
         cattleListAdapter.setData(mLoadEntities);
         mTotalHeadInt = 0;
@@ -306,6 +313,9 @@ public class LotReportActivity extends AppCompatActivity implements
 
         int currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract;
 
+        if (currentHeadDays < 0) {
+            currentHeadDays = 0;
+        }
         String headDaysStr = numberFormat.format(currentHeadDays);
         mHeadDays.setText(headDaysStr);
 
@@ -320,6 +330,9 @@ public class LotReportActivity extends AppCompatActivity implements
         mDeathLossPercentage.setText(percentDeadText);
 
         int currentHead = mTotalHeadInt - numberDead;
+        if (currentHead < 0) {
+            currentHead = 0;
+        }
         String currentHeadStr = numberFormat.format(currentHead);
         mCurrentHead.setText(currentHeadStr);
 
@@ -426,9 +439,6 @@ public class LotReportActivity extends AppCompatActivity implements
         long millisInOnDay = TimeUnit.DAYS.toMillis(1);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - startDate;
-        Log.d(TAG, "getDaysSinceFromMillis: millisInOneDay " + millisInOnDay);
-        Log.d(TAG, "getDaysSinceFromMillis: currentTime " + currentTime);
-        Log.d(TAG, "getDaysSinceFromMillis: timeElapsed " + timeElapsed);
         if (timeElapsed < 0) {
             return 0;
         } else if (millisInOnDay >= timeElapsed) {
@@ -439,23 +449,22 @@ public class LotReportActivity extends AppCompatActivity implements
         }
     }
 
-
     @Keep
     private class DrugReportsObject {
 
         private String drugId;
         private int drugAmount;
 
-        public DrugReportsObject(String drugId, int drugAmount) {
+        private DrugReportsObject(String drugId, int drugAmount) {
             this.drugAmount = drugAmount;
             this.drugId = drugId;
         }
 
-        public int getDrugAmount() {
+        private int getDrugAmount() {
             return drugAmount;
         }
 
-        public void setDrugAmount(int drugAmount) {
+        private void setDrugAmount(int drugAmount) {
             this.drugAmount = drugAmount;
         }
 

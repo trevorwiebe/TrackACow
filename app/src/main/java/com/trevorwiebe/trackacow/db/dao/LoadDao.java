@@ -37,4 +37,7 @@ public interface LoadDao {
     @Query("DELETE FROM load")
     void deleteLoadTable();
 
+    @Query("DELETE FROM load WHERE loadId = :loadId")
+    void deleteLoadByLoadId(String loadId);
+
 }

@@ -1,6 +1,8 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteLoadByLoadId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLoadsByLoadId;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateLoadEntity;
@@ -86,7 +89,13 @@ public class EditLoadActivity extends AppCompatActivity implements
                     Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 } else {
 
-                    int headCount = Integer.parseInt(mHeadCount.getText().toString());
+                    int headCount = 0;
+                    try {
+                        headCount = numberFormat.parse(mHeadCount.getText().toString()).intValue();
+                    } catch (ParseException e) {
+                        Log.e(TAG, "onClick: ", e);
+                    }
+
                     long date = mCalendar.getTimeInMillis();
                     String memo = mMemo.getText().toString();
 
@@ -107,6 +116,37 @@ public class EditLoadActivity extends AppCompatActivity implements
                     finish();
 
                 }
+            }
+        });
+
+        mDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder deleteCattle = new AlertDialog.Builder(EditLoadActivity.this);
+                deleteCattle.setTitle("Are you sure?");
+                deleteCattle.setMessage("You are about to delete a group of cattle.  You can not undo this action.");
+                deleteCattle.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Utility.haveNetworkConnection(EditLoadActivity.this)) {
+                            Constants.BASE_REFERENCE.child(LoadEntity.LOAD).child(mSelectedLoadEntity.getLoadId()).removeValue();
+                        } else {
+                            HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(mSelectedLoadEntity, Constants.DELETE);
+                            new InsertHoldingLoad(holdingLoadEntity).execute(EditLoadActivity.this);
+                        }
+                        new DeleteLoadByLoadId(mSelectedLoadEntity.getLoadId()).execute(EditLoadActivity.this);
+
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
+                deleteCattle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                deleteCattle.show();
             }
         });
 
