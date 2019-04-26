@@ -17,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
 
     private BottomNavigationView mBottomNavigationView;
+    private ProgressBar mMainProgressBar;
 
     private int mLastUsedScreen = Constants.MEDICATE;
 
@@ -68,9 +71,7 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String channelId = getResources().getString(R.string.sync_notif_channel_id);
-//        Utility.setUpNotificationChannels(this, channelId, "Database synced", "This is a test notification");
-
+        mMainProgressBar = findViewById(R.id.main_progress_bar);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -172,17 +173,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized() {
 
-        String uid = "<uid>";
-        int accountType = UserEntity.FREE_TRIAL;
-        long dateCreated = System.currentTimeMillis();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-
-        UserEntity userEntity = new UserEntity(dateCreated, accountType, "Name", "Email", calendar.getTimeInMillis(), uid);
-        saveUserToDatabase(userEntity);
-
-        new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+        long lastSync = Utility.getLastSync(MainActivity.this);
+        long currentTime = System.currentTimeMillis();
+        long timeElapsed = currentTime - lastSync;
+        long twoHoursInMillis = TimeUnit.HOURS.toMillis(2);
+        if (timeElapsed > twoHoursInMillis) {
+            mMainProgressBar.setVisibility(View.VISIBLE);
+            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+        }
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
@@ -203,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationView.setVisibility(View.VISIBLE);
 
         // open the medicate fragment
-
         mLastUsedScreen = Utility.getLastUsedScreen(MainActivity.this);
         switch (mLastUsedScreen) {
             case Constants.MEDICATE:
@@ -254,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements
                 medicateTransactionManagerD.replace(R.id.main_fragment_container, medicateFragmentD);
                 medicateTransactionManagerD.commit();
                 break;
-
         }
     }
 
@@ -265,6 +261,19 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onDatabaseSynced(int resultCode) {
+        switch (resultCode) {
+            case Constants.SUCCESS:
+                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+                break;
+            case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
+                Toast.makeText(this, "Error interpreting data from the cloud", Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.NO_NETWORK_CONNECTION:
+                break;
+            default:
+                Toast.makeText(this, "An unknown error occurred while syncing database", Toast.LENGTH_SHORT).show();
+        }
+        mMainProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private void saveUserToDatabase(UserEntity userEntity) {
@@ -273,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements
             DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
             databaseReference.setValue(userEntity);
         } else {
-            Log.d(TAG, "saveUserToDatabase: here");
             HoldingUserEntity holdingUserEntity = new HoldingUserEntity(userEntity, Constants.INSERT_UPDATE);
             new InsertHoldingUserEntity(holdingUserEntity).execute(MainActivity.this);
         }

@@ -151,6 +151,18 @@ public class Utility {
         return sharedPreferences.getString(activity.getApplicationContext().getResources().getString(R.string.save_cow_id_key), "");
     }
 
+    public static void setLastSync(Context context, long lastSync) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_sync_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(context.getResources().getString(R.string.last_sync_key), lastSync);
+        editor.apply();
+    }
+
+    public static long getLastSync(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_sync_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getLong(context.getResources().getString(R.string.last_sync_key), System.currentTimeMillis());
+    }
+
     public static ArrayList<DrugsGivenEntity> findDrugsGivenEntityByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenEntities){
         ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
         for(int r=0; r<drugsGivenEntities.size(); r++){

@@ -109,6 +109,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                             case UserEntity.USER:
+                                // TODO: 4/26/2019 finish this here
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key " + key);
