@@ -25,5 +25,6 @@
 
     <string name="contact_developer_uri" translatable="false">mailto:app@trackacow.net</string>
 
+    <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
 
 </resources>

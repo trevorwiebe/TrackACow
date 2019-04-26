@@ -2,26 +2,70 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:key="feedback"
-        android:title="Send feedback"
-        android:summary="Report technical issues or suggest new features">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="@string/contact_developer_uri">
-            <extra
-                android:name="android.intent.extra.SUBJECT"
-                android:value="Feedback about Track-A-Cow Android App" />
-        </intent>
-    </Preference>
+    <PreferenceCategory android:title="General">
 
-    <Preference
-        android:key="subscription"
-        android:title="Manage subscription">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="com.trevorwiebe.trackacow"
-            android:targetClass="com.trevorwiebe.trackacow.activities.ManageSubscriptionActivity" />
-    </Preference>
+        <Preference
+            android:selectable="false"
+            android:summary="No general settings" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Account">
+
+        <Preference
+            android:key="account_name"
+            android:selectable="false"
+            android:title="Signed in as" />
+
+        <Preference
+
+            android:key="subscription"
+            android:title="Manage subscription">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.trevorwiebe.trackacow"
+                android:targetClass="com.trevorwiebe.trackacow.activities.ManageSubscriptionActivity" />
+        </Preference>
+
+        <Preference
+            android:key="sign_out"
+            android:title="Sign Out" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+
+        <Preference
+            android:key="feedback"
+            android:title="Send feedback"
+            android:summary="Report technical issues or suggest new features">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/contact_developer_uri">
+                <extra
+                    android:name="android.intent.extra.SUBJECT"
+                    android:value="Feedback about Track-A-Cow Android App" />
+            </intent>
+        </Preference>
+
+        <Preference
+            android:selectable="false"
+            android:key="version"
+            android:title="Version" />
+
+        <Preference
+            android:key="privacy_policy"
+            android:title="Privacy Policy">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/privacy_policy_url" />
+        </Preference>
+
+        <Preference
+            android:selectable="false"
+            android:key="terms_of_service"
+            android:title="Terms of Service" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
