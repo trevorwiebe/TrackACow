@@ -25,9 +25,6 @@ public class HoldingArchivedLotEntity {
     @ColumnInfo(name = "customerName")
     private String customerName;
 
-    @ColumnInfo(name = "totalHead")
-    private int totalHead;
-
     @ColumnInfo(name = "notes")
     private String notes;
 
@@ -41,11 +38,10 @@ public class HoldingArchivedLotEntity {
     private int whatHappened;
 
 
-    public HoldingArchivedLotEntity(String lotName, String lotId, String customerName, int totalHead, String notes, long dateStarted, long dateEnded, int whatHappened) {
+    public HoldingArchivedLotEntity(String lotName, String lotId, String customerName, String notes, long dateStarted, long dateEnded, int whatHappened) {
         this.lotName = lotName;
         this.lotId = lotId;
         this.customerName = customerName;
-        this.totalHead = totalHead;
         this.notes = notes;
         this.dateStarted = dateStarted;
         this.dateEnded = dateEnded;
@@ -57,7 +53,6 @@ public class HoldingArchivedLotEntity {
         this.lotName = archivedLotEntity.getLotName();
         this.lotId = archivedLotEntity.getLotId();
         this.customerName = archivedLotEntity.getCustomerName();
-        this.totalHead = archivedLotEntity.getTotalHead();
         this.notes = archivedLotEntity.getNotes();
         this.dateStarted = archivedLotEntity.getDateStarted();
         this.dateEnded = archivedLotEntity.getDateEnded();
@@ -99,14 +94,6 @@ public class HoldingArchivedLotEntity {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
-    }
-
-    public int getTotalHead() {
-        return totalHead;
-    }
-
-    public void setTotalHead(int totalHead) {
-        this.totalHead = totalHead;
     }
 
     public String getNotes() {

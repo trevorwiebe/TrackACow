@@ -5,9 +5,11 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.Keep;
 
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 
+@Keep
 @Entity(tableName = "user")
 public class UserEntity {
 

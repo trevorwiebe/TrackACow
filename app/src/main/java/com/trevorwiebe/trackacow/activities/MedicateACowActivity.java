@@ -132,7 +132,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                                 if (checkBoxView instanceof CheckBox) {
 
                                     CheckBox checkBox = (CheckBox) checkBoxView;
-                                    String drugId = checkBox.getTag().toString().split("_")[0];
+                                    String drugId = checkBox.getTag().toString().split("&")[0];
                                     drugsGivenEntity.setDrugId(drugId);
 
                                     if (checkBox.isChecked()) {
@@ -299,6 +299,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
         int defaultAmount = drugEntity.getDefaultAmount();
         String defaultAmountStr = Integer.toString(defaultAmount);
 
+        Log.d(TAG, "addCheckBox: " + drugId);
+
         final float scale = getResources().getDisplayMetrics().density;
         int pixels24 = (int) (24 * scale + 0.5f);
         int pixels16 = (int) (16 * scale + 0.5f);
@@ -311,7 +313,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         );
         cardViewParams.setMargins(pixels8, pixels8, pixels8, pixels8);
         cardView.setLayoutParams(cardViewParams);
-        cardView.setTag(drugId + "_cardView");
+        cardView.setTag(drugId + "&cardView");
         cardView.setOnClickListener(cardViewClickListener);
 
         LinearLayout containerLayout = new LinearLayout(this);
@@ -319,7 +321,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        containerLayout.setTag(drugId + "_linearLayout");
+        containerLayout.setTag(drugId + "&linearLayout");
         containerLayout.setOrientation(LinearLayout.HORIZONTAL);
         containerLayout.setLayoutParams(containerParams);
 
@@ -333,7 +335,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         checkBoxParams.setMargins(pixels24, pixels8, pixels24, pixels8);
-        checkBox.setTag(drugId + "_checkBox");
+        checkBox.setTag(drugId + "&checkBox");
         checkBox.setOnCheckedChangeListener(checkedChangeListener);
         checkBox.setLayoutParams(checkBoxParams);
 
@@ -353,7 +355,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         editTextParams.setMargins(pixels24, pixels8, pixels24, pixels8);
         editText.setEms(4);
         editText.setGravity(Gravity.CENTER);
-        editText.setTag(drugId + "_editText");
+        editText.setTag(drugId + "&editText");
         editText.setText(defaultAmountStr);
         editText.setSelectAllOnFocus(true);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -370,10 +372,10 @@ public class MedicateACowActivity extends AppCompatActivity implements
         @Override
         public void onClick(View v) {
             String cardViewTag = v.getTag().toString();
-            String drugId = cardViewTag.split("_")[0];
+            String drugId = cardViewTag.split("&")[0];
 
-            LinearLayout linearLayout = v.findViewWithTag(drugId + "_linearLayout");
-            CheckBox checkBox = linearLayout.findViewWithTag(drugId + "_checkBox");
+            LinearLayout linearLayout = v.findViewWithTag(drugId + "&linearLayout");
+            CheckBox checkBox = linearLayout.findViewWithTag(drugId + "&checkBox");
             if (checkBox.isChecked()) {
                 checkBox.setChecked(false);
                 v.setBackgroundColor(getResources().getColor(android.R.color.white));

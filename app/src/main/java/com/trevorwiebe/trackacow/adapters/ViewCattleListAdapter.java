@@ -52,8 +52,11 @@ public class ViewCattleListAdapter extends RecyclerView.Adapter<ViewCattleListAd
 
         viewCattleViewHolder.mHeadAdded.setText(strHeadAddedStr);
         viewCattleViewHolder.mDate.setText(strDate);
-        viewCattleViewHolder.mNotes.setText("Memo: " + notes);
-
+        if (notes != null) {
+            viewCattleViewHolder.mNotes.setText("Memo: " + notes);
+        } else {
+            viewCattleViewHolder.mNotes.setText("Memo:");
+        }
     }
 
     public void setData(ArrayList<LoadEntity> loadEntities) {
