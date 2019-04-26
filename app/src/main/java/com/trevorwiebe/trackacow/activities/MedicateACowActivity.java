@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.activities;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -11,8 +12,10 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -65,6 +68,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private Button mSaveCow;
     private TextView mMedicateACowMessage;
     private Button mViewMedications;
+    private Button mAddMemoBtn;
+    private TextInputLayout mNotesLayout;
 
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<CowEntity> mCowEntities = new ArrayList<>();
@@ -90,6 +95,8 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mSaveCow = findViewById(R.id.save_medicated_cow);
         mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center);
         mViewMedications = findViewById(R.id.view_medications_given_btn);
+        mAddMemoBtn = findViewById(R.id.add_notes_btn);
+        mNotesLayout = findViewById(R.id.notes_layout);
 
         String penId = getIntent().getStringExtra("penId");
 
@@ -100,128 +107,15 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mSaveCow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDrugList.size() == 0){
-                    Snackbar.make(view, "Please add a drug first.", Snackbar.LENGTH_LONG).show();
-                }else if(mTagName.length() == 0){
-                    mMainScrollView.fullScroll(ScrollView.FOCUS_UP);
-                    mTagName.requestFocus();
-                    mTagName.setError("Please fill this blank.");
-                }else{
-                    DatabaseReference drugsGivenRef = Constants.BASE_REFERENCE.child(DrugsGivenEntity.DRUGS_GIVEN);
+                saveCow();
+            }
+        });
 
-                    DatabaseReference pushRef = Constants.BASE_REFERENCE.child(CowEntity.COW).push();
-                    String cowId = pushRef.getKey();
-
-                    ArrayList<DrugsGivenEntity> drugList = new ArrayList<>();
-
-                    for(int r=0; r<mDrugLayout.getChildCount(); r++){
-                        DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                        drugsGivenEntity.setCowId(cowId);
-
-                        View cardView = mDrugLayout.getChildAt(r);
-
-                        if (cardView instanceof CardView) {
-
-                            View linearLayout = ((CardView) cardView).getChildAt(0);
-
-                            if (linearLayout instanceof LinearLayout) {
-
-                                LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
-
-                                View checkBoxView = confirmedLinearLayout.getChildAt(0);
-                                if (checkBoxView instanceof CheckBox) {
-
-                                    CheckBox checkBox = (CheckBox) checkBoxView;
-                                    String drugId = checkBox.getTag().toString().split("&")[0];
-                                    drugsGivenEntity.setDrugId(drugId);
-
-                                    if (checkBox.isChecked()) {
-
-                                        View editText = confirmedLinearLayout.getChildAt(2);
-
-                                        if (editText instanceof EditText) {
-
-                                            EditText textViewAmountGiven = (EditText) editText;
-                                            int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                            drugsGivenEntity.setAmountGiven(amountGiven);
-
-                                            DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
-                                            String drugsGivenKey = drugsGivenPushRef.getKey();
-                                            drugsGivenEntity.setLotId(mSelectedLot.getLotId());
-                                            drugsGivenEntity.setDrugGivenId(drugsGivenKey);
-
-                                            drugList.add(drugsGivenEntity);
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    int tagNumber = Integer.parseInt(mTagName.getText().toString());
-                    String notes = mNotes.getText().toString();
-
-                    CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotId());
-
-                    mCowEntities.add(cowEntity);
-
-                    if(Utility.haveNetworkConnection(MedicateACowActivity.this)){
-                        pushRef.setValue(cowEntity);
-
-                        for(int k=0; k<drugList.size(); k++){
-                            DrugsGivenEntity drugsGivenEntity = drugList.get(k);
-                            drugsGivenRef.child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
-                        }
-
-                    }else{
-
-                        Utility.setNewDataToUpload(MedicateACowActivity.this, true);
-                        HoldingCowEntity holdingCowEntity = new HoldingCowEntity(cowEntity, Constants.INSERT_UPDATE);
-                        new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
-
-                        // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
-                        ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
-
-                        // iterate over the drugGivenEntityList
-                        for(int q=0; q<drugList.size(); q++){
-                            DrugsGivenEntity drugsGivenEntity = drugList.get(q);
-                            HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
-                            holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
-                        }
-
-                        new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(MedicateACowActivity.this);
-
-                    }
-
-                    new InsertSingleCow(cowEntity).execute(MedicateACowActivity.this);
-                    new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
-                    
-                    mTagName.setText("");
-                    mNotes.setText("");
-
-                    mDrugsGivenCardView.setVisibility(View.GONE);
-
-                    for(int r=0; r<mDrugLayout.getChildCount(); r++){
-                        View cardView = mDrugLayout.getChildAt(r);
-                        if (cardView instanceof CardView) {
-                            View linearLayout = ((CardView) cardView).getChildAt(0);
-                            if (linearLayout instanceof LinearLayout) {
-                                LinearLayout linearLayout1 = (LinearLayout) linearLayout;
-                                View checkBoxView = linearLayout1.getChildAt(0);
-                                if (checkBoxView instanceof CheckBox) {
-                                    CheckBox checkBox = (CheckBox) checkBoxView;
-                                    checkBox.setChecked(false);
-                                }
-                            }
-                        }
-                    }
-
-                    ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-                    mMainScrollView.fullScroll(ScrollView.FOCUS_UP);
-                    mTagName.requestFocus();
-                }
+        mAddMemoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddMemoBtn.setVisibility(View.GONE);
+                mNotesLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -282,9 +176,11 @@ public class MedicateACowActivity extends AppCompatActivity implements
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
+        Log.d(TAG, "onAllDrugsLoaded: " + mDrugList.size());
         for(int x=0; x<mDrugList.size(); x++){
             DrugEntity drugEntity = drugEntities.get(x);
-            addCheckBox(mDrugLayout, drugEntity);
+            Log.d(TAG, "onAllDrugsLoaded: " + x);
+            addCheckBox(mDrugLayout, drugEntity, false);
         }
         if (drugEntities.size() == 0) {
             mNoDrugs.setVisibility(View.VISIBLE);
@@ -292,7 +188,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         mLoadDrugs.setVisibility(View.GONE);
     }
 
-    private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity){
+    private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity, boolean isLastCheckbox) {
 
         String drugName = drugEntity.getDrugName();
         String drugId = drugEntity.getDrugId();
@@ -358,6 +254,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         editText.setTag(drugId + "&editText");
         editText.setText(defaultAmountStr);
         editText.setSelectAllOnFocus(true);
+        editText.setOnEditorActionListener(doneListener);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setLayoutParams(editTextParams);
 
@@ -399,6 +296,143 @@ public class MedicateACowActivity extends AppCompatActivity implements
         }
     };
 
+    TextView.OnEditorActionListener doneListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                saveCow();
+            }
+            return false;
+        }
+    };
+
+    private void saveCow() {
+        if (mDrugList.size() == 0) {
+            Snackbar.make(mTagName, "Please add a drug first.", Snackbar.LENGTH_LONG).show();
+        } else if (mTagName.length() == 0) {
+            mMainScrollView.fullScroll(ScrollView.FOCUS_UP);
+            mTagName.requestFocus();
+            mTagName.setError("Please fill this blank.");
+        } else {
+            DatabaseReference drugsGivenRef = Constants.BASE_REFERENCE.child(DrugsGivenEntity.DRUGS_GIVEN);
+
+            DatabaseReference pushRef = Constants.BASE_REFERENCE.child(CowEntity.COW).push();
+            String cowId = pushRef.getKey();
+
+            ArrayList<DrugsGivenEntity> drugList = new ArrayList<>();
+
+            for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
+                DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
+                drugsGivenEntity.setCowId(cowId);
+
+                View cardView = mDrugLayout.getChildAt(r);
+
+                if (cardView instanceof CardView) {
+
+                    View linearLayout = ((CardView) cardView).getChildAt(0);
+
+                    if (linearLayout instanceof LinearLayout) {
+
+                        LinearLayout confirmedLinearLayout = (LinearLayout) linearLayout;
+
+                        View checkBoxView = confirmedLinearLayout.getChildAt(0);
+                        if (checkBoxView instanceof CheckBox) {
+
+                            CheckBox checkBox = (CheckBox) checkBoxView;
+                            String drugId = checkBox.getTag().toString().split("&")[0];
+                            drugsGivenEntity.setDrugId(drugId);
+
+                            if (checkBox.isChecked()) {
+
+                                View editText = confirmedLinearLayout.getChildAt(2);
+
+                                if (editText instanceof EditText) {
+
+                                    EditText textViewAmountGiven = (EditText) editText;
+                                    int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
+                                    drugsGivenEntity.setAmountGiven(amountGiven);
+
+                                    DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
+                                    String drugsGivenKey = drugsGivenPushRef.getKey();
+                                    drugsGivenEntity.setLotId(mSelectedLot.getLotId());
+                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+
+                                    drugList.add(drugsGivenEntity);
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            int tagNumber = Integer.parseInt(mTagName.getText().toString());
+            String notes = mNotes.getText().toString();
+
+            CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotId());
+
+            mCowEntities.add(cowEntity);
+
+            if (Utility.haveNetworkConnection(MedicateACowActivity.this)) {
+                pushRef.setValue(cowEntity);
+
+                for (int k = 0; k < drugList.size(); k++) {
+                    DrugsGivenEntity drugsGivenEntity = drugList.get(k);
+                    drugsGivenRef.child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                }
+
+            } else {
+
+                Utility.setNewDataToUpload(MedicateACowActivity.this, true);
+                HoldingCowEntity holdingCowEntity = new HoldingCowEntity(cowEntity, Constants.INSERT_UPDATE);
+                new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
+
+                // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
+                ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+
+                // iterate over the drugGivenEntityList
+                for (int q = 0; q < drugList.size(); q++) {
+                    DrugsGivenEntity drugsGivenEntity = drugList.get(q);
+                    HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
+                    holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                }
+
+                new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(MedicateACowActivity.this);
+
+            }
+
+            new InsertSingleCow(cowEntity).execute(MedicateACowActivity.this);
+            new InsertDrugsGivenList(drugList).execute(MedicateACowActivity.this);
+
+            mTagName.setText("");
+            mNotes.setText("");
+
+            mDrugsGivenCardView.setVisibility(View.GONE);
+
+            for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
+                View cardView = mDrugLayout.getChildAt(r);
+                if (cardView instanceof CardView) {
+                    View linearLayout = ((CardView) cardView).getChildAt(0);
+                    if (linearLayout instanceof LinearLayout) {
+                        LinearLayout linearLayout1 = (LinearLayout) linearLayout;
+                        View checkBoxView = linearLayout1.getChildAt(0);
+                        if (checkBoxView instanceof CheckBox) {
+                            CheckBox checkBox = (CheckBox) checkBoxView;
+                            checkBox.setChecked(false);
+                        }
+                    }
+                }
+            }
+
+            mMainScrollView.fullScroll(ScrollView.FOCUS_UP);
+            mTagName.requestFocus();
+            mNotesLayout.setVisibility(View.GONE);
+            mAddMemoBtn.setVisibility(View.VISIBLE);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+    }
 
     @Override
     public void onCowsByLotIdLoaded(ArrayList<CowEntity> cowObjectList) {

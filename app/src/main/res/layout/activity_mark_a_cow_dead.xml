@@ -39,8 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginRight="16dp">
 
             <android.support.design.widget.TextInputEditText
                 android:inputType="number"
@@ -58,8 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginRight="16dp">
 
             <android.support.design.widget.TextInputEditText
                 android:inputType="date"
@@ -75,22 +73,33 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/dead_notes_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
 
             <android.support.design.widget.TextInputEditText
-                android:inputType="textCapSentences"
                 android:id="@+id/deads_notes"
-                android:hint="Notes"
-                android:textSize="16sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:hint="Memo"
+                android:inputType="textCapSentences|textMultiLine"
+                android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/dead_add_notes_btn"
+            android:padding="24dp"
+            style="?buttonBarButtonStyle"
+            android:text="Add memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:textColor="@android:color/white"

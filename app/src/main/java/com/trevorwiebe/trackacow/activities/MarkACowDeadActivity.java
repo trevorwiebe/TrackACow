@@ -3,13 +3,19 @@ package com.trevorwiebe.trackacow.activities;
 import android.app.DatePickerDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +42,8 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
     private TextInputEditText mTagNumber;
     private TextInputEditText mDate;
     private TextInputEditText mNotes;
+    private TextInputLayout mAddNotesLayout;
+    private Button mAddNotes;
 
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
@@ -61,6 +69,11 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         mTagNumber = findViewById(R.id.deads_tag_number);
         mDate = findViewById(R.id.deads_date);
         mNotes = findViewById(R.id.deads_notes);
+        mAddNotesLayout = findViewById(R.id.dead_notes_layout);
+        mAddNotes = findViewById(R.id.dead_add_notes_btn);
+
+        mTagNumber.setOnEditorActionListener(doneListener);
+        mNotes.setOnEditorActionListener(doneListener);
 
         mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
         mDate.setOnClickListener(new android.view.View.OnClickListener() {
@@ -109,7 +122,24 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             }
         });
 
+        mAddNotes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddNotesLayout.setVisibility(View.VISIBLE);
+                mAddNotes.setVisibility(View.GONE);
+            }
+        });
     }
+
+    TextView.OnEditorActionListener doneListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                markAsDead(null);
+            }
+            return false;
+        }
+    };
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -119,9 +149,11 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
 
     public void markAsDead(View view) {
         if(mTagNumber.length() == 0 || mDate.length() == 0 ){
-            Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
+            mTagNumber.requestFocus();
+            mTagNumber.setError("Please fill the blank");
             return;
         }
+
         int tagNumber = Integer.parseInt(mTagNumber.getText().toString());
         String notes = mNotes.getText().toString();
 
@@ -132,31 +164,26 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);
         }else{
-
             Utility.setNewDataToUpload(MarkACowDeadActivity.this, true);
-
-            HoldingCowEntity holdingCowEntity = new HoldingCowEntity();
-            holdingCowEntity.setWhatHappened(Constants.INSERT_UPDATE);
-            holdingCowEntity.setTagNumber(cowEntity.getTagNumber());
-            holdingCowEntity.setLotId(cowEntity.getLotId());
-            holdingCowEntity.setNotes(cowEntity.getNotes());
-            holdingCowEntity.setIsAlive(cowEntity.getIsAlive());
-            holdingCowEntity.setDate(cowEntity.getDate());
-            holdingCowEntity.setCowId(cowEntity.getCowId());
-
+            HoldingCowEntity holdingCowEntity = new HoldingCowEntity(cowEntity, Constants.INSERT_UPDATE);
             new InsertHoldingCow(holdingCowEntity).execute(MarkACowDeadActivity.this);
-
         }
 
         new InsertSingleCow(cowEntity).execute(this);
 
         mDeadCowList.add(cowEntity);
 
+        mAddNotes.setVisibility(View.VISIBLE);
+        mAddNotesLayout.setVisibility(View.GONE);
+
         mTagNumber.setText("");
         mNotes.setText("");
         mCalendar = Calendar.getInstance();
         mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
         mTagNumber.requestFocus();
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
