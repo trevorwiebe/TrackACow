@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.app.DatePickerDialog;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -77,35 +78,39 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference loadPushRef = Constants.BASE_REFERENCE.child(LoadEntity.LOAD).push();
-
-                int totalHead = Integer.parseInt(mHeadCount.getText().toString());
-
-                mCalendar.set(Calendar.HOUR_OF_DAY, 0);
-                mCalendar.set(Calendar.MINUTE, 0);
-                mCalendar.set(Calendar.SECOND, 0);
-                mCalendar.set(Calendar.MILLISECOND, 0);
-
-                long longDate = mCalendar.getTimeInMillis();
-                String loadDescription = mMemo.getText().toString();
-                String loadId = loadPushRef.getKey();
-
-                LoadEntity loadEntity = new LoadEntity(totalHead, longDate, loadDescription, mLotId, loadId);
-
-                if (Utility.haveNetworkConnection(AddLoadOfCattleActivity.this)) {
-                    loadPushRef.setValue(loadEntity);
+                if (mHeadCount.length() == 0 || mDate.length() == 0) {
+                    Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 } else {
+                    DatabaseReference loadPushRef = Constants.BASE_REFERENCE.child(LoadEntity.LOAD).push();
 
-                    Utility.setNewDataToUpload(AddLoadOfCattleActivity.this, true);
+                    int totalHead = Integer.parseInt(mHeadCount.getText().toString());
 
-                    HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(loadEntity, Constants.INSERT_UPDATE);
-                    new InsertHoldingLoad(holdingLoadEntity).execute(AddLoadOfCattleActivity.this);
+                    mCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                    mCalendar.set(Calendar.MINUTE, 0);
+                    mCalendar.set(Calendar.SECOND, 0);
+                    mCalendar.set(Calendar.MILLISECOND, 0);
+
+                    long longDate = mCalendar.getTimeInMillis();
+                    String loadDescription = mMemo.getText().toString();
+                    String loadId = loadPushRef.getKey();
+
+                    LoadEntity loadEntity = new LoadEntity(totalHead, longDate, loadDescription, mLotId, loadId);
+
+                    if (Utility.haveNetworkConnection(AddLoadOfCattleActivity.this)) {
+                        loadPushRef.setValue(loadEntity);
+                    } else {
+
+                        Utility.setNewDataToUpload(AddLoadOfCattleActivity.this, true);
+
+                        HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                        new InsertHoldingLoad(holdingLoadEntity).execute(AddLoadOfCattleActivity.this);
+                    }
+
+                    new InsertLoadEntity(loadEntity).execute(AddLoadOfCattleActivity.this);
+
+                    setResult(RESULT_OK);
+                    finish();
                 }
-
-                new InsertLoadEntity(loadEntity).execute(AddLoadOfCattleActivity.this);
-
-                setResult(RESULT_OK);
-                finish();
             }
         });
 
