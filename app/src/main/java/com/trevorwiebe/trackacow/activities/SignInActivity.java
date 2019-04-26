@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -40,8 +41,8 @@ public class SignInActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 477;
     private static final int CREATE_ACCOUNT_CODE = 848;
 
-    private TextInputEditText mEmail;
-    private TextInputEditText mPassword;
+    private EditText mEmail;
+    private EditText mPassword;
     private ProgressBar mSigningIn;
     private ProgressBar mSigningInWithGoogle;
     private TextView mForgotPassword;

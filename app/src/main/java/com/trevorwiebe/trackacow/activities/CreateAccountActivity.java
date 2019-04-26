@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -47,9 +48,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 939;
 
-    private TextInputEditText mName;
-    private TextInputEditText mEmail;
-    private TextInputEditText mPassword;
+    private EditText mName;
+    private EditText mEmail;
+    private EditText mPassword;
     private ProgressBar mCreatingAccount;
     private ProgressBar mCreatingAccountWithGoogle;
     private Button mCreateAccountBtn;
