@@ -52,12 +52,11 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
             ArrayList<LotEntity> lotEntities = findLotEntities(penEntity.getPenId());
             if (lotEntities.size() != 0) {
                 penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.greenText));
-                String lotTextName = "";
-                ListIterator iterator = lotEntities.listIterator();
-                while (iterator.hasNext()) {
-                    LotEntity lotEntity = (LotEntity) iterator.next();
+                StringBuilder lotTextName = new StringBuilder();
+                for (int q = 0; q < lotEntities.size(); q++) {
+                    LotEntity lotEntity = lotEntities.get(q);
                     String lotName = lotEntity.getLotName();
-                    lotTextName = lotTextName + "  " + lotName;
+                    lotTextName.append(lotTextName).append(lotName).append("  ");
                 }
                 penViewHolder.mLotNames.setText(lotTextName);
             } else {
