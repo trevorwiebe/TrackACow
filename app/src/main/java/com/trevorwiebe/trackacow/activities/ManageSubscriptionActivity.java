@@ -1,7 +1,10 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +18,8 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
 
     private TextView mAccountType;
     private TextView mRenewalDate;
+    private Button mEditSubscription;
+    private Button mCancelSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,16 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
 
         mAccountType = findViewById(R.id.account_type);
         mRenewalDate = findViewById(R.id.renewal_date);
+        mEditSubscription = findViewById(R.id.edit_subscription);
+        mCancelSubscription = findViewById(R.id.cancel_subscription);
+
+        mEditSubscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent subscribeActivity = new Intent(ManageSubscriptionActivity.this, SubscribeActivity.class);
+                startActivity(subscribeActivity);
+            }
+        });
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         new QueryUserByUid(uid, this).execute(this);

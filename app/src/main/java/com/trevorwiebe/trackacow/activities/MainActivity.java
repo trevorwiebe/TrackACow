@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements
         long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
-        long twoHoursInMillis = TimeUnit.MINUTES.toMillis(1);
+        long twoHoursInMillis = TimeUnit.HOURS.toMillis(2);
         if (timeElapsed > twoHoursInMillis) {
             mMainProgressBar.setVisibility(View.VISIBLE);
             new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();

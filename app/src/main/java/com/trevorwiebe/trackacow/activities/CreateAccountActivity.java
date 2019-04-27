@@ -126,7 +126,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                             if (task.isSuccessful()) {
 
                                                                 String uid = user.getUid();
-                                                                int accountType = UserEntity.FREE_TRIAL;
+                                                                int accountType = UserEntity.FOREVER_FREE_USER;
                                                                 long dateCreated = System.currentTimeMillis();
 
                                                                 Calendar calendar = Calendar.getInstance();
