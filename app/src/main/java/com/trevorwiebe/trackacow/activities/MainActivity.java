@@ -1,11 +1,15 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +39,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingUserEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertNewUser;
+import com.trevorwiebe.trackacow.dataLoaders.QueryUserEntity;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
 import com.trevorwiebe.trackacow.fragments.FeedFragment;
@@ -46,11 +52,14 @@ import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
+import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements
-        SyncDatabase.OnDatabaseSynced {
+        SyncDatabase.OnDatabaseSynced,
+        QueryUserEntity.OnUserLoaded {
 
     private static final String TAG = "MainActivity";
 
@@ -58,9 +67,12 @@ public class MainActivity extends AppCompatActivity implements
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+    private NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
 
     private BottomNavigationView mBottomNavigationView;
     private ProgressBar mMainProgressBar;
+    private Toolbar mToolBar;
+    private FrameLayout mMainLayout;
 
     private int mLastUsedScreen = Constants.MEDICATE;
 
@@ -68,9 +80,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolBar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
 
+
+        mMainLayout = findViewById(R.id.main_fragment_container);
         mMainProgressBar = findViewById(R.id.main_progress_bar);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
@@ -176,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements
         long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
-        long twoHoursInMillis = TimeUnit.HOURS.toMillis(2);
+        long twoHoursInMillis = TimeUnit.MINUTES.toMillis(1);
         if (timeElapsed > twoHoursInMillis) {
             mMainProgressBar.setVisibility(View.VISIBLE);
             new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
@@ -263,7 +277,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onDatabaseSynced(int resultCode) {
         switch (resultCode) {
             case Constants.SUCCESS:
-                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+                String uid = mFirebaseAuth.getCurrentUser().getUid();
+                new QueryUserEntity(uid, MainActivity.this).execute(MainActivity.this);
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
                 Toast.makeText(this, "Error interpreting data from the cloud", Toast.LENGTH_SHORT).show();
@@ -276,17 +291,70 @@ public class MainActivity extends AppCompatActivity implements
         mMainProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    private void saveUserToDatabase(UserEntity userEntity) {
+    @Override
+    public void onUserLoaded(UserEntity userEntity) {
+        if (userEntity.getAccountType() == UserEntity.FREE_TRIAL) {
+            long currentTime = System.currentTimeMillis();
+            long renewalDate = userEntity.getRenewalDate();
+            long timeElapsed = renewalDate - currentTime;
+            long daysLeft = (int) (timeElapsed / (1000 * 60 * 60 * 24));
+            String daysLeftStr = numberFormat.format(daysLeft);
+            if (daysLeft <= 0) {
+                AlertDialog.Builder accountEnded = new AlertDialog.Builder(MainActivity.this);
+                mBottomNavigationView.setVisibility(View.GONE);
+                mToolBar.setVisibility(View.GONE);
+                mMainLayout.setVisibility(View.GONE);
+                accountEnded.setTitle("Your free trial has ended");
+                accountEnded.setMessage("You will need to subscribe to a plan to continue.  All you data is saved and waiting for you.");
+                accountEnded.setCancelable(false);
+                accountEnded.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent manageSubscriptionIntent = new Intent(MainActivity.this, ManageSubscriptionActivity.class);
+                        startActivity(manageSubscriptionIntent);
+                    }
+                });
+                accountEnded.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                accountEnded.show();
+            } else if (daysLeft <= 7) {
+                AlertDialog.Builder accountEnding = new AlertDialog.Builder(MainActivity.this);
+                accountEnding.setTitle("Free trial ends soon.");
+                accountEnding.setMessage("You have " + daysLeftStr + " day(s) left on your free trial.");
+                accountEnding.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utility.setShouldShowTrialEndsSoon(MainActivity.this, true);
+                        Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+                    }
+                });
+                accountEnding.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        if (Utility.haveNetworkConnection(MainActivity.this)) {
-            DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
-            databaseReference.setValue(userEntity);
+                    }
+                });
+                accountEnding.setNeutralButton("Don't show again", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utility.setShouldShowTrialEndsSoon(MainActivity.this, false);
+                        Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+                    }
+                });
+                if (Utility.shouldShowTrialEndsSoon(MainActivity.this)) {
+                    accountEnding.show();
+                } else {
+                    Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+                }
+            } else {
+                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+            }
         } else {
-            HoldingUserEntity holdingUserEntity = new HoldingUserEntity(userEntity, Constants.INSERT_UPDATE);
-            new InsertHoldingUserEntity(holdingUserEntity).execute(MainActivity.this);
+            Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
         }
-
-        new InsertNewUser(userEntity).execute(MainActivity.this);
     }
-
 }

@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
         }
 
         Preference subscriptionPref = findPreference("subscription");
-        subscriptionPref.setVisible(false);
+//        subscriptionPref.setVisible(false);
 
         Preference signOutPref = findPreference("sign_out");
         signOutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

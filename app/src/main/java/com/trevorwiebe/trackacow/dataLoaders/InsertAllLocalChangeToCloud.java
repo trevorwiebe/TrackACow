@@ -185,13 +185,11 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
         }
         db.holdingLoadDao().deleteHoldingLoadTable();
 
+        // update user node
         List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();
-        Log.d(TAG, "doInBackground: " + holdingUserEntities.size());
         for (int g = 0; g < holdingUserEntities.size(); g++) {
 
             HoldingUserEntity holdingUserEntity = holdingUserEntities.get(g);
-
-            Log.d(TAG, "doInBackground: " + holdingUserEntity);
 
             UserEntity userEntity = new UserEntity(holdingUserEntity);
             switch (holdingUserEntity.getWhatHappened()) {

@@ -21,6 +21,7 @@ public class UserEntity {
     public static final int GRACE_PERIOD = 3;
     public static final int HOLD = 5;
     public static final int CANCELED = 6;
+    public static final int FOREVER_FREE_USER = 7;
 
     @ColumnInfo(name = "primaryKey")
     @PrimaryKey(autoGenerate = true)

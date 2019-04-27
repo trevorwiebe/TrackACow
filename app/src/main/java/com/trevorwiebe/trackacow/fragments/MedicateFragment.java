@@ -43,8 +43,6 @@ public class MedicateFragment extends Fragment implements
     private RecyclerView mPenRv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private boolean test = true;
-
     private Context mContext;
 
     public MedicateFragment() {
@@ -57,6 +55,7 @@ public class MedicateFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_medicate, container, false);
 
         mSwipeRefreshLayout = rootView.findViewById(R.id.main_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
         mPenRv = rootView.findViewById(R.id.main_rv);
         mPenRv.setLayoutManager(new LinearLayoutManager(mContext));
@@ -106,7 +105,6 @@ public class MedicateFragment extends Fragment implements
 
     @Override
     public void onDatabaseSynced(int resultCode) {
-        Log.d(TAG, "onDatabaseSynced: " + resultCode);
         mSwipeRefreshLayout.setRefreshing(false);
         new QueryLots(MedicateFragment.this).execute(mContext);
     }
@@ -119,14 +117,8 @@ public class MedicateFragment extends Fragment implements
 
     @Override
     public void onPensLoaded(ArrayList<PenEntity> penEntitiesList) {
-        if (penEntitiesList.size() == 0 && test) {
-            test = false;
-            mSwipeRefreshLayout.setRefreshing(true);
-            new SyncDatabase(MedicateFragment.this, mContext).beginSync();
-        } else {
-            mPenList = penEntitiesList;
-            setPenRecyclerView();
-        }
+        mPenList = penEntitiesList;
+        setPenRecyclerView();
     }
 
     private void setPenRecyclerView() {

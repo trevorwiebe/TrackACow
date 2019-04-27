@@ -23,6 +23,9 @@
     <string name="last_sync_name" translatable="false">last_sync_name</string>
     <string name="last_sync_key" translatable="false">last_sync_key</string>
 
+    <string name="should_show_trial_ends_name" translatable="false">should_show_trial_ends_name</string>
+    <string name="should_show_trial_ends_key" translatable="false">should_show_trial_ends_key</string>
+
     <string name="last_used_feed_pen_name" translatable="false">last_used_feed_pen_name</string>
     <string name="last_used_feed_pen_key" translatable="false">last_used_feed_pen_key</string>
 

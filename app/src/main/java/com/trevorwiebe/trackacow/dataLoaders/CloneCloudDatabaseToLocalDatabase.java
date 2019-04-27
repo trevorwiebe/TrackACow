@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.dataLoaders;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.firebase.ui.auth.data.model.User;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
@@ -11,6 +12,7 @@ import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.UserEntity;
 
 import java.util.ArrayList;
 
@@ -23,13 +25,14 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
     private ArrayList<LotEntity> mLotEntityList;
     private ArrayList<ArchivedLotEntity> mArchivedLotEntityList;
     private ArrayList<LoadEntity> mLoadEntityList;
+    private ArrayList<UserEntity> mUserEntityList;
     private OnDatabaseCloned onDatabaseCloned;
 
     public interface OnDatabaseCloned{
         void onDatabaseCloned();
     }
 
-    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities) {
+    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<UserEntity> userEntities) {
         this.onDatabaseCloned = onDatabaseCloned;
         this.mCowEntityUpdateList = cowEntities;
         this.mDrugEntityUpdateList = drugEntities;
@@ -38,6 +41,7 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         this.mLotEntityList = lotEntities;
         this.mArchivedLotEntityList = archivedLotEntities;
         this.mLoadEntityList = loadEntities;
+        this.mUserEntityList = userEntities;
     }
 
     @Override
@@ -52,6 +56,7 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.lotDao().deleteLotEntityTable();
         db.archivedLotDao().deleteArchivedLotTable();
         db.loadDao().deleteLoadTable();
+        db.userDao().deleteUserTable();
 
         db.cowDao().insertCowList(mCowEntityUpdateList);
         db.drugDao().insertListDrug(mDrugEntityUpdateList);
@@ -60,6 +65,7 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.lotDao().insertLotEntityList(mLotEntityList);
         db.archivedLotDao().insertArchivedLotEntityList(mArchivedLotEntityList);
         db.loadDao().insertLoadList(mLoadEntityList);
+        db.userDao().insertUserList(mUserEntityList);
 
         return null;
     }

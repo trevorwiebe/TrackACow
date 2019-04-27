@@ -36,16 +36,19 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         String accountTypeStr = "";
         switch (accountType) {
             case UserEntity.FREE_TRIAL:
-                accountTypeStr = "Free Trial";
+                accountTypeStr = "One month free trial";
+                break;
+            case UserEntity.FOREVER_FREE_USER:
+                accountTypeStr = "Forever free user";
                 break;
             case UserEntity.MONTHLY_SUBSCRIPTION:
-                accountTypeStr = "Monthly Subscription";
+                accountTypeStr = "Monthly subscription";
                 break;
             case UserEntity.ANNUAL_SUBSCRIPTION:
-                accountTypeStr = "Annual Subscription";
+                accountTypeStr = "Annual subscription";
                 break;
             case UserEntity.GRACE_PERIOD:
-                accountTypeStr = "Grace Period";
+                accountTypeStr = "Grace period";
                 break;
             case UserEntity.HOLD:
                 accountTypeStr = "Hold";
@@ -56,7 +59,11 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         }
         mAccountType.setText(accountTypeStr);
 
-        String date = Utility.convertMillisToFriendlyDate(userEntity.getRenewalDate());
-        mRenewalDate.setText(date);
+        if (accountType == UserEntity.FOREVER_FREE_USER) {
+            mRenewalDate.setText("--/--/----");
+        } else {
+            String date = Utility.convertMillisToFriendlyDate(userEntity.getRenewalDate());
+            mRenewalDate.setText(date);
+        }
     }
 }
