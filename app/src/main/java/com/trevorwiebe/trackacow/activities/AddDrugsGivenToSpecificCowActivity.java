@@ -192,7 +192,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
     public void onCowByIdLoaded(CowEntity cowEntity) {
         mCowEntity = cowEntity;
         String tagNumber = Integer.toString(mCowEntity.getTagNumber());
-        setTitle("Add drugs given to cow " + tagNumber);
+        setTitle("Medicate cow " + tagNumber);
     }
 
     @Override
