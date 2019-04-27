@@ -16,28 +16,9 @@
         android:paddingRight="36dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:gravity="center_horizontal"
-            android:text="Track-A-Cow"
-            android:textColor="@android:color/white"
-            android:textSize="30sp" />
-
-        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_horizontal"
-            android:text="Creating an account will allow you to sync information between devices, and securely store your info in the cloud."
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="60dp"
             android:gravity="center"
             android:labelFor="@id/create_account_name"
             android:text="Name"
@@ -111,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:background="@android:color/white"
+                android:background="@drawable/white_sign_in_btn"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
                 android:text="Create Account"
@@ -137,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/accent_sign_in_btn"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
                 android:text="Create account with Google"

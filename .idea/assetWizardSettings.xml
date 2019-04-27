@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_expand_more_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_attach_money_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_expand_more_black_24dp" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="height" value="14" />
+                            <entry key="outputName" value="ic_money_white_24dp" />
+                            <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\thisi" />
+                            <entry key="width" value="16" />
                           </map>
                         </option>
                       </PersistentState>

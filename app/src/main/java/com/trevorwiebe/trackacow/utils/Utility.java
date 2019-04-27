@@ -175,6 +175,19 @@ public class Utility {
         return sharedPreferences.getBoolean(context.getResources().getString(R.string.should_show_trial_ends_key), true);
     }
 
+    public static void setShouldShowWelcomeScreen(Context context, boolean shouldShow) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.should_show_welcome_screen_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(context.getResources().getString(R.string.should_show_welcome_screen_key), shouldShow);
+        editor.apply();
+    }
+
+    public static boolean shouldShowWelcomeScreen(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.should_show_welcome_screen_name), Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(context.getResources().getString(R.string.should_show_welcome_screen_key), true);
+    }
+
+
     public static ArrayList<DrugsGivenEntity> findDrugsGivenEntityByCowId(String cowId, ArrayList<DrugsGivenEntity> drugsGivenEntities){
         ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
         for(int r=0; r<drugsGivenEntities.size(); r++){

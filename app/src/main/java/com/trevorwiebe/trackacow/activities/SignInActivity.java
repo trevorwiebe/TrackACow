@@ -82,7 +82,6 @@ public class SignInActivity extends AppCompatActivity {
                     mPassword.setError("Please enter your password");
                 } else {
 
-                    mSignInBtn.setBackgroundColor(getResources().getColor(R.color.signInGray));
                     mSigningIn.setVisibility(View.VISIBLE);
 
                     String email = mEmail.getText().toString();
@@ -98,7 +97,6 @@ public class SignInActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     } else {
                                         mSigningIn.setVisibility(View.INVISIBLE);
-                                        mSignInBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
 
                                         String errorMessage = task.getException().getLocalizedMessage();
 

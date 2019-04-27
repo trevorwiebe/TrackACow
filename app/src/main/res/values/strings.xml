@@ -29,6 +29,9 @@
     <string name="last_used_feed_pen_name" translatable="false">last_used_feed_pen_name</string>
     <string name="last_used_feed_pen_key" translatable="false">last_used_feed_pen_key</string>
 
+    <string name="should_show_welcome_screen_name">should_show_welcome_screen_name</string>
+    <string name="should_show_welcome_screen_key">should_show_welcome_screen_key</string>
+
     <string name="contact_developer_uri" translatable="false">mailto:app@trackacow.net</string>
 
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>

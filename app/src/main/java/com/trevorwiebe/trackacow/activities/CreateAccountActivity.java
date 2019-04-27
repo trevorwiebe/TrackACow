@@ -100,7 +100,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                     mPassword.setError("Please fill in password");
                 } else {
 
-                    mCreateAccountBtn.setBackgroundColor(getResources().getColor(R.color.signInGray));
                     mCreatingAccount.setVisibility(View.VISIBLE);
                     final String name = mName.getText().toString();
                     final String email = mEmail.getText().toString();
@@ -233,7 +232,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         mCreatingAccountWithGoogle.setVisibility(View.INVISIBLE);
 
-        mCreateAccountBtn.setBackgroundColor(getResources().getColor(android.R.color.white));
         mCreatingAccount.setVisibility(View.INVISIBLE);
     }
 
