@@ -187,10 +187,8 @@ public class MainActivity extends AppCompatActivity implements
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
         long twoHoursInMillis = TimeUnit.HOURS.toMillis(2);
-        if (timeElapsed > twoHoursInMillis) {
-            mMainProgressBar.setVisibility(View.VISIBLE);
-            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
-        }
+        mMainProgressBar.setVisibility(View.VISIBLE);
+        new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 

@@ -36,4 +36,7 @@
 
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
 
+    <string name="monthly_subscribe_url">https://www.trackacow.net/subscription.html?sub_type=\'monthly\'</string>
+    <string name="annually_subscribe_url">https://www.trackacow.net/subscription.html?sub_type=\'annually\'</string>
+
 </resources>

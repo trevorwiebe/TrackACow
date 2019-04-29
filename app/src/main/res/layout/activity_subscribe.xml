@@ -69,6 +69,7 @@
                     android:layout_height="0.5dp" />
 
                 <Button
+                    android:id="@+id/monthly_subscription"
                     android:padding="24dp"
                     android:textColor="@color/colorAccent"
                     android:layout_gravity="end"
@@ -149,6 +150,7 @@
                     android:layout_height="0.5dp" />
 
                 <Button
+                    android:id="@+id/annual_subscription"
                     android:padding="24dp"
                     android:textColor="@color/colorAccent"
                     android:layout_gravity="end"
