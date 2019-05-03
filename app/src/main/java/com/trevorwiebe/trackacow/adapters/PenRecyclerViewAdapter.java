@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder> {
+
+    private static final String TAG = "PenRecyclerViewAdapter";
 
     private ArrayList<PenEntity> mPenList;
     private ArrayList<LotEntity> mLotList;
@@ -56,7 +59,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
                 for (int q = 0; q < lotEntities.size(); q++) {
                     LotEntity lotEntity = lotEntities.get(q);
                     String lotName = lotEntity.getLotName();
-                    lotTextName.append(lotTextName).append(lotName).append("  ");
+                    lotTextName.append(lotName).append("  ");
                 }
                 penViewHolder.mLotNames.setText(lotTextName);
             } else {
