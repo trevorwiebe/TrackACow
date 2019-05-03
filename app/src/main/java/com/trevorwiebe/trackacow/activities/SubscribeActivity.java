@@ -22,7 +22,7 @@ public class SubscribeActivity extends AppCompatActivity {
         monthlySub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String monthly_url = getResources().getString(R.string.monthly_subscribe_url);
+                String monthly_url = "https://www.trackacow.net/subscription.html?sub_type=\"monthly\"";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(monthly_url));
                 startActivity(browserIntent);
             }
@@ -32,7 +32,7 @@ public class SubscribeActivity extends AppCompatActivity {
         annualSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String annually_url = getResources().getString(R.string.annually_subscribe_url);
+                String annually_url = "https://www.trackacow.net/subscription.html?sub_type=\"annually\"";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(annually_url));
                 startActivity(browserIntent);
             }
