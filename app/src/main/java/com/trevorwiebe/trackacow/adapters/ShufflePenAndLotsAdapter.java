@@ -22,6 +22,7 @@ import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.objects.ShuffleObject;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.DragHelper;
 import com.trevorwiebe.trackacow.utils.LotViewHolder;
 import com.trevorwiebe.trackacow.utils.PenViewHolder;
@@ -123,7 +124,7 @@ public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.
                 String penId = penShuffleObject.getId();
 
                 if (Utility.haveNetworkConnection(context)) {
-                    DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(LotEntity.LOT).child(lotId).child("penId");
+                    DatabaseReference baseRef = Constants.BASE_REFERENCE.child(LotEntity.LOT).child(lotId).child("penId");
                     baseRef.setValue(penId);
                 } else {
                     Utility.setNewDataToUpload(context, true);

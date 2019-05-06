@@ -183,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized() {
 
+        Log.d(TAG, "onSignedInInitialized: here");
+
         long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
@@ -287,68 +289,133 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onUserLoaded(UserEntity userEntity) {
-        if (userEntity.getAccountType() == UserEntity.FREE_TRIAL) {
-            long currentTime = System.currentTimeMillis();
-            long renewalDate = userEntity.getRenewalDate();
-            long timeElapsed = renewalDate - currentTime;
-            long daysLeft = (int) (timeElapsed / (1000 * 60 * 60 * 24));
-            String daysLeftStr = numberFormat.format(daysLeft);
-            if (daysLeft <= 0) {
-                AlertDialog.Builder accountEnded = new AlertDialog.Builder(MainActivity.this);
-                mBottomNavigationView.setVisibility(View.GONE);
-                mToolBar.setVisibility(View.GONE);
-                mMainLayout.setVisibility(View.GONE);
-                accountEnded.setTitle("Your free trial has ended");
-                accountEnded.setMessage("You will need to subscribe to a plan to continue.  All you data is saved and waiting for you.");
-                accountEnded.setCancelable(false);
-                accountEnded.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent manageSubscriptionIntent = new Intent(MainActivity.this, ManageSubscriptionActivity.class);
-                        startActivity(manageSubscriptionIntent);
-                    }
-                });
-                accountEnded.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-                accountEnded.show();
-            } else if (daysLeft <= 7) {
-                AlertDialog.Builder accountEnding = new AlertDialog.Builder(MainActivity.this);
-                accountEnding.setTitle("Free trial ends soon.");
-                accountEnding.setMessage("You have " + daysLeftStr + " day(s) left on your free trial.");
-                accountEnding.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utility.setShouldShowTrialEndsSoon(MainActivity.this, true);
-                        Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
-                    }
-                });
-                accountEnding.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-                accountEnding.setNeutralButton("Don't show again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utility.setShouldShowTrialEndsSoon(MainActivity.this, false);
-                        Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
-                    }
-                });
-                if (Utility.shouldShowTrialEndsSoon(MainActivity.this)) {
-                    accountEnding.show();
-                } else {
-                    Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+        long currentTime = System.currentTimeMillis();
+        long renewalDate = userEntity.getRenewalDate();
+        long timeElapsed = renewalDate - currentTime;
+        long daysLeft = (int) (timeElapsed / (1000 * 60 * 60 * 24));
+        String daysLeftStr = numberFormat.format(daysLeft);
+
+        String title;
+        String message = "You will need to subscribe to a plan to continue.  All you data is saved and waiting for you.";
+
+        switch (userEntity.getAccountType()) {
+            case UserEntity.FREE_TRIAL:
+
+                title = "Your free trial has ended.";
+
+                if (daysLeft <= 0) {
+                    showNoPassDialog(title, message);
+                    return;
                 }
-            } else {
+
+                if (daysLeft <= 7) {
+                    showPassableDialog("Free trial ends soon.", "You have " + daysLeftStr + " day(s) left on your free trial.  Please subscribe to avoid a stall in service.");
+                }
+
+                break;
+            case UserEntity.MONTHLY_SUBSCRIPTION:
+                title = "Your monthly subscription has ended.";
+
+                if (daysLeft <= -3) {
+                    showNoPassDialog(title, message);
+                    return;
+                }
+
+                if (daysLeft <= 0) {
+                    long daysLeftOnGracePeriod = daysLeft + 3;
+                    String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
+                    showPassableDialog("Monthly subscription has ended.", "But we will give you a 3 day grace period to get your account issues ironed out. There is/are " + daysLeftOnGracePeriodStr + " day(s) left on the grace period.");
+                }
+
+                break;
+            case UserEntity.ANNUAL_SUBSCRIPTION:
+                title = "Your annual subscription has ended.";
+
+                if (daysLeft <= -3) {
+                    showNoPassDialog(title, message);
+                    return;
+                }
+
+                if (daysLeft <= 0) {
+                    long daysLeftOnGracePeriod = daysLeft + 3;
+                    String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
+                    showPassableDialog("Monthly subscription has ended.", "But we will give you a 3 day grace period to get your account issues ironed out. There is/are " + daysLeftOnGracePeriodStr + " day(s) left on the grace period.");
+                }
+
+                break;
+            case UserEntity.CANCELED:
+                title = "Your account has been canceled.";
+                message = "You will need to re-subscribe to a plan to continue. Your data may be all saved yet.";
+                showNoPassDialog(title, message);
+                return;
+            case UserEntity.FOREVER_FREE_USER:
+                break;
+            default:
+                title = "Error";
+                message = "Unknown error occurred.  Please email support at app@trackacow.net for assistance.";
+                showNoPassDialog(title, message);
+                return;
+        }
+
+        mBottomNavigationView.setVisibility(View.VISIBLE);
+        mToolBar.setVisibility(View.VISIBLE);
+        mMainLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    private void showPassableDialog(String title, String message) {
+        AlertDialog.Builder accountEnding = new AlertDialog.Builder(MainActivity.this);
+        accountEnding.setTitle(title);
+        accountEnding.setMessage(message);
+        accountEnding.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Utility.setShouldShowTrialEndsSoon(MainActivity.this, true);
                 Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
             }
+        });
+        accountEnding.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        accountEnding.setNeutralButton("Don't show again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Utility.setShouldShowTrialEndsSoon(MainActivity.this, false);
+                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
+            }
+        });
+        if (Utility.shouldShowTrialEndsSoon(MainActivity.this)) {
+            accountEnding.show();
         } else {
             Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
         }
+    }
+
+    private void showNoPassDialog(String title, String message) {
+        AlertDialog.Builder accountEnded = new AlertDialog.Builder(MainActivity.this);
+        mBottomNavigationView.setVisibility(View.GONE);
+        mToolBar.setVisibility(View.GONE);
+        mMainLayout.setVisibility(View.GONE);
+        accountEnded.setTitle(title);
+        accountEnded.setMessage(message);
+        accountEnded.setCancelable(false);
+        accountEnded.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent subscribeActivity = new Intent(MainActivity.this, SubscribeActivity.class);
+                startActivity(subscribeActivity);
+            }
+        });
+        accountEnded.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        accountEnded.show();
     }
 }

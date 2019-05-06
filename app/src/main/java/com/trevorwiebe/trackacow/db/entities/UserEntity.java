@@ -18,8 +18,6 @@ public class UserEntity {
     public static final int FREE_TRIAL = 0;
     public static final int MONTHLY_SUBSCRIPTION = 1;
     public static final int ANNUAL_SUBSCRIPTION = 2;
-    public static final int GRACE_PERIOD = 3;
-    public static final int HOLD = 5;
     public static final int CANCELED = 6;
     public static final int FOREVER_FREE_USER = 7;
 
