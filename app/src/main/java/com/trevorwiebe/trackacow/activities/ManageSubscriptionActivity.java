@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,10 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.stripe.android.Stripe;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.QueryUserByUid;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ManageSubscriptionActivity extends AppCompatActivity implements
         QueryUserByUid.OnUserByUidLoaded {
@@ -38,6 +43,15 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 Intent subscribeActivity = new Intent(ManageSubscriptionActivity.this, SubscribeActivity.class);
                 startActivity(subscribeActivity);
+            }
+        });
+
+        mCancelSubscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String cancel = "https://www.trackacow.net/cancel.html";
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(cancel));
+                startActivity(browserIntent);
             }
         });
 
