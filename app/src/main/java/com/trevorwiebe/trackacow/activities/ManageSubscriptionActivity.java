@@ -18,6 +18,7 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
 
     private TextView mAccountType;
     private TextView mRenewalDate;
+    private TextView mSubLabelText;
     private Button mEditSubscription;
     private Button mCancelSubscription;
 
@@ -28,6 +29,7 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
 
         mAccountType = findViewById(R.id.account_type);
         mRenewalDate = findViewById(R.id.renewal_date);
+        mSubLabelText = findViewById(R.id.subscription_label_text);
         mEditSubscription = findViewById(R.id.edit_subscription);
         mCancelSubscription = findViewById(R.id.cancel_subscription);
 
@@ -52,6 +54,7 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         switch (accountType) {
             case UserEntity.FREE_TRIAL:
                 accountTypeStr = "Free Trial";
+                mSubLabelText.setText("Trial expires");
                 break;
             case UserEntity.FOREVER_FREE_USER:
                 accountTypeStr = "Forever Free User";

@@ -47,6 +47,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/subscription_label_text"
                     style="@style/Base.TextAppearance.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,7 +55,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Subscription expires"
+                    android:text="Subscription renews"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
