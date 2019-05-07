@@ -290,6 +290,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onUserLoaded(UserEntity userEntity) {
 
+        if (userEntity == null) return;
+
         long currentTime = System.currentTimeMillis();
         long renewalDate = userEntity.getRenewalDate();
         long timeElapsed = renewalDate - currentTime;

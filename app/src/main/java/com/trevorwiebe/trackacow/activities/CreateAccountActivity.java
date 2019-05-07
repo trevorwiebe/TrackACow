@@ -123,18 +123,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
-
-                                                                String uid = user.getUid();
-                                                                int accountType = UserEntity.FOREVER_FREE_USER;
-                                                                long dateCreated = System.currentTimeMillis();
-
-                                                                Calendar calendar = Calendar.getInstance();
-                                                                calendar.add(Calendar.MONTH, 1);
-
-                                                                UserEntity userEntity = new UserEntity(dateCreated, accountType, name, email, calendar.getTimeInMillis(), uid);
-                                                                saveUserToDatabase(userEntity);
-
-
                                                                 Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
                                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                                 startActivity(intent);
@@ -195,17 +183,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-
-                            String uid = task.getResult().getUser().getUid();
-                            int accountType = UserEntity.FREE_TRIAL;
-                            long dateCreated = System.currentTimeMillis();
-
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.add(Calendar.MONTH, 1);
-
-                            UserEntity userEntity = new UserEntity(dateCreated, accountType, name, email, calendar.getTimeInMillis(), uid);
-                            saveUserToDatabase(userEntity);
-
                             Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
@@ -235,16 +212,4 @@ public class CreateAccountActivity extends AppCompatActivity {
         mCreatingAccount.setVisibility(View.INVISIBLE);
     }
 
-    private void saveUserToDatabase(UserEntity userEntity) {
-
-        if (Utility.haveNetworkConnection(CreateAccountActivity.this)) {
-            DatabaseReference databaseReference = Constants.BASE_REFERENCE.child("user");
-            databaseReference.setValue(userEntity);
-        } else {
-            HoldingUserEntity holdingUserEntity = new HoldingUserEntity(userEntity, Constants.INSERT_UPDATE);
-            new InsertHoldingUserEntity(holdingUserEntity).execute(CreateAccountActivity.this);
-        }
-
-        new InsertNewUser(userEntity).execute(CreateAccountActivity.this);
-    }
 }
