@@ -18,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
@@ -252,6 +254,17 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
             }
         });
 
+        mMedicatedCows.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
+                } else {
+                    mMedicateACowFabMenu.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
