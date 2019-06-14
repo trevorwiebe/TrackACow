@@ -9,23 +9,23 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.stripe.android.Stripe;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.QueryUserByUid;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ManageSubscriptionActivity extends AppCompatActivity implements
-        QueryUserByUid.OnUserByUidLoaded {
+        QueryUserByUid.OnUserByUidLoaded,
+        SyncDatabase.OnDatabaseSynced {
 
     private TextView mAccountType;
     private TextView mRenewalDate;
     private TextView mSubLabelText;
     private Button mEditSubscription;
     private Button mCancelSubscription;
+
+    private boolean mNeedToSync = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,35 +63,54 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
     @Override
     public void onUserByUidLoaded(UserEntity userEntity) {
 
-        int accountType = userEntity.getAccountType();
-        String accountTypeStr = "";
-        switch (accountType) {
-            case UserEntity.FREE_TRIAL:
-                accountTypeStr = "Free Trial";
-                mSubLabelText.setText("Trial expires");
-                break;
-            case UserEntity.FOREVER_FREE_USER:
-                accountTypeStr = "Forever Free User";
-                break;
-            case UserEntity.MONTHLY_SUBSCRIPTION:
-                accountTypeStr = "Monthly Subscription";
-                break;
-            case UserEntity.ANNUAL_SUBSCRIPTION:
-                accountTypeStr = "Annual Subscription";
-                break;
-            default:
-                accountTypeStr = "Unknown Account Type";
-                break;
-        }
-        mAccountType.setText(accountTypeStr);
-
-        if (accountType == UserEntity.FOREVER_FREE_USER) {
-            mRenewalDate.setText("--/--/----");
-            mEditSubscription.setVisibility(View.GONE);
-            mCancelSubscription.setVisibility(View.GONE);
+        if (userEntity == null) {
+            if (mNeedToSync) {
+                mNeedToSync = false;
+                new SyncDatabase(ManageSubscriptionActivity.this, ManageSubscriptionActivity.this).beginSync();
+            } else {
+                // user is null
+                mAccountType.setText("Forever Free User");
+                mRenewalDate.setText("--/--/----");
+                mEditSubscription.setVisibility(View.GONE);
+                mCancelSubscription.setVisibility(View.GONE);
+            }
         } else {
-            String date = Utility.convertMillisToFriendlyDate(userEntity.getRenewalDate());
-            mRenewalDate.setText(date);
+            int accountType = userEntity.getAccountType();
+            String accountTypeStr = "";
+            switch (accountType) {
+                case UserEntity.FREE_TRIAL:
+                    accountTypeStr = "Free Trial";
+                    mSubLabelText.setText("Trial expires");
+                    break;
+                case UserEntity.FOREVER_FREE_USER:
+                    accountTypeStr = "Forever Free User";
+                    break;
+                case UserEntity.MONTHLY_SUBSCRIPTION:
+                    accountTypeStr = "Monthly Subscription";
+                    break;
+                case UserEntity.ANNUAL_SUBSCRIPTION:
+                    accountTypeStr = "Annual Subscription";
+                    break;
+                default:
+                    accountTypeStr = "Unknown Account Type";
+                    break;
+            }
+            mAccountType.setText(accountTypeStr);
+
+            if (accountType == UserEntity.FOREVER_FREE_USER) {
+                mRenewalDate.setText("--/--/----");
+                mEditSubscription.setVisibility(View.GONE);
+                mCancelSubscription.setVisibility(View.GONE);
+            } else {
+                String date = Utility.convertMillisToFriendlyDate(userEntity.getRenewalDate());
+                mRenewalDate.setText(date);
+            }
         }
+    }
+
+    @Override
+    public void onDatabaseSynced(int resultCode) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        new QueryUserByUid(uid, this).execute(this);
     }
 }
