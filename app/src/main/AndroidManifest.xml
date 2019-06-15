@@ -14,9 +14,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.WelcomeActivity"
-            android:theme="@style/WelcomeScreenTheme" />
-        <activity
             android:name=".activities.SubscribeActivity"
             android:label="Subscribe" />
         <activity

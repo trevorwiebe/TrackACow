@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
                     onSignedOutCleanUp();
-                    Intent welcomeIntent = new Intent(MainActivity.this, WelcomeActivity.class);
-                    startActivity(welcomeIntent);
+                    Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                    startActivity(signInIntent);
                 } else {
                     onSignedInInitialized();
                 }
