@@ -153,6 +153,7 @@ public class ManagePensActivity extends AppCompatActivity implements
                 View dialogView = LayoutInflater.from(ManagePensActivity.this).inflate(R.layout.dialog_add_new_pen, null);
                 final EditText editPenEditText = dialogView.findViewById(R.id.dialog_add_new_pen_edit_text);
                 editPenEditText.setText(selectedPenEntity.getPenName());
+                editPenEditText.setSelectAllOnFocus(true);
                 editPenEditText.setSelection(selectedPenEntity.getPenName().length());
 
                 final AlertDialog editPen = new AlertDialog.Builder(ManagePensActivity.this)

@@ -27,6 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:selectAllOnFocus="true"
                     android:hint="Drug name"
                     android:inputType="textCapWords" />
 
@@ -44,6 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:selectAllOnFocus="true"
                     android:hint="Default amount given"
                     android:inputType="number" />
 
