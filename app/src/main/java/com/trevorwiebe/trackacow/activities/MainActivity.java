@@ -275,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements
             case Constants.SUCCESS:
                 String uid = mFirebaseAuth.getCurrentUser().getUid();
                 new QueryUserEntity(uid, MainActivity.this).execute(MainActivity.this);
+                Utility.setNewDataToUpload(MainActivity.this, false);
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
                 Toast.makeText(this, "Error interpreting data from the cloud", Toast.LENGTH_SHORT).show();

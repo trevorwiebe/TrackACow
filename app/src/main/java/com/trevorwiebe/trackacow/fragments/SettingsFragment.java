@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {
@@ -24,6 +26,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
 
     private AlertDialog.Builder mBackingUpData;
 
+    private static final String TAG = "SettingsFragment";
 
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
@@ -45,14 +48,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
             accountNamePref.setSummary(accountName);
         }
 
-        Preference subscriptionPref = findPreference("subscription");
-//        subscriptionPref.setVisible(false);
-
         Preference signOutPref = findPreference("sign_out");
         signOutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                boolean isThereLocalData = Utility.isThereNewDataToUpload(getContext());
+                boolean isThereLocalData = Utility.isThereNewDataToUpload(mContext);
                 if (isThereLocalData) {
                     AlertDialog.Builder thereIsDataDialog = new AlertDialog.Builder(getContext());
                     thereIsDataDialog.setPositiveButton("Backup and sign out", new DialogInterface.OnClickListener() {
@@ -69,24 +69,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
                     thereIsDataDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Utility.setNewDataToUpload(getContext(), false);
-                            new DeleteAllLocalData().execute(getContext());
-                            FirebaseAuth.getInstance().signOut();
-                            if (getActivity() != null) {
-                                getActivity().finish();
-                            }
+                            signOut();
                         }
                     });
                     thereIsDataDialog.setTitle("Information will be lost");
                     thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.");
                     thereIsDataDialog.show();
                 } else {
-                    Utility.setNewDataToUpload(getContext(), false);
-                    new DeleteAllLocalData().execute(getContext());
-                    FirebaseAuth.getInstance().signOut();
-                    if (getActivity() != null) {
-                        getActivity().finish();
-                    }
+                    signOut();
                 }
                 return false;
             }
@@ -108,14 +98,56 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
 
     @Override
     public void onAllLocalDbInsertedToCloud(int resultCode) {
-        if (mBackingUpData != null) {
-            AlertDialog createDialog = mBackingUpData.create();
-            createDialog.dismiss();
+        if (resultCode == Constants.SUCCESS) {
+            if (mBackingUpData != null) {
+                AlertDialog createDialog = mBackingUpData.create();
+                createDialog.dismiss();
+            }
+            signOut();
+        } else {
+            String message = "";
+            switch (resultCode) {
+                case Constants.NO_NETWORK_CONNECTION:
+                    message = "You do not have a connection, please connect so you can push your data to the cloud.";
+                    break;
+                case Constants.ERROR_PUSHING_DATA_TO_CLOUD:
+                    message = "There was an error pushing your data to the cloud.";
+                    break;
+                default:
+                    message = "An unknown error occurred while pushing your data to the cloud.";
+                    break;
+            }
+            AlertDialog.Builder errorBackingUpDialog = new AlertDialog.Builder(mContext);
+            errorBackingUpDialog.setTitle("There was an error backing up your data.");
+            errorBackingUpDialog.setMessage(message);
+            errorBackingUpDialog.setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new InsertAllLocalChangeToCloud(SettingsFragment.this).execute(getContext());
+                }
+            });
+            errorBackingUpDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            errorBackingUpDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    signOut();
+                }
+            });
+            errorBackingUpDialog.show();
         }
+    }
+
+    private void signOut() {
         FirebaseAuth.getInstance().signOut();
         if (getActivity() != null) {
             getActivity().finish();
         }
-        Utility.setNewDataToUpload(getContext(), false);
+        new DeleteAllLocalData().execute(getContext());
+        Utility.setNewDataToUpload(mContext, false);
     }
 }
