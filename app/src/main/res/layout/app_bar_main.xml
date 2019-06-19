@@ -26,7 +26,6 @@
         </android.support.design.widget.AppBarLayout>
 
         <ProgressBar
-            android:visibility="invisible"
             android:id="@+id/main_progress_bar"
             android:scaleY="1.5"
             android:layout_marginTop="-6dp"
@@ -41,7 +40,7 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="60dp"
         android:layout_marginBottom="56dp" />
 
     <android.support.design.widget.BottomNavigationView

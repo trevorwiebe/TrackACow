@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements
         mToolBar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
 
-
         mMainLayout = findViewById(R.id.main_fragment_container);
         mMainProgressBar = findViewById(R.id.main_progress_bar);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -138,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 Utility.saveLastUsedScreen(MainActivity.this, mLastUsedScreen);
-
-                Log.d(TAG, "onNavigationItemSelected: " + Utility.getLastUsedScreen(MainActivity.this));
 
                 return true;
             }
@@ -278,9 +275,13 @@ public class MainActivity extends AppCompatActivity implements
                 Utility.setNewDataToUpload(MainActivity.this, false);
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
-                Toast.makeText(this, "Error interpreting data from the cloud", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "There was an error fetching the data from the cloud.", Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.ERROR_PUSHING_DATA_TO_CLOUD:
+                Toast.makeText(this, "There was an error pushing data to the cloud.", Toast.LENGTH_SHORT).show();
                 break;
             case Constants.NO_NETWORK_CONNECTION:
+                Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Toast.makeText(this, "An unknown error occurred while syncing database", Toast.LENGTH_SHORT).show();
