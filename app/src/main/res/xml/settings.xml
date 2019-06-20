@@ -61,11 +61,6 @@
                 android:data="@string/privacy_policy_url" />
         </Preference>
 
-        <Preference
-            android:selectable="false"
-            android:key="terms_of_service"
-            android:title="Terms of Service" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

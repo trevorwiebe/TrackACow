@@ -253,18 +253,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 new SyncDatabase(MedicatedCowsActivity.this, MedicatedCowsActivity.this).beginSync();
             }
         });
-
-        mMedicatedCows.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1)) {
-                    mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
-                } else {
-                    mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-                }
-            }
-        });
     }
 
     @Override
@@ -297,9 +285,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        if(mIsActive){
+        if (mIsActive) {
             searchItem.setVisible(true);
-        }else{
+        } else {
             searchItem.setVisible(false);
         }
 
