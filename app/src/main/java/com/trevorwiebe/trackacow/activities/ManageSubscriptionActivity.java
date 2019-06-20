@@ -6,12 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.QueryUserByUid;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -24,8 +27,7 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
     private TextView mSubLabelText;
     private Button mEditSubscription;
     private Button mCancelSubscription;
-
-    private boolean mNeedToSync = true;
+    private FrameLayout mLoadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         mSubLabelText = findViewById(R.id.subscription_label_text);
         mEditSubscription = findViewById(R.id.edit_subscription);
         mCancelSubscription = findViewById(R.id.cancel_subscription);
+        mLoadingLayout = findViewById(R.id.loading_layout);
 
         mEditSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,27 +57,33 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
                 startActivity(browserIntent);
             }
         });
+    }
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        new QueryUserByUid(uid, this).execute(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new SyncDatabase(ManageSubscriptionActivity.this, ManageSubscriptionActivity.this).beginSync();
+    }
 
+    @Override
+    public void onDatabaseSynced(int resultCode) {
+        if (resultCode == Constants.SUCCESS) {
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            new QueryUserByUid(uid, this).execute(this);
+        } else {
+            Toast.makeText(this, "There was an error syncing to cloud", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onUserByUidLoaded(UserEntity userEntity) {
-
         if (userEntity == null) {
-            if (mNeedToSync) {
-                mNeedToSync = false;
-                new SyncDatabase(ManageSubscriptionActivity.this, ManageSubscriptionActivity.this).beginSync();
-            } else {
-                // user is null
-                mAccountType.setText("Forever Free User");
-                mRenewalDate.setText("--/--/----");
-                mEditSubscription.setVisibility(View.GONE);
-                mCancelSubscription.setVisibility(View.GONE);
-            }
+            mAccountType.setText("Forever Free User");
+            mRenewalDate.setText("--/--/----");
+            mEditSubscription.setVisibility(View.GONE);
+            mCancelSubscription.setVisibility(View.GONE);
         } else {
+
             int accountType = userEntity.getAccountType();
             String accountTypeStr = "";
             switch (accountType) {
@@ -106,11 +115,6 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
                 mRenewalDate.setText(date);
             }
         }
-    }
-
-    @Override
-    public void onDatabaseSynced(int resultCode) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        new QueryUserByUid(uid, this).execute(this);
+        mLoadingLayout.setVisibility(View.GONE);
     }
 }

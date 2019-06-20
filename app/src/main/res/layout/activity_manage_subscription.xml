@@ -1,100 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.ManageSubscriptionActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
+        android:elevation="8dp"
+        android:id="@+id/loading_layout"
+        android:background="@color/twenty_percent_transparent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
+        <ProgressBar
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.ManageSubscriptionActivity">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Button"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Account type"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/account_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Account type"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/subscription_label_text"
-                    style="@style/Base.TextAppearance.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Subscription renews"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/account_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/renewal_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/subscription_label_text"
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Subscription renews"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
 
-                <Button
-                    android:id="@+id/edit_subscription"
-                    style="?buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
-                    android:background="@android:color/white"
-                    android:padding="24dp"
-                    android:text="Edit subscription"
-                    android:textColor="@color/colorPrimaryDark" />
+                    <TextView
+                        android:id="@+id/renewal_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/edit_subscription"
+                        style="?buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/white"
+                        android:padding="24dp"
+                        android:text="Edit subscription"
+                        android:textColor="@color/colorPrimaryDark" />
 
-        </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/card_subscription"
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Card on file"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
 
-        <Button
-            android:background="@android:color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:padding="24dp"
-            android:id="@+id/cancel_subscription"
-            android:text="Cancel Subscription"
-            android:textColor="@color/redText" />
+                </LinearLayout>
 
-    </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-</ScrollView>
+            <Button
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:padding="24dp"
+                android:id="@+id/cancel_subscription"
+                android:text="Cancel Subscription"
+                android:textColor="@color/redText" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>
