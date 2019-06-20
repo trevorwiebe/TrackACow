@@ -87,18 +87,6 @@
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
-                    <Button
-                        android:id="@+id/edit_subscription"
-                        style="?buttonBarButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:background="@android:color/white"
-                        android:padding="24dp"
-                        android:text="Edit subscription"
-                        android:textColor="@color/colorPrimaryDark" />
-
                     <TextView
                         android:id="@+id/card_subscription"
                         style="@style/Base.TextAppearance.AppCompat.Button"
@@ -111,6 +99,29 @@
                         android:text="Card on file"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/card_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="**** **** **** 4242"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/edit_subscription"
+                        style="?buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/white"
+                        android:padding="24dp"
+                        android:text="Edit subscription"
+                        android:textColor="@color/colorPrimaryDark" />
 
                 </LinearLayout>
 
