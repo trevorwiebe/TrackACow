@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="General">
+    <!--<PreferenceCategory android:title="General">-->
 
-        <Preference
-            android:selectable="false"
-            android:summary="No general settings" />
+    <!--<Preference-->
+    <!--android:selectable="false"-->
+    <!--android:summary="No general settings" />-->
 
-    </PreferenceCategory>
+    <!--</PreferenceCategory>-->
 
     <PreferenceCategory android:title="Account">
 
@@ -38,7 +38,7 @@
         <Preference
             android:key="feedback"
             android:title="Send feedback"
-            android:summary="Report technical issues or suggest new features">
+            android:summary="Report technical issues or suggest new features.">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/contact_developer_uri">
@@ -46,6 +46,13 @@
                     android:name="android.intent.extra.SUBJECT"
                     android:value="Feedback about Track-A-Cow Android App" />
             </intent>
+        </Preference>
+
+        <Preference
+            android:key="five_star_review"
+            android:title="Give a 5-star review"
+            android:summary="This app has been developed by a solo developer.  If you like the app, please support me by leaving a 5-star review!">
+            <intent android:action="android.intent.action.VIEW"></intent>
         </Preference>
 
         <Preference
