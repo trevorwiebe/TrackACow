@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -22,6 +23,7 @@ public class ViewCattleListAdapter extends RecyclerView.Adapter<ViewCattleListAd
     private ArrayList<LoadEntity> loadEntities = new ArrayList<>();
     private NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
+    private static final String TAG = "ViewCattleListAdapter";
 
     public ViewCattleListAdapter() {
     }
@@ -52,10 +54,12 @@ public class ViewCattleListAdapter extends RecyclerView.Adapter<ViewCattleListAd
 
         viewCattleViewHolder.mHeadAdded.setText(strHeadAddedStr);
         viewCattleViewHolder.mDate.setText(strDate);
-        if (notes != null) {
-            viewCattleViewHolder.mNotes.setText("Memo: " + notes);
+        Log.d(TAG, "onBindViewHolder: " + notes);
+        if (notes == null || notes.length() == 0) {
+            viewCattleViewHolder.mNotes.setVisibility(View.GONE);
         } else {
-            viewCattleViewHolder.mNotes.setText("Memo:");
+            viewCattleViewHolder.mNotes.setVisibility(View.VISIBLE);
+            viewCattleViewHolder.mNotes.setText("Memo: " + notes);
         }
     }
 
