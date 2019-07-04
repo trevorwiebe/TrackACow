@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
     private TextView mAccountType;
     private TextView mRenewalDate;
     private TextView mSubLabelText;
+    private TextView mCardLabel;
+    private TextView mCardNumber;
     private Button mEditSubscription;
     private Button mCancelSubscription;
     private FrameLayout mLoadingLayout;
@@ -37,6 +40,8 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         mAccountType = findViewById(R.id.account_type);
         mRenewalDate = findViewById(R.id.renewal_date);
         mSubLabelText = findViewById(R.id.subscription_label_text);
+        mCardLabel = findViewById(R.id.card_number_label);
+        mCardNumber = findViewById(R.id.card_number);
         mEditSubscription = findViewById(R.id.edit_subscription);
         mCancelSubscription = findViewById(R.id.cancel_subscription);
         mLoadingLayout = findViewById(R.id.loading_layout);
@@ -70,8 +75,21 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
         if (resultCode == Constants.SUCCESS) {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             new QueryUserByUid(uid, this).execute(this);
+        } else if (resultCode == Constants.NO_NETWORK_CONNECTION) {
+            Snackbar.make(mLoadingLayout, "No connection", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Try Again", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mLoadingLayout.setVisibility(View.VISIBLE);
+                            new SyncDatabase(ManageSubscriptionActivity.this, ManageSubscriptionActivity.this).beginSync();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(R.color.yellow))
+                    .show();
+            mLoadingLayout.setVisibility(View.GONE);
         } else {
             Toast.makeText(this, "There was an error syncing to cloud", Toast.LENGTH_SHORT).show();
+            mLoadingLayout.setVisibility(View.GONE);
         }
     }
 
@@ -96,9 +114,11 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
                     break;
                 case UserEntity.MONTHLY_SUBSCRIPTION:
                     accountTypeStr = "Monthly Subscription";
+                    loadAndSetCardDetails();
                     break;
                 case UserEntity.ANNUAL_SUBSCRIPTION:
                     accountTypeStr = "Annual Subscription";
+                    loadAndSetCardDetails();
                     break;
                 default:
                     accountTypeStr = "Unknown Account Type";
@@ -116,5 +136,10 @@ public class ManageSubscriptionActivity extends AppCompatActivity implements
             }
         }
         mLoadingLayout.setVisibility(View.GONE);
+    }
+
+    private void loadAndSetCardDetails() {
+        mCardLabel.setVisibility(View.VISIBLE);
+        mCardNumber.setVisibility(View.VISIBLE);
     }
 }

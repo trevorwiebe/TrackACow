@@ -88,7 +88,8 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/card_subscription"
+                        android:id="@+id/card_number_label"
+                        android:visibility="gone"
                         style="@style/Base.TextAppearance.AppCompat.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -102,6 +103,7 @@
 
                     <TextView
                         android:id="@+id/card_number"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
