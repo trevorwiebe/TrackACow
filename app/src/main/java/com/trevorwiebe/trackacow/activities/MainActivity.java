@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -360,8 +361,8 @@ public class MainActivity extends AppCompatActivity implements
         accountEnded.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent subscribeActivity = new Intent(MainActivity.this, SubscribeActivity.class);
-                startActivity(subscribeActivity);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.manage_sub_url)));
+                startActivity(browserIntent);
             }
         });
         accountEnded.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

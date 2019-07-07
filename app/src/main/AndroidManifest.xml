@@ -14,19 +14,12 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.SubscribeActivity"
-            android:label="Subscribe" />
-        <activity
             android:name=".activities.EditLoadActivity"
             android:label="Edit cattle added"
             android:parentActivityName=".activities.LotReportActivity" />
         <activity
             android:name=".activities.AddLoadOfCattleActivity"
             android:label="Add cattle" />
-        <activity
-            android:name=".activities.ManageSubscriptionActivity"
-            android:label="Manage Subscription"
-            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.FeedLotActivity"
             android:label="Feed Lot"
