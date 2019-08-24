@@ -1,9 +1,11 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.app.DatePickerDialog;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,12 +14,9 @@ import android.widget.DatePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLoad;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.InsertLoadEntity;
-import com.trevorwiebe.trackacow.dataLoaders.InsertLotEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 

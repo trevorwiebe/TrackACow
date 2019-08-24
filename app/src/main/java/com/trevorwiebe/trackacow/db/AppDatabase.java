@@ -1,16 +1,14 @@
 package com.trevorwiebe.trackacow.db;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import android.content.Context;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.firebase.ui.auth.data.model.User;
+import androidx.annotation.NonNull;
+
 import com.trevorwiebe.trackacow.db.dao.ArchivedLotDao;
 import com.trevorwiebe.trackacow.db.dao.CallDao;
 import com.trevorwiebe.trackacow.db.dao.CowDao;
@@ -47,10 +45,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
-import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
-
-import java.util.List;
 
 @Database(entities = {
         PenEntity.class,

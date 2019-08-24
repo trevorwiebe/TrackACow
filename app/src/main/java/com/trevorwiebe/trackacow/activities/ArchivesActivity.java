@@ -1,10 +1,12 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +14,6 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.ArchiveRvAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLots;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
-import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 

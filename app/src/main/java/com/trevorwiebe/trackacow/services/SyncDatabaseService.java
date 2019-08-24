@@ -1,28 +1,13 @@
 package com.trevorwiebe.trackacow.services;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
-import com.trevorwiebe.trackacow.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
-import com.trevorwiebe.trackacow.utils.Utility;
-
-import java.util.ArrayList;
 
 public class SyncDatabaseService extends JobService implements SyncDatabase.OnDatabaseSynced {
 

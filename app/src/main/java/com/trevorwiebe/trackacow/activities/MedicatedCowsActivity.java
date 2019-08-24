@@ -3,23 +3,23 @@ package com.trevorwiebe.trackacow.activities;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
@@ -170,7 +170,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 mNoMedicatedCows.setVisibility(View.VISIBLE);
                 setActive();
 
-                android.support.v7.app.ActionBar ab = getSupportActionBar();
+                androidx.appcompat.app.ActionBar ab = getSupportActionBar();
                 if (ab != null) {
                     ab.setSubtitle(lotName);
                 }
@@ -345,7 +345,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
     @Override
     public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        androidx.appcompat.app.ActionBar ab = getSupportActionBar();
         if (lotEntities.size() == 0) {
             setInActive();
         } else {

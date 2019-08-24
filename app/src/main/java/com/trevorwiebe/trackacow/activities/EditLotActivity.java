@@ -2,9 +2,11 @@ package com.trevorwiebe.trackacow.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,9 +24,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
-import java.text.NumberFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class EditLotActivity extends AppCompatActivity implements
         QueryLotByLotId.OnLotByLotIdLoaded {

@@ -1,22 +1,16 @@
 package com.trevorwiebe.trackacow.adapters;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
+import androidx.annotation.NonNull;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.InsertCallEntity;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateCallById;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.utils.Utility;

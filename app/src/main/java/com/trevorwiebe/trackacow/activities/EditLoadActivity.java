@@ -3,9 +3,11 @@ package com.trevorwiebe.trackacow.activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,8 +28,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Locale;
-
-import javax.xml.transform.Result;
 
 public class EditLoadActivity extends AppCompatActivity implements
         QueryLoadsByLoadId.OnLoadsByLoadIdLoaded {

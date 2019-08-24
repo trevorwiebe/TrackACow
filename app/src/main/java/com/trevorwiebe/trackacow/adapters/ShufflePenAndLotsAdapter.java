@@ -1,26 +1,22 @@
 package com.trevorwiebe.trackacow.adapters;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.PrimaryKey;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateHoldingLot;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateLotWithNewPenId;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.objects.ShuffleObject;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.DragHelper;
@@ -29,7 +25,6 @@ import com.trevorwiebe.trackacow.utils.PenViewHolder;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
 
 
 public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
