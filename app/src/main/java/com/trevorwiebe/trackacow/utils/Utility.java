@@ -159,7 +159,7 @@ public class Utility {
 
     public static long getLastSync(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.last_sync_name), Context.MODE_PRIVATE);
-        return sharedPreferences.getLong(context.getResources().getString(R.string.last_sync_key), System.currentTimeMillis());
+        return sharedPreferences.getLong(context.getResources().getString(R.string.last_sync_key), 0);
     }
 
     public static void setShouldShowTrialEndsSoon(Context context, boolean shouldShow) {

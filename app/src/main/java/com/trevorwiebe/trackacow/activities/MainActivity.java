@@ -172,14 +172,23 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized() {
 
-        Log.d(TAG, "onSignedInInitialized: here");
-
         long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
-        long twoHoursInMillis = TimeUnit.HOURS.toMillis(2);
-        mMainProgressBar.setVisibility(View.VISIBLE);
-        new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+        long oneMinuteInMillis = TimeUnit.MINUTES.toMillis(1);
+        Log.d(TAG, "onSignedInInitialized: currentTime " + currentTime);
+        Log.d(TAG, "onSignedInInitialized: timeElapsed " + timeElapsed);
+        Log.d(TAG, "onSignedInInitialized: lastSync " + lastSync);
+        Log.d(TAG, "onSignedInInitialized: oneMinuteInMillis " + oneMinuteInMillis);
+        if (lastSync == 0) {
+            Log.d(TAG, "onSignedInInitialized: here1");
+            mMainProgressBar.setVisibility(View.VISIBLE);
+            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+        } else if (timeElapsed > oneMinuteInMillis) {
+            Log.d(TAG, "onSignedInInitialized: here2");
+            mMainProgressBar.setVisibility(View.VISIBLE);
+            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+        }
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
@@ -252,55 +261,57 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (daysLeft <= 0) {
                     showNoPassDialog(title, message);
-                    return;
-                }
-
-                if (daysLeft <= 7) {
+                    Utility.setLastSync(this, 0);
+                } else if (daysLeft <= 7) {
                     showPassableDialog("Free trial ends soon.", "You have " + daysLeftStr + " day(s) left on your free trial.  Please subscribe to avoid a stall in service.");
+                    Utility.setLastSync(this, System.currentTimeMillis());
+                } else {
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 }
-
                 break;
             case UserEntity.MONTHLY_SUBSCRIPTION:
                 title = "Your monthly subscription has ended.";
 
                 if (daysLeft <= -3) {
                     showNoPassDialog(title, message);
-                    return;
-                }
-
-                if (daysLeft <= 0) {
+                    Utility.setLastSync(this, 0);
+                } else if (daysLeft <= 0) {
                     long daysLeftOnGracePeriod = daysLeft + 3;
                     String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
                     showPassableDialog("Monthly subscription has ended.", "But we will give you a 3 day grace period to get your account issues ironed out. There is/are " + daysLeftOnGracePeriodStr + " day(s) left on the grace period.");
+                    Utility.setLastSync(this, System.currentTimeMillis());
+                } else {
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 }
-
                 break;
             case UserEntity.ANNUAL_SUBSCRIPTION:
                 title = "Your annual subscription has ended.";
 
                 if (daysLeft <= -3) {
                     showNoPassDialog(title, message);
-                    return;
-                }
-
-                if (daysLeft <= 0) {
+                    Utility.setLastSync(this, 0);
+                } else if (daysLeft <= 0) {
                     long daysLeftOnGracePeriod = daysLeft + 3;
                     String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
                     showPassableDialog("Monthly subscription has ended.", "But we will give you a 3 day grace period to get your account issues ironed out. There is/are " + daysLeftOnGracePeriodStr + " day(s) left on the grace period.");
+                    Utility.setLastSync(this, System.currentTimeMillis());
+                } else {
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 }
-
                 break;
             case UserEntity.CANCELED:
                 title = "Your account has been canceled.";
                 message = "You will need to re-subscribe to a plan to continue. Your data may be all saved yet.";
                 showNoPassDialog(title, message);
-                return;
+                Utility.setLastSync(this, 0);
             case UserEntity.FOREVER_FREE_USER:
+                Utility.setLastSync(this, System.currentTimeMillis());
                 break;
             default:
                 title = "Error";
                 message = "Unknown error occurred.  Please email support at app@trackacow.net for assistance.";
                 showNoPassDialog(title, message);
+                Utility.setLastSync(this, 0);
                 return;
         }
 
@@ -318,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Utility.setShouldShowTrialEndsSoon(MainActivity.this, true);
-                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
             }
         });
         accountEnding.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
@@ -331,13 +341,10 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Utility.setShouldShowTrialEndsSoon(MainActivity.this, false);
-                Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
             }
         });
         if (Utility.shouldShowTrialEndsSoon(MainActivity.this)) {
             accountEnding.show();
-        } else {
-            Utility.setLastSync(MainActivity.this, System.currentTimeMillis());
         }
     }
 
