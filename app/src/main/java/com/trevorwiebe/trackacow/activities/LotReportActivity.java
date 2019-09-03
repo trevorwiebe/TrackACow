@@ -47,6 +47,7 @@ import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.objects.DrugReportsObject;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -91,6 +92,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private LinearLayout mDrugsUsedLayout;
     private ProgressBar mLoadingReports;
     private TextView mNoDrugReports;
+    private Button mDrugReports;
     private TextView mHeadDays;
     private TextView mNoCattleReceived;
 
@@ -127,6 +129,7 @@ public class LotReportActivity extends AppCompatActivity implements
         mDate = findViewById(R.id.reports_date);
         mNotes = findViewById(R.id.reports_notes);
         mHeadDays = findViewById(R.id.reports_head_days);
+        mDrugReports = findViewById(R.id.drug_reports_button);
         RecyclerView viewLoadsOfCattle = findViewById(R.id.view_loads_of_cattle);
         mNoCattleReceived = findViewById(R.id.no_cattle_received_tv);
         viewLoadsOfCattle.setLayoutManager(new LinearLayoutManager(this));
@@ -148,7 +151,13 @@ public class LotReportActivity extends AppCompatActivity implements
 
             }
         }));
-
+        mDrugReports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent drugReports = new Intent(LotReportActivity.this, DrugReportActivity.class);
+                startActivity(drugReports);
+            }
+        });
     }
 
     @Override
@@ -239,7 +248,7 @@ public class LotReportActivity extends AppCompatActivity implements
                 drugName = "[drug_unavailable]";
             }
 
-            String textToSet = Integer.toString(drugReportsObject.drugAmount) + " ccs of " + drugName;
+            String textToSet = drugReportsObject.getDrugAmount() + " units of " + drugName;
 
             TextView textView = new TextView(LotReportActivity.this);
             LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(
@@ -453,31 +462,4 @@ public class LotReportActivity extends AppCompatActivity implements
         }
     }
 
-    @Keep
-    private class DrugReportsObject {
-
-        private String drugId;
-        private int drugAmount;
-
-        private DrugReportsObject(String drugId, int drugAmount) {
-            this.drugAmount = drugAmount;
-            this.drugId = drugId;
-        }
-
-        private int getDrugAmount() {
-            return drugAmount;
-        }
-
-        private void setDrugAmount(int drugAmount) {
-            this.drugAmount = drugAmount;
-        }
-
-        public String getDrugId() {
-            return drugId;
-        }
-
-        public void setDrugId(String drugId) {
-            this.drugId = drugId;
-        }
-    }
 }

@@ -14,6 +14,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".activities.DrugReportActivity"
+            android:label="Drug Reports"
+            android:parentActivityName=".activities.LotReportActivity" />
+        <activity
             android:name=".activities.EditLoadActivity"
             android:label="Edit cattle added"
             android:parentActivityName=".activities.LotReportActivity" />

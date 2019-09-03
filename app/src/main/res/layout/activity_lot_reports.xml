@@ -184,6 +184,28 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
+                        android:text="Head days"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/reports_head_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
                         android:text="Death loss"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -248,28 +270,6 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Head days"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/reports_head_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
                         android:text="Drugs used"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -301,6 +301,22 @@
                         android:orientation="vertical">
 
                     </LinearLayout>
+
+                    <Button
+                        android:padding="10dp"
+                        style="?buttonBarButtonStyle"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/colorAccent"
+                        android:text="Drug Report"
+                        android:visibility="gone"
+                        android:id="@+id/drug_reports_button"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
