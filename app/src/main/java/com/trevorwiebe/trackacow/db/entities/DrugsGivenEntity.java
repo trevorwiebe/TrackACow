@@ -18,7 +18,7 @@ public class DrugsGivenEntity {
     @ColumnInfo(name = "primaryKey")
     public int primaryKey;
 
-    @ColumnInfo(name = "drugGiveId")
+    @ColumnInfo(name = "drugGivenId")
     public String drugGivenId;
 
     @ColumnInfo(name = "drugId")
@@ -33,12 +33,16 @@ public class DrugsGivenEntity {
     @ColumnInfo(name = "lotId")
     public String lotId;
 
-    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, String cowId, String lotId) {
+    @ColumnInfo(name = "date")
+    public long date;
+
+    public DrugsGivenEntity(String drugGivenId, String drugId, int amountGiven, String cowId, String lotId, long date) {
         this.drugGivenId = drugGivenId;
         this.drugId = drugId;
         this.amountGiven = amountGiven;
         this.cowId = cowId;
         this.lotId = lotId;
+        this.date = date;
     }
 
     @Ignore
@@ -90,5 +94,13 @@ public class DrugsGivenEntity {
 
     public void setLotId(String lotId) {
         this.lotId = lotId;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 }

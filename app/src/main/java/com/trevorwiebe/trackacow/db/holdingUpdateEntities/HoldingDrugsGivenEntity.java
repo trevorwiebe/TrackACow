@@ -31,6 +31,9 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "lotId")
     private String lotId;
 
+    @ColumnInfo(name = "date")
+    private long date;
+
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
@@ -43,6 +46,7 @@ public class HoldingDrugsGivenEntity {
         this.amountGiven = drugsGivenEntity.getAmountGiven();
         this.cowId = drugsGivenEntity.getCowId();
         this.lotId = drugsGivenEntity.getLotId();
+        this.date = drugsGivenEntity.getDate();
         this.whatHappened = whatHappened;
     }
 
@@ -92,6 +96,14 @@ public class HoldingDrugsGivenEntity {
 
     public void setLotId(String lotId) {
         this.lotId = lotId;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public int getWhatHappened() {

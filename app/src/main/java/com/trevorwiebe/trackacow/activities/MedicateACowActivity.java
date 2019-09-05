@@ -355,6 +355,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
                                     drugsGivenEntity.setLotId(mSelectedLot.getLotId());
                                     drugsGivenEntity.setDrugGivenId(drugsGivenKey);
+                                    drugsGivenEntity.setDate(System.currentTimeMillis());
 
                                     drugList.add(drugsGivenEntity);
 

@@ -67,7 +67,7 @@ import com.trevorwiebe.trackacow.utils.Utility;
         HoldingUserEntity.class,
         HoldingLoadEntity.class
 },
-        version = 2, exportSchema = false)
+        version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -137,12 +137,33 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            // create new drugGiven tables
+            database.execSQL("CREATE TABLE DrugsGiven_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugGivenId TEXT, drugId TEXT, amountGiven INTEGER NOT NULL, cowId TEXT, lotId TEXT, date INTEGER NOT NULL)");
+            database.execSQL("CREATE TABLE HoldingDrugsGiven_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugGivenId TEXT, drugId TEXT, amountGiven INTEGER NOT NULL, cowId TEXT, lotId TEXT, date INTEGER NOT NULL, whatHappened INTEGER NOT NULL)");
+            // insert the old data into the new table
+            database.execSQL("INSERT INTO DrugsGiven_new (drugGivenId, drugId, amountGiven, cowId, lotId, date) SELECT drugGiveId, drugId, amountGiven, cowId, lotId, 0 FROM DrugsGiven");
+            database.execSQL("INSERT INTO HoldingDrugsGiven_new (drugGivenId, drugId, amountGiven, cowId, lotId, date, whatHappened) SELECT drugGiveId, drugId, amountGiven, cowId, lotId, 0, 1 FROM DrugsGiven");
+            // delete the old drugGiven tables
+            database.execSQL("DROP TABLE DrugsGiven");
+            database.execSQL("DROP TABLE HoldingDrugsGiven");
+            // rename the new drugGiven tables to the old names
+            database.execSQL("ALTER TABLE DrugsGiven_new RENAME TO DrugsGiven");
+            database.execSQL("ALTER TABLE HoldingDrugsGiven_new RENAME TO HoldingDrugsGiven");
+
+        }
+    };
+
     public static AppDatabase getAppDatabase(Context context){
         if(INSTANCE == null){
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     AppDatabase.class,
                     "track_a_cow_db")
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build();
 
             Utility.setNewDataToUpload(context, true);
