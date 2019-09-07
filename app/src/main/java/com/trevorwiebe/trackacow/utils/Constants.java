@@ -24,4 +24,9 @@ public class Constants {
 
     public static final int LOT = 1;
     public static final int ARCHIVE = 2;
+
+    /* time drug report types */
+    public static final int DAY_DRUG_REPORT = 1;
+    public static final int WEEK_DRUG_REPORT = 2;
+    public static final int MONTH_DRUG_REPORT = 3;
 }

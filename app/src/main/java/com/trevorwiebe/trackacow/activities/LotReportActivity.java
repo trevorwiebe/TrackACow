@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 
-import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -154,7 +153,8 @@ public class LotReportActivity extends AppCompatActivity implements
         mDrugReports.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent drugReports = new Intent(LotReportActivity.this, DrugReportActivity.class);
+                Intent drugReports = new Intent(LotReportActivity.this, DrugsGivenReportActivity.class);
+                drugReports.putExtra("lotId", mLotId);
                 startActivity(drugReports);
             }
         });

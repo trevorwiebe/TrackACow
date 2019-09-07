@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -66,13 +61,11 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/day_drug_report_rv"
+    <com.trevorwiebe.trackacow.utils.CustomDrugReportViewPager
+        android:id="@+id/day_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
+    </com.trevorwiebe.trackacow.utils.CustomDrugReportViewPager>
 
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

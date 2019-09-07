@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.DrugReportActivity"
+            android:name=".activities.DrugsGivenReportActivity"
             android:label="Drug Reports"
             android:parentActivityName=".activities.LotReportActivity" />
         <activity

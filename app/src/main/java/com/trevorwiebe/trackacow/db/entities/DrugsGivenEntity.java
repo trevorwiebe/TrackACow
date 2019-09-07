@@ -1,5 +1,8 @@
 package com.trevorwiebe.trackacow.db.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -47,6 +50,16 @@ public class DrugsGivenEntity {
 
     @Ignore
     public DrugsGivenEntity(){}
+
+    protected DrugsGivenEntity(Parcel in) {
+        primaryKey = in.readInt();
+        drugGivenId = in.readString();
+        drugId = in.readString();
+        amountGiven = in.readInt();
+        cowId = in.readString();
+        lotId = in.readString();
+        date = in.readLong();
+    }
 
     public int getPrimaryKey() {
         return primaryKey;

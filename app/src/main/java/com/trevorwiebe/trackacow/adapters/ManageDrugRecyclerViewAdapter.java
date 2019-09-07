@@ -66,7 +66,7 @@ public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDr
         public ManageDrugViewHolder(View view){
             super(view);
 
-            mDrugName = view.findViewById(R.id.drug_name);
+            mDrugName = view.findViewById(R.id.time_drug_report_name);
             mDefaultAmount = view.findViewById(R.id.manage_default_given);
         }
     }
