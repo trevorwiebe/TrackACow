@@ -71,6 +71,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private static final int EDIT_LOAD_CODE = 472;
+    private static final int DRUG_REPORT_CODE = 664;
     private int mTotalHeadInt;
     private String mLotId;
     private LotEntity mSelectedLotEntity;
@@ -155,7 +156,7 @@ public class LotReportActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent drugReports = new Intent(LotReportActivity.this, DrugsGivenReportActivity.class);
                 drugReports.putExtra("lotId", mLotId);
-                startActivity(drugReports);
+                startActivityForResult(drugReports, DRUG_REPORT_CODE);
             }
         });
     }
@@ -184,7 +185,8 @@ public class LotReportActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE) && resultCode == RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE || requestCode == DRUG_REPORT_CODE) && resultCode == RESULT_OK) {
             new QueryLotByLotId(mSelectedLotEntity.getLotId(), LotReportActivity.this).execute(LotReportActivity.this);
         }
     }

@@ -56,6 +56,12 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
+    }
+
+    @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
 
         for (int r = 0; r < drugEntities.size(); r++) {
