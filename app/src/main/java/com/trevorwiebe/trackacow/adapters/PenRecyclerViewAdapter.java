@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,8 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
             ArrayList<LotEntity> lotEntities = findLotEntities(penEntity.getPenId());
             if (lotEntities.size() != 0) {
-                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.greenText));
+                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+                penViewHolder.mLotNames.setTypeface(null, Typeface.BOLD);
                 StringBuilder lotTextName = new StringBuilder();
                 for (int q = 0; q < lotEntities.size(); q++) {
                     LotEntity lotEntity = lotEntities.get(q);
@@ -63,7 +65,9 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
                 }
                 penViewHolder.mLotNames.setText(lotTextName);
             } else {
-                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.redText));
+                penViewHolder.mLotNames.setTypeface(null, Typeface.NORMAL);
+                penViewHolder.mLotNames.setTypeface(null, Typeface.ITALIC);
+                penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(android.R.color.black));
                 penViewHolder.mLotNames.setText("No cattle in this pen");
             }
 

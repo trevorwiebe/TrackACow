@@ -3,14 +3,13 @@ package com.trevorwiebe.trackacow.adapters;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.objects.DrugReportsObject;
+import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.util.ArrayList;
 
@@ -18,9 +17,9 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
 
     private static final String TAG = "TimeDrugRvAdapter";
 
-    private ArrayList<DrugReportsObject> mDrugReportsList;
+    private ArrayList<DrugsGivenEntity> mDrugReportsList;
 
-    public TimeDrugRvAdapter(ArrayList<DrugReportsObject> drugReportsObjects) {
+    public TimeDrugRvAdapter(ArrayList<DrugsGivenEntity> drugReportsObjects) {
         this.mDrugReportsList = drugReportsObjects;
     }
 
@@ -34,10 +33,10 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
 
-        DrugReportsObject drugReportsObject = mDrugReportsList.get(position);
+        DrugsGivenEntity drugs = mDrugReportsList.get(position);
 
-        String drugId = drugReportsObject.getDrugId();
-        int amountGiven = drugReportsObject.getDrugAmount();
+        String drugId = drugs.getDrugId();
+        int amountGiven = drugs.getAmountGiven();
 
         holder.mDrugName.setText(drugId);
         holder.mDrugAmountGiven.setText(Integer.toString(amountGiven) + " units");
@@ -49,8 +48,8 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
         return mDrugReportsList.size();
     }
 
-    public void swapData(ArrayList<DrugReportsObject> drugReportsObjects) {
-        this.mDrugReportsList = new ArrayList<>(drugReportsObjects);
+    public void swapData(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+        this.mDrugReportsList = new ArrayList<>(drugsGivenEntities);
         notifyDataSetChanged();
     }
 

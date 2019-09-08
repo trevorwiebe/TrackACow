@@ -21,11 +21,11 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIdAndDateRange;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.objects.DrugReportsObject;
-import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class DayDrugReportFragment extends Fragment implements
@@ -33,27 +33,28 @@ public class DayDrugReportFragment extends Fragment implements
         QueryDrugsGivenByLotIdAndDateRange.OnDrugsGivenByLotIdAndDateRangeLoaded {
 
     private static final String TAG = "DayDrugReportFragment";
-    private long mCurrentDate = 0;
     private String mLotId = "";
     private HashMap<String, String> mDrugKeyAndName = new HashMap<>();
     private Long mStartTime;
-    private int mLastClicked = 0;
+    private LocalDateTime mStartDateTime;
+    private LocalDateTime mEndDateTime;
 
     private TextView mNoDrugsGivenTv;
     private RecyclerView mDayRv;
     private TimeDrugRvAdapter timeDrugRvAdapter;
+    private TextView mPrimaryText;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_day_drug_report, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_drug_report, container, false);
 
-        final ImageButton dayGoBack = rootView.findViewById(R.id.day_go_back);
-        final ImageButton dayGoForward = rootView.findViewById(R.id.day_go_forward);
-        final TextView primaryText = rootView.findViewById(R.id.primary_text);
+        final ImageButton dayGoBack = rootView.findViewById(R.id.go_back);
+        final ImageButton dayGoForward = rootView.findViewById(R.id.go_forward);
+        mPrimaryText = rootView.findViewById(R.id.primary_text);
 
         mNoDrugsGivenTv = rootView.findViewById(R.id.no_drugs_given_report_tv);
-        mDayRv = rootView.findViewById(R.id.day_drug_report_rv);
+        mDayRv = rootView.findViewById(R.id.drug_report_rv);
         mDayRv.setLayoutManager(new LinearLayoutManager(getContext()));
         timeDrugRvAdapter = new TimeDrugRvAdapter(null);
         mDayRv.setAdapter(timeDrugRvAdapter);
@@ -66,60 +67,41 @@ public class DayDrugReportFragment extends Fragment implements
             mLotId = drugReportsBundle.getString("lotId");
         }
 
-        mCurrentDate = System.currentTimeMillis();
-        String date = Utility.convertMillisToDate(mCurrentDate);
-        primaryText.setText(date);
-
         new QueryAllDrugs(this).execute(getContext());
 
         dayGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar prevDayCalendar = Calendar.getInstance();
-                prevDayCalendar.setTimeInMillis(mCurrentDate);
-                prevDayCalendar.add(Calendar.DAY_OF_MONTH, -1);
-                long prevDay = prevDayCalendar.getTimeInMillis();
+                mStartDateTime = mStartDateTime.minusDays(1);
+                mEndDateTime = mEndDateTime.minusDays(1);
 
-                dayGoForward.setEnabled(true);
+                long sundayLong = mStartDateTime.toDate().getTime();
+                long saturdayLong = mEndDateTime.toDate().getTime();
 
-                if (prevDay <= mStartTime) {
-                    dayGoBack.setEnabled(false);
-                } else {
-                    dayGoBack.setEnabled(true);
-                }
+                String sundayStr = Utility.convertMillisToDate(sundayLong);
 
-                String date = Utility.convertMillisToDate(prevDay);
-                primaryText.setText(date);
+                mPrimaryText.setText(sundayStr);
 
-                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, prevDay, mCurrentDate).execute(getContext());
+                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, sundayLong, saturdayLong).execute(getContext());
 
-                mCurrentDate = prevDay;
             }
         });
 
         dayGoForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mStartDateTime = mStartDateTime.plusDays(1);
+                mEndDateTime = mEndDateTime.plusDays(1);
 
-                Calendar nextDayCalendar = Calendar.getInstance();
-                nextDayCalendar.setTimeInMillis(mCurrentDate);
-                nextDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
-                long nextDay = nextDayCalendar.getTimeInMillis();
+                long sundayLong = mStartDateTime.toDate().getTime();
+                long saturdayLong = mEndDateTime.toDate().getTime();
 
-                dayGoBack.setEnabled(true);
+                String sundayStr = Utility.convertMillisToDate(sundayLong);
 
-                if (nextDay >= System.currentTimeMillis()) {
-                    dayGoForward.setEnabled(false);
-                } else {
-                    dayGoForward.setEnabled(true);
-                }
+                mPrimaryText.setText(sundayStr);
 
-                String date = Utility.convertMillisToDate(mCurrentDate);
-                primaryText.setText(date);
+                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, sundayLong, saturdayLong).execute(getContext());
 
-                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, mCurrentDate, nextDay).execute(getContext());
-
-                mCurrentDate = nextDay;
             }
         });
 
@@ -136,70 +118,66 @@ public class DayDrugReportFragment extends Fragment implements
             mDrugKeyAndName.put(drugId, drugName);
         }
 
-        Calendar todayStart = Calendar.getInstance();
-        Utility.clearTimes(todayStart);
-        long todayStartMillis = todayStart.getTimeInMillis();
-        mCurrentDate = todayStartMillis;
+        LocalDateTime now = LocalDateTime.now();
+        mStartDateTime = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
+        mEndDateTime = now.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
 
-        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, todayStartMillis, System.currentTimeMillis()).execute(getContext());
+        long sundayLong = mStartDateTime.toDate().getTime();
+        long saturdayLong = mEndDateTime.toDate().getTime();
+
+        String sundayStr = Utility.convertMillisToDate(sundayLong);
+
+        mPrimaryText.setText(sundayStr);
+
+        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, sundayLong, saturdayLong).execute(getContext());
 
     }
 
     @Override
-    public void onDrugsGivenByLotIdAndDateRangeLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+    public void onDrugsGivenByLotIdAndDateRangeLoaded(ArrayList<DrugsGivenEntity> drugsGivenList) {
 
-        ArrayList<DrugReportsObject> drugReportsObjects = new ArrayList<>();
+        ArrayList<DrugsGivenEntity> drugsGivenListCondensed = new ArrayList<>();
 
-        for (int o = 0; o < drugsGivenEntities.size(); o++) {
-            DrugsGivenEntity drugGivenEntity = drugsGivenEntities.get(o);
-            String drugId = drugGivenEntity.getDrugId();
-            int amountGiven = drugGivenEntity.getAmountGiven();
-
-            DrugReportsObject drugReportsObject = new DrugReportsObject(drugId, amountGiven);
-            addDrugToList(drugReportsObject, drugReportsObjects);
+        for (int e = 0; e < drugsGivenList.size(); e++) {
+            DrugsGivenEntity drugsGivenEntity = drugsGivenList.get(e);
+            String drugId = drugsGivenEntity.getDrugId();
+            int amountGiven = drugsGivenEntity.getAmountGiven();
+            if (findAndUpdateDrugReports(drugId, amountGiven, drugsGivenListCondensed) == 0) {
+                drugsGivenListCondensed.add(drugsGivenEntity);
+            }
         }
 
-        for (int f = 0; f < drugReportsObjects.size(); f++) {
-            DrugReportsObject drugReportsObject = drugReportsObjects.get(f);
-            String drugId = drugReportsObject.getDrugId();
+        for (int f = 0; f < drugsGivenListCondensed.size(); f++) {
+            DrugsGivenEntity drugGivenList = drugsGivenListCondensed.get(f);
+            String drugId = drugGivenList.getDrugId();
             String drugName = mDrugKeyAndName.get(drugId);
-            drugReportsObject.setDrugId(drugName);
-            drugReportsObjects.remove(f);
-            drugReportsObjects.add(f, drugReportsObject);
+            drugGivenList.setDrugId(drugName);
+            drugsGivenListCondensed.remove(f);
+            drugsGivenListCondensed.add(f, drugGivenList);
         }
 
-        if (drugReportsObjects.size() == 0) {
+        if (drugsGivenListCondensed.size() == 0) {
             mNoDrugsGivenTv.setVisibility(View.VISIBLE);
             mDayRv.setVisibility(View.GONE);
         } else {
             mNoDrugsGivenTv.setVisibility(View.GONE);
             mDayRv.setVisibility(View.VISIBLE);
-            timeDrugRvAdapter.swapData(drugReportsObjects);
+            timeDrugRvAdapter.swapData(drugsGivenListCondensed);
         }
     }
 
-    private void addDrugToList(DrugReportsObject drugReportsObjectToAdd, ArrayList<DrugReportsObject> drugReportsObjects) {
-        if (drugReportsObjects.size() == 0) {
-            drugReportsObjects.add(drugReportsObjectToAdd);
-        } else {
-            for (int y = 0; y < drugReportsObjects.size(); y++) {
-                String drugGivenIdToAdd = drugReportsObjectToAdd.getDrugId();
-
-                DrugReportsObject drugReportsObject = drugReportsObjects.get(y);
-                String drugGivenId = drugReportsObject.getDrugId();
-
-                if (drugGivenId.equals(drugGivenIdToAdd)) {
-                    int amountGivenToAdd = drugReportsObjectToAdd.getDrugAmount();
-                    int currentAmount = drugReportsObject.getDrugAmount();
-                    int total = amountGivenToAdd + currentAmount;
-                    drugReportsObject.setDrugAmount(total);
-                    drugReportsObjects.remove(y);
-                    drugReportsObjects.add(y, drugReportsObject);
-                    break;
-                } else {
-                    drugReportsObjects.add(drugReportsObjectToAdd);
-                }
+    private int findAndUpdateDrugReports(String drugId, int amountGiven, ArrayList<DrugsGivenEntity> drugReportsObjects) {
+        for (int r = 0; r < drugReportsObjects.size(); r++) {
+            DrugsGivenEntity drugReportsObject = drugReportsObjects.get(r);
+            if (drugReportsObject.getDrugId().endsWith(drugId)) {
+                int currentAmount = drugReportsObject.getAmountGiven();
+                int amountToUpdateTo = currentAmount + amountGiven;
+                drugReportsObject.setAmountGiven(amountToUpdateTo);
+                drugReportsObjects.remove(r);
+                drugReportsObjects.add(r, drugReportsObject);
+                return 1;
             }
         }
+        return 0;
     }
 }

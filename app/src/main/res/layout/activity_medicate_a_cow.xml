@@ -180,7 +180,7 @@
     <Button
         android:layout_gravity="bottom"
         android:textColor="@android:color/white"
-        android:background="@color/colorAccentSemiTrans"
+        android:background="@drawable/semi_transparent_accent"
         android:text="Save"
         android:paddingTop="24dp"
         android:paddingBottom="24dp"

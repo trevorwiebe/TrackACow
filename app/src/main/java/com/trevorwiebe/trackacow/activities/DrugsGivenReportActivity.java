@@ -110,7 +110,6 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         mDrugReportAdapter.addFragment(monthDrugReportFragment, "Month");
 
         mViewPager.setAdapter(mDrugReportAdapter);
-        mViewPager.setPagingEnabled(false);
         mTimeTabLayout.setupWithViewPager(mViewPager);
 
     }

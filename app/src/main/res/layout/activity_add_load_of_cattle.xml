@@ -70,7 +70,7 @@
 
         <Button
             android:id="@+id/save_load_of_cattle"
-            android:background="@color/colorAccent"
+            android:background="@drawable/accent_sign_in_btn"
             android:layout_margin="24dp"
             android:padding="24dp"
             android:text="Save"

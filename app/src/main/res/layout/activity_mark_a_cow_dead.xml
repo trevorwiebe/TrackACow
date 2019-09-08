@@ -103,7 +103,7 @@
 
         <Button
             android:textColor="@android:color/white"
-            android:background="@color/colorAccent"
+            android:background="@drawable/accent_sign_in_btn"
             android:text="Mark as dead"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
