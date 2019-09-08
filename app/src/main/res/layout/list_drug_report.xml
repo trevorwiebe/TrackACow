@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="16dp"
-            android:background="@drawable/ic_accent_color_drug_24dp" />
+            android:padding="8dp"
+            android:src="@drawable/ic_accent_color_drug_24dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -25,10 +26,9 @@
                 android:id="@+id/time_drug_report_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="8dp"
+                android:text="Test"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -36,9 +36,8 @@
                 android:id="@+id/time_drug_report_amount_given"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="16dp"
+                android:text="Test"
+                android:layout_marginBottom="12dp"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />
 

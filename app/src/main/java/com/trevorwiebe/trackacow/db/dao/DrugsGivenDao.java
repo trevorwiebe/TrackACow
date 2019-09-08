@@ -31,8 +31,8 @@ public interface DrugsGivenDao {
     @Query("SELECT * FROM DrugsGiven WHERE drugGivenId = :drugGivenId")
     DrugsGivenEntity getDrugGivenByDrugGivenId(String drugGivenId);
 
-    @Query("SELECT * FROM DrugsGiven")
-    List<DrugsGivenEntity> getDrugsGivenList();
+    @Query("SELECT * FROM DrugsGiven WHERE (lotId = :lotId) AND (date BETWEEN :startDate AND :endDate)")
+    List<DrugsGivenEntity> getDrugsGivenByLotIdAndDateRange(String lotId, long startDate, long endDate);
 
     @Query("UPDATE DrugsGiven SET amountGiven = :amountGiven WHERE drugGivenId = :drugGivenId")
     void updateDrugGivenAmountGiven(int amountGiven, String drugGivenId);

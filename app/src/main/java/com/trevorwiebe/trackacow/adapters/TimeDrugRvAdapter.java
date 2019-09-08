@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.objects.DrugReportsObject;
-import com.trevorwiebe.trackacow.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -20,27 +19,16 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
     private static final String TAG = "TimeDrugRvAdapter";
 
     private ArrayList<DrugReportsObject> mDrugReportsList;
-    private int timeType;
 
-    public TimeDrugRvAdapter(ArrayList<DrugReportsObject> drugReportsObjects, int time_type) {
+    public TimeDrugRvAdapter(ArrayList<DrugReportsObject> drugReportsObjects) {
         this.mDrugReportsList = drugReportsObjects;
-        this.timeType = time_type;
     }
 
     @NonNull
     @Override
     public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (timeType) {
-            case Constants.DAY_DRUG_REPORT:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_drug_report, parent, false);
-                return new DayViewHolder(view);
-            case Constants.WEEK_DRUG_REPORT:
-                return null;
-            case Constants.MONTH_DRUG_REPORT:
-                return null;
-            default:
-                return null;
-        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_drug_report, parent, false);
+        return new DayViewHolder(view);
     }
 
     @Override
@@ -51,17 +39,19 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
         String drugId = drugReportsObject.getDrugId();
         int amountGiven = drugReportsObject.getDrugAmount();
 
-        Log.d(TAG, "onBindViewHolder: " + drugId);
-        Log.d(TAG, "onBindViewHolder: " + amountGiven);
-
         holder.mDrugName.setText(drugId);
-        holder.mDrugAmountGiven.setText(Integer.toString(amountGiven));
+        holder.mDrugAmountGiven.setText(Integer.toString(amountGiven) + " units");
     }
 
     @Override
     public int getItemCount() {
         if (mDrugReportsList == null) return 0;
         return mDrugReportsList.size();
+    }
+
+    public void swapData(ArrayList<DrugReportsObject> drugReportsObjects) {
+        this.mDrugReportsList = new ArrayList<>(drugReportsObjects);
+        notifyDataSetChanged();
     }
 
     public class DayViewHolder extends RecyclerView.ViewHolder {

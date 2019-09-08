@@ -42,6 +42,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     private CustomDrugReportViewPager mViewPager;
 
     private HashMap<String, String> mDrugNameAndKeys = new HashMap<>();
+    private String mLotId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +65,10 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             mDrugNameAndKeys.put(drugId, drugName);
         }
 
-        String lotId = getIntent().getStringExtra("lotId");
+        mLotId = getIntent().getStringExtra("lotId");
 
         ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(lotId);
+        lotIds.add(mLotId);
         new QueryDrugsGivenByLotIds(this, lotIds).execute(this);
 
     }
@@ -83,37 +84,16 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         });
 
         long startDate = drugsGivenEntities.get(0).getDate();
-        long endDate = drugsGivenEntities.get(drugsGivenEntities.size() - 1).getDate();
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(startDate);
         Utility.clearTimes(startCalendar);
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTimeInMillis(endDate);
-        Utility.clearTimes(endCalendar);
 
         long absoluteStartTime = startCalendar.getTimeInMillis();
-        long absoluteEndTime = endCalendar.getTimeInMillis();
-
-        long days = Days.daysBetween(new LocalDate(absoluteStartTime), new LocalDate(absoluteEndTime)).getDays();
-
-        ArrayList<DrugReportsObject> drugReportsObjectsList = new ArrayList<>();
-        for (int q = 0; q < drugsGivenEntities.size(); q++) {
-            DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
-            String drugGivenId = drugsGivenEntity.getDrugId();
-            int amountGiven = drugsGivenEntity.getAmountGiven();
-
-            String drugName = mDrugNameAndKeys.get(drugGivenId);
-
-            DrugReportsObject drugReportsObject = new DrugReportsObject(drugName, amountGiven);
-            drugReportsObjectsList.add(drugReportsObject);
-        }
 
         Bundle drugBundle = new Bundle();
         drugBundle.putLong("startTime", absoluteStartTime);
-        drugBundle.putLong("endTime", absoluteEndTime);
-        drugBundle.putLong("days", days);
-        drugBundle.putParcelableArrayList("drugReportsList", drugReportsObjectsList);
+        drugBundle.putString("lotId", mLotId);
 
         DayDrugReportFragment dayDrugReportFragment = new DayDrugReportFragment();
         dayDrugReportFragment.setArguments(drugBundle);
