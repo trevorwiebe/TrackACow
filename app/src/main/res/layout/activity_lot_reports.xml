@@ -305,12 +305,12 @@
 
                     <Button
                         android:padding="10dp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/colorAccent"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="8dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:background="@drawable/accent_sign_in_btn"
+                        android:background="@drawable/white_sign_in_btn"
                         android:text="Drug Report"
                         android:id="@+id/drug_reports_button"
                         android:layout_gravity="center_horizontal"
@@ -321,27 +321,21 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                app:cardCornerRadius="5dp"
-                app:cardBackgroundColor="@color/lightGray"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
                 <TextView
                     style="@style/Base.TextAppearance.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_margin="16dp"
                     android:layout_gravity="center_horizontal"
                     android:text="Cattle received"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
-            </androidx.cardview.widget.CardView>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view_loads_of_cattle"

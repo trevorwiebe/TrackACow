@@ -69,7 +69,7 @@
 
         <Button
             android:id="@+id/edit_load_of_cattle"
-            android:background="@color/colorAccent"
+            android:background="@drawable/accent_sign_in_btn"
             android:layout_margin="24dp"
             android:padding="24dp"
             android:text="Update"
@@ -82,7 +82,7 @@
             android:layout_margin="24dp"
             android:padding="24dp"
             android:textColor="@color/redText"
-            android:background="@android:color/white"
+            android:background="@drawable/white_sign_in_btn"
             android:text="Delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
