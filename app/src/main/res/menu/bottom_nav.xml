@@ -9,7 +9,7 @@
     <!--<item-->
     <!--android:id="@+id/action_feed"-->
     <!--android:title="Feed"-->
-    <!--android:icon="@drawable/ic_pen_black_24dp" />-->
+    <!--android:icon="@drawable/ic_pen_accent_24dp" />-->
 
     <item
         android:id="@+id/action_move"

@@ -154,5 +154,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
         }
         new DeleteAllLocalData().execute(getContext());
         Utility.setNewDataToUpload(mContext, false);
+        Utility.setLastSync(mContext, 0);
     }
 }

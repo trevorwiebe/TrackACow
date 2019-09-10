@@ -17,8 +17,11 @@
             android:id="@+id/manage_pens_layout">
 
             <ImageView
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_pen_black_24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_pen_accent_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -26,8 +29,8 @@
                 android:text="Manage pens"
                 android:textColor="@android:color/black"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -45,8 +48,11 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_drugs_black_24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_accent_color_drug_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -54,8 +60,8 @@
                 android:text="Manage drugs"
                 android:textColor="@android:color/black"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -74,8 +80,11 @@
             android:id="@+id/archive_layout">
 
             <ImageView
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_archive_black_24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_archive_accent_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -83,8 +92,8 @@
                 android:text="Archives"
                 android:textColor="@android:color/black"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -104,8 +113,11 @@
             android:id="@+id/settings_layout">
 
             <ImageView
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_settings_black_24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_settings_accent_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -113,8 +125,8 @@
                 android:text="Settings"
                 android:textColor="@android:color/black"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
