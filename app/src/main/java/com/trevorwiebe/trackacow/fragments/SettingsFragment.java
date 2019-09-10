@@ -35,7 +35,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
 
         Preference versionPref = findPreference("version");
         try {
-            versionPref.setSummary(appVersion());
+            if (versionPref != null) {
+                versionPref.setSummary(appVersion());
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -46,42 +48,46 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
             String name = user.getDisplayName();
             String email = user.getEmail();
             String accountName = name + ", " + email;
-            accountNamePref.setSummary(accountName);
+            if (accountNamePref != null) {
+                accountNamePref.setSummary(accountName);
+            }
         }
 
         Preference signOutPref = findPreference("sign_out");
-        signOutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                boolean isThereLocalData = Utility.isThereNewDataToUpload(mContext);
-                if (isThereLocalData) {
-                    AlertDialog.Builder thereIsDataDialog = new AlertDialog.Builder(getContext());
-                    thereIsDataDialog.setPositiveButton("Backup and sign out", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Utility.setNewDataToUpload(getContext(), false);
-                            mBackingUpData = new AlertDialog.Builder(getContext());
-                            View dialogLoadingLayout = LayoutInflater.from(getContext()).inflate(R.layout.dialog_inserting_data_to_cloud, null);
-                            mBackingUpData.setView(dialogLoadingLayout);
-                            mBackingUpData.show();
-                            new InsertAllLocalChangeToCloud(SettingsFragment.this).execute(getContext());
-                        }
-                    });
-                    thereIsDataDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            signOut();
-                        }
-                    });
-                    thereIsDataDialog.setTitle("Information will be lost");
-                    thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.");
-                    thereIsDataDialog.show();
-                } else {
-                    signOut();
+        if (signOutPref != null) {
+            signOutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    boolean isThereLocalData = Utility.isThereNewDataToUpload(mContext);
+                    if (isThereLocalData) {
+                        AlertDialog.Builder thereIsDataDialog = new AlertDialog.Builder(getContext());
+                        thereIsDataDialog.setPositiveButton("Backup and sign out", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Utility.setNewDataToUpload(getContext(), false);
+                                mBackingUpData = new AlertDialog.Builder(getContext());
+                                View dialogLoadingLayout = LayoutInflater.from(getContext()).inflate(R.layout.dialog_inserting_data_to_cloud, null);
+                                mBackingUpData.setView(dialogLoadingLayout);
+                                mBackingUpData.show();
+                                new InsertAllLocalChangeToCloud(SettingsFragment.this).execute(getContext());
+                            }
+                        });
+                        thereIsDataDialog.setNeutralButton("Sign out anyway", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                signOut();
+                            }
+                        });
+                        thereIsDataDialog.setTitle("Information will be lost");
+                        thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.");
+                        thereIsDataDialog.show();
+                    } else {
+                        signOut();
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -90,11 +96,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
         mContext = context;
     }
 
-    public String appVersion() throws PackageManager.NameNotFoundException {
+    private String appVersion() throws PackageManager.NameNotFoundException {
         PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
-        String version = pInfo.versionName;
-        return version;
-
+        return pInfo.versionName;
     }
 
     @Override

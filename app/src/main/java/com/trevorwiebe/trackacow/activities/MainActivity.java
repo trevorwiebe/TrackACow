@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.action_medicate:
-                        setTitle("Medicate");
+                        setTitle("Work");
                         MedicateFragment medicateFragment = new MedicateFragment();
                         FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
                         medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
@@ -176,16 +176,10 @@ public class MainActivity extends AppCompatActivity implements
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
         long oneMinuteInMillis = TimeUnit.MINUTES.toMillis(1);
-        Log.d(TAG, "onSignedInInitialized: currentTime " + currentTime);
-        Log.d(TAG, "onSignedInInitialized: timeElapsed " + timeElapsed);
-        Log.d(TAG, "onSignedInInitialized: lastSync " + lastSync);
-        Log.d(TAG, "onSignedInInitialized: oneMinuteInMillis " + oneMinuteInMillis);
         if (lastSync == 0) {
-            Log.d(TAG, "onSignedInInitialized: here1");
             mMainProgressBar.setVisibility(View.VISIBLE);
             new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
         } else if (timeElapsed > oneMinuteInMillis) {
-            Log.d(TAG, "onSignedInInitialized: here2");
             mMainProgressBar.setVisibility(View.VISIBLE);
             new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
         }
@@ -377,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements
         mLastUsedScreen = Utility.getLastUsedScreen(MainActivity.this);
         switch (mLastUsedScreen) {
             case Constants.MEDICATE:
-                setTitle("Medicate");
+                setTitle("Work");
                 mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
                 MedicateFragment medicateFragment = new MedicateFragment();
                 FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
@@ -417,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements
                 moreTransactionManager.commit();
                 break;
             default:
-                setTitle("Medicate");
+                setTitle("Work");
                 mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
                 MedicateFragment medicateFragmentD = new MedicateFragment();
                 FragmentTransaction medicateTransactionManagerD = getSupportFragmentManager().beginTransaction();

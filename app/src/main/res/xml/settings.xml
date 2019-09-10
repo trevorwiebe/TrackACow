@@ -14,12 +14,12 @@
 
         <Preference
             android:key="account_name"
-            android:selectable="false"
             android:title="Signed in as" />
 
         <Preference
             android:key="subscription"
-            android:title="Manage subscription">
+            android:title="Manage subscription"
+            app:isPreferenceVisible="false">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/manage_sub_url" />
@@ -50,11 +50,9 @@
             android:key="five_star_review"
             android:title="Give a 5-star review"
             android:summary="This app has been developed by a solo developer.  If you like the app, please support me by leaving a 5-star review!">
-            <intent android:action="android.intent.action.VIEW"></intent>
         </Preference>
 
         <Preference
-            android:selectable="false"
             android:key="version"
             android:title="Version" />
 

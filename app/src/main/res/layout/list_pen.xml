@@ -16,10 +16,9 @@
         <TextView
             android:text="Pen:"
             android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:layout_width="wrap_content"
@@ -27,25 +26,30 @@
 
         <TextView
             android:id="@+id/pen"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
 
-    <TextView
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="12dp"
-        android:textStyle="bold"
-        android:text="test"
-        android:id="@+id/lot_names"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_margin="16dp"
+            android:textStyle="bold"
+            android:text="test"
+            android:textSize="16sp"
+            android:id="@+id/lot_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <View
         android:background="@android:color/darker_gray"

@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/action_medicate"
-        android:title="Medicate"
+        android:title="Work"
         android:icon="@drawable/ic_drugs_black_24dp" />
 
     <!--<item-->

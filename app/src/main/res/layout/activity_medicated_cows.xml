@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Fill in the blanks below, and then add the lot of cattle to the pen." />
+                android:text="Fill out the blanks below to continue." />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Button"
