@@ -75,15 +75,14 @@ public class DayDrugReportFragment extends Fragment implements
                 mStartDateTime = mStartDateTime.minusDays(1);
                 mEndDateTime = mEndDateTime.minusDays(1);
 
-                long sundayLong = mStartDateTime.toDate().getTime();
-                long saturdayLong = mEndDateTime.toDate().getTime();
+                long startLong = mStartDateTime.toDate().getTime();
+                long endLong = mEndDateTime.toDate().getTime();
 
-                String sundayStr = Utility.convertMillisToDate(sundayLong);
+                String startLongStr = Utility.convertMillisToDate(startLong);
 
-                mPrimaryText.setText(sundayStr);
+                mPrimaryText.setText(startLongStr);
 
-                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, sundayLong, saturdayLong).execute(getContext());
-
+                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, startLong, endLong).execute(getContext());
             }
         });
 
@@ -93,15 +92,14 @@ public class DayDrugReportFragment extends Fragment implements
                 mStartDateTime = mStartDateTime.plusDays(1);
                 mEndDateTime = mEndDateTime.plusDays(1);
 
-                long sundayLong = mStartDateTime.toDate().getTime();
-                long saturdayLong = mEndDateTime.toDate().getTime();
+                long startLong = mStartDateTime.toDate().getTime();
+                long endLong = mEndDateTime.toDate().getTime();
 
-                String sundayStr = Utility.convertMillisToDate(sundayLong);
+                String sundayStr = Utility.convertMillisToDate(startLong);
 
                 mPrimaryText.setText(sundayStr);
 
-                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, sundayLong, saturdayLong).execute(getContext());
-
+                new QueryDrugsGivenByLotIdAndDateRange(DayDrugReportFragment.this, mLotId, startLong, endLong).execute(getContext());
             }
         });
 
@@ -122,14 +120,14 @@ public class DayDrugReportFragment extends Fragment implements
         mStartDateTime = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
         mEndDateTime = now.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
 
-        long sundayLong = mStartDateTime.toDate().getTime();
-        long saturdayLong = mEndDateTime.toDate().getTime();
+        long startLong = mStartDateTime.toDate().getTime();
+        long endLong = mEndDateTime.toDate().getTime();
 
-        String sundayStr = Utility.convertMillisToDate(sundayLong);
+        String sundayStr = Utility.convertMillisToDate(startLong);
 
         mPrimaryText.setText(sundayStr);
 
-        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, sundayLong, saturdayLong).execute(getContext());
+        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, startLong, endLong).execute(getContext());
 
     }
 
