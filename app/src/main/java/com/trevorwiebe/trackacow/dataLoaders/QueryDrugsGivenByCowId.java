@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.db.AppDatabase;
-import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
 import java.util.ArrayList;
@@ -13,15 +12,17 @@ import java.util.List;
 public class QueryDrugsGivenByCowId extends AsyncTask<Context, Void, ArrayList<DrugsGivenEntity>> {
 
     private String cowId;
+    private int id;
     private OnDrugsGivenByCowIdLoaded mOnDrugsGivenByCowIdLoaded;
 
-    public QueryDrugsGivenByCowId(OnDrugsGivenByCowIdLoaded onDrugsGivenByCowIdLoaded, String cowId){
+    public QueryDrugsGivenByCowId(OnDrugsGivenByCowIdLoaded onDrugsGivenByCowIdLoaded, int id, String cowId) {
         this.mOnDrugsGivenByCowIdLoaded = onDrugsGivenByCowIdLoaded;
+        this.id = id;
         this.cowId = cowId;
     }
 
     public interface OnDrugsGivenByCowIdLoaded{
-        void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities);
+        void onDrugsLoadedByCowId(ArrayList<DrugsGivenEntity> drugsGivenEntities, int id);
     }
 
     @Override
@@ -33,6 +34,6 @@ public class QueryDrugsGivenByCowId extends AsyncTask<Context, Void, ArrayList<D
     @Override
     protected void onPostExecute(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
         super.onPostExecute(drugsGivenEntities);
-        mOnDrugsGivenByCowIdLoaded.onDrugsLoaded(drugsGivenEntities);
+        mOnDrugsGivenByCowIdLoaded.onDrugsLoadedByCowId(drugsGivenEntities, id);
     }
 }

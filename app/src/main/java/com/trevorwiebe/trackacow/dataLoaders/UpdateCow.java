@@ -12,8 +12,14 @@ public class UpdateCow extends AsyncTask<Context, Void, Void> {
     private int tagNumber;
     private long date;
     private String notes;
+    private OnCowUpdated onCowUpdated;
 
-    public UpdateCow(String cowEntityId, long date, int tagNumber, String notes){
+    public interface OnCowUpdated {
+        void onCowUpdated();
+    }
+
+    public UpdateCow(OnCowUpdated onCowUpdated, String cowEntityId, long date, int tagNumber, String notes) {
+        this.onCowUpdated = onCowUpdated;
         this.cowEntityId = cowEntityId;
         this.tagNumber = tagNumber;
         this.date = date;
@@ -26,4 +32,9 @@ public class UpdateCow extends AsyncTask<Context, Void, Void> {
         return null;
     }
 
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        onCowUpdated.onCowUpdated();
+    }
 }

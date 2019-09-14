@@ -6,13 +6,13 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 
-public class UpdateDrugGiven extends AsyncTask<Context, Void, Void> {
+public class UpdateDrugGivenAmountGiven extends AsyncTask<Context, Void, Void> {
 
     private String drugGivenId;
     private int amountGiven;
     private OnDrugGivenInserted onDrugGivenInserted;
 
-    public UpdateDrugGiven(String drugGivenId, int amountGiven, OnDrugGivenInserted onDrugGivenInserted){
+    public UpdateDrugGivenAmountGiven(String drugGivenId, int amountGiven, OnDrugGivenInserted onDrugGivenInserted) {
         this.drugGivenId = drugGivenId;
         this.amountGiven = amountGiven;
         this.onDrugGivenInserted = onDrugGivenInserted;

@@ -37,6 +37,9 @@ public interface DrugsGivenDao {
     @Query("UPDATE DrugsGiven SET amountGiven = :amountGiven WHERE drugGivenId = :drugGivenId")
     void updateDrugGivenAmountGiven(int amountGiven, String drugGivenId);
 
+    @Query("UPDATE DrugsGiven Set date = :date WHERE cowId = :cowId")
+    void updateDrugsGivenDateByCowId(long date, String cowId);
+
     @Query("DELETE FROM DrugsGiven WHERE lotId = :lotId")
     void deleteDrugsGivenByLotId(String lotId);
 

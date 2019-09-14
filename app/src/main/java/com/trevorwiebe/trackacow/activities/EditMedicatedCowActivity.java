@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,11 +31,13 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteCow;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugGiven;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.UpdateCow;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugsGivenDateByCowId;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -49,17 +53,20 @@ import java.util.ListIterator;
 public class EditMedicatedCowActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
         QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded,
-        QueryCowIdByCowId.OnCowByIdLoaded {
+        QueryCowIdByCowId.OnCowByIdLoaded,
+        UpdateCow.OnCowUpdated,
+        UpdateDrugsGivenDateByCowId.OnDrugsGivenByCowIdUpdated {
 
     private static final String TAG = "EditMedicatedCowActivit";
 
-    private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private CowEntity mCowEntity;
     private int isAlive;
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private Calendar mCalendar = Calendar.getInstance();
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
+    private long mOldDate;
+    private long mNewDate;
 
     private CardView mCowIsDead;
     private TextInputEditText mEditTagNumber;
@@ -122,15 +129,15 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             public void onClick(View view) {
 
                 int tagNumber = Integer.parseInt(mEditTagNumber.getText().toString());
-                long date = mCalendar.getTimeInMillis();
+                mNewDate = mCalendar.getTimeInMillis();
                 String notes = mEditNotes.getText().toString();
 
                 mCowEntity.setTagNumber(tagNumber);
-                mCowEntity.setDate(date);
+                mCowEntity.setDate(mNewDate);
                 mCowEntity.setNotes(notes);
 
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
-                    mBaseRef.child(CowEntity.COW).child(mCowEntity.getCowId()).setValue(mCowEntity);
+                    Constants.BASE_REFERENCE.child(CowEntity.COW).child(mCowEntity.getCowId()).setValue(mCowEntity);
                 }else{
                     Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
@@ -147,9 +154,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
                 }
 
-                new UpdateCow(mCowEntity.getCowId(), mCalendar.getTimeInMillis(), mCowEntity.getTagNumber(), mCowEntity.getNotes()).execute(EditMedicatedCowActivity.this);
-
-                finish();
+                new UpdateCow(EditMedicatedCowActivity.this, mCowEntity.getCowId(), mCalendar.getTimeInMillis(), mCowEntity.getTagNumber(), mCowEntity.getNotes()).execute(EditMedicatedCowActivity.this);
             }
         });
 
@@ -158,8 +163,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
                     String cowId = mCowEntity.getCowId();
-                    mBaseRef.child(CowEntity.COW).child(cowId).removeValue();
-                    Query deleteDrugsGivenQuery = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.COW_ID).equalTo(cowId);
+                    Constants.BASE_REFERENCE.child(CowEntity.COW).child(cowId).removeValue();
+                    Query deleteDrugsGivenQuery = Constants.BASE_REFERENCE.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.COW_ID).equalTo(cowId);
                     deleteDrugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -240,6 +245,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             mDrugLayout.setVisibility(View.GONE);
         }
 
+        mOldDate = mCowEntity.getDate();
+
         String tagNumber = Integer.toString(mCowEntity.getTagNumber());
         String date = Utility.convertMillisToDate(mCowEntity.getDate());
         String notes = mCowEntity.getNotes();
@@ -251,13 +258,25 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugList = drugEntities;
-        new QueryDrugsGivenByCowId(this, mCowEntity.getCowId()).execute(this);
+        new QueryDrugsGivenByCowId(this, 1, mCowEntity.getCowId()).execute(this);
     }
 
     @Override
-    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mDrugsGivenList = drugsGivenEntities;
-        setDrugGivenLayout(mDrugsGivenList);
+    public void onDrugsLoadedByCowId(ArrayList<DrugsGivenEntity> drugsGivenEntities, int id) {
+        if (id == 1) {
+            mDrugsGivenList = drugsGivenEntities;
+            setDrugGivenLayout(mDrugsGivenList);
+        } else if (id == 2) {
+            ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+            for (int x = 0; x < drugsGivenEntities.size(); x++) {
+                DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(x);
+                drugsGivenEntity.setDate(mNewDate);
+
+                HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
+                holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+            }
+            new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(EditMedicatedCowActivity.this);
+        }
     }
 
     private void setDrugGivenLayout(ArrayList<DrugsGivenEntity> drugsGivenEntities){
@@ -308,6 +327,48 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
 
                 mDrugsGiven.addView(textView);
             }
+        }
+    }
+
+    @Override
+    public void onDrugsGivenByCowIdUpdated() {
+        finish();
+    }
+
+    @Override
+    public void onCowUpdated() {
+        if (mOldDate != mNewDate) {
+            if (Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
+
+                Query drugsToUpdateQuery = Constants.BASE_REFERENCE.child("drugsGiven").orderByChild("cowId").equalTo(mCowEntity.getCowId());
+                drugsToUpdateQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            DrugsGivenEntity drugsGivenEntity = snapshot.getValue(DrugsGivenEntity.class);
+                            if (drugsGivenEntity != null) {
+                                drugsGivenEntity.setDate(mNewDate);
+                                Constants.BASE_REFERENCE.child("drugsGiven").child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            } else {
+
+                new QueryDrugsGivenByCowId(EditMedicatedCowActivity.this, 2, mCowEntity.getCowId()).execute(EditMedicatedCowActivity.this);
+            }
+
+            new UpdateDrugsGivenDateByCowId(EditMedicatedCowActivity.this, mCowEntity.getCowId(), mNewDate).execute(EditMedicatedCowActivity.this);
+
+        } else {
+            finish();
         }
     }
 }

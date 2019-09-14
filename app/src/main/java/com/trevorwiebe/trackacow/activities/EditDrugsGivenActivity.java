@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.DrugsGivenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugGivenById;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugGiven;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugGivenAmountGiven;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
@@ -30,7 +30,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
         QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded,
         QueryAllDrugs.OnAllDrugsLoaded,
         DeleteDrugGivenById.OnDrugDelete,
-        UpdateDrugGiven.OnDrugGivenInserted{
+        UpdateDrugGivenAmountGiven.OnDrugGivenInserted {
 
     private RecyclerView mDrugsGivenRv;
     private DrugsGivenRecyclerViewAdapter drugsGivenRecyclerViewAdapter;
@@ -89,10 +89,8 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == ADD_NEW_DRUG_GIVEN && resultCode == RESULT_OK) {
-            new QueryAllDrugs(this).execute(this);
-        }
-        if (requestCode == EDIT_NEW_DRUG_GIVEN && resultCode == RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((requestCode == ADD_NEW_DRUG_GIVEN || requestCode == EDIT_NEW_DRUG_GIVEN) && resultCode == RESULT_OK) {
             new QueryAllDrugs(this).execute(this);
         }
     }
@@ -100,23 +98,23 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
     @Override
     public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
         mDrugEntities = drugEntities;
-        new QueryDrugsGivenByCowId(this, cowId).execute(this);
+        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
     }
 
     @Override
-    public void onDrugsLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
+    public void onDrugsLoadedByCowId(ArrayList<DrugsGivenEntity> drugsGivenEntities, int id) {
         mDrugsGivenEntities = drugsGivenEntities;
         instantiateRv(mDrugsGivenEntities, mDrugEntities);
     }
 
     @Override
     public void onDrugDeleted() {
-        new QueryDrugsGivenByCowId(this, cowId).execute(this);
+        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
     }
 
     @Override
     public void onDrugGivenInsert() {
-        new QueryDrugsGivenByCowId(this, cowId).execute(this);
+        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
     }
 
     private void instantiateRv(ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<DrugEntity> drugEntities){

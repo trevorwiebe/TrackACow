@@ -21,7 +21,7 @@ import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingDrugGiven;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugByDrugId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByDrugsGivenId;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugGiven;
+import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugGivenAmountGiven;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -31,7 +31,7 @@ import com.trevorwiebe.trackacow.utils.Utility;
 
 public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity implements
         QueryCowIdByCowId.OnCowByIdLoaded,
-        UpdateDrugGiven.OnDrugGivenInserted,
+        UpdateDrugGivenAmountGiven.OnDrugGivenInserted,
         QueryDrugByDrugId.OnDrugByDrugIdLoaded,
         QueryDrugsGivenByDrugsGivenId.OnDrugsGivenByDrugsGivenIdLoaded {
 
@@ -102,7 +102,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                         new InsertHoldingDrugGiven(holdingDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);
                     }
 
-                    new UpdateDrugGiven(mDrugsGivenEntity.getDrugGivenId(), amountGiven, EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
+                    new UpdateDrugGivenAmountGiven(mDrugsGivenEntity.getDrugGivenId(), amountGiven, EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
 
                 }
             }
