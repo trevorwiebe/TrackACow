@@ -18,8 +18,7 @@
 
         <Preference
             android:key="subscription"
-            android:title="Manage subscription"
-            app:isPreferenceVisible="false">
+            android:title="Manage subscription">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/manage_sub_url" />
