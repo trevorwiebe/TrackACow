@@ -89,7 +89,12 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             }
         });
 
-        long startDate = drugsGivenEntities.get(0).getDate();
+        long startDate;
+        if (drugsGivenEntities.size() != 0) {
+            startDate = drugsGivenEntities.get(0).getDate();
+        } else {
+            startDate = System.currentTimeMillis();
+        }
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(startDate);

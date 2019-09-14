@@ -139,8 +139,8 @@ public class WeekDrugReportFragment extends Fragment implements
         }
 
         LocalDateTime now = LocalDateTime.now();
-        mStartDateTime = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withDayOfWeek(DateTimeConstants.SUNDAY);
-        mEndDateTime = now.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59).withDayOfWeek(DateTimeConstants.SATURDAY).plusWeeks(1);
+        mStartDateTime = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withDayOfWeek(DateTimeConstants.SUNDAY).minusWeeks(1);
+        mEndDateTime = now.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59).withDayOfWeek(DateTimeConstants.SATURDAY);
 
         long sundayLong = mStartDateTime.toDate().getTime();
         long saturdayLong = mEndDateTime.toDate().getTime();
