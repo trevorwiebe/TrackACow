@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'io.fabric'
+apply plugin: 'io.fabric'
 
 
 android {
@@ -37,7 +37,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.6'
     implementation 'joda-time:joda-time:2.10.3'
-//    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation 'androidx.room:room-runtime:2.1.0'
 
