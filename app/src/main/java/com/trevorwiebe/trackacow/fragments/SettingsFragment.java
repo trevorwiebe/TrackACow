@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -51,6 +52,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Insert
             if (accountNamePref != null) {
                 accountNamePref.setSummary(accountName);
             }
+        }
+
+        final Preference offlineMode = findPreference("offline_mode");
+        if (offlineMode != null) {
+            offlineMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    return false;
+                }
+            });
         }
 
         Preference signOutPref = findPreference("sign_out");

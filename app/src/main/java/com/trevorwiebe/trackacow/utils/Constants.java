@@ -11,6 +11,7 @@ public class Constants {
     public static final int NO_NETWORK_CONNECTION = 2;
     public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;
     public static final int ERROR_PUSHING_DATA_TO_CLOUD = 4;
+    public static final int ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED = 5;
 
     public static final int MEDICATE = 1;
     public static final int FEED = 2;

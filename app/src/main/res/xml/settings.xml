@@ -2,13 +2,14 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<PreferenceCategory android:title="General">-->
+    <!--    <PreferenceCategory android:title="General">-->
 
-    <!--<Preference-->
-    <!--android:selectable="false"-->
-    <!--android:summary="No general settings" />-->
+    <!--    <SwitchPreference-->
+    <!--        android:key="offline_mode"-->
+    <!--        android:title="Offline Mode"-->
+    <!--        android:summary="Use this if you have no or a spotty connection" />-->
 
-    <!--</PreferenceCategory>-->
+    <!--    </PreferenceCategory>-->
 
     <PreferenceCategory android:title="Account">
 
@@ -16,13 +17,13 @@
             android:key="account_name"
             android:title="Signed in as" />
 
-        <Preference
-            android:key="subscription"
-            android:title="Manage subscription">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/manage_sub_url" />
-        </Preference>
+        <!--        <Preference-->
+        <!--            android:key="subscription"-->
+        <!--            android:title="Manage subscription">-->
+        <!--            <intent-->
+        <!--                android:action="android.intent.action.VIEW"-->
+        <!--                android:data="@string/manage_sub_url" />-->
+        <!--        </Preference>-->
 
         <Preference
             android:key="sign_out"

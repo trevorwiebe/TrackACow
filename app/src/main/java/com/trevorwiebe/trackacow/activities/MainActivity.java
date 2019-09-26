@@ -11,12 +11,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AlertDialog;
-import android.util.Log;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     private NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
+    private SyncDatabase mSyncDatabase;
 
     private BottomNavigationView mBottomNavigationView;
     private ProgressBar mMainProgressBar;
@@ -155,11 +155,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        if (mSyncDatabase != null) {
+            mSyncDatabase.setSyncAvailability(true);
+        }
         mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onPause() {
+        if (mSyncDatabase != null) {
+            mSyncDatabase.setSyncAvailability(false);
+        }
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
         super.onPause();
     }
@@ -175,13 +181,15 @@ public class MainActivity extends AppCompatActivity implements
         long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
         long timeElapsed = currentTime - lastSync;
-        long oneMinuteInMillis = TimeUnit.MINUTES.toMillis(1);
+        long timeUntilNextLoad = TimeUnit.MINUTES.toMillis(0);
+        mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+        mSyncDatabase.setSyncAvailability(true);
         if (lastSync == 0) {
             mMainProgressBar.setVisibility(View.VISIBLE);
-            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
-        } else if (timeElapsed > oneMinuteInMillis) {
+            mSyncDatabase.beginSync();
+        } else if (timeElapsed > timeUntilNextLoad) {
             mMainProgressBar.setVisibility(View.VISIBLE);
-            new SyncDatabase(MainActivity.this, MainActivity.this).beginSync();
+            mSyncDatabase.beginSync();
         }
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
@@ -227,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Constants.NO_NETWORK_CONNECTION:
                 Toast.makeText(this, "No internet connection.", Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED:
                 break;
             default:
                 Toast.makeText(this, "An unknown error occurred while syncing database", Toast.LENGTH_SHORT).show();

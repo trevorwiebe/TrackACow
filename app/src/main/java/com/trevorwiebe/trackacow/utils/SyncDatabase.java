@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.utils;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllCloudData;
@@ -22,8 +23,11 @@ public class SyncDatabase implements
         QueryAllCloudData.OnAllCloudDataLoaded,
         CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
 
+    private static final String TAG = "SyncDatabase";
+
     private OnDatabaseSynced onDatabaseSynced;
     private Context context;
+    private boolean mIsSyncAvailable;
 
     public SyncDatabase(OnDatabaseSynced onDatabaseSynced, Context context) {
         this.onDatabaseSynced = onDatabaseSynced;
@@ -35,21 +39,31 @@ public class SyncDatabase implements
     }
 
     public void beginSync() {
+
         if (Utility.haveNetworkConnection(context)) {
-            if (Utility.isThereNewDataToUpload(context)) {
-                new InsertAllLocalChangeToCloud(this).execute(context);
+            if (mIsSyncAvailable) {
+                if (Utility.isThereNewDataToUpload(context)) {
+                    new InsertAllLocalChangeToCloud(SyncDatabase.this).execute(context);
+                } else {
+                    new QueryAllCloudData(SyncDatabase.this).loadCloudData();
+                }
             } else {
-                new QueryAllCloudData(this).loadCloudData();
+                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
             }
         } else {
             onDatabaseSynced.onDatabaseSynced(Constants.NO_NETWORK_CONNECTION);
         }
+
     }
 
     @Override
     public void onAllLocalDbInsertedToCloud(int resultCode) {
         if (resultCode == Constants.SUCCESS) {
-            new QueryAllCloudData(this).loadCloudData();
+            if (mIsSyncAvailable) {
+                new QueryAllCloudData(this).loadCloudData();
+            } else {
+                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+            }
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
@@ -58,7 +72,11 @@ public class SyncDatabase implements
     @Override
     public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<UserEntity> userEntities) {
         if (resultCode == Constants.SUCCESS) {
-            new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, userEntities).execute(context);
+            if (mIsSyncAvailable) {
+                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, userEntities).execute(context);
+            } else {
+                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+            }
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
@@ -66,6 +84,14 @@ public class SyncDatabase implements
 
     @Override
     public void onDatabaseCloned() {
-        onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
+        if (mIsSyncAvailable) {
+            onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
+        } else {
+            onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+        }
+    }
+
+    public void setSyncAvailability(boolean isSyncAvailable) {
+        mIsSyncAvailable = isSyncAvailable;
     }
 }
