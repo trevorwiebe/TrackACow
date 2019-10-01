@@ -1,6 +1,8 @@
 package com.trevorwiebe.trackacow.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -128,25 +130,43 @@ public class EditDrugActivity extends AppCompatActivity {
         if (id == R.id.action_delete_drug) {
 
 
-            if (Utility.haveNetworkConnection(EditDrugActivity.this)) {
-                mDrugRef.child(mDrugEntity.getDrugId()).removeValue();
-            } else {
-                Utility.setNewDataToUpload(EditDrugActivity.this, true);
-                HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                holdingDrugEntity.setWhatHappened(Constants.DELETE);
-                holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
-                holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
-                new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
-            }
+            // show a dialog to confirm that the user understands the ramifications of deletion
+            AlertDialog.Builder confirmDeleteDrug = new AlertDialog.Builder(EditDrugActivity.this);
+            confirmDeleteDrug.setTitle("Are you sure you want to delete this drug?");
+            confirmDeleteDrug.setMessage("If there are cows that have this drug to them, after deletion you will not be able to see what drug it is.");
+            confirmDeleteDrug.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-            new DeleteDrug(mDrugEntity).execute(EditDrugActivity.this);
+                    if (Utility.haveNetworkConnection(EditDrugActivity.this)) {
+                        mDrugRef.child(mDrugEntity.getDrugId()).removeValue();
+                    } else {
+                        Utility.setNewDataToUpload(EditDrugActivity.this, true);
+                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
+                        holdingDrugEntity.setWhatHappened(Constants.DELETE);
+                        holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
+                        holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
+                        holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                        new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
+                    }
 
-            Intent resultIntent = new Intent();
+                    new DeleteDrug(mDrugEntity).execute(EditDrugActivity.this);
 
-            resultIntent.putExtra("event", "deleted");
-            setResult(Activity.RESULT_OK, resultIntent);
-            finish();
+                    Intent resultIntent = new Intent();
+
+                    resultIntent.putExtra("event", "deleted");
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+
+                }
+            });
+            confirmDeleteDrug.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            confirmDeleteDrug.show();
 
             return true;
 
