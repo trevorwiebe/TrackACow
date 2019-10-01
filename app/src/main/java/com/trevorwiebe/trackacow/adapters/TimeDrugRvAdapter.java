@@ -38,8 +38,12 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
         String drugId = drugs.getDrugId();
         int amountGiven = drugs.getAmountGiven();
 
+        if (drugId == null || drugId == "") {
+            drugId = "[drug_unavailable]";
+        }
+
         holder.mDrugName.setText(drugId);
-        holder.mDrugAmountGiven.setText(Integer.toString(amountGiven) + " units");
+        holder.mDrugAmountGiven.setText(amountGiven + " units");
     }
 
     @Override
