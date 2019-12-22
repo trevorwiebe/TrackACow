@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "1073526611126",
+    "firebase_url": "https://track-a-cow.firebaseio.com",
+    "project_id": "track-a-cow",
+    "storage_bucket": "track-a-cow.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073526611126:android:7b292477a815dea4",
+        "android_client_info": {
+          "package_name": "com.trevorwiebe.trackacow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073526611126-8fs4ggjhvj3k6fkd66pq18p8plvvhv3u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trevorwiebe.trackacow",
+            "certificate_hash": "86cae5f54452404573dca6fc30707fd67e07fa6a"
+          }
+        },
+        {
+          "client_id": "1073526611126-uub5gnvvvdk271d8putls4ea553fj13t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trevorwiebe.trackacow",
+            "certificate_hash": "64799205503c66c0fb546cb712c1432a8821d198"
+          }
+        },
+        {
+          "client_id": "1073526611126-bmguc2r14o8vcghm6otdqvcge4j20hnm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trevorwiebe.trackacow",
+            "certificate_hash": "159a35a8570a817d9d747001d3e1f3033fd3b6e0"
+          }
+        },
+        {
+          "client_id": "1073526611126-dp342qvqbk33a5u8njp0sr7h9sgjgcuq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJxo5Et9oCkzuqrJ38Wu4WE-q7th_lbC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073526611126-dp342qvqbk33a5u8njp0sr7h9sgjgcuq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073526611126:android:4c53740f1142c71a6d1a17",
+        "android_client_info": {
+          "package_name": "com.trevorwiebe.trackacow.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073526611126-dp342qvqbk33a5u8njp0sr7h9sgjgcuq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJxo5Et9oCkzuqrJ38Wu4WE-q7th_lbC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073526611126-dp342qvqbk33a5u8njp0sr7h9sgjgcuq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

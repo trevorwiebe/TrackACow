@@ -4,11 +4,11 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.trevorwiebe.trackacow"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 11
         versionName "0.1.9"
+        flavorDimensions "default"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,6 +17,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors{
+        free{
+            applicationId "com.trevorwiebe.trackacow"
+        }
+
+        pro{
+            applicationId "com.trevorwiebe.trackacow.pro"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = '1.7'
     }
