@@ -12,11 +12,6 @@
     <!--android:icon="@drawable/ic_pen_accent_24dp" />-->
 
     <item
-        android:id="@+id/action_move"
-        android:title="Move"
-        android:icon="@drawable/ic_shuffle_white_24dp" />
-
-    <item
         android:id="@+id/action_reports"
         android:title="Reports"
         android:icon="@drawable/ic_reports_black_24dp" />

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -100,14 +102,6 @@ public class MainActivity extends AppCompatActivity implements
 //                        feedTransactionManager.commit();
 //                        mLastUsedScreen = Constants.FEED;
 //                        break;
-                    case R.id.action_move:
-                        setTitle("Move");
-                        MoveFragment moveFragment = new MoveFragment();
-                        FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
-                        moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
-                        moveTransactionManager.commit();
-                        mLastUsedScreen = Constants.MOVE;
-                        break;
                     case R.id.action_reports:
                         setTitle("Reports");
                         ReportsFragment reportsFragment = new ReportsFragment();
@@ -174,6 +168,30 @@ public class MainActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Utility.saveLastFeedPen(this, 0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.action_move_pens:
+                setTitle("Move");
+                MoveFragment moveFragment = new MoveFragment();
+                FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
+                moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
+                moveTransactionManager.commit();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void onSignedInInitialized() {
@@ -395,14 +413,6 @@ public class MainActivity extends AppCompatActivity implements
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                 feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
                 feedTransactionManager.commit();
-                break;
-            case Constants.MOVE:
-                setTitle("Move");
-                mBottomNavigationView.setSelectedItemId(R.id.action_move);
-                MoveFragment moveFragment = new MoveFragment();
-                FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
-                moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
-                moveTransactionManager.commit();
                 break;
             case Constants.REPORTS:
                 setTitle("Reports");
