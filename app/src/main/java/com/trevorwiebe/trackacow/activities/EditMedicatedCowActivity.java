@@ -312,7 +312,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     drugName = "[drug_unavailable]";
                 }
 
-                String textToSet = Integer.toString(amountGiven) + " ccs of " + drugName;
+                String textToSet = amountGiven + " units of " + drugName;
 
                 TextView textView = new TextView(EditMedicatedCowActivity.this);
                 LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(

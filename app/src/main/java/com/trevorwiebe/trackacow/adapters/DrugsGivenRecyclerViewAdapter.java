@@ -62,7 +62,7 @@ public class DrugsGivenRecyclerViewAdapter extends RecyclerView.Adapter<DrugsGiv
         }else{
             drugName = "[drug_unavailable]";
         }
-        String drugsGivenMessage =  amountGivenStr + " ccs of " + drugName;
+        String drugsGivenMessage =  amountGivenStr + " units of " + drugName;
 
         drugsGivenViewHolder.mDrugGiven.setText(drugsGivenMessage);
     }

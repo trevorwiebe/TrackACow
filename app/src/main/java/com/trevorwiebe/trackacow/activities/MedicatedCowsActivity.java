@@ -130,10 +130,24 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMarkAsActive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mLotName.length() == 0 || mCustomerName.length() == 0 || mTotalCount.length() == 0) {
-                    Snackbar.make(view, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
-                    return;
+
+                boolean shouldSave = true;
+                if (mLotName.length() == 0){
+                    mLotName.setError("Please fill this blank");
+                    shouldSave = false;
                 }
+
+                if (mCustomerName.length() == 0){
+                    mCustomerName.setError("Please fill this blank");
+                    shouldSave = false;
+                }
+
+                if (mTotalCount.length() == 0) {
+                    mTotalCount.setError("Please fill this blank");
+                    shouldSave = false;
+                }
+
+                if(!shouldSave) return;
 
                 String lotName = mLotName.getText().toString();
                 String customerName = mCustomerName.getText().toString();
@@ -332,8 +346,8 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     /*
-        Database return callbacks
-         */
+    Database return callbacks
+    */
     @Override
     public void onPenByIdReturned(PenEntity penEntity) {
         mSelectedPen = penEntity;

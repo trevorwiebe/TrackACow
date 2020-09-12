@@ -92,7 +92,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
                     }
                     String amountGivenStr = Integer.toString(amountGiven);
 
-                    message = message + amountGivenStr + "cc of " + drugName;
+                    message = message + amountGivenStr + " units of " + drugName;
                     if (drugsGivenEntities.size() != q + 1) {
                         message = message + "\n";
                     }

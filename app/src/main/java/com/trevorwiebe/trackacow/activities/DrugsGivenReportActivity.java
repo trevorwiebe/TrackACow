@@ -153,11 +153,6 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-
-        Log.d(TAG, "onSaveInstanceState: here");
-
-        Log.d(TAG, "onSaveInstanceState: " + mStartCalendar.getTimeInMillis());
-
         outState.putLong("startLong", mStartCalendar.getTimeInMillis());
         outState.putLong("endLong", mEndCalendar.getTimeInMillis());
         super.onSaveInstanceState(outState);
