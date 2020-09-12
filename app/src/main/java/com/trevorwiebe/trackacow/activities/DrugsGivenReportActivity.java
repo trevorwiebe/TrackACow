@@ -1,33 +1,31 @@
 package com.trevorwiebe.trackacow.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.adapters.DrugReportAdapter;
 import com.trevorwiebe.trackacow.adapters.TimeDrugRvAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIdAndDateRange;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIds;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.fragments.DayDrugReportFragment;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,31 +35,28 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
     private static final String TAG = "DrugsGivenReportActivit";
 
-    private DrugReportAdapter mDrugReportAdapter;
-
-    private HashMap<String, String> mDrugNameAndKeys = new HashMap<>();
     private String mLotId;
     private HashMap<String, String> mDrugKeyAndName = new HashMap<>();
-    private Long mStartTime;
-    private LocalDateTime mStartDateTime;
-    private LocalDateTime mEndDateTime;
-    private DatePickerDialog.OnDateSetListener mDatePicker;
-    private Calendar mCalendar = Calendar.getInstance();
-    private Long mMillisInADay;
+
+    private Calendar mStartCalendar = Calendar.getInstance();
+    private Calendar mEndCalendar = Calendar.getInstance();
+
+    private DatePickerDialog.OnDateSetListener mStartDatePicker;
+    private DatePickerDialog.OnDateSetListener mEndDatePicker;
 
     private TextView mNoDrugsGivenTv;
     private RecyclerView mDayRv;
     private TimeDrugRvAdapter timeDrugRvAdapter;
-    private TextView mSelectedDateBtn;
+    private Button mStartDateButton;
+    private Button mEndDateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drugs_given_report);
 
-        ImageButton dayGoBack = findViewById(R.id.go_back);
-        ImageButton dayGoForward = findViewById(R.id.go_forward);
-        mSelectedDateBtn = findViewById(R.id.selected_date_btn);
+        mStartDateButton = findViewById(R.id.start_date_btn);
+        mEndDateButton = findViewById(R.id.end_date_btn);
 
         mNoDrugsGivenTv = findViewById(R.id.no_drugs_given_report_tv);
         mDayRv = findViewById(R.id.drug_report_rv);
@@ -69,80 +64,103 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         timeDrugRvAdapter = new TimeDrugRvAdapter(null);
         mDayRv.setAdapter(timeDrugRvAdapter);
 
-        mMillisInADay = TimeUnit.DAYS.toMillis(1);
+        if(savedInstanceState != null){
 
-        mCalendar.set(Calendar.HOUR, 0);
-        mCalendar.set(Calendar.MINUTE, 0);
-        mCalendar.set(Calendar.SECOND, 0);
-        mCalendar.set(Calendar.MILLISECOND, 0);
+            long startDate = savedInstanceState.getLong("startLong");
+            long endDate = savedInstanceState.getLong("endLong");
 
-        mStartTime = mCalendar.getTimeInMillis();
+            mStartCalendar.setTimeInMillis(startDate);
+            mEndCalendar.setTimeInMillis(endDate);
+
+        }else {
+
+            long millisInADay = TimeUnit.DAYS.toMillis(1);
+
+            long tomorrow_milliseconds = mStartCalendar.getTimeInMillis() + millisInADay;
+
+            mStartCalendar.set(Calendar.HOUR, 0);
+            mStartCalendar.set(Calendar.MINUTE, 0);
+            mStartCalendar.set(Calendar.SECOND, 0);
+            mStartCalendar.set(Calendar.MILLISECOND, 0);
+
+            mEndCalendar.setTimeInMillis(tomorrow_milliseconds);
+            mEndCalendar.set(Calendar.HOUR, 0);
+            mEndCalendar.set(Calendar.MINUTE, 0);
+            mEndCalendar.set(Calendar.SECOND, 0);
+            mEndCalendar.set(Calendar.MILLISECOND, 0);
+
+        }
 
         mLotId = getIntent().getStringExtra("lotId");
 
-        mSelectedDateBtn.setOnClickListener(new View.OnClickListener() {
+        mStartDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 new DatePickerDialog(DrugsGivenReportActivity.this,
-                        mDatePicker,
-                        mCalendar.get(Calendar.YEAR),
-                        mCalendar.get(Calendar.MONTH),
-                        mCalendar.get(Calendar.DAY_OF_MONTH))
+                        mStartDatePicker,
+                        mStartCalendar.get(Calendar.YEAR),
+                        mStartCalendar.get(Calendar.MONTH),
+                        mStartCalendar.get(Calendar.DAY_OF_MONTH))
                         .show();
             }
         });
 
-        mDatePicker = new DatePickerDialog.OnDateSetListener() {
+        mStartDatePicker = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, month);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mSelectedDateBtn.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
+                mStartCalendar.set(Calendar.YEAR, year);
+                mStartCalendar.set(Calendar.MONTH, month);
+                mStartCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mStartDateButton.setText(Utility.convertMillisToDate(mStartCalendar.getTimeInMillis()));
 
-                long selectedStartDate = mCalendar.getTimeInMillis();
-                long selectedEndDate = selectedStartDate + mMillisInADay;
+                long selectedStartDate = mStartCalendar.getTimeInMillis();
+                long selectedEndDate = mEndCalendar.getTimeInMillis();
+
+                new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, selectedStartDate, selectedEndDate).execute(DrugsGivenReportActivity.this);
+            }
+        };
+
+        mEndDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(DrugsGivenReportActivity.this,
+                        mEndDatePicker,
+                        mEndCalendar.get(Calendar.YEAR),
+                        mEndCalendar.get(Calendar.MONTH),
+                        mEndCalendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            }
+        });
+
+        mEndDatePicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                mEndCalendar.set(Calendar.YEAR, year);
+                mEndCalendar.set(Calendar.MONTH, month);
+                mEndCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                mEndDateButton.setText(Utility.convertMillisToDate(mEndCalendar.getTimeInMillis()));
+
+                long selectedStartDate = mStartCalendar.getTimeInMillis();
+                long selectedEndDate = mEndCalendar.getTimeInMillis();
 
                 new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, selectedStartDate, selectedEndDate).execute(DrugsGivenReportActivity.this);
             }
         };
 
         new QueryAllDrugs(this).execute(this);
+    }
 
-        dayGoBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStartDateTime = mStartDateTime.minusDays(1);
-                mEndDateTime = mEndDateTime.minusDays(1);
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
 
-                long startLong = mStartDateTime.toDate().getTime();
-                long endLong = mEndDateTime.toDate().getTime();
+        Log.d(TAG, "onSaveInstanceState: here");
 
-                String startLongStr = Utility.convertMillisToDate(startLong);
+        Log.d(TAG, "onSaveInstanceState: " + mStartCalendar.getTimeInMillis());
 
-                mSelectedDateBtn.setText(startLongStr);
-
-                new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, startLong, endLong).execute(DrugsGivenReportActivity.this);
-            }
-        });
-
-        dayGoForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStartDateTime = mStartDateTime.plusDays(1);
-                mEndDateTime = mEndDateTime.plusDays(1);
-
-                long startLong = mStartDateTime.toDate().getTime();
-                long endLong = mEndDateTime.toDate().getTime();
-
-                String sundayStr = Utility.convertMillisToDate(startLong);
-
-                mSelectedDateBtn.setText(sundayStr);
-
-                new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, startLong, endLong).execute(DrugsGivenReportActivity.this);
-            }
-        });
+        outState.putLong("startLong", mStartCalendar.getTimeInMillis());
+        outState.putLong("endLong", mEndCalendar.getTimeInMillis());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -161,16 +179,14 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             mDrugKeyAndName.put(drugId, drugName);
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        mStartDateTime = now.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
-        mEndDateTime = now.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        long startLong = mStartCalendar.getTimeInMillis();
+        long endLong = mEndCalendar.getTimeInMillis();
 
-        long startLong = mStartDateTime.toDate().getTime();
-        long endLong = mEndDateTime.toDate().getTime();
+        String friendlyStartDate = Utility.convertMillisToDate(startLong);
+        String friendlyEndDate = Utility.convertMillisToDate(endLong);
 
-        String sundayStr = Utility.convertMillisToDate(startLong);
-
-        mSelectedDateBtn.setText(sundayStr);
+        mStartDateButton.setText(friendlyStartDate);
+        mEndDateButton.setText(friendlyEndDate);
 
         new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, startLong, endLong).execute(this);
 
