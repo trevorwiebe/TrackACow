@@ -2,7 +2,6 @@ package com.trevorwiebe.trackacow.adapters;
 
 import androidx.annotation.NonNull;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -57,7 +56,7 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
         int call = 0;
         if (callEntity != null) {
 
-            call = callEntity.getAmountFed();
+            call = callEntity.getCallAmount();
 
             String callStr = numberFormat.format(call);
             feedPenViewHolder.mCall.setText(callStr);
@@ -78,7 +77,9 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
                     String amountFedStr = numberFormat.format(amountFed);
                     feedPenViewHolder.mFed.append(amountFedStr);
-                    feedPenViewHolder.mFed.append("\n");
+                    if(t < (feedEntities.size()-1)) {
+                        feedPenViewHolder.mFed.append("\n");
+                    }
                 }
             }
 
@@ -90,11 +91,11 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
             feedPenViewHolder.mLeftToFeed.setText(leftToFeedStr);
         }
 
-        if (feedEntities != null) {
-            int timesFed = feedEntities.size();
-            String timesFedStr = numberFormat.format(timesFed);
-            feedPenViewHolder.mTimesFed.setText(timesFedStr);
-        }
+//        if (feedEntities != null) {
+//            int timesFed = feedEntities.size();
+//            String timesFedStr = numberFormat.format(timesFed);
+//            feedPenViewHolder.mTimesFed.setText(timesFedStr);
+//        }
 
     }
 
@@ -117,7 +118,7 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
         private TextView mDate;
         private TextView mCall;
-        private TextView mTimesFed;
+//        private TextView mTimesFed;
         private TextView mFed;
         private TextView mLeftToFeed;
         private TextView mTotalFed;
@@ -127,7 +128,7 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
             mDate = view.findViewById(R.id.feed_pen_date);
             mCall = view.findViewById(R.id.feed_lot_call);
-            mTimesFed = view.findViewById(R.id.feed_lot_times_fed);
+//            mTimesFed = view.findViewById(R.id.feed_lot_times_fed);
             mFed = view.findViewById(R.id.feed_lot_fed);
             mLeftToFeed = view.findViewById(R.id.feed_lot_left_to_feed);
             mTotalFed = view.findViewById(R.id.feed_lot_total_fed);
@@ -151,8 +152,6 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
         ArrayList<FeedEntity> feedEntities = new ArrayList<>();
         for (int q = 0; q < mFeedEntities.size(); q++) {
             FeedEntity feedEntity = mFeedEntities.get(q);
-            Log.d(TAG, "getFeedEntitiesByDate: " + date);
-            Log.d(TAG, "getFeedEntitiesByDate: " + feedEntity.getDate());
             if (feedEntity.getDate() == date) {
                 feedEntities.add(feedEntity);
             }

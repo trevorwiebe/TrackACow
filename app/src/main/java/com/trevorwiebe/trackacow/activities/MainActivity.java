@@ -94,14 +94,14 @@ public class MainActivity extends AppCompatActivity implements
                         medicateTransactionManager.commit();
                         mLastUsedScreen = Constants.MEDICATE;
                         break;
-//                    case R.id.action_feed:
-//                        setTitle("Feed");
-//                        FeedFragment feedFragment = new FeedFragment();
-//                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
-//                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
-//                        feedTransactionManager.commit();
-//                        mLastUsedScreen = Constants.FEED;
-//                        break;
+                    case R.id.action_feed:
+                        setTitle("Feed");
+                        FeedFragment feedFragment = new FeedFragment();
+                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
+                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
+                        feedTransactionManager.commit();
+                        mLastUsedScreen = Constants.FEED;
+                        break;
                     case R.id.action_reports:
                         setTitle("Reports");
                         ReportsFragment reportsFragment = new ReportsFragment();
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             default:
                 title = "Error";
-                message = "Unknown error occurred.  Please email support at app@trackacow.net for assistance.";
+                message = "Unknown error occurred.  Please send an email to app@trackacow.net for support.";
                 showNoPassDialog(title, message);
                 Utility.setLastSync(this, 0);
                 return;
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Constants.FEED:
                 setTitle("Feed");
-//                mBottomNavigationView.setSelectedItemId(R.id.action_feed);
+                mBottomNavigationView.setSelectedItemId(R.id.action_feed);
                 FeedFragment feedFragment = new FeedFragment();
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                 feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);

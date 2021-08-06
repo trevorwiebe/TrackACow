@@ -143,7 +143,7 @@ public class FeedLotActivity extends AppCompatActivity implements
                         if (mSelectedCallEntity == null) {
                             pushRef.setValue(callEntity);
                         } else {
-                            mSelectedCallEntity.setAmountFed(call);
+                            mSelectedCallEntity.setCallAmount(call);
                             baseRef.child(mSelectedCallEntity.getId()).setValue(mSelectedCallEntity);
                         }
                     } else {
@@ -177,7 +177,7 @@ public class FeedLotActivity extends AppCompatActivity implements
             mSave.setText("Save");
         } else {
             mSave.setText("Update");
-            int call = mSelectedCallEntity.getAmountFed();
+            int call = mSelectedCallEntity.getCallAmount();
             String callStr = Integer.toString(call);
             mCallET.setText(callStr);
         }

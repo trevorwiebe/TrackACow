@@ -28,8 +28,8 @@ public interface CallDao {
     @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId")
     CallEntity getCallEntityByDateAndLotId(long date, String lotId);
 
-    @Query("UPDATE call SET amountFed = :amountFed WHERE id = :callId")
-    void updateCallByCallId(String callId, int amountFed);
+    @Query("UPDATE call SET callAmount = :callAmount WHERE id = :callId")
+    void updateCallByCallId(String callId, int callAmount);
 
     @Query("SELECT * FROM call WHERE lotId = :lotId")
     List<CallEntity> getCallEntitiesByLotId(String lotId);

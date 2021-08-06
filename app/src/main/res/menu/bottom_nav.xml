@@ -5,11 +5,10 @@
         android:id="@+id/action_medicate"
         android:title="Work"
         android:icon="@drawable/ic_drugs_black_24dp" />
-
-    <!--<item-->
-    <!--android:id="@+id/action_feed"-->
-    <!--android:title="Feed"-->
-    <!--android:icon="@drawable/ic_pen_accent_24dp" />-->
+    <item
+        android:id="@+id/action_feed"
+        android:title="Feed"
+        android:icon="@drawable/ic_pen_accent_24dp" />
 
     <item
         android:id="@+id/action_reports"

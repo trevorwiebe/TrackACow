@@ -16,8 +16,8 @@ public class CallEntity {
     @ColumnInfo(name = "primaryKey")
     private int primaryKey;
 
-    @ColumnInfo(name = "amountFed")
-    private int amountFed;
+    @ColumnInfo(name = "callAmount")
+    private int callAmount;
 
     @ColumnInfo(name = "date")
     private long date;
@@ -28,8 +28,8 @@ public class CallEntity {
     @ColumnInfo(name = "id")
     private String id;
 
-    public CallEntity(int amountFed, long date, String lotId, String id) {
-        this.amountFed = amountFed;
+    public CallEntity(int callAmount, long date, String lotId, String id) {
+        this.callAmount = callAmount;
         this.date = date;
         this.lotId = lotId;
         this.id = id;
@@ -49,12 +49,12 @@ public class CallEntity {
         this.primaryKey = primaryKey;
     }
 
-    public int getAmountFed() {
-        return amountFed;
+    public int getCallAmount() {
+        return callAmount;
     }
 
-    public void setAmountFed(int amountFed) {
-        this.amountFed = amountFed;
+    public void setCallAmount(int callAmount) {
+        this.callAmount = callAmount;
     }
 
     public long getDate() {

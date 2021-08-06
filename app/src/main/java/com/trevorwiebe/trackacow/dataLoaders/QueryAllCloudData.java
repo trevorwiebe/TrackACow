@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -113,6 +114,8 @@ public class QueryAllCloudData {
                                 if (userEntity != null) {
                                     mUserEntity.add(userEntity);
                                 }
+                                break;
+                            case CallEntity.CALL:
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key " + key);

@@ -49,7 +49,6 @@ public class FeedFragment extends Fragment implements QueryAllPens.OnPensLoaded 
 
             @Override
             public void onPageSelected(int i) {
-                Log.d(TAG, "onPageSelected: " + i);
                 Utility.saveLastFeedPen(mContext, i);
             }
 
@@ -71,7 +70,6 @@ public class FeedFragment extends Fragment implements QueryAllPens.OnPensLoaded 
         penViewPagerAdapter = new FeedPenViewPagerAdapter(getFragmentManager(), penEntitiesList);
         feedPenViewPager.setAdapter(penViewPagerAdapter);
         int lastFeedPen = Utility.getLastFeedPen(mContext);
-        Log.d(TAG, "onPensLoaded: " + lastFeedPen);
         feedPenViewPager.setCurrentItem(lastFeedPen, false);
     }
 
