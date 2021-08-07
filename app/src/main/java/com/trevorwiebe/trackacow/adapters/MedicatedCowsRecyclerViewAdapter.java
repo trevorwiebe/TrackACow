@@ -58,7 +58,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
         String cowId = cowEntity.getCowId();
         long date = cowEntity.getDate();
 
-        trackCowViewHolder.mDate.setText("Date: " + Utility.convertMillisToDate(date));
+        trackCowViewHolder.mDate.setText(Utility.convertMillisToFriendlyDate(date));
 
         trackCowViewHolder.mTagNumber.setText(tagNumber);
         if (notes == null || notes.length() == 0) {

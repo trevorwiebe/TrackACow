@@ -49,27 +49,30 @@
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold"
                                 android:text="You have medicated this cow"
-                                android:layout_margin="16dp"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginBottom="8dp"
                                 android:layout_alignParentStart="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
 
-                            <Button
-                                android:id="@+id/view_medications_given_btn"
-                                android:layout_alignParentEnd="true"
-                                android:text="View"
-                                style="?buttonBarButtonStyle"
-                                android:textStyle="bold"
-                                android:layout_marginTop="3dp"
-                                android:textColor="@android:color/white"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+<!--                            <Button-->
+<!--                                android:id="@+id/view_medications_given_btn"-->
+<!--                                android:layout_alignParentEnd="true"-->
+<!--                                android:text="View"-->
+<!--                                style="?buttonBarButtonStyle"-->
+<!--                                android:textStyle="bold"-->
+<!--                                android:layout_marginTop="3dp"-->
+<!--                                android:textColor="@android:color/white"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content" />-->
 
                         </RelativeLayout>
 
                         <LinearLayout
-                            android:visibility="gone"
                             android:orientation="vertical"
+                            android:layout_marginBottom="8dp"
                             android:id="@+id/more_drugs_given_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
