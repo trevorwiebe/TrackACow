@@ -28,9 +28,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:textStyle="bold"
                     android:text="Customer Name"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
@@ -41,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="8dp"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
@@ -58,9 +59,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
                     android:text="Date"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
@@ -71,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="8dp"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
@@ -84,9 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
+            android:textStyle="bold"
             android:text="Memo"
             android:textColor="@color/colorAccent"
             android:textSize="14sp" />
@@ -113,9 +116,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="Lot Reports"
+                android:text="LOT REPORTS"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -125,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -138,9 +144,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold"
                         android:text="Current head"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -151,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -160,9 +167,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold"
                         android:text="Total head"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -173,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -182,9 +190,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold"
                         android:text="Head days"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -195,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -204,9 +213,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold"
                         android:text="Death loss"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -217,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 
@@ -228,32 +238,9 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="16dp"
+                        android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Feed"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/feed_reports"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -268,10 +255,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
                         android:text="Drugs used"
+                        android:textStyle="bold"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
@@ -319,6 +307,51 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="4dp"
+                        android:textStyle="bold"
+                        android:text="Feed"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/feed_reports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"/>
+
+                    <Button
+                        android:padding="10dp"
+                        android:textColor="@color/colorAccent"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/white_sign_in_btn"
+                        android:text="Feed Report"
+                        android:id="@+id/feed_reports_btn"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
                 <TextView
@@ -327,6 +360,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"
                     android:text="Cattle received"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />

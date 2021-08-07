@@ -240,6 +240,7 @@ public class LotReportActivity extends AppCompatActivity implements
             final float scale = getResources().getDisplayMetrics().density;
             int pixels16 = (int) (16 * scale + 0.5f);
             int pixels8 = (int) (8 * scale + 0.5f);
+            int pixels4 = (int) (4 * scale + 0.5f);
 
             DrugReportsObject drugReportsObject = drugReports.get(p);
             DrugEntity drugEntity = findDrugEntity(drugReportsObject.getDrugId());
@@ -257,7 +258,7 @@ public class LotReportActivity extends AppCompatActivity implements
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            textViewParams.setMargins(pixels16, pixels8, pixels16, pixels8);
+            textViewParams.setMargins(pixels16, pixels4, pixels16, pixels4);
             textView.setTextSize(16f);
             textView.setTextColor(getResources().getColor(android.R.color.black));
             textView.setLayoutParams(textViewParams);
