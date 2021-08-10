@@ -32,7 +32,7 @@
                 android:id="@+id/start_date_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:background="@drawable/white_sign_in_btn"
                 android:elevation="4dp"
                 android:paddingLeft="24dp"
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:background="@drawable/white_sign_in_btn"
                 android:elevation="4dp"
                 android:paddingLeft="24dp"
@@ -82,6 +82,51 @@
                 android:textSize="18sp" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/quick_yesterday"
+            android:text="Yesterday"
+            android:layout_weight="1"
+            android:background="@drawable/white_sign_in_btn_accent_border"
+            android:textColor="@color/colorAccent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/quick_month"
+            android:text="This month"
+            android:layout_weight="1"
+            android:background="@drawable/white_sign_in_btn_accent_border"
+            android:textColor="@color/colorAccent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/quick_all"
+            android:text="All"
+            android:layout_weight="1"
+            android:background="@drawable/white_sign_in_btn_accent_border"
+            android:textColor="@color/colorAccent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

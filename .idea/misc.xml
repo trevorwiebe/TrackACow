@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/accent_sign_in_btn.xml" value="0.24722222222222223" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/white_sign_in_btn_accent_border.xml" value="0.24722222222222223" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/layout/activity_feed_lot.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/layout/activity_lot_reports.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/layout/activity_medicate_a_cow.xml" value="0.25416666666666665" />

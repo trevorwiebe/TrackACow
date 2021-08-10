@@ -18,8 +18,10 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.TimeDrugRvAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIdAndDateRange;
+import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import org.joda.time.LocalDateTime;
@@ -31,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DrugsGivenReportActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryDrugsGivenByLotIdAndDateRange.OnDrugsGivenByLotIdAndDateRangeLoaded {
+        QueryDrugsGivenByLotIdAndDateRange.OnDrugsGivenByLotIdAndDateRangeLoaded, QueryLotByLotId.OnLotByLotIdLoaded {
 
     private static final String TAG = "DrugsGivenReportActivit";
 
@@ -49,6 +51,9 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     private TimeDrugRvAdapter timeDrugRvAdapter;
     private Button mStartDateButton;
     private Button mEndDateButton;
+    private Button mQuickYesterday;
+    private Button mQuickMonth;
+    private Button mQuickAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,9 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
         mStartDateButton = findViewById(R.id.start_date_btn);
         mEndDateButton = findViewById(R.id.end_date_btn);
+        mQuickYesterday = findViewById(R.id.quick_yesterday);
+        mQuickMonth = findViewById(R.id.quick_month);
+        mQuickAll = findViewById(R.id.quick_all);
 
         mNoDrugsGivenTv = findViewById(R.id.no_drugs_given_report_tv);
         mDayRv = findViewById(R.id.drug_report_rv);
@@ -148,6 +156,54 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             }
         };
 
+        mQuickAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new QueryLotByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
+
+                mQuickAll.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickAll.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+        });
+
+        mQuickMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mStartCalendar.add(Calendar.MONTH, -1);
+                mEndCalendar.setTimeInMillis(System.currentTimeMillis());
+
+                long startLong = mStartCalendar.getTimeInMillis();
+                long endLong = mEndCalendar.getTimeInMillis();
+
+                String friendlyStartDate = Utility.convertMillisToDate(startLong);
+                String friendlyEndDate = Utility.convertMillisToDate(endLong);
+
+                mStartDateButton.setText(friendlyStartDate);
+                mEndDateButton.setText(friendlyEndDate);
+
+                new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this,
+                        mLotId, startLong, endLong)
+                        .execute(DrugsGivenReportActivity.this);
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickMonth.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+        });
+
+        mQuickYesterday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         new QueryAllDrugs(this).execute(this);
     }
 
@@ -232,5 +288,22 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             }
         }
         return 0;
+    }
+
+    @Override
+    public void onLotByLotIdLoaded(LotEntity lotEntity) {
+        long start_date = lotEntity.getDate();
+        long end_date = System.currentTimeMillis();
+
+        String friendlyStartDate = Utility.convertMillisToDate(start_date);
+        String friendlyEndDate = Utility.convertMillisToDate(end_date);
+
+        mStartCalendar.setTimeInMillis(start_date);
+        mEndCalendar.setTimeInMillis(end_date);
+
+        mStartDateButton.setText(friendlyStartDate);
+        mEndDateButton.setText(friendlyEndDate);
+
+        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, start_date, end_date).execute(this);
     }
 }
