@@ -34,6 +34,8 @@ import com.trevorwiebe.trackacow.dataLoaders.UpdateCallById;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -148,6 +150,8 @@ public class FeedLotActivity extends AppCompatActivity implements
                         }
                     } else {
 
+                        HoldingCallEntity holdingCallEntity = new HoldingCallEntity(callEntity, Constants.INSERT_UPDATE);
+
                     }
 
                     if (mSelectedCallEntity == null) {
@@ -157,7 +161,7 @@ public class FeedLotActivity extends AppCompatActivity implements
                         new UpdateCallById(call, callKey).execute(FeedLotActivity.this);
                     }
 
-                    // first we delete the old feed entities
+                    // first we delete the old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
                     new DeleteFeedEntitiesByDateAndLotId(mDate, mLotId, FeedLotActivity.this).execute(FeedLotActivity.this);
 
                 }

@@ -1,14 +1,16 @@
-package com.trevorwiebe.trackacow.db.entities;
+package com.trevorwiebe.trackacow.db.holdingUpdateEntities;
 
+import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.annotation.Keep;
+
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 
 @Keep
-@Entity(tableName = "call")
-public class CallEntity {
+@Entity(tableName = "holdingCall")
+public class HoldingCallEntity {
 
     public static final String CALL = "call";
 
@@ -28,15 +30,29 @@ public class CallEntity {
     @ColumnInfo(name = "id")
     private String id;
 
-    public CallEntity(int callAmount, long date, String lotId, String id) {
+    @ColumnInfo(name = "whatHappened")
+    private int whatHappened;
+
+    public HoldingCallEntity(int callAmount, long date, String lotId, String id, int whatHappened) {
         this.callAmount = callAmount;
         this.date = date;
         this.lotId = lotId;
         this.id = id;
+        this.whatHappened = whatHappened;
     }
 
     @Ignore
-    public CallEntity() {
+    public HoldingCallEntity(CallEntity callEntity, int whatHappened){
+        this.primaryKey = callEntity.getPrimaryKey();
+        this.callAmount = callEntity.getCallAmount();
+        this.date = callEntity.getDate();
+        this.lotId = callEntity.getLotId();
+        this.id = callEntity.getId();
+        this.whatHappened = whatHappened;
+    }
+
+    @Ignore
+    public HoldingCallEntity() {
     }
 
     public int getPrimaryKey() {
@@ -77,5 +93,13 @@ public class CallEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getWhatHappened() {
+        return whatHappened;
+    }
+
+    public void setWhatHappened(int whatHappened) {
+        this.whatHappened = whatHappened;
     }
 }

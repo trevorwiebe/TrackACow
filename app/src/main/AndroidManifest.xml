@@ -16,28 +16,35 @@
         <activity
             android:name=".activities.DrugsGivenReportActivity"
             android:label="Drug Reports"
+            android:exported="true"
             android:parentActivityName=".activities.LotReportActivity" />
         <activity
             android:name=".activities.EditLoadActivity"
             android:label="Edit cattle added"
+            android:exported="true"
             android:parentActivityName=".activities.LotReportActivity" />
         <activity
             android:name=".activities.AddLoadOfCattleActivity"
+            android:exported="true"
             android:label="Add cattle" />
         <activity
             android:name=".activities.FeedLotActivity"
             android:label="Feed Lot"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ArchivesActivity"
             android:label="Archives"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LotReportActivity"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,54 +57,67 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="Settings"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.EditDrugsGivenActivity"
             android:label="Edit drugs given"
+            android:exported="true"
             android:parentActivityName=".activities.EditMedicatedCowActivity" />
         <activity
             android:name=".activities.CreateAccountActivity"
             android:label="Create Account"
             android:parentActivityName=".activities.SignInActivity"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SignInActivity"
             android:label="Sign In"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.EditMedicatedCowActivity"
+            android:exported="true"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
             android:name=".activities.ManageDrugsActivity"
             android:label="Manage Drugs"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ManagePensActivity"
             android:label="Manage Pens"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.MedicatedCowsActivity"
+            android:exported="true"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AddNewDrugActivity"
             android:label="Add new drug"
+            android:exported="true"
             android:parentActivityName=".activities.ManageDrugsActivity" />
         <activity
             android:name=".activities.EditDrugActivity"
             android:label="Edit drug"
+            android:exported="true"
             android:parentActivityName=".activities.ManageDrugsActivity" />
         <activity
             android:name=".activities.MedicateACowActivity"
             android:label="Medicate a cow"
+            android:exported="true"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
             android:name=".activities.MarkACowDeadActivity"
             android:label="Mark a cow dead"
+            android:exported="true"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
         <activity
             android:name=".activities.EditLotActivity"
             android:label="Edit lot information"
+            android:exported="true"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
 
         <service

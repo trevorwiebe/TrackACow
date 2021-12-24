@@ -14,6 +14,11 @@ import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.util.Log;
 import android.view.Menu;
@@ -210,21 +215,18 @@ public class MainActivity extends AppCompatActivity implements
             mSyncDatabase.beginSync();
         }
 
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-
-        int periodicity = (int) TimeUnit.HOURS.toSeconds(24);
-        int toleranceInterval = (int) TimeUnit.HOURS.toSeconds(3);
-
-        Job syncDatabase = dispatcher.newJobBuilder()
-                .setService(SyncDatabaseService.class)
-                .setTag("sync_database_job_tag")
-                .setRecurring(true)
-                .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(periodicity, toleranceInterval + periodicity))
-                .setConstraints(Constraint.ON_UNMETERED_NETWORK)
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .setRequiresCharging(true)
+                .setRequiresDeviceIdle(true)
                 .build();
 
-        dispatcher.mustSchedule(syncDatabase);
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(SyncDatabaseService.class, 24, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(this)
+                .enqueueUniquePeriodicWork("sync_database_job_tag", ExistingPeriodicWorkPolicy.KEEP, request);
 
         mBottomNavigationView.setVisibility(View.VISIBLE);
 

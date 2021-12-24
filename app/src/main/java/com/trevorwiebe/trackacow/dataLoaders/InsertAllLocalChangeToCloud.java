@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
@@ -155,7 +156,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
             db.holdingLotDao().deleteHoldingLotTable();
 
-
+            // update archive lot entities
             List<HoldingArchivedLotEntity> holdingArchivedLotEntities = db.holdingArchivedLotDao().getHoldingArchivedLotList();
             for (int f = 0; f < holdingArchivedLotEntities.size(); f++) {
 
@@ -173,6 +174,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
             db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
 
+            // update load entities
             List<HoldingLoadEntity> holdingLoadEntities = db.holdingLoadDao().getHoldingLoadList();
             for (int h = 0; h < holdingLoadEntities.size(); h++) {
 
@@ -207,6 +209,11 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                 }
             }
             db.holdingUserDao().deleteHoldingUserTable();
+
+            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
+            for (int j=0; j<holdingCallEntities.size(); j++){
+
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "doInBackground: ", e);
