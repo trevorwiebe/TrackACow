@@ -90,18 +90,11 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
             String leftToFeedStr = numberFormat.format(leftToFeed);
             feedPenViewHolder.mLeftToFeed.setText(leftToFeedStr);
         }
-
-//        if (feedEntities != null) {
-//            int timesFed = feedEntities.size();
-//            String timesFedStr = numberFormat.format(timesFed);
-//            feedPenViewHolder.mTimesFed.setText(timesFedStr);
-//        }
-
     }
 
     public void setDateList(ArrayList<Long> dateList) {
         this.mDateList = new ArrayList<>(dateList);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     public void setCallList(ArrayList<CallEntity> callList) {
@@ -118,7 +111,6 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
         private TextView mDate;
         private TextView mCall;
-//        private TextView mTimesFed;
         private TextView mFed;
         private TextView mLeftToFeed;
         private TextView mTotalFed;
@@ -128,7 +120,6 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
             mDate = view.findViewById(R.id.feed_pen_date);
             mCall = view.findViewById(R.id.feed_lot_call);
-//            mTimesFed = view.findViewById(R.id.feed_lot_times_fed);
             mFed = view.findViewById(R.id.feed_lot_fed);
             mLeftToFeed = view.findViewById(R.id.feed_lot_left_to_feed);
             mTotalFed = view.findViewById(R.id.feed_lot_total_fed);

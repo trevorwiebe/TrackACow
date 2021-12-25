@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -192,6 +193,23 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
             db.holdingLoadDao().deleteHoldingLoadTable();
 
+            // update callEntity node
+            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
+            for (int j=0; j<holdingCallEntities.size(); j++){
+                HoldingCallEntity holdingCallEntity = holdingCallEntities.get(j);
+                CallEntity callEntity = new CallEntity(holdingCallEntity);
+
+                switch (holdingCallEntity.getWhatHappened()){
+                    case Constants.INSERT_UPDATE:
+                        baseRef.child(CallEntity.CALL).child(callEntity.getLotId()).setValue(callEntity);
+                        break;
+                    case Constants.DELETE:
+                        baseRef.child(CallEntity.CALL).child(callEntity.getLotId()).removeValue();
+                        break;
+                }
+            }
+            db.holdingCallDao().deleteCallTable();
+
             // update user node
             List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();
             for (int g = 0; g < holdingUserEntities.size(); g++) {
@@ -209,11 +227,6 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                 }
             }
             db.holdingUserDao().deleteHoldingUserTable();
-
-            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
-            for (int j=0; j<holdingCallEntities.size(); j++){
-
-            }
 
         } catch (Exception e) {
             Log.e(TAG, "doInBackground: ", e);

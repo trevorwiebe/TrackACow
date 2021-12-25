@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.dataLoaders.QueryAllCloudData;
 import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
@@ -70,10 +71,10 @@ public class SyncDatabase implements
     }
 
     @Override
-    public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<UserEntity> userEntities) {
+    public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<UserEntity> userEntities) {
         if (resultCode == Constants.SUCCESS) {
             if (mIsSyncAvailable) {
-                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, userEntities).execute(context);
+                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, callEntities, userEntities).execute(context);
             } else {
                 onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
             }

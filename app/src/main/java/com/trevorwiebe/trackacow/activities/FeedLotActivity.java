@@ -27,6 +27,8 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteFeedEntitiesByDateAndLotId;
 import com.trevorwiebe.trackacow.dataLoaders.InsertCallEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertFeedEntities;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCall;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCallByLotIdAndDate;
 import com.trevorwiebe.trackacow.dataLoaders.QueryFeedByLotIdAndDate;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
@@ -133,32 +135,37 @@ public class FeedLotActivity extends AppCompatActivity implements
                 } else {
 
                     // code for updating the call entity
-                    int call = Integer.parseInt(mCallET.getText().toString());
+                    int callAmount = Integer.parseInt(mCallET.getText().toString());
 
                     DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CallEntity.CALL);
                     DatabaseReference pushRef = baseRef.push();
 
                     String callKey = pushRef.getKey();
-                    CallEntity callEntity = new CallEntity(call, mDate, mLotId, callKey);
+                    CallEntity callEntity = new CallEntity(callAmount, mDate, mLotId, callKey);
 
                     if (Utility.haveNetworkConnection(FeedLotActivity.this)) {
                         if (mSelectedCallEntity == null) {
+
+                            // push new callEntity to cloud if null
                             pushRef.setValue(callEntity);
                         } else {
-                            mSelectedCallEntity.setCallAmount(call);
+
+                            // push updated callEntity to cloud
+                            mSelectedCallEntity.setCallAmount(callAmount);
                             baseRef.child(mSelectedCallEntity.getId()).setValue(mSelectedCallEntity);
                         }
                     } else {
 
+                        Utility.setNewDataToUpload(FeedLotActivity.this, true);
                         HoldingCallEntity holdingCallEntity = new HoldingCallEntity(callEntity, Constants.INSERT_UPDATE);
-
+                        new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
                     }
 
                     if (mSelectedCallEntity == null) {
                         new InsertCallEntity(callEntity).execute(FeedLotActivity.this);
                     } else {
                         callKey = mSelectedCallEntity.getId();
-                        new UpdateCallById(call, callKey).execute(FeedLotActivity.this);
+                        new UpdateCallById(callAmount, callKey).execute(FeedLotActivity.this);
                     }
 
                     // first we delete the old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
@@ -329,6 +336,7 @@ public class FeedLotActivity extends AppCompatActivity implements
         // code for updating the feed entities
         ArrayList<Integer> feedsIntList = getFeedsFromLayout();
         ArrayList<FeedEntity> newFeedEntityList = new ArrayList<>();
+
         for (int n = 0; n < feedsIntList.size(); n++) {
 
             int amountFed = feedsIntList.get(n);

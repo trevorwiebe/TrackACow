@@ -6,6 +6,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
+
 @Keep
 @Entity(tableName = "call")
 public class CallEntity {
@@ -33,6 +35,13 @@ public class CallEntity {
         this.date = date;
         this.lotId = lotId;
         this.id = id;
+    }
+
+    public CallEntity(HoldingCallEntity holdingCallEntity){
+        this.callAmount = holdingCallEntity.getCallAmount();
+        this.date = holdingCallEntity.getDate();
+        this.lotId = holdingCallEntity.getLotId();
+        this.id = holdingCallEntity.getId();
     }
 
     @Ignore
