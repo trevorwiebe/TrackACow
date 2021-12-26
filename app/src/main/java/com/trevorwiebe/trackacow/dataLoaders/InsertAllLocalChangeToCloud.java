@@ -15,6 +15,7 @@ import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
@@ -24,6 +25,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingFeedEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
@@ -201,14 +203,31 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 switch (holdingCallEntity.getWhatHappened()){
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(CallEntity.CALL).child(callEntity.getLotId()).setValue(callEntity);
+                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).setValue(callEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(CallEntity.CALL).child(callEntity.getLotId()).removeValue();
+                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).removeValue();
                         break;
                 }
             }
             db.holdingCallDao().deleteCallTable();
+
+            // update feedEntity node
+            List<HoldingFeedEntity> holdingFeedEntities = db.holdingFeedDao().getHoldingFeedEntities();
+            for(int f=0; f<holdingFeedEntities.size(); f++){
+                HoldingFeedEntity holdingFeedEntity = holdingFeedEntities.get(f);
+                FeedEntity feedEntity = new FeedEntity(holdingFeedEntity);
+
+                switch (holdingFeedEntity.getWhatHappened()){
+                    case Constants.INSERT_UPDATE:
+                        baseRef.child(FeedEntity.FEED).child(feedEntity.getId()).setValue(feedEntity);
+                        break;
+                    case Constants.DELETE:
+                        baseRef.child(FeedEntity.FEED).child(feedEntity.getId()).removeValue();
+                        break;
+                }
+            }
+            db.holdingFeedDao().deleteHoldingFeedTable();
 
             // update user node
             List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();

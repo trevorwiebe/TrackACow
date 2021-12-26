@@ -7,12 +7,13 @@ import com.trevorwiebe.trackacow.db.AppDatabase;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InsertFeedEntities extends AsyncTask<Context, Void, Void> {
 
-    private ArrayList<FeedEntity> feedEntities;
+    private List<FeedEntity> feedEntities;
 
-    public InsertFeedEntities(ArrayList<FeedEntity> feedEntities) {
+    public InsertFeedEntities(List<FeedEntity> feedEntities) {
         this.feedEntities = feedEntities;
     }
 

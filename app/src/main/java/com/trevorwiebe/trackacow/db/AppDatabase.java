@@ -34,6 +34,7 @@ import com.trevorwiebe.trackacow.db.holdingDao.HoldingCallDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingCowDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingDrugDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingDrugsGivenDao;
+import com.trevorwiebe.trackacow.db.holdingDao.HoldingFeedDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingLoadDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingLotDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingPenDao;
@@ -43,6 +44,7 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingFeedEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
@@ -68,9 +70,10 @@ import com.trevorwiebe.trackacow.utils.Utility;
         HoldingArchivedLotEntity.class,
         HoldingUserEntity.class,
         HoldingLoadEntity.class,
-        HoldingCallEntity.class
+        HoldingCallEntity.class,
+        HoldingFeedEntity.class
 },
-        version = 4, exportSchema = false)
+        version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -95,6 +98,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HoldingArchivedLotDao holdingArchivedLotDao();
     public abstract HoldingLoadDao holdingLoadDao();
     public abstract HoldingCallDao holdingCallDao();
+    public abstract HoldingFeedDao holdingFeedDao();
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -167,6 +171,12 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_4_5 = new Migration(4,5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+        }
+    };
+
     public static AppDatabase getAppDatabase(Context context){
         if(INSTANCE == null){
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
@@ -175,6 +185,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     .addMigrations(MIGRATION_1_2)
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
+                    .addMigrations(MIGRATION_4_5)
                     .build();
 
             Utility.setNewDataToUpload(context, true);

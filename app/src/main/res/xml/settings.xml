@@ -2,14 +2,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--    <PreferenceCategory android:title="General">-->
+    <PreferenceCategory android:title="General">
 
-    <!--    <SwitchPreference-->
-    <!--        android:key="offline_mode"-->
-    <!--        android:title="Offline Mode"-->
-    <!--        android:summary="Use this if you have no or a spotty connection" />-->
-
-    <!--    </PreferenceCategory>-->
+    <SwitchPreference
+        android:key="auto_reload"
+        android:title="Auto sync"
+        android:summary="App will periodically sync to the cloud" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="Account">
 

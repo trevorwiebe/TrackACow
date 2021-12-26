@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
         mMainProgressBar = findViewById(R.id.main_progress_bar);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        invalidateOptionsMenu();
         if (mSyncDatabase != null) {
             mSyncDatabase.setSyncAvailability(true);
         }
@@ -179,7 +180,15 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        return true;
+
+        MenuItem upload_menu = menu.findItem(R.id.action_upload_data);
+        if(Utility.isThereNewDataToUpload(MainActivity.this)){
+            upload_menu.setVisible(true);
+        }else{
+            upload_menu.setVisible(false);
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -193,6 +202,35 @@ public class MainActivity extends AppCompatActivity implements
                 moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
                 moveTransactionManager.commit();
                 break;
+            case R.id.action_sync_data:
+                mMainProgressBar.setVisibility(View.VISIBLE);
+
+                mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+                mSyncDatabase.setSyncAvailability(true);
+                mSyncDatabase.beginSync();
+                break;
+            case R.id.action_upload_data:
+                AlertDialog.Builder data_to_upload_dialog = new AlertDialog.Builder(MainActivity.this);
+
+                data_to_upload_dialog.setTitle("Local changes made");
+                data_to_upload_dialog.setMessage("You have made local changes that are not synced to the cloud.");
+                data_to_upload_dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                data_to_upload_dialog.setPositiveButton("Sync", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mMainProgressBar.setVisibility(View.VISIBLE);
+
+                        mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+                        mSyncDatabase.setSyncAvailability(true);
+                        mSyncDatabase.beginSync();
+                    }
+                });
+                data_to_upload_dialog.show();
+                break;
             default:
                 break;
         }
@@ -201,17 +239,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onSignedInInitialized() {
 
-        long lastSync = Utility.getLastSync(MainActivity.this);
         long currentTime = System.currentTimeMillis();
-        long timeElapsed = currentTime - lastSync;
-        long timeUntilNextLoad = TimeUnit.MINUTES.toMillis(0);
-        mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-        mSyncDatabase.setSyncAvailability(true);
-        if (lastSync == 0) {
+        long lastSyncTime = Utility.getLastSync(MainActivity.this);
+
+        long timeElapsed = currentTime - lastSyncTime;
+        long timeUntilNextLoad = TimeUnit.MINUTES.toMillis(30);
+
+        if(timeElapsed >= timeUntilNextLoad){
             mMainProgressBar.setVisibility(View.VISIBLE);
-            mSyncDatabase.beginSync();
-        } else if (timeElapsed > timeUntilNextLoad) {
-            mMainProgressBar.setVisibility(View.VISIBLE);
+
+            mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+            mSyncDatabase.setSyncAvailability(true);
             mSyncDatabase.beginSync();
         }
 
@@ -245,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements
                 String uid = mFirebaseAuth.getCurrentUser().getUid();
                 new QueryUserEntity(uid, MainActivity.this).execute(MainActivity.this);
                 Utility.setNewDataToUpload(MainActivity.this, false);
+                invalidateOptionsMenu();
                 setSelectedFragment();
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
@@ -285,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (daysLeft <= 0) {
                     showNoPassDialog(title, message);
-                    Utility.setLastSync(this, 0);
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 } else if (daysLeft <= 7) {
                     showPassableDialog("Free trial ends soon.", "You have " + daysLeftStr + " day(s) left on your free trial.  Please subscribe to avoid a stall in service.");
                     Utility.setLastSync(this, System.currentTimeMillis());
@@ -298,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (daysLeft <= -3) {
                     showNoPassDialog(title, message);
-                    Utility.setLastSync(this, 0);
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 } else if (daysLeft <= 0) {
                     long daysLeftOnGracePeriod = daysLeft + 3;
                     String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
@@ -313,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (daysLeft <= -3) {
                     showNoPassDialog(title, message);
-                    Utility.setLastSync(this, 0);
+                    Utility.setLastSync(this, System.currentTimeMillis());
                 } else if (daysLeft <= 0) {
                     long daysLeftOnGracePeriod = daysLeft + 3;
                     String daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod);
@@ -327,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Your account has been canceled.";
                 message = "You will need to re-subscribe to a plan to continue. Your data may be all saved yet.";
                 showNoPassDialog(title, message);
-                Utility.setLastSync(this, 0);
+                Utility.setLastSync(this, System.currentTimeMillis());
             case UserEntity.FOREVER_FREE_USER:
                 Utility.setLastSync(this, System.currentTimeMillis());
                 break;
@@ -335,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Error";
                 message = "Unknown error occurred.  Please send an email to app@trackacow.net for support.";
                 showNoPassDialog(title, message);
-                Utility.setLastSync(this, 0);
+                Utility.setLastSync(this, System.currentTimeMillis());
                 return;
         }
 

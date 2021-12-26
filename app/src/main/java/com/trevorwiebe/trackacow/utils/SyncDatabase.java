@@ -12,6 +12,7 @@ import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
@@ -42,15 +43,15 @@ public class SyncDatabase implements
     public void beginSync() {
 
         if (Utility.haveNetworkConnection(context)) {
-            if (mIsSyncAvailable) {
+//            if (mIsSyncAvailable) {
                 if (Utility.isThereNewDataToUpload(context)) {
                     new InsertAllLocalChangeToCloud(SyncDatabase.this).execute(context);
                 } else {
                     new QueryAllCloudData(SyncDatabase.this).loadCloudData();
                 }
-            } else {
-                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-            }
+//            } else {
+//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+//            }
         } else {
             onDatabaseSynced.onDatabaseSynced(Constants.NO_NETWORK_CONNECTION);
         }
@@ -60,24 +61,24 @@ public class SyncDatabase implements
     @Override
     public void onAllLocalDbInsertedToCloud(int resultCode) {
         if (resultCode == Constants.SUCCESS) {
-            if (mIsSyncAvailable) {
+//            if (mIsSyncAvailable) {
                 new QueryAllCloudData(this).loadCloudData();
-            } else {
-                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-            }
+//            } else {
+//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+//            }
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
     }
 
     @Override
-    public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<UserEntity> userEntities) {
+    public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<FeedEntity> feedEntities, ArrayList<UserEntity> userEntities) {
         if (resultCode == Constants.SUCCESS) {
-            if (mIsSyncAvailable) {
-                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, callEntities, userEntities).execute(context);
-            } else {
-                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-            }
+//            if (mIsSyncAvailable) {
+                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, callEntities, feedEntities, userEntities).execute(context);
+//            } else {
+//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+//            }
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
@@ -85,11 +86,11 @@ public class SyncDatabase implements
 
     @Override
     public void onDatabaseCloned() {
-        if (mIsSyncAvailable) {
+//        if (mIsSyncAvailable) {
             onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
-        } else {
-            onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-        }
+//        } else {
+//            onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
+//        }
     }
 
     public void setSyncAvailability(boolean isSyncAvailable) {

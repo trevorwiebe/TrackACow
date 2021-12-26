@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.adapters;
 
 import androidx.annotation.NonNull;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -94,7 +95,7 @@ public class FeedPenRecyclerViewAdapter extends RecyclerView.Adapter<FeedPenRecy
 
     public void setDateList(ArrayList<Long> dateList) {
         this.mDateList = new ArrayList<>(dateList);
-//        notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void setCallList(ArrayList<CallEntity> callList) {

@@ -15,14 +15,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.activities.MainActivity;
 import com.trevorwiebe.trackacow.activities.MedicatedCowsActivity;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
+import com.trevorwiebe.trackacow.dataLoaders.QueryUserEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
@@ -30,7 +34,6 @@ import com.trevorwiebe.trackacow.utils.Utility;
 import java.util.ArrayList;
 
 public class MedicateFragment extends Fragment implements
-        SyncDatabase.OnDatabaseSynced,
         QueryAllPens.OnPensLoaded,
         QueryLots.OnLotsLoaded {
 
@@ -42,7 +45,6 @@ public class MedicateFragment extends Fragment implements
 
     private TextView mNoPensTv;
     private RecyclerView mPenRv;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Context mContext;
 
@@ -55,8 +57,6 @@ public class MedicateFragment extends Fragment implements
 
         View rootView = inflater.inflate(R.layout.fragment_medicate, container, false);
 
-        mSwipeRefreshLayout = rootView.findViewById(R.id.main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
         mPenRv = rootView.findViewById(R.id.main_rv);
         mPenRv.setLayoutManager(new LinearLayoutManager(mContext));
@@ -79,13 +79,6 @@ public class MedicateFragment extends Fragment implements
             }
         }));
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new SyncDatabase(MedicateFragment.this, mContext).beginSync();
-            }
-        });
-
         return rootView;
     }
 
@@ -104,11 +97,6 @@ public class MedicateFragment extends Fragment implements
         super.onResume();
     }
 
-    @Override
-    public void onDatabaseSynced(int resultCode) {
-        mSwipeRefreshLayout.setRefreshing(false);
-        new QueryLots(MedicateFragment.this).execute(mContext);
-    }
 
     @Override
     public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {

@@ -25,10 +25,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.dataLoaders.DeleteFeedEntitiesByDateAndLotId;
+import com.trevorwiebe.trackacow.dataLoaders.DeleteFeedEntitiesById;
 import com.trevorwiebe.trackacow.dataLoaders.InsertCallEntity;
 import com.trevorwiebe.trackacow.dataLoaders.InsertFeedEntities;
 import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCall;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingCow;
+import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingFeedEntity;
 import com.trevorwiebe.trackacow.dataLoaders.QueryCallByLotIdAndDate;
 import com.trevorwiebe.trackacow.dataLoaders.QueryFeedByLotIdAndDate;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
@@ -37,7 +38,7 @@ import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
-import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingFeedEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
@@ -145,11 +146,9 @@ public class FeedLotActivity extends AppCompatActivity implements
 
                     if (Utility.haveNetworkConnection(FeedLotActivity.this)) {
                         if (mSelectedCallEntity == null) {
-
                             // push new callEntity to cloud if null
                             pushRef.setValue(callEntity);
                         } else {
-
                             // push updated callEntity to cloud
                             mSelectedCallEntity.setCallAmount(callAmount);
                             baseRef.child(mSelectedCallEntity.getId()).setValue(mSelectedCallEntity);
@@ -157,8 +156,17 @@ public class FeedLotActivity extends AppCompatActivity implements
                     } else {
 
                         Utility.setNewDataToUpload(FeedLotActivity.this, true);
-                        HoldingCallEntity holdingCallEntity = new HoldingCallEntity(callEntity, Constants.INSERT_UPDATE);
-                        new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
+
+                        HoldingCallEntity holdingCallEntity;
+
+                        if(mSelectedCallEntity == null){
+                            holdingCallEntity = new HoldingCallEntity(callEntity, Constants.INSERT_UPDATE);
+                            new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
+                        }else{
+                            mSelectedCallEntity.setCallAmount(callAmount);
+                            holdingCallEntity = new HoldingCallEntity(mSelectedCallEntity, Constants.INSERT_UPDATE);
+                            new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
+                        }
                     }
 
                     if (mSelectedCallEntity == null) {
@@ -168,9 +176,8 @@ public class FeedLotActivity extends AppCompatActivity implements
                         new UpdateCallById(callAmount, callKey).execute(FeedLotActivity.this);
                     }
 
-                    // first we delete the old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
+                    // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
                     new DeleteFeedEntitiesByDateAndLotId(mDate, mLotId, FeedLotActivity.this).execute(FeedLotActivity.this);
-
                 }
 
             }
@@ -194,7 +201,6 @@ public class FeedLotActivity extends AppCompatActivity implements
         }
     }
 
-
     @Override
     public void onFeedByLotIdAndDateLoaded(ArrayList<FeedEntity> feedEntities) {
         mFeedEntities = feedEntities;
@@ -214,6 +220,80 @@ public class FeedLotActivity extends AppCompatActivity implements
         String lotName = lotEntity.getLotName();
         String friendlyDate = Utility.convertMillisToFriendlyDate(mDate);
         setTitle(lotName + ": " + friendlyDate);
+    }
+
+    @Override
+    public void onFeedEntitiesByDateAndLotIdDeleted() {
+        // code for updating the feed entities
+        ArrayList<Integer> feedsIntList = getFeedsFromLayout();
+        ArrayList<FeedEntity> newFeedEntityList = new ArrayList<>();
+
+        // iterate through the new feed amounts
+        for (int n = 0; n < feedsIntList.size(); n++) {
+
+            // get feed reference
+            DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED);
+            String feedEntityId = feedRef.push().getKey();
+
+            // initialize feed entity
+            FeedEntity feedEntity;
+            int amountFed = feedsIntList.get(n);
+
+            if(mFeedEntities.size() > n) {
+                feedEntity = mFeedEntities.get(n);
+                feedEntity.setFeed(amountFed);
+            }else{
+                feedEntity = new FeedEntity(amountFed, mDate, feedEntityId, mLotId);
+            }
+
+            if(Utility.haveNetworkConnection(FeedLotActivity.this)){
+                // update cloud
+                feedRef.child(feedEntity.getId()).setValue(feedEntity);
+            }else{
+                // if cloud not available, add to holding feed entity to upload later
+                Utility.setNewDataToUpload(FeedLotActivity.this, true);
+                HoldingFeedEntity holdingFeedEntity = new HoldingFeedEntity(feedEntity, Constants.INSERT_UPDATE);
+                new InsertHoldingFeedEntity(holdingFeedEntity).execute(FeedLotActivity.this);
+            }
+
+            // add feedEntity to array to push to local database
+            newFeedEntityList.add(feedEntity);
+        }
+
+        // insert new feed entities into local database
+        new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
+
+        // check to see if any feedEntities have been deleted
+        if(mFeedEntities.size() > newFeedEntityList.size()){
+
+            // yes, some have been deleted from the UI, let's go ahead and delete them from the database
+
+            // get database reference
+            DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED);
+
+            for(int g=0; g<mFeedEntities.size(); g++){
+                FeedEntity feedEntityToDelete = mFeedEntities.get(g);
+                if(!newFeedEntityList.contains(feedEntityToDelete)){
+                    String feedEntityIdToDelete = feedEntityToDelete.getId();
+
+                    if(Utility.haveNetworkConnection(FeedLotActivity.this)){
+                        // delete from cloud if available
+                        feedRef.child(feedEntityIdToDelete).removeValue();
+                    }else{
+                        // add to holding database to delete when cloud is available
+                        HoldingFeedEntity holdingFeedEntity = new HoldingFeedEntity(feedEntityToDelete, Constants.DELETE);
+                        new InsertHoldingFeedEntity(holdingFeedEntity).execute(FeedLotActivity.this);
+                    }
+
+                    // delete locally
+                    new DeleteFeedEntitiesById(feedEntityIdToDelete).execute(FeedLotActivity.this);
+
+                }
+            }
+        }
+
+        // close activity after all work is done
+        finish();
     }
 
     private void addNewFeedEditText(@Nullable String text) {
@@ -259,8 +339,8 @@ public class FeedLotActivity extends AppCompatActivity implements
 
         textInputLayout.addView(textInputEditText);
 
-
         ImageButton deleteButton = new ImageButton(FeedLotActivity.this);
+
         LinearLayout.LayoutParams deleteBtnParams = new LinearLayout.LayoutParams(
                 pixels24,
                 pixels24
@@ -286,14 +366,12 @@ public class FeedLotActivity extends AppCompatActivity implements
                 }
 
                 updateReports();
-
             }
         });
         deleteButton.setLayoutParams(deleteBtnParams);
 
         linearLayout.addView(textInputLayout);
         linearLayout.addView(deleteButton);
-
         mFeedAgainLayout.addView(linearLayout);
     }
 
@@ -321,7 +399,6 @@ public class FeedLotActivity extends AppCompatActivity implements
             if (text.length() != 0) {
                 try {
                     int amountFed = numberFormatter.parse(text).intValue();
-                    Log.d(TAG, "getFeedsFromLayout: " + amountFed);
                     feedIntList.add(amountFed);
                 } catch (ParseException e) {
                     Log.e(TAG, "getFeedsFromLayout: ", e);
@@ -329,31 +406,6 @@ public class FeedLotActivity extends AppCompatActivity implements
             }
         }
         return feedIntList;
-    }
-
-    @Override
-    public void onFeedEntitiesByDateAndLotIdDeleted() {
-        // code for updating the feed entities
-        ArrayList<Integer> feedsIntList = getFeedsFromLayout();
-        ArrayList<FeedEntity> newFeedEntityList = new ArrayList<>();
-
-        for (int n = 0; n < feedsIntList.size(); n++) {
-
-            int amountFed = feedsIntList.get(n);
-            if (mFeedEntities.size() > n) {
-                FeedEntity feedEntity = mFeedEntities.get(n);
-                feedEntity.setFeed(amountFed);
-                newFeedEntityList.add(feedEntity);
-            } else {
-                DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED).push();
-                String feedEntityId = feedRef.getKey();
-                FeedEntity feedEntity = new FeedEntity(amountFed, mDate, feedEntityId, mLotId);
-                newFeedEntityList.add(feedEntity);
-            }
-        }
-        new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
-
-        finish();
     }
 
     private void updateReports() {
