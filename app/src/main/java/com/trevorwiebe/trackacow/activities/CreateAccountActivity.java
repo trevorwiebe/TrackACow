@@ -1,8 +1,13 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -35,7 +40,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 939;
 
     private EditText mName;
     private EditText mEmail;
@@ -138,29 +142,38 @@ public class CreateAccountActivity extends AppCompatActivity {
         mCreateAccountWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCreatingAccountWithGoogle.setVisibility(View.VISIBLE);
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                openGoogleSignInForResult();
             }
         });
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                fireBaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                String errorMessage = e.getLocalizedMessage();
-                showMessage("Error creating account", errorMessage);
-            }
-        }
+    ActivityResultLauncher<Intent> signInActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        try {
+                            // Google Sign In was successful, authenticate with Firebase
+                            GoogleSignInAccount account = task.getResult(ApiException.class);
+                            fireBaseAuthWithGoogle(account);
+                        } catch (ApiException e) {
+                            // Google Sign In failed, update UI appropriately
+                            String errorMessage = e.getLocalizedMessage();
+                            showMessage("Error creating account", errorMessage);
+                        }
+                    }
+                }
+            });
+
+    private void openGoogleSignInForResult(){
+        mCreatingAccountWithGoogle.setVisibility(View.VISIBLE);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        signInActivity.launch(signInIntent);
     }
+
 
     private void fireBaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);

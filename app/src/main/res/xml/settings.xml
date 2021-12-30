@@ -2,14 +2,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="General">
-
-    <SwitchPreference
-        android:key="auto_reload"
-        android:title="Auto sync"
-        android:summary="App will periodically sync to the cloud" />
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="Account">
 
         <Preference

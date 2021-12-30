@@ -174,6 +174,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_4_5 = new Migration(4,5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE holdingFeed (primaryKey Integer NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER, date INTEGER, id TEXT, lotId TEXT, whatHappened INTEGER)");
         }
     };
 

@@ -119,14 +119,6 @@
             android:label="Edit lot information"
             android:exported="true"
             android:parentActivityName=".activities.MedicatedCowsActivity" />
-
-        <service
-            android:name=".services.SyncDatabaseService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
     </application>
 
 </manifest>

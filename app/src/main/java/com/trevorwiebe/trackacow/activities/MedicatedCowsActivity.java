@@ -1,9 +1,14 @@
 package com.trevorwiebe.trackacow.activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -75,8 +80,6 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     private ArrayList<String> mLotIds = new ArrayList<>();
     private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
     private PenEntity mSelectedPen;
-    private static final int MEDICATE_A_COW_CODE = 743;
-    private static final int ADD_CATTLE = 774;
     private boolean mIsActive = false;
     private boolean shouldShowCouldntFindTag;
     private Calendar mCalendar = Calendar.getInstance();
@@ -338,11 +341,25 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == ADD_CATTLE && resultCode == RESULT_OK) {
-            Snackbar.make(mMedicatedCows, "Cattle added successfully", Snackbar.LENGTH_LONG).show();
-        }
+    ActivityResultLauncher<Intent> addCattleResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        Snackbar.make(mMedicatedCows, "Cattle added successfully", Snackbar.LENGTH_LONG).show();
+                    }else{
+                        Snackbar.make(mMedicatedCows, "An error occurred", Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            }
+    );
+
+    private void openAddCattleActivityForResult(){
+        mMedicateACowFabMenu.collapse();
+        Intent addLoadOfCattle = new Intent(MedicatedCowsActivity.this, AddLoadOfCattleActivity.class);
+        addLoadOfCattle.putExtra("lotId", mLotIds.get(0));
+        addCattleResultLauncher.launch(addLoadOfCattle);
     }
 
     /*
@@ -410,7 +427,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         mMedicateACowFabMenu.collapse();
         Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
         medicateCowIntent.putExtra("penId", mSelectedPen.getPenId());
-        startActivityForResult(medicateCowIntent, MEDICATE_A_COW_CODE);
+        startActivity(medicateCowIntent);
     }
 
     public void markACowDead(View view) {
@@ -421,10 +438,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     }
 
     public void addCattle(View view) {
-        mMedicateACowFabMenu.collapse();
-        Intent addLoadOfCattle = new Intent(MedicatedCowsActivity.this, AddLoadOfCattleActivity.class);
-        addLoadOfCattle.putExtra("lotId", mLotIds.get(0));
-        startActivityForResult(addLoadOfCattle, ADD_CATTLE);
+        openAddCattleActivityForResult();
     }
 
 

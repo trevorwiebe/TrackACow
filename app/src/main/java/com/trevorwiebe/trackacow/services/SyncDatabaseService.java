@@ -24,17 +24,6 @@ public class SyncDatabaseService extends Worker implements SyncDatabase.OnDataba
         super(context, params);
     }
 
-//    @Override
-//    public boolean onStartJob(@NonNull JobParameters job) {
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        if (auth.getCurrentUser() != null) {
-//            new SyncDatabase(this, this).beginSync();
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-
     @NonNull
     @Override
     public Result doWork() {
@@ -49,11 +38,6 @@ public class SyncDatabaseService extends Worker implements SyncDatabase.OnDataba
     public void onStopped() {
         super.onStopped();
     }
-
-    //    @Override
-//    public boolean onStopJob(@NonNull JobParameters job) {
-//        return false;
-//    }
 
     @Override
     public void onDatabaseSynced(int resultCode) {

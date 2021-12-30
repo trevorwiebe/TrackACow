@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 12
-        versionName "0.1.91"
+        versionCode 13
+        versionName "0.2.0"
         flavorDimensions "default"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,7 +48,7 @@ dependencies {
     // (Java only)
     implementation "androidx.work:work-runtime:$work_version"
     // Kotlin + coroutines
-    implementation "androidx.work:work-runtime-ktx:$work_version"
+//    implementation "androidx.work:work-runtime-ktx:$work_version"
     // optional - RxJava2 support
     implementation "androidx.work:work-rxjava2:$work_version"
     // optional - GCMNetworkManager support

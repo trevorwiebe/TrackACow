@@ -2,6 +2,10 @@ package com.trevorwiebe.trackacow.activities;
 
 import android.content.Intent;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,7 +30,6 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
 
     private ManageDrugRecyclerViewAdapter mManageDrugRecyclerViewAdapter;
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
-    private static final int UPDATE_DRUG_CALLBACK_CODE = 747;
 
     private RecyclerView mManageDrugRv;
     private TextView mDrugEmptyList;
@@ -43,7 +46,7 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
             @Override
             public void onClick(View view) {
                 Intent addNewDrugIntent = new Intent(ManageDrugsActivity.this, AddNewDrugActivity.class);
-                startActivityForResult(addNewDrugIntent, UPDATE_DRUG_CALLBACK_CODE);
+                startActivity(addNewDrugIntent);
             }
         });
 
@@ -55,10 +58,7 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
         mManageDrugRv.addOnItemTouchListener(new ItemClickListener(this, mManageDrugRv, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                DrugEntity selectedDrugObject = mDrugList.get(position);
-                Intent editDrugIntent = new Intent(ManageDrugsActivity.this, EditDrugActivity.class);
-                editDrugIntent.putExtra("drugObject", selectedDrugObject);
-                startActivityForResult(editDrugIntent, UPDATE_DRUG_CALLBACK_CODE);
+                openEditDrugActivityForResult(position);
             }
 
             @Override
@@ -70,11 +70,21 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
         new QueryAllDrugs(this).execute(this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == UPDATE_DRUG_CALLBACK_CODE) {
-            new QueryAllDrugs(this).execute(this);
-        }
+    ActivityResultLauncher<Intent> editDrugActivityForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    new QueryAllDrugs(ManageDrugsActivity.this).execute(ManageDrugsActivity.this);
+                }
+            }
+    );
+
+    private void openEditDrugActivityForResult(int position){
+        DrugEntity selectedDrugObject = mDrugList.get(position);
+        Intent editDrugIntent = new Intent(ManageDrugsActivity.this, EditDrugActivity.class);
+        editDrugIntent.putExtra("drugObject", selectedDrugObject);
+        editDrugActivityForResult.launch(editDrugIntent);
     }
 
     @Override
