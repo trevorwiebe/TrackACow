@@ -161,6 +161,9 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 new QueryLotByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
 
+                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
+
                 mQuickAll.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
                 mQuickAll.setTextColor(getResources().getColor(android.R.color.white));
 
@@ -173,6 +176,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
+                mStartCalendar.setTimeInMillis(System.currentTimeMillis());
                 mStartCalendar.add(Calendar.MONTH, -1);
                 mEndCalendar.setTimeInMillis(System.currentTimeMillis());
 
@@ -189,6 +193,9 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
                         mLotId, startLong, endLong)
                         .execute(DrugsGivenReportActivity.this);
 
+                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
+
                 mQuickMonth.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
                 mQuickMonth.setTextColor(getResources().getColor(android.R.color.white));
 
@@ -201,6 +208,39 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
+                long millisInADay = 86400000;
+
+                long today = System.currentTimeMillis();
+                long yesterday = today - millisInADay;
+
+                mStartCalendar.setTimeInMillis(yesterday);
+                mStartCalendar.set(Calendar.HOUR, 0);
+                mStartCalendar.set(Calendar.MINUTE, 0);
+                mStartCalendar.set(Calendar.SECOND, 0);
+
+                mEndCalendar.setTimeInMillis(System.currentTimeMillis());
+
+                long startLong = mStartCalendar.getTimeInMillis();
+                long endLong = mEndCalendar.getTimeInMillis();
+
+                String friendlyStartDate = Utility.convertMillisToDate(startLong);
+                String friendlyEndDate = Utility.convertMillisToDate(endLong);
+
+                mStartDateButton.setText(friendlyStartDate);
+                mEndDateButton.setText(friendlyEndDate);
+
+                new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this,
+                        mLotId, startLong, endLong)
+                        .execute(DrugsGivenReportActivity.this);
+
+                mQuickYesterday.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickYesterday.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
             }
         });
 
