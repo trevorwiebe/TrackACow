@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -23,6 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Utility {
+
+    private static final String TAG = "Utility";
 
     public static String convertMillisToDate(long longDate){
         SimpleDateFormat format = new SimpleDateFormat("M/d/y", Locale.getDefault());
@@ -100,18 +103,15 @@ public class Utility {
     }
 
     public static void setNewDataToUpload(Context context, boolean isThereNewData) {
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.NEW_DATA_TO_UPLOAD_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), isThereNewData);
+        editor.putBoolean(Constants.NEW_DATA_TO_UPLOAD_KEY, isThereNewData);
         editor.apply();
     }
 
     public static boolean isThereNewDataToUpload(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_name), Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(context.getApplicationContext().getResources().getString(R.string.new_data_to_upload_key), false);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.NEW_DATA_TO_UPLOAD_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(Constants.NEW_DATA_TO_UPLOAD_KEY, false);
     }
 
     public static void setPenId(Context context, String penId) {

@@ -30,4 +30,8 @@ public class Constants {
     public static final int DAY_DRUG_REPORT = 1;
     public static final int WEEK_DRUG_REPORT = 2;
     public static final int MONTH_DRUG_REPORT = 3;
+
+    // Preference keys
+    public static final String NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name";
+    public static final String NEW_DATA_TO_UPLOAD_KEY = "new_data_to_upload_key";
 }

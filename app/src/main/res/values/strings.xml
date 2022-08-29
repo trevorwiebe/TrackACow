@@ -6,9 +6,6 @@
     <string name="action_settings">Settings</string>
 
     utility strings
-    <string name="new_data_to_upload_key" translatable="false">new_data_to_upload</string>
-    <string name="new_data_to_upload_name" translatable="false">is_there_new_data</string>
-
     <string name="save_pen_id_key" translatable="false">save_pen_id</string>
     <string name="save_pen_id_name" translatable="false">save_pen_id_name</string>
 

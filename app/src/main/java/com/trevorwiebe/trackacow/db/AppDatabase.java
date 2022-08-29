@@ -189,7 +189,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     .addMigrations(MIGRATION_4_5)
                     .build();
 
-            Utility.setNewDataToUpload(context, true);
+//            Utility.setNewDataToUpload(context, true);
         }
         return INSTANCE;
     }
