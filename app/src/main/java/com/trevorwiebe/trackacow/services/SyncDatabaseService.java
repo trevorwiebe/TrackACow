@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.firebase.jobdispatcher.JobParameters;
-import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.utils.Constants;
