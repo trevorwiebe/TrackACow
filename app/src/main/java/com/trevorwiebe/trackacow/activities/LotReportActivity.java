@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,7 +72,6 @@ public class LotReportActivity extends AppCompatActivity implements
     private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
     private static final int EDIT_PEN_CODE = 747;
     private static final int EDIT_LOAD_CODE = 472;
-    private static final int DRUG_REPORT_CODE = 664;
     private int mTotalHeadInt;
     private String mLotId;
     private LotEntity mSelectedLotEntity;
@@ -80,6 +80,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private ViewCattleListAdapter cattleListAdapter = new ViewCattleListAdapter();
     private int mCurrentHeadDays;
     private ArrayList<LoadEntity> mLoadEntities = new ArrayList<>();
+    private Integer mReportType;
 
     private TextView mCustomerName;
     private TextView mTotalHead;
@@ -101,13 +102,23 @@ public class LotReportActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lot_reports);
 
-        String lotId = getIntent().getStringExtra("lotId");
-        reportType = getIntent().getIntExtra("reportType", 0);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            for (String key : bundle.keySet()) {
+                Log.e(TAG, key + " : " + (bundle.get(key) != null ? bundle.get(key) : "NULL"));
+            }
+        }
+
+        String lotId = intent.getStringExtra("lotId");
+        reportType = intent.getIntExtra("reportType", 0);
 
         if (reportType == Constants.LOT) {
             new QueryLotByLotId(lotId, this).execute(this);
+            mReportType = Constants.LOT;
         } else if (reportType == Constants.ARCHIVE) {
             new QueryArchivedLotsByLotId(lotId, this).execute(this);
+            mReportType = Constants.ARCHIVE;
         }
 
         mLoadingReports = findViewById(R.id.loading_reports);
@@ -156,7 +167,8 @@ public class LotReportActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent drugReports = new Intent(LotReportActivity.this, DrugsGivenReportActivity.class);
                 drugReports.putExtra("lotId", mLotId);
-                startActivityForResult(drugReports, DRUG_REPORT_CODE);
+                drugReports.putExtra("reportType", mReportType);
+                startActivity(drugReports);
             }
         });
     }
@@ -186,7 +198,7 @@ public class LotReportActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE || requestCode == DRUG_REPORT_CODE) && resultCode == RESULT_OK) {
+        if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE) && resultCode == RESULT_OK) {
             new QueryLotByLotId(mSelectedLotEntity.getLotId(), LotReportActivity.this).execute(LotReportActivity.this);
         }
     }

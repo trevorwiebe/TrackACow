@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -17,11 +18,14 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.TimeDrugRvAdapter;
 import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLotsByLotId;
 import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIdAndDateRange;
 import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
+import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import org.joda.time.LocalDateTime;
@@ -33,11 +37,14 @@ import java.util.concurrent.TimeUnit;
 
 public class DrugsGivenReportActivity extends AppCompatActivity implements
         QueryAllDrugs.OnAllDrugsLoaded,
-        QueryDrugsGivenByLotIdAndDateRange.OnDrugsGivenByLotIdAndDateRangeLoaded, QueryLotByLotId.OnLotByLotIdLoaded {
+        QueryDrugsGivenByLotIdAndDateRange.OnDrugsGivenByLotIdAndDateRangeLoaded,
+        QueryLotByLotId.OnLotByLotIdLoaded,
+        QueryArchivedLotsByLotId.OnArchivedLotLoaded{
 
     private static final String TAG = "DrugsGivenReportActivit";
 
     private String mLotId;
+    private Integer mReportType;
     private HashMap<String, String> mDrugKeyAndName = new HashMap<>();
 
     private Calendar mStartCalendar = Calendar.getInstance();
@@ -72,6 +79,10 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         timeDrugRvAdapter = new TimeDrugRvAdapter(null);
         mDayRv.setAdapter(timeDrugRvAdapter);
 
+        Intent intent = getIntent();
+        mLotId = intent.getStringExtra("lotId");
+        mReportType = intent.getIntExtra("reportType", -1);
+
         if(savedInstanceState != null){
 
             long startDate = savedInstanceState.getLong("startLong");
@@ -98,8 +109,6 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             mEndCalendar.set(Calendar.MILLISECOND, 0);
 
         }
-
-        mLotId = getIntent().getStringExtra("lotId");
 
         mStartDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +168,11 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         mQuickAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new QueryLotByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
+                if(mReportType == Constants.LOT) {
+                    new QueryLotByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
+                }else{
+                    new QueryArchivedLotsByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
+                }
 
                 mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
                 mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -334,6 +347,23 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     public void onLotByLotIdLoaded(LotEntity lotEntity) {
         long start_date = lotEntity.getDate();
         long end_date = System.currentTimeMillis();
+
+        String friendlyStartDate = Utility.convertMillisToDate(start_date);
+        String friendlyEndDate = Utility.convertMillisToDate(end_date);
+
+        mStartCalendar.setTimeInMillis(start_date);
+        mEndCalendar.setTimeInMillis(end_date);
+
+        mStartDateButton.setText(friendlyStartDate);
+        mEndDateButton.setText(friendlyEndDate);
+
+        new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, start_date, end_date).execute(this);
+    }
+
+    @Override
+    public void onArchivedLotLoaded(ArchivedLotEntity archivedLotEntity) {
+        long start_date = archivedLotEntity.getDateStarted();
+        long end_date = archivedLotEntity.getDateEnded();
 
         String friendlyStartDate = Utility.convertMillisToDate(start_date);
         String friendlyEndDate = Utility.convertMillisToDate(end_date);
