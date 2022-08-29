@@ -174,7 +174,13 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_4_5 = new Migration(4,5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE holdingFeed (primaryKey Integer NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER, date INTEGER, id TEXT, lotId TEXT, whatHappened INTEGER)");
+
+            database.execSQL("DROP TABLE call");
+            database.execSQL("CREATE TABLE call (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT)");
+
+            database.execSQL("CREATE TABLE holdingCall (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT, whatHappened INTEGER NOT NULL)");
+
+            database.execSQL("CREATE TABLE holdingFeed (primaryKey Integer NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT, whatHappened INTEGER NOT NULL)");
         }
     };
 
@@ -188,8 +194,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
                     .build();
-
-//            Utility.setNewDataToUpload(context, true);
         }
         return INSTANCE;
     }

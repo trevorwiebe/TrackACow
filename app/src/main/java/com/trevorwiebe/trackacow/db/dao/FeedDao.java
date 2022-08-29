@@ -1,5 +1,7 @@
 package com.trevorwiebe.trackacow.db.dao;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,7 +16,7 @@ import java.util.List;
 @Dao
 public interface FeedDao {
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     void insertFeedEntity(FeedEntity feedEntity);
 
     @Insert
