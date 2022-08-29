@@ -176,11 +176,7 @@ public class MainActivity extends AppCompatActivity implements
         inflater.inflate(R.menu.main_menu, menu);
 
         MenuItem upload_menu = menu.findItem(R.id.action_upload_data);
-        if(Utility.isThereNewDataToUpload(MainActivity.this)){
-            upload_menu.setVisible(true);
-        }else{
-            upload_menu.setVisible(false);
-        }
+        upload_menu.setVisible(Utility.isThereNewDataToUpload(MainActivity.this));
 
         return super.onCreateOptionsMenu(menu);
     }
