@@ -9,5 +9,5 @@
 /build
 /captures
 .externalNativeBuild
-/release
 google-services.json
+release
