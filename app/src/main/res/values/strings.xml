@@ -33,5 +33,6 @@
 
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
     <string name="manage_sub_url" translatable="false">https://trackacow.net/subscription.html</string>
+    <string name="git_hub_url" translatable="false">https://github.com/trevorwiebe/track-a-cow</string>
 
 </resources>

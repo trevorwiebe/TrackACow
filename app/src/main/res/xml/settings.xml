@@ -44,6 +44,14 @@
         </Preference>
 
         <Preference
+            android:title="This app is open source"
+            android:summary="Contribute to this apps growth and development on GitHub">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/git_hub_url" />
+        </Preference>
+
+        <Preference
             android:key="version"
             android:title="Version" />
 
