@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.PrimaryKey;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -15,10 +16,10 @@ import java.util.List;
 @Dao
 public interface DrugDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDrug(DrugEntity drugEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertListDrug(List<DrugEntity> drugEntities);
 
     @Query("SELECT * FROM Drug WHERE drugId = :id")

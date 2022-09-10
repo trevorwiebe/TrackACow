@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.db.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,10 +14,10 @@ import java.util.List;
 @Dao
 public interface DrugsGivenDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDrugsGiven(DrugsGivenEntity drugsGivenEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDrugsGivenList(List<DrugsGivenEntity> drugsGivenEntities);
 
     @Query("SELECT * FROM DrugsGiven WHERE cowId = :cowId")

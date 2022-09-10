@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.db.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,10 +14,10 @@ import java.util.List;
 @Dao
 public interface LoadDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLoad(LoadEntity loadEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLoadList(List<LoadEntity> loadEntities);
 
     @Query("SELECT * FROM load WHERE lotId = :lotId")

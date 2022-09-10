@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.db.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,10 +14,10 @@ import java.util.List;
 @Dao
 public interface ArchivedLotDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertArchivedLotEntity(ArchivedLotEntity archivedLotEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertArchivedLotEntityList(List<ArchivedLotEntity> archivedLotEntities);
 
     @Query("SELECT * FROM archivedLot")

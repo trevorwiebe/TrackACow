@@ -17,7 +17,7 @@ public interface CallDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCall(CallEntity callEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCallList(List<CallEntity> callEntities);
 
     @Query("SELECT * FROM call")

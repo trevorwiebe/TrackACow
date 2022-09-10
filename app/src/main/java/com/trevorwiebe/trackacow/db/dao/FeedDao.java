@@ -19,7 +19,7 @@ public interface FeedDao {
     @Insert(onConflict = REPLACE)
     void insertFeedEntity(FeedEntity feedEntity);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFeedEntityList(List<FeedEntity> feedEntities);
 
     @Query("SELECT * FROM feed")
