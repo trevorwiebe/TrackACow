@@ -4,6 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/accent_sign_in_btn.xml" value="0.24722222222222223" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_baseline_account_box_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_baseline_app_version_alt_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_baseline_feedback_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_baseline_rate_review_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/ic_sign_out_24dp.xml" value="0.1005" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/drawable/white_sign_in_btn_accent_border.xml" value="0.24722222222222223" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/layout/activity_feed_lot.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Trevor/Documents/AndroidApps/track-a-cow/app/src/main/res/layout/activity_lot_reports.xml" value="0.25416666666666665" />

@@ -6,7 +6,7 @@
 
         <Preference
             android:key="account_name"
-            android:icon="@drawable/ic_account_box_24"
+            android:icon="@drawable/ic_baseline_account_box_24"
             android:title="Signed in as" />
 
         <!--        <Preference-->
