@@ -34,4 +34,10 @@ public class Constants {
     // Preference keys
     public static final String NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name";
     public static final String NEW_DATA_TO_UPLOAD_KEY = "new_data_to_upload_key";
+
+    // Drug report types
+    public static final int YESTERDAY = 1;
+    public static final int MONTH = 2;
+    public static final int ALL = 3;
+    public static final int CUSTOM = 4;
 }

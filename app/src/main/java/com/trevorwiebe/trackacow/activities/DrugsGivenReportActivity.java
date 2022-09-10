@@ -45,10 +45,12 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
     private String mLotId;
     private Integer mReportType;
-    private HashMap<String, String> mDrugKeyAndName = new HashMap<>();
+    private final HashMap<String, String> mDrugKeyAndName = new HashMap<>();
 
-    private Calendar mStartCalendar = Calendar.getInstance();
-    private Calendar mEndCalendar = Calendar.getInstance();
+    private final Calendar mStartCalendar = Calendar.getInstance();
+    private final Calendar mEndCalendar = Calendar.getInstance();
+
+    private int mReportDateRangeType = 0;
 
     private DatePickerDialog.OnDateSetListener mStartDatePicker;
     private DatePickerDialog.OnDateSetListener mEndDatePicker;
@@ -88,6 +90,8 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
             long startDate = savedInstanceState.getLong("startLong");
             long endDate = savedInstanceState.getLong("endLong");
 
+            setSelectedButton(savedInstanceState.getInt("reportType"));
+
             mStartCalendar.setTimeInMillis(startDate);
             mEndCalendar.setTimeInMillis(endDate);
 
@@ -95,19 +99,20 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
             long millisInADay = TimeUnit.DAYS.toMillis(1);
 
-            long tomorrow_milliseconds = mStartCalendar.getTimeInMillis() + millisInADay;
+            long yesterday_milliseconds = System.currentTimeMillis() - millisInADay;
 
+            mStartCalendar.setTimeInMillis(yesterday_milliseconds);
             mStartCalendar.set(Calendar.HOUR, 0);
             mStartCalendar.set(Calendar.MINUTE, 0);
             mStartCalendar.set(Calendar.SECOND, 0);
             mStartCalendar.set(Calendar.MILLISECOND, 0);
 
-            mEndCalendar.setTimeInMillis(tomorrow_milliseconds);
-            mEndCalendar.set(Calendar.HOUR, 0);
-            mEndCalendar.set(Calendar.MINUTE, 0);
-            mEndCalendar.set(Calendar.SECOND, 0);
-            mEndCalendar.set(Calendar.MILLISECOND, 0);
+            mEndCalendar.set(Calendar.HOUR, mEndCalendar.getMaximum(Calendar.HOUR));
+            mEndCalendar.set(Calendar.MINUTE, mEndCalendar.getMaximum(Calendar.MINUTE));
+            mEndCalendar.set(Calendar.SECOND, mEndCalendar.getMaximum(Calendar.SECOND));
+            mEndCalendar.set(Calendar.MILLISECOND, mEndCalendar.getMaximum(Calendar.MILLISECOND));
 
+            setSelectedButton(Constants.YESTERDAY);
         }
 
         mStartDateButton.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +138,8 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
                 long selectedStartDate = mStartCalendar.getTimeInMillis();
                 long selectedEndDate = mEndCalendar.getTimeInMillis();
+
+                setSelectedButton(Constants.CUSTOM);
 
                 new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, selectedStartDate, selectedEndDate).execute(DrugsGivenReportActivity.this);
             }
@@ -161,6 +168,8 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
                 long selectedStartDate = mStartCalendar.getTimeInMillis();
                 long selectedEndDate = mEndCalendar.getTimeInMillis();
 
+                setSelectedButton(Constants.CUSTOM);
+
                 new QueryDrugsGivenByLotIdAndDateRange(DrugsGivenReportActivity.this, mLotId, selectedStartDate, selectedEndDate).execute(DrugsGivenReportActivity.this);
             }
         };
@@ -174,14 +183,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
                     new QueryArchivedLotsByLotId(mLotId, DrugsGivenReportActivity.this).execute(DrugsGivenReportActivity.this);
                 }
 
-                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
-
-                mQuickAll.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
-                mQuickAll.setTextColor(getResources().getColor(android.R.color.white));
-
-                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+                setSelectedButton(Constants.ALL);
             }
         });
 
@@ -206,14 +208,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
                         mLotId, startLong, endLong)
                         .execute(DrugsGivenReportActivity.this);
 
-                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
-
-                mQuickMonth.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
-                mQuickMonth.setTextColor(getResources().getColor(android.R.color.white));
-
-                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
+                setSelectedButton(Constants.MONTH);
             }
         });
 
@@ -246,14 +241,8 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
                         mLotId, startLong, endLong)
                         .execute(DrugsGivenReportActivity.this);
 
-                mQuickYesterday.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
-                mQuickYesterday.setTextColor(getResources().getColor(android.R.color.white));
+                setSelectedButton(Constants.YESTERDAY);
 
-                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
-
-                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
-                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
             }
         });
 
@@ -264,6 +253,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putLong("startLong", mStartCalendar.getTimeInMillis());
         outState.putLong("endLong", mEndCalendar.getTimeInMillis());
+        outState.putInt("reportType", mReportDateRangeType);
         super.onSaveInstanceState(outState);
     }
 
@@ -375,5 +365,53 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
         mEndDateButton.setText(friendlyEndDate);
 
         new QueryDrugsGivenByLotIdAndDateRange(this, mLotId, start_date, end_date).execute(this);
+    }
+
+    private void setSelectedButton(int reportType){
+
+        mReportDateRangeType = reportType;
+
+        switch (reportType){
+            case Constants.YESTERDAY:
+                mQuickYesterday.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickYesterday.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
+                break;
+            case Constants.MONTH:
+                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickMonth.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
+                break;
+            case Constants.ALL:
+                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.accent_sign_in_btn));
+                mQuickAll.setTextColor(getResources().getColor(android.R.color.white));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+                break;
+            case Constants.CUSTOM:
+                mQuickYesterday.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickYesterday.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickAll.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickAll.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                mQuickMonth.setBackground(getDrawable(R.drawable.white_sign_in_btn_accent_border));
+                mQuickMonth.setTextColor(getResources().getColor(R.color.colorAccent));
+                break;
+        }
     }
 }
