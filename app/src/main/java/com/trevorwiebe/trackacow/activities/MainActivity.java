@@ -20,7 +20,6 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,21 +52,15 @@ public class MainActivity extends AppCompatActivity implements
         SyncDatabase.OnDatabaseSynced,
         QueryUserEntity.OnUserLoaded {
 
-    private static final String TAG = "MainActivity";
-
-    private static final int SIGNIN_IN_CODE = 435;
-
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-    private NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
+    private final NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
     private SyncDatabase mSyncDatabase;
 
     private BottomNavigationView mBottomNavigationView;
     private ProgressBar mMainProgressBar;
     private Toolbar mToolBar;
     private FrameLayout mMainLayout;
-
-    private int mLastUsedScreen = Constants.MEDICATE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,42 +134,35 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case R.id.action_move_pens:
-                setSelectedFragment(Constants.MOVE);
-                mBottomNavigationView.getMenu().setGroupCheckable(0, false, true);
-                break;
-            case R.id.action_sync_data:
-                mMainProgressBar.setVisibility(View.VISIBLE);
+        if(id == R.id.action_move_pens){
+            setSelectedFragment(Constants.MOVE);
+            mBottomNavigationView.getMenu().setGroupCheckable(0, false, true);
+        }else if(id == R.id.action_sync_data){
+            mMainProgressBar.setVisibility(View.VISIBLE);
+            mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+            mSyncDatabase.setSyncAvailability(true);
+            mSyncDatabase.beginSync();
+        }else{
+            AlertDialog.Builder data_to_upload_dialog = new AlertDialog.Builder(MainActivity.this);
 
-                mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-                mSyncDatabase.setSyncAvailability(true);
-                mSyncDatabase.beginSync();
-                break;
-            case R.id.action_upload_data:
-                AlertDialog.Builder data_to_upload_dialog = new AlertDialog.Builder(MainActivity.this);
+            data_to_upload_dialog.setTitle("Local changes made");
+            data_to_upload_dialog.setMessage("You have made local changes that are not synced to the cloud.");
+            data_to_upload_dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            data_to_upload_dialog.setPositiveButton("Sync", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mMainProgressBar.setVisibility(View.VISIBLE);
 
-                data_to_upload_dialog.setTitle("Local changes made");
-                data_to_upload_dialog.setMessage("You have made local changes that are not synced to the cloud.");
-                data_to_upload_dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                data_to_upload_dialog.setPositiveButton("Sync", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mMainProgressBar.setVisibility(View.VISIBLE);
-
-                        mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-                        mSyncDatabase.setSyncAvailability(true);
-                        mSyncDatabase.beginSync();
-                    }
-                });
-                data_to_upload_dialog.show();
-                break;
-            default:
-                break;
+                    mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+                    mSyncDatabase.setSyncAvailability(true);
+                    mSyncDatabase.beginSync();
+                }
+            });
+            data_to_upload_dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -199,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)
-                .setRequiresCharging(true)
                 .setRequiresDeviceIdle(true)
                 .build();
 
