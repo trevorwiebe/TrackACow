@@ -83,46 +83,9 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                mBottomNavigationView.getMenu().setGroupCheckable(0, true, true);
                 int id = menuItem.getItemId();
-                switch (id) {
-                    case R.id.action_medicate:
-                        setTitle("Work");
-                        MedicateFragment medicateFragment = new MedicateFragment();
-                        FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
-                        medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
-                        medicateTransactionManager.commit();
-                        mLastUsedScreen = Constants.MEDICATE;
-                        break;
-                    case R.id.action_feed:
-                        setTitle("Feed");
-                        FeedFragment feedFragment = new FeedFragment();
-                        FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
-                        feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
-                        feedTransactionManager.commit();
-                        mLastUsedScreen = Constants.FEED;
-                        break;
-                    case R.id.action_reports:
-                        setTitle("Reports");
-                        ReportsFragment reportsFragment = new ReportsFragment();
-                        FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
-                        reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
-                        reportsTransactionManager.commit();
-                        mLastUsedScreen = Constants.REPORTS;
-                        break;
-                    case R.id.action_more:
-                        setTitle("More");
-                        MoreFragment moreFragment = new MoreFragment();
-                        FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
-                        moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
-                        moreTransactionManager.commit();
-                        mLastUsedScreen = Constants.MORE;
-                        break;
-                    default:
-                        break;
-                }
-
-                Utility.saveLastUsedScreen(MainActivity.this, mLastUsedScreen);
-
+                setSelectedFragment(Utility.getFragmentIdFromResourceID(id));
                 return true;
             }
         });
@@ -165,12 +128,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Utility.saveLastFeedPen(this, 0);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -186,11 +143,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id){
             case R.id.action_move_pens:
-                setTitle("Move");
-                MoveFragment moveFragment = new MoveFragment();
-                FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
-                moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
-                moveTransactionManager.commit();
+                setSelectedFragment(Constants.MOVE);
+                mBottomNavigationView.getMenu().setGroupCheckable(0, false, true);
                 break;
             case R.id.action_sync_data:
                 mMainProgressBar.setVisibility(View.VISIBLE);
@@ -256,9 +210,14 @@ public class MainActivity extends AppCompatActivity implements
         WorkManager.getInstance(this)
                 .enqueueUniquePeriodicWork("sync_database_job_tag", ExistingPeriodicWorkPolicy.KEEP, request);
 
-        mBottomNavigationView.setVisibility(View.VISIBLE);
+        int lastUsedScreenFragId = Utility.getLastUsedScreen(MainActivity.this);
 
-        setSelectedFragment();
+        mBottomNavigationView.setVisibility(View.VISIBLE);
+        mBottomNavigationView.setSelectedItemId(Utility.getResourceIdFromFragmentId(lastUsedScreenFragId));
+
+        setSelectedFragment(lastUsedScreenFragId);
+
+        mBottomNavigationView.getMenu().setGroupCheckable(0, lastUsedScreenFragId != Constants.MOVE, true);
     }
 
     private void onSignedOutCleanUp() {
@@ -274,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements
                 new QueryUserEntity(uid, MainActivity.this).execute(MainActivity.this);
                 Utility.setNewDataToUpload(MainActivity.this, false);
                 invalidateOptionsMenu();
-                setSelectedFragment();
+                setSelectedFragment(Utility.getLastUsedScreen(MainActivity.this));
                 break;
             case Constants.ERROR_FETCHING_DATA_FROM_CLOUD:
                 Toast.makeText(this, "There was an error fetching the data from the cloud.", Toast.LENGTH_SHORT).show();
@@ -425,21 +384,14 @@ public class MainActivity extends AppCompatActivity implements
         accountEnded.show();
     }
 
-    private void setSelectedFragment() {
-        // open the medicate fragment
-        mLastUsedScreen = Utility.getLastUsedScreen(MainActivity.this);
-        switch (mLastUsedScreen) {
-            case Constants.MEDICATE:
-                setTitle("Work");
-                mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
-                MedicateFragment medicateFragment = new MedicateFragment();
-                FragmentTransaction medicateTransactionManager = getSupportFragmentManager().beginTransaction();
-                medicateTransactionManager.replace(R.id.main_fragment_container, medicateFragment);
-                medicateTransactionManager.commit();
-                break;
+    private void setSelectedFragment(int fragmentId) {
+        // save the fragment id
+        Utility.saveLastUsedScreen(this, fragmentId);
+
+        // open the correct fragment
+        switch (fragmentId) {
             case Constants.FEED:
                 setTitle("Feed");
-                mBottomNavigationView.setSelectedItemId(R.id.action_feed);
                 FeedFragment feedFragment = new FeedFragment();
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                 feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
@@ -447,7 +399,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Constants.REPORTS:
                 setTitle("Reports");
-                mBottomNavigationView.setSelectedItemId(R.id.action_reports);
                 ReportsFragment reportsFragment = new ReportsFragment();
                 FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
                 reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
@@ -455,19 +406,24 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Constants.MORE:
                 setTitle("More");
-                mBottomNavigationView.setSelectedItemId(R.id.action_more);
                 MoreFragment moreFragment = new MoreFragment();
                 FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
                 moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
                 moreTransactionManager.commit();
                 break;
+            case Constants.MOVE:
+                setTitle("Move");
+                MoveFragment moveFragment = new MoveFragment();
+                FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
+                moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
+                moveTransactionManager.commit();
+                break;
             default:
                 setTitle("Work");
-                mBottomNavigationView.setSelectedItemId(R.id.action_medicate);
-                MedicateFragment medicateFragmentD = new MedicateFragment();
-                FragmentTransaction medicateTransactionManagerD = getSupportFragmentManager().beginTransaction();
-                medicateTransactionManagerD.replace(R.id.main_fragment_container, medicateFragmentD);
-                medicateTransactionManagerD.commit();
+                MedicateFragment medicateFragmentDefault = new MedicateFragment();
+                FragmentTransaction medicateTransactionManagerDefault = getSupportFragmentManager().beginTransaction();
+                medicateTransactionManagerDefault.replace(R.id.main_fragment_container, medicateFragmentDefault);
+                medicateTransactionManagerDefault.commit();
                 break;
         }
     }

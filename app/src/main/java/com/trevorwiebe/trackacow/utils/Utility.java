@@ -239,4 +239,20 @@ public class Utility {
         return c;
     }
 
+    public static int getFragmentIdFromResourceID(int id){
+        if(id == R.id.action_medicate) return Constants.MEDICATE;
+        else if(id == R.id.action_feed) return Constants.FEED;
+        else if(id == R.id.action_reports) return Constants.REPORTS;
+        else if(id == R.id.action_more) return Constants.MORE;
+        else return Constants.MOVE;
+    }
+
+    public static int getResourceIdFromFragmentId(int id){
+        if(id == Constants.MEDICATE) return R.id.action_medicate;
+        else if(id == Constants.FEED) return R.id.action_feed;
+        else if(id == Constants.REPORTS) return R.id.action_reports;
+        else if(id == Constants.MORE) return R.id.action_more;
+        else return Constants.MOVE;
+    }
+
 }
