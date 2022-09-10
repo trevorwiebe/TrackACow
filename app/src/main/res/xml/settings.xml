@@ -6,6 +6,7 @@
 
         <Preference
             android:key="account_name"
+            android:icon="@drawable/ic_baseline_account_box_24"
             android:title="Signed in as" />
 
         <!--        <Preference-->
@@ -18,6 +19,7 @@
 
         <Preference
             android:key="sign_out"
+            android:icon="@drawable/ic_sign_out_24dp"
             android:title="Sign Out" />
 
     </PreferenceCategory>
@@ -27,6 +29,7 @@
         <Preference
             android:key="feedback"
             android:title="Send feedback"
+            android:icon="@drawable/ic_baseline_feedback_24"
             android:summary="Report technical issues or suggest new features.">
             <intent
                 android:action="android.intent.action.VIEW"
@@ -40,11 +43,13 @@
         <Preference
             android:key="five_star_review"
             android:title="Give a 5-star review"
+            android:icon="@drawable/ic_baseline_rate_review_24"
             android:summary="This app has been developed by a solo developer.  If you like the app, please support me by leaving a 5-star review!">
         </Preference>
 
         <Preference
             android:title="This app is open source"
+            android:icon="@drawable/ic_baseline_people_24"
             android:summary="Contribute to this apps growth and development on GitHub">
             <intent
                 android:action="android.intent.action.VIEW"
@@ -53,9 +58,11 @@
 
         <Preference
             android:key="version"
+            android:icon="@drawable/ic_baseline_app_version_alt_24"
             android:title="Version" />
 
         <Preference
+            android:icon="@drawable/ic_baseline_policy_24"
             android:key="privacy_policy"
             android:title="Privacy Policy">
             <intent
