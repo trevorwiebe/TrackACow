@@ -55,8 +55,9 @@ dependencies {
     // Joda-Time
     implementation 'joda-time:joda-time:2.10.3'
 
-    // Database
+    // Room
     implementation 'androidx.room:room-runtime:2.4.3'
+    implementation 'androidx.room:room-ktx:2.4.3'
     annotationProcessor 'androidx.room:room-compiler:2.4.3'
 
     // Firebase
@@ -73,3 +74,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.jetbrains.kotlin.android'

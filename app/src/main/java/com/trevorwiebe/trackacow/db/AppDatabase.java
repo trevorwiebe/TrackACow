@@ -6,9 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import com.trevorwiebe.trackacow.db.dao.ArchivedLotDao;
 import com.trevorwiebe.trackacow.db.dao.CallDao;
 import com.trevorwiebe.trackacow.db.dao.CowDao;
@@ -18,6 +16,7 @@ import com.trevorwiebe.trackacow.db.dao.FeedDao;
 import com.trevorwiebe.trackacow.db.dao.LoadDao;
 import com.trevorwiebe.trackacow.db.dao.LotDao;
 import com.trevorwiebe.trackacow.db.dao.PenDao;
+import com.trevorwiebe.trackacow.db.dao.RationDao;
 import com.trevorwiebe.trackacow.db.dao.UserDao;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
@@ -28,6 +27,7 @@ import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.db.entities.RationEntity;
 import com.trevorwiebe.trackacow.db.entities.UserEntity;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingArchivedLotDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingCallDao;
@@ -38,6 +38,7 @@ import com.trevorwiebe.trackacow.db.holdingDao.HoldingFeedDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingLoadDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingLotDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingPenDao;
+import com.trevorwiebe.trackacow.db.holdingDao.HoldingRationDao;
 import com.trevorwiebe.trackacow.db.holdingDao.HoldingUserDao;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingCallEntity;
@@ -48,8 +49,8 @@ import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingFeedEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingRationEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingUserEntity;
-import com.trevorwiebe.trackacow.utils.Utility;
 
 @Database(entities = {
         PenEntity.class,
@@ -62,6 +63,7 @@ import com.trevorwiebe.trackacow.utils.Utility;
         FeedEntity.class,
         UserEntity.class,
         LoadEntity.class,
+        RationEntity.class,
         HoldingPenEntity.class,
         HoldingCowEntity.class,
         HoldingDrugsGivenEntity.class,
@@ -71,9 +73,9 @@ import com.trevorwiebe.trackacow.utils.Utility;
         HoldingUserEntity.class,
         HoldingLoadEntity.class,
         HoldingCallEntity.class,
-        HoldingFeedEntity.class
-},
-        version = 5, exportSchema = false)
+        HoldingFeedEntity.class,
+        HoldingRationEntity.class
+}, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -88,6 +90,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract FeedDao feedDao();
     public abstract UserDao userDao();
     public abstract LoadDao loadDao();
+    public abstract RationDao rationDao();
 
     public abstract HoldingPenDao holdingPenDao();
     public abstract HoldingCowDao holdingCowDao();
@@ -99,6 +102,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HoldingLoadDao holdingLoadDao();
     public abstract HoldingCallDao holdingCallDao();
     public abstract HoldingFeedDao holdingFeedDao();
+    public abstract HoldingRationDao holdingRationDao();
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -184,6 +188,14 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_5_6 = new Migration(5,6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE ration (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL)");
+            database.execSQL("CREATE TABLE holdingRation(primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)");
+        }
+    };
+
     public static AppDatabase getAppDatabase(Context context){
         if(INSTANCE == null){
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
@@ -193,6 +205,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_5_6)
                     .build();
         }
         return INSTANCE;
