@@ -13,40 +13,40 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.ManageRationsActivity"
+            android:name=".presentation.activities.ManageRationsActivity"
             android:exported="false"
             android:label="@string/more_manage_rations"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:parentActivityName=".presentation.activities.MainActivity"/>
         <activity
-            android:name=".activities.DrugsGivenReportActivity"
+            android:name=".presentation.activities.DrugsGivenReportActivity"
             android:exported="false"
             android:label="Drug Reports"
-            android:parentActivityName=".activities.LotReportActivity" />
+            android:parentActivityName=".presentation.activities.LotReportActivity" />
         <activity
-            android:name=".activities.EditLoadActivity"
+            android:name=".presentation.activities.EditLoadActivity"
             android:exported="false"
             android:label="Edit cattle added"
-            android:parentActivityName=".activities.LotReportActivity" />
+            android:parentActivityName=".presentation.activities.LotReportActivity" />
         <activity
-            android:name=".activities.AddLoadOfCattleActivity"
+            android:name=".presentation.activities.AddLoadOfCattleActivity"
             android:exported="false"
             android:label="Add cattle" />
         <activity
-            android:name=".activities.FeedLotActivity"
+            android:name=".presentation.activities.FeedLotActivity"
             android:exported="false"
             android:label="Feed Lot"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.ArchivesActivity"
+            android:name=".presentation.activities.ArchivesActivity"
             android:exported="false"
             android:label="Archives"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.LotReportActivity"
+            android:name=".presentation.activities.LotReportActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".presentation.activities.MainActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -55,73 +55,73 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddDrugsGivenToSpecificCowActivity" />
-        <activity android:name=".activities.EditDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".presentation.activities.AddDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".presentation.activities.EditDrugsGivenToSpecificCowActivity" />
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".presentation.activities.SettingsActivity"
             android:exported="false"
             android:label="Settings"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.EditDrugsGivenActivity"
+            android:name=".presentation.activities.EditDrugsGivenActivity"
             android:exported="false"
             android:label="Edit drugs given"
-            android:parentActivityName=".activities.EditMedicatedCowActivity" />
+            android:parentActivityName=".presentation.activities.EditMedicatedCowActivity" />
         <activity
-            android:name=".activities.CreateAccountActivity"
+            android:name=".presentation.activities.CreateAccountActivity"
             android:exported="false"
             android:label="Create Account"
-            android:parentActivityName=".activities.SignInActivity"
+            android:parentActivityName=".presentation.activities.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SignInActivity"
+            android:name=".presentation.activities.SignInActivity"
             android:exported="false"
             android:label="Sign In"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".presentation.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.EditMedicatedCowActivity"
+            android:name=".presentation.activities.EditMedicatedCowActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
         <activity
-            android:name=".activities.ManageDrugsActivity"
+            android:name=".presentation.activities.ManageDrugsActivity"
             android:exported="false"
             android:label="Manage Drugs"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.ManagePensActivity"
+            android:name=".presentation.activities.ManagePensActivity"
             android:exported="false"
             android:label="Manage Pens"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.MedicatedCowsActivity"
+            android:name=".presentation.activities.MedicatedCowsActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".activities.AddNewDrugActivity"
+            android:name=".presentation.activities.AddNewDrugActivity"
             android:exported="false"
             android:label="Add new drug"
-            android:parentActivityName=".activities.ManageDrugsActivity" />
+            android:parentActivityName=".presentation.activities.ManageDrugsActivity" />
         <activity
-            android:name=".activities.EditDrugActivity"
+            android:name=".presentation.activities.EditDrugActivity"
             android:exported="false"
             android:label="Edit drug"
-            android:parentActivityName=".activities.ManageDrugsActivity" />
+            android:parentActivityName=".presentation.activities.ManageDrugsActivity" />
         <activity
-            android:name=".activities.MedicateACowActivity"
+            android:name=".presentation.activities.MedicateACowActivity"
             android:exported="false"
             android:label="Medicate a cow"
-            android:parentActivityName=".activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
         <activity
-            android:name=".activities.MarkACowDeadActivity"
+            android:name=".presentation.activities.MarkACowDeadActivity"
             android:exported="false"
             android:label="Mark a cow dead"
-            android:parentActivityName=".activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
         <activity
-            android:name=".activities.EditLotActivity"
+            android:name=".presentation.activities.EditLotActivity"
             android:exported="false"
             android:label="Edit lot information"
-            android:parentActivityName=".activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
     </application>
 
 </manifest>

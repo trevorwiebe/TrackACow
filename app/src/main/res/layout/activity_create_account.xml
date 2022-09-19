@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccentDark"
-    tools:context=".activities.CreateAccountActivity">
+    tools:context=".presentation.activities.CreateAccountActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

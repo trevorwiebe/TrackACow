@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EditDrugsGivenToSpecificCowActivity">
+    tools:context=".presentation.activities.EditDrugsGivenToSpecificCowActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
 
     <LinearLayout
         android:weightSum="2"
-        app:layout_behavior="com.trevorwiebe.trackacow.utils.MoveUpwardsBehavior"
+        app:layout_behavior="com.trevorwiebe.trackacow.domain.utils.MoveUpwardsBehavior"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"

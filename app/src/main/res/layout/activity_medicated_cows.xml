@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MedicatedCowsActivity">
+    tools:context=".presentation.activities.MedicatedCowsActivity">
 
     <TextView
         android:id="@+id/no_medicated_cows_tv"
@@ -39,7 +39,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:visibility="invisible"
-        app:layout_behavior="com.trevorwiebe.trackacow.utils.MoveUpwardsBehavior"
+        app:layout_behavior="com.trevorwiebe.trackacow.domain.utils.MoveUpwardsBehavior"
         app:fab_addButtonColorNormal="@color/colorAccent"
         app:fab_addButtonColorPressed="@color/colorAccent"
         app:fab_labelStyle="@style/menu_labels_style">
