@@ -23,6 +23,7 @@ android {
     compileOptions {
         sourceCompatibility = '1.7'
     }
+    namespace 'com.trevorwiebe.trackacow'
 }
 
 dependencies {

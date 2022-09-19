@@ -373,6 +373,9 @@ public class MainActivity extends AppCompatActivity implements
         // save the fragment id
         Utility.saveLastUsedScreen(this, fragmentId);
 
+        // check if the activity has been destroyed
+        if(this.isDestroyed()) return;
+
         // open the correct fragment
         switch (fragmentId) {
             case Constants.FEED:

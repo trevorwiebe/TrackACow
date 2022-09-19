@@ -32,6 +32,8 @@ public class DeleteAllLocalData extends AsyncTask<Context, Void, Void> {
         db.holdingUserDao().deleteHoldingUserTable();
         db.holdingLoadDao().deleteHoldingLoadTable();
 
+        // TODO: 9/19/2022 Add code to delete the Feed and Call holding db
+
         return null;
     }
 }
