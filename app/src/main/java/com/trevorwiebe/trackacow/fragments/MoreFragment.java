@@ -13,6 +13,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.ArchivesActivity;
 import com.trevorwiebe.trackacow.activities.ManageDrugsActivity;
 import com.trevorwiebe.trackacow.activities.ManagePensActivity;
+import com.trevorwiebe.trackacow.activities.ManageRationsActivity;
 import com.trevorwiebe.trackacow.activities.SettingsActivity;
 
 public class MoreFragment extends Fragment{
@@ -45,7 +46,8 @@ public class MoreFragment extends Fragment{
         manageRations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent manageRations = new Intent(getContext(), ManageRationsActivity.class);
+                startActivity(manageRations);
             }
         });
 

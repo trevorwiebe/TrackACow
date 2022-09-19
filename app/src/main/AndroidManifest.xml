@@ -13,12 +13,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ManageRations"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".activities.ManageRationsActivity"
+            android:exported="false"
+            android:label="@string/more_manage_rations"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.DrugsGivenReportActivity"
             android:exported="true"
