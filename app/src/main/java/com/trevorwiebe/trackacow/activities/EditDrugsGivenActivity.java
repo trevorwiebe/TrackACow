@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.DrugsGivenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.DeleteDrugGivenById;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateDrugGivenAmountGiven;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByCowId;
+import com.trevorwiebe.trackacow.dataLoaders.main.drugsGiven.DeleteDrugGivenById;
+import com.trevorwiebe.trackacow.dataLoaders.main.drugsGiven.UpdateDrugGivenAmountGiven;
+import com.trevorwiebe.trackacow.dataLoaders.main.drug.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.main.drugsGiven.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;

@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -20,7 +19,7 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.ManageDrugRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.main.drug.QueryAllDrugs;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
 

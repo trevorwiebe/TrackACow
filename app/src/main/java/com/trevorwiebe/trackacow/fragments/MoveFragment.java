@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.ShufflePenAndLotsAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
+import com.trevorwiebe.trackacow.dataLoaders.main.pen.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.QueryLots;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.objects.ShuffleObject;

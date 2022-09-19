@@ -15,10 +15,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.DeleteLoadByLoadId;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLoad;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLoadsByLoadId;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateLoadEntity;
+import com.trevorwiebe.trackacow.dataLoaders.main.load.DeleteLoadByLoadId;
+import com.trevorwiebe.trackacow.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
+import com.trevorwiebe.trackacow.dataLoaders.main.load.QueryLoadsByLoadId;
+import com.trevorwiebe.trackacow.dataLoaders.main.load.UpdateLoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.utils.Constants;

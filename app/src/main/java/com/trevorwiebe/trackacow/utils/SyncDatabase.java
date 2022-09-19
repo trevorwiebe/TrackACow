@@ -1,12 +1,10 @@
 package com.trevorwiebe.trackacow.utils;
 
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllCloudData;
-import com.trevorwiebe.trackacow.dataLoaders.CloneCloudDatabaseToLocalDatabase;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.dataLoaders.misc.QueryAllCloudData;
+import com.trevorwiebe.trackacow.dataLoaders.misc.CloneCloudDatabaseToLocalDatabase;
+import com.trevorwiebe.trackacow.dataLoaders.misc.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.CowEntity;

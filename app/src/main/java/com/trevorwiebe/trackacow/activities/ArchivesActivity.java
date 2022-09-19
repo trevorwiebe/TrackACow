@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.ArchiveRvAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLots;
+import com.trevorwiebe.trackacow.dataLoaders.main.archivedLot.QueryArchivedLots;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;

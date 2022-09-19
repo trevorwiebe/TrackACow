@@ -10,15 +10,14 @@ import android.os.Bundle;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.DeleteAllLocalData;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.dataLoaders.misc.DeleteAllLocalData;
+import com.trevorwiebe.trackacow.dataLoaders.misc.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
 

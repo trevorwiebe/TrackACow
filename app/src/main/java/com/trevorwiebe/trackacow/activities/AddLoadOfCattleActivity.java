@@ -13,8 +13,8 @@ import android.widget.DatePicker;
 
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.InsertHoldingLoad;
-import com.trevorwiebe.trackacow.dataLoaders.InsertLoadEntity;
+import com.trevorwiebe.trackacow.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
+import com.trevorwiebe.trackacow.dataLoaders.main.load.InsertLoadEntity;
 import com.trevorwiebe.trackacow.db.entities.LoadEntity;
 import com.trevorwiebe.trackacow.db.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.utils.Constants;

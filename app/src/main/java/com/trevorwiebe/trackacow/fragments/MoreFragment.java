@@ -19,7 +19,7 @@ import com.trevorwiebe.trackacow.activities.ArchivesActivity;
 import com.trevorwiebe.trackacow.activities.ManageDrugsActivity;
 import com.trevorwiebe.trackacow.activities.ManagePensActivity;
 import com.trevorwiebe.trackacow.activities.SettingsActivity;
-import com.trevorwiebe.trackacow.dataLoaders.InsertAllLocalChangeToCloud;
+import com.trevorwiebe.trackacow.dataLoaders.misc.InsertAllLocalChangeToCloud;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 public class MoreFragment extends Fragment implements InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud {

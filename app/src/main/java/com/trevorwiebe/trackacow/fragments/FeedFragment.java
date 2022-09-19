@@ -10,14 +10,14 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.FeedPenViewPagerAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.main.pen.QueryAllPens;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
 import com.trevorwiebe.trackacow.utils.Utility;
 

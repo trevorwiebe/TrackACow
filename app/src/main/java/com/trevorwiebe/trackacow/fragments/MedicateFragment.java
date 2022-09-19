@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,20 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.activities.MainActivity;
 import com.trevorwiebe.trackacow.activities.MedicatedCowsActivity;
 import com.trevorwiebe.trackacow.adapters.PenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllPens;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
-import com.trevorwiebe.trackacow.dataLoaders.QueryUserEntity;
+import com.trevorwiebe.trackacow.dataLoaders.main.pen.QueryAllPens;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.QueryLots;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;
-import com.trevorwiebe.trackacow.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.utils.Utility;
 
 import java.util.ArrayList;

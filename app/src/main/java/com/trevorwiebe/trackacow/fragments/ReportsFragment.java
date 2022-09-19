@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.LotReportActivity;
 import com.trevorwiebe.trackacow.adapters.ReportsRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLots;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.QueryLots;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.ItemClickListener;

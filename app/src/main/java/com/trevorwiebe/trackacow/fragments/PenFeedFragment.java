@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.fragments;
 
-import androidx.room.Update;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,9 +17,9 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.activities.FeedLotActivity;
 import com.trevorwiebe.trackacow.adapters.FeedPenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryCallsByLotId;
-import com.trevorwiebe.trackacow.dataLoaders.QueryFeedsByLotId;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLotsByPenId;
+import com.trevorwiebe.trackacow.dataLoaders.main.call.QueryCallsByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.main.feed.QueryFeedsByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.db.entities.CallEntity;
 import com.trevorwiebe.trackacow.db.entities.FeedEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;

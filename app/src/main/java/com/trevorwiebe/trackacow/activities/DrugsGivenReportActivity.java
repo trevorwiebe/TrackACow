@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -17,18 +15,16 @@ import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.adapters.TimeDrugRvAdapter;
-import com.trevorwiebe.trackacow.dataLoaders.QueryAllDrugs;
-import com.trevorwiebe.trackacow.dataLoaders.QueryArchivedLotsByLotId;
-import com.trevorwiebe.trackacow.dataLoaders.QueryDrugsGivenByLotIdAndDateRange;
-import com.trevorwiebe.trackacow.dataLoaders.QueryLotByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.main.drug.QueryAllDrugs;
+import com.trevorwiebe.trackacow.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId;
+import com.trevorwiebe.trackacow.dataLoaders.main.drugsGiven.QueryDrugsGivenByLotIdAndDateRange;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.QueryLotByLotId;
 import com.trevorwiebe.trackacow.db.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugEntity;
 import com.trevorwiebe.trackacow.db.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.utils.Constants;
 import com.trevorwiebe.trackacow.utils.Utility;
-
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;

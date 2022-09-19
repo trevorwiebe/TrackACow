@@ -1,7 +1,5 @@
 package com.trevorwiebe.trackacow.adapters;
 
-import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
 import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateHoldingLot;
-import com.trevorwiebe.trackacow.dataLoaders.UpdateLotWithNewPenId;
+import com.trevorwiebe.trackacow.dataLoaders.cache.holdingLot.UpdateHoldingLot;
+import com.trevorwiebe.trackacow.dataLoaders.main.lot.UpdateLotWithNewPenId;
 import com.trevorwiebe.trackacow.db.entities.LotEntity;
 import com.trevorwiebe.trackacow.objects.ShuffleObject;
 import com.trevorwiebe.trackacow.utils.Constants;
