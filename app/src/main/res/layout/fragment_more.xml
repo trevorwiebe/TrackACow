@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -7,98 +9,78 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/manage_drugs_layout">
+        android:id="@+id/more_layout">
 
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:text="@string/more_manage_pens"
+            android:textColor="@android:color/black"
+            app:drawableStartCompat="@drawable/ic_pen_accent_24dp"
+            android:id="@+id/manage_pen_tv"
+            android:drawablePadding="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/manage_pens_layout">
-
-            <ImageView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_pen_accent_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="Manage pens"
-                android:textColor="@android:color/black"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
         <View
             android:background="@android:color/darker_gray"
             android:layout_width="match_parent"
             android:layout_height="0.5dp" />
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:text="@string/more_manage_drugs"
+            android:textColor="@android:color/black"
+            app:drawableStartCompat="@drawable/ic_accent_color_drug_24dp"
+            android:id="@+id/manage_drugs_tv"
+            android:drawablePadding="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_accent_color_drug_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="Manage drugs"
-                android:textColor="@android:color/black"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
         <View
             android:background="@android:color/darker_gray"
             android:layout_width="match_parent"
             android:layout_height="0.5dp" />
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:text="@string/more_manage_rations"
+            android:textColor="@android:color/black"
+            app:drawableStartCompat="@drawable/ic_baseline_ration_24"
+            android:id="@+id/manage_rations_tv"
+            android:drawablePadding="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/archive_layout">
+            android:layout_height="wrap_content" />
 
-            <ImageView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_archive_accent_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <View
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp" />
 
-            <TextView
-                android:text="Archives"
-                android:textColor="@android:color/black"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
+        <TextView
+            android:text="@string/more_archives"
+            android:textColor="@android:color/black"
+            app:drawableStartCompat="@drawable/ic_archive_accent_24dp"
+            android:id="@+id/archives_tv"
+            android:drawablePadding="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <View
             android:background="@android:color/darker_gray"
@@ -106,32 +88,20 @@
             android:layout_height="0.5dp" />
 
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:text="@string/more_settings"
+            app:drawableStartCompat="@drawable/ic_settings_accent_24dp"
+            android:textColor="@android:color/black"
+            android:drawablePadding="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp"
+            android:id="@+id/more_settings_tv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/settings_layout">
+            android:layout_height="wrap_content" />
 
-            <ImageView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_settings_accent_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="Settings"
-                android:textColor="@android:color/black"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
 
         <View
             android:background="@android:color/darker_gray"
