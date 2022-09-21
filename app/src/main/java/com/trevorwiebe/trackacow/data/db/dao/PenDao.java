@@ -23,7 +23,7 @@ public interface PenDao {
     @Query("SELECT * FROM Pen WHERE penId = :id")
     PenEntity getPenById(String id);
 
-    @Query("SELECT * FROM Pen")
+    @Query("SELECT * FROM Pen ORDER BY penName ASC")
     List<PenEntity> getPenList();
 
     @Query("UPDATE Pen SET penName = :penName WHERE penId = :penId")
