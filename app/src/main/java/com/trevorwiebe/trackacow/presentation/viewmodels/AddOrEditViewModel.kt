@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditViewModel @Inject constructor(
-    private val rationUseCases: RationUseCases
+
 ): ViewModel() {
 
     fun onEvent(event: AddOrEditRationsEvents){
@@ -24,7 +24,6 @@ class AddOrEditViewModel @Inject constructor(
 
     private fun addRation(rationModel: RationModel){
         viewModelScope.launch {
-            rationUseCases.addRationUC(rationModel)
         }
     }
 }

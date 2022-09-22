@@ -13,13 +13,4 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 object TrackACowDomainModule {
 
-    @ViewModelScoped
-    @Provides
-    fun provideRationUseCases (
-        rationsRepository: RationsRepository
-    ): RationUseCases{
-        return RationUseCases(
-            addRationUC = AddRationUC(rationsRepository)
-        )
-    }
 }

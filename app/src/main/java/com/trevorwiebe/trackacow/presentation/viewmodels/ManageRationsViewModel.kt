@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageRationsViewModel @Inject constructor(
-    private val rationUseCases: RationUseCases
+
 ): ViewModel() {
 
 
