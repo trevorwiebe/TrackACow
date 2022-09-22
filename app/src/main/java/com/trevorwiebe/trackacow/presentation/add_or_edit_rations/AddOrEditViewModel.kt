@@ -18,6 +18,12 @@ class AddOrEditViewModel @Inject constructor(
             is AddOrEditRationsEvents.OnRationAdded -> {
                 addRation(event.rationModel)
             }
+            is AddOrEditRationsEvents.OnRationDeleted -> {
+                deleteRation(event.rationId)
+            }
+            is AddOrEditRationsEvents.OnRationUpdated -> {
+                updateRation(event.rationModel)
+            }
         }
     }
 
@@ -26,8 +32,22 @@ class AddOrEditViewModel @Inject constructor(
             rationUseCases.addRationUC(rationModel)
         }
     }
+
+    private fun updateRation(rationModel: RationModel){
+        viewModelScope.launch {
+            rationUseCases.editRationUC(rationModel)
+        }
+    }
+
+    private fun deleteRation(rationId: Int){
+        viewModelScope.launch {
+            rationUseCases.deleteRationByIdUC(rationId)
+        }
+    }
 }
 
 sealed class AddOrEditRationsEvents{
     data class OnRationAdded(val rationModel: RationModel): AddOrEditRationsEvents()
+    data class OnRationDeleted(val rationId: Int): AddOrEditRationsEvents()
+    data class OnRationUpdated(val rationModel: RationModel): AddOrEditRationsEvents()
 }

@@ -2,9 +2,7 @@ package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
-import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.AddRationUC
-import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.GetAllRationsUC
-import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +21,9 @@ object TrackACowDomainModule {
     ): RationUseCases {
         return RationUseCases(
             addRationUC = AddRationUC(rationsRepository, context),
-            getAllRationsUC = GetAllRationsUC(rationsRepository)
+            getAllRationsUC = GetAllRationsUC(rationsRepository),
+            editRationUC = EditRationUC(rationsRepository),
+            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository)
         )
     }
 }

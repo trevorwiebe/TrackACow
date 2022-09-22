@@ -24,8 +24,8 @@ interface RationDao {
     @Update
     suspend fun updateRation(rationEntity: RationEntity)
 
-    @Delete
-    suspend fun deleteRation(rationEntity: RationEntity)
+    @Query("DELETE FROM ration WHERE primaryKey = :rationId")
+    suspend fun deleteRationById(rationId: Int)
 
     @Query("DELETE FROM ration")
     suspend fun deleteRationTable()

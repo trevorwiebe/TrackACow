@@ -12,7 +12,7 @@ interface RationsRepository {
 
     suspend fun updateRations(rationModel: RationModel)
 
-    suspend fun deleteRation(rationModel: RationModel)
+    suspend fun deleteRationById(rationId: Int)
 
     suspend fun insertHoldingRation(holdingRationModel: HoldingRationModel)
 }
