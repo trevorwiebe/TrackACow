@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.domain.repository
 
+import com.trevorwiebe.trackacow.domain.models.HoldingRationModel
 import com.trevorwiebe.trackacow.domain.models.RationModel
 import kotlinx.coroutines.flow.Flow
 
@@ -13,4 +14,5 @@ interface RationsRepository {
 
     suspend fun deleteRation(rationModel: RationModel)
 
+    suspend fun insertHoldingRation(holdingRationModel: HoldingRationModel)
 }

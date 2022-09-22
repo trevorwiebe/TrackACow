@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.domain.di
 
+import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.AddRationUC
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
@@ -13,4 +14,14 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 object TrackACowDomainModule {
 
+    @ViewModelScoped
+    @Provides
+    fun provideRationUseCases(
+        rationsRepository: RationsRepository,
+        context: Application
+    ): RationUseCases {
+        return RationUseCases(
+            addRationUC = AddRationUC(rationsRepository, context)
+        )
+    }
 }

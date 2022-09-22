@@ -1,15 +1,19 @@
 package com.trevorwiebe.trackacow.data.repository
 
 import com.trevorwiebe.trackacow.data.db.dao.RationDao
+import com.trevorwiebe.trackacow.data.db.holdingDao.HoldingRationDao
+import com.trevorwiebe.trackacow.data.mapper.toHoldingRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationModel
+import com.trevorwiebe.trackacow.domain.models.HoldingRationModel
 import com.trevorwiebe.trackacow.domain.models.RationModel
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class RationRepositoryImpl(
-    private val rationDao: RationDao
+    private val rationDao: RationDao,
+    private val holdingRationDao: HoldingRationDao
 ): RationsRepository {
 
     override suspend fun insertRation(rationModel: RationModel) {
@@ -29,5 +33,9 @@ class RationRepositoryImpl(
 
     override suspend fun deleteRation(rationModel: RationModel) {
         rationDao.deleteRation(rationModel.toRationEntity())
+    }
+
+    override suspend fun insertHoldingRation(holdingRationModel: HoldingRationModel) {
+        holdingRationDao.insertHoldingRation(holdingRationModel.toHoldingRationEntity())
     }
 }

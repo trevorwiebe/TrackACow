@@ -80,28 +80,28 @@ import androidx.room.migration.Migration
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun penDao(): PenDao?
-    abstract fun cowDao(): CowDao?
-    abstract fun drugsGivenDao(): DrugsGivenDao?
-    abstract fun drugDao(): DrugDao?
-    abstract fun lotDao(): LotDao?
-    abstract fun archivedLotDao(): ArchivedLotDao?
-    abstract fun callDao(): CallDao?
-    abstract fun feedDao(): FeedDao?
-    abstract fun userDao(): UserDao?
-    abstract fun loadDao(): LoadDao?
-    abstract fun rationDao(): RationDao?
-    abstract fun holdingPenDao(): HoldingPenDao?
-    abstract fun holdingCowDao(): HoldingCowDao?
-    abstract fun holdingDrugsGivenDao(): HoldingDrugsGivenDao?
-    abstract fun holdingDrugDao(): HoldingDrugDao?
-    abstract fun holdingLotDao(): HoldingLotDao?
-    abstract fun holdingUserDao(): HoldingUserDao?
-    abstract fun holdingArchivedLotDao(): HoldingArchivedLotDao?
-    abstract fun holdingLoadDao(): HoldingLoadDao?
-    abstract fun holdingCallDao(): HoldingCallDao?
-    abstract fun holdingFeedDao(): HoldingFeedDao?
-    abstract fun holdingRationDao(): HoldingRationDao?
+    abstract fun penDao(): PenDao
+    abstract fun cowDao(): CowDao
+    abstract fun drugsGivenDao(): DrugsGivenDao
+    abstract fun drugDao(): DrugDao
+    abstract fun lotDao(): LotDao
+    abstract fun archivedLotDao(): ArchivedLotDao
+    abstract fun callDao(): CallDao
+    abstract fun feedDao(): FeedDao
+    abstract fun userDao(): UserDao
+    abstract fun loadDao(): LoadDao
+    abstract fun rationDao(): RationDao
+    abstract fun holdingPenDao(): HoldingPenDao
+    abstract fun holdingCowDao(): HoldingCowDao
+    abstract fun holdingDrugsGivenDao(): HoldingDrugsGivenDao
+    abstract fun holdingDrugDao(): HoldingDrugDao
+    abstract fun holdingLotDao(): HoldingLotDao
+    abstract fun holdingUserDao(): HoldingUserDao
+    abstract fun holdingArchivedLotDao(): HoldingArchivedLotDao
+    abstract fun holdingLoadDao(): HoldingLoadDao
+    abstract fun holdingCallDao(): HoldingCallDao
+    abstract fun holdingFeedDao(): HoldingFeedDao
+    abstract fun holdingRationDao(): HoldingRationDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

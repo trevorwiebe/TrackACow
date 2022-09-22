@@ -3,11 +3,16 @@ package com.trevorwiebe.trackacow.presentation.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.activity.viewModels
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.presentation.viewmodels.AddOrEditRationsEvents
+import com.trevorwiebe.trackacow.presentation.viewmodels.AddOrEditViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddOrEditRation : AppCompatActivity() {
 
     private val TAG = "AddOrEditRation"
@@ -15,6 +20,8 @@ class AddOrEditRation : AppCompatActivity() {
     private lateinit var addRationBtn: Button
     private lateinit var cancelRationBtn: Button
     private lateinit var addRationTV: TextInputEditText
+
+    private val addOrEditViewModel: AddOrEditViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +50,9 @@ class AddOrEditRation : AppCompatActivity() {
                 addRationTV.requestFocus()
                 addRationTV.error = this.getString(R.string.please_fill_blank)
             }
-
-
-            val rationModel: RationModel = RationModel(0, "", rationText.toString())
-
-
-
+            // create ration object
+            val rationModel = RationModel(0, "", rationText.toString())
+            addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationAdded(rationModel))
         }
 
         cancelRationBtn.setOnClickListener{ finish() }

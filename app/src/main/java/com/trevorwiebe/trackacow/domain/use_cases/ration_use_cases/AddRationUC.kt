@@ -1,12 +1,25 @@
 package com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases
 
+import android.app.Application
+import com.trevorwiebe.trackacow.data.mapper.toHoldingRationModel
 import com.trevorwiebe.trackacow.domain.models.RationModel
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
+import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.Utility
 
 class AddRationUC(
-    private val rationsRepository: RationsRepository
+    private val rationsRepository: RationsRepository,
+    private val context: Application
 ) {
     suspend operator fun invoke(rationModel: RationModel){
+        // check to see if network is available
+        val isConnectionActive = Utility.haveNetworkConnection(context)
+        if(isConnectionActive){
+            // TODO set this to update to firebase
+        }else{
+            rationsRepository.insertHoldingRation(rationModel.toHoldingRationModel(Constants.INSERT_UPDATE))
+            Utility.setNewDataToUpload(context, true)
+        }
         rationsRepository.insertRation(rationModel)
     }
 }
