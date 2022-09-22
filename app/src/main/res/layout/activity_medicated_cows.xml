@@ -48,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="addCattle"
-            app:fab_colorNormal="@color/mini_fab1"
-            app:fab_colorPressed="@color/mini_fab1"
+            app:fab_colorNormal="@color/mini_fab3"
+            app:fab_colorPressed="@color/mini_fab3"
             app:fab_icon="@drawable/ic_add_circle_outline_white_24dp"
             app:fab_size="mini"
             app:fab_title="Add cattle" />
@@ -58,8 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="markACowDead"
-            app:fab_colorNormal="@color/mini_fab1"
-            app:fab_colorPressed="@color/mini_fab1"
+            app:fab_colorNormal="@color/mini_fab2"
+            app:fab_colorPressed="@color/mini_fab2"
             app:fab_icon="@drawable/ic_remove_circle_outline_white_24dp"
             app:fab_size="mini"
             app:fab_title="Mark a cow dead" />
@@ -68,8 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="medicateCow"
-            app:fab_colorNormal="@color/mini_fab2"
-            app:fab_colorPressed="@color/mini_fab2"
+            app:fab_colorNormal="@color/mini_fab1"
+            app:fab_colorPressed="@color/mini_fab1"
             app:fab_icon="@drawable/ic_drugs_white_24dp"
             app:fab_size="mini"
             app:fab_title="Medicate a cow" />

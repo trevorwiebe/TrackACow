@@ -13,8 +13,9 @@
     <color name="welcome_purple">#7B1FA2</color>
     <color name="welcome_green">#388E3C</color>
 
-    <color name="mini_fab1">#1976D2</color>
-    <color name="mini_fab2">#1565C0</color>
+    <color name="mini_fab1">#1565C0</color>
+    <color name="mini_fab2">#1976D2</color>
+    <color name="mini_fab3">#1E88E5</color>
 
     <color name="eight_percent_transparent">#CC000000</color>
     <color name="twenty_percent_transparent">#33000000</color>
