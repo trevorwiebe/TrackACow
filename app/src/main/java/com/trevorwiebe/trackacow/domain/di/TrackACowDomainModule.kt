@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.domain.di
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.AddRationUC
+import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.GetAllRationsUC
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.Module
 import dagger.Provides
@@ -21,7 +22,8 @@ object TrackACowDomainModule {
         context: Application
     ): RationUseCases {
         return RationUseCases(
-            addRationUC = AddRationUC(rationsRepository, context)
+            addRationUC = AddRationUC(rationsRepository, context),
+            getAllRationsUC = GetAllRationsUC(rationsRepository)
         )
     }
 }

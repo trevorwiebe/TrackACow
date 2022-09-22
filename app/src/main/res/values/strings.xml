@@ -22,6 +22,7 @@
     <string name="update_ration">Update Ration</string>
     <string name="empty_ration_list">No saved rations.  Please add one to use full functionality</string>
     <string name="ration_name">Ration Name</string>
+    <string name="ration_saved">Ration Saved</string>
 
     Utility Strings
     <string name="save_pen_id_key" translatable="false">save_pen_id</string>

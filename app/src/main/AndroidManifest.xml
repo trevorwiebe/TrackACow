@@ -14,13 +14,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".presentation.activities.AddOrEditRation"
+            android:name=".presentation.add_or_edit_rations.AddOrEditRation"
             android:label="@string/add_ration"
-            android:parentActivityName=".presentation.activities.ManageRationsActivity"
+            android:parentActivityName=".presentation.manage_rations.ManageRationsActivity"
             android:exported="false">
         </activity>
         <activity
-            android:name=".presentation.activities.ManageRationsActivity"
+            android:name=".presentation.manage_rations.ManageRationsActivity"
             android:exported="false"
             android:label="@string/more_manage_rations"
             android:parentActivityName=".presentation.activities.MainActivity" />

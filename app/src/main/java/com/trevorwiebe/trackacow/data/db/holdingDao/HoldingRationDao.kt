@@ -18,4 +18,7 @@ interface HoldingRationDao {
 
     @Delete
     suspend fun deleteHoldingRation(holdingRationEntity: HoldingRationEntity)
+
+    @Query("DELETE FROM holding_ration")
+    suspend fun deleteHoldingRationTable()
 }

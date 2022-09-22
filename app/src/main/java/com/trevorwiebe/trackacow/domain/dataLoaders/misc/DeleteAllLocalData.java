@@ -12,6 +12,7 @@ public class DeleteAllLocalData extends AsyncTask<Context, Void, Void> {
 
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);
 
+        assert db != null;
         db.cowDao().deleteCowTable();
         db.drugDao().deleteDrugTable();
         db.drugsGivenDao().deleteDrugsGivenTable();

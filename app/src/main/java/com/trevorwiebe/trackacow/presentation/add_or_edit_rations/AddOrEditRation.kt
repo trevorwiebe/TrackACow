@@ -1,15 +1,14 @@
-package com.trevorwiebe.trackacow.presentation.activities
+package com.trevorwiebe.trackacow.presentation.add_or_edit_rations
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.viewModels
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
-import com.trevorwiebe.trackacow.presentation.viewmodels.AddOrEditRationsEvents
-import com.trevorwiebe.trackacow.presentation.viewmodels.AddOrEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,6 +52,11 @@ class AddOrEditRation : AppCompatActivity() {
             // create ration object
             val rationModel = RationModel(0, "", rationText.toString())
             addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationAdded(rationModel))
+
+            addRationTV.setText("")
+
+            Snackbar.make(it, getString(R.string.ration_saved), Snackbar.LENGTH_LONG).show()
+
         }
 
         cancelRationBtn.setOnClickListener{ finish() }

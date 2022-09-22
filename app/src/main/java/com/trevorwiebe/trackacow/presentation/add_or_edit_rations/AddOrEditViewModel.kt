@@ -1,12 +1,10 @@
-package com.trevorwiebe.trackacow.presentation.viewmodels
+package com.trevorwiebe.trackacow.presentation.add_or_edit_rations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.RationModel
-import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.AddRationUC
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
