@@ -22,8 +22,8 @@ object TrackACowDomainModule {
         return RationUseCases(
             addRationUC = AddRationUC(rationsRepository, context),
             getAllRationsUC = GetAllRationsUC(rationsRepository),
-            editRationUC = EditRationUC(rationsRepository),
-            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository)
+            editRationUC = EditRationUC(rationsRepository, context),
+            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, context)
         )
     }
 }

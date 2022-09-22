@@ -15,7 +15,7 @@ class AddRationUC(
         // check to see if network is available
         val isConnectionActive = Utility.haveNetworkConnection(context)
         if(isConnectionActive){
-            // TODO set this to update to firebase
+            // TODO set up firebase
         }else{
             rationsRepository.insertHoldingRation(rationModel.toHoldingRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
