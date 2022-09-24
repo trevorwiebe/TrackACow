@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.repository
 
-import com.trevorwiebe.trackacow.data.db.dao.RationDao
-import com.trevorwiebe.trackacow.data.db.holdingDao.HoldingRationDao
+import com.trevorwiebe.trackacow.data.local.dao.RationDao
+import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingRationDao
 import com.trevorwiebe.trackacow.data.mapper.toHoldingRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationModel

@@ -3,11 +3,9 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.call;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class QueryCallsByLotId extends AsyncTask<Context, Void, ArrayList<CallEntity>> {
 

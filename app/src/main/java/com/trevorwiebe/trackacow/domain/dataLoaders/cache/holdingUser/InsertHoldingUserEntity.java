@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingUser;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingUserEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingUserEntity;
 
 public class InsertHoldingUserEntity extends AsyncTask<Context, Void, Void> {
 

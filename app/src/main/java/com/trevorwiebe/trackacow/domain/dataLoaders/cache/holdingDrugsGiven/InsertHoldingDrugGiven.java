@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrugsGiven;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingDrugsGivenEntity;
 
 public class InsertHoldingDrugGiven extends AsyncTask<Context, Void, Void> {
 

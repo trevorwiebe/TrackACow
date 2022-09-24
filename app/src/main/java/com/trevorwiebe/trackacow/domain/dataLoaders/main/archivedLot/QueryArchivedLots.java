@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.entities.ArchivedLotEntity;
 
 import java.util.ArrayList;
 import java.util.List;

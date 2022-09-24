@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.repository
 
-import com.trevorwiebe.trackacow.data.db.dao.CallDao
-import com.trevorwiebe.trackacow.data.db.holdingDao.HoldingCallDao
+import com.trevorwiebe.trackacow.data.local.dao.CallDao
+import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingCallDao
 import com.trevorwiebe.trackacow.data.mapper.toCallEntity
 import com.trevorwiebe.trackacow.data.mapper.toCallModel
 import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity

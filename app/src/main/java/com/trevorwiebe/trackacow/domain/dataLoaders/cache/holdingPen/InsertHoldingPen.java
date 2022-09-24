@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingPen;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingPenEntity;
 
 public class InsertHoldingPen extends AsyncTask<Context, Void, Void> {
 

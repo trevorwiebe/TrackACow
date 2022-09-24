@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.pen;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
 public class UpdatePenName extends AsyncTask<Context, Void, Void> {
 

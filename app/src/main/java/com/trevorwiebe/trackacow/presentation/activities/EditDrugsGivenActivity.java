@@ -20,8 +20,8 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.DeleteDrugGi
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.UpdateDrugGivenAmountGiven;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByCowId;
-import com.trevorwiebe.trackacow.data.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 
 import java.util.ArrayList;

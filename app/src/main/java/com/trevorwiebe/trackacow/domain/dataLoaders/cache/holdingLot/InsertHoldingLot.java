@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingLotEntity;
 
 public class InsertHoldingLot extends AsyncTask<Context, Void, Void> {
 

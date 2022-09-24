@@ -20,8 +20,8 @@ import com.trevorwiebe.trackacow.presentation.activities.MedicatedCowsActivity;
 import com.trevorwiebe.trackacow.domain.adapters.PenRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.pen.QueryAllPens;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLots;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

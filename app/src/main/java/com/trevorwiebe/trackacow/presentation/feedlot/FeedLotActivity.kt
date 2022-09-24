@@ -9,7 +9,7 @@ import com.google.android.material.textfield.TextInputEditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.text.TextWatcher
-import com.trevorwiebe.trackacow.data.db.entities.FeedEntity
+import com.trevorwiebe.trackacow.data.local.entities.FeedEntity
 import android.os.Bundle
 import com.trevorwiebe.trackacow.R
 import android.text.Editable
@@ -17,13 +17,13 @@ import android.text.InputType
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingCallEntity
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCallEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCall.InsertHoldingCall
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.InsertCallEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.UpdateCallById
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingFeedEntity
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHoldingFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById
@@ -32,7 +32,7 @@ import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility

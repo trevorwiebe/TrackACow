@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.mapper
 
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingCallEntity
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
 

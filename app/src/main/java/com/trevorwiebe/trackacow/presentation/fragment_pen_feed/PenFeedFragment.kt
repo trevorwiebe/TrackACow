@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenRecyclerViewAdapter
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.presentation.feedlot.FeedLotActivity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
-import com.trevorwiebe.trackacow.data.db.entities.FeedEntity
+import com.trevorwiebe.trackacow.data.local.entities.FeedEntity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*

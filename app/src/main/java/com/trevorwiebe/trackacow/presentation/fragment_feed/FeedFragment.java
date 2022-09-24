@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenViewPagerAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.pen.QueryAllPens;
-import com.trevorwiebe.trackacow.data.db.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
 public class DeleteFeedEntitiesByDateAndLotId extends AsyncTask<Context, Void, Void> {
 

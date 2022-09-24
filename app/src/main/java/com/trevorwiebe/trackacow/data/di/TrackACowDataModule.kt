@@ -2,7 +2,7 @@ package com.trevorwiebe.trackacow.data.di
 
 import android.app.Application
 import androidx.room.Room
-import com.trevorwiebe.trackacow.data.db.AppDatabase
+import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.repository.CallRepositoryImpl
 import com.trevorwiebe.trackacow.data.repository.RationRepositoryImpl
 import com.trevorwiebe.trackacow.domain.repository.CallRepository

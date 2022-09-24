@@ -33,11 +33,11 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByCowId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.UpdateCow;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.UpdateDrugsGivenDateByCowId;
-import com.trevorwiebe.trackacow.data.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingCowEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
