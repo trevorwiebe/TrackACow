@@ -17,7 +17,7 @@ public class UpdateCallById extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).callDao().updateCallByCallId(callId, call);
+//        AppDatabase.getAppDatabase(contexts[0]).callDao().updateCallByCallId(callId, call);
         return null;
     }
 

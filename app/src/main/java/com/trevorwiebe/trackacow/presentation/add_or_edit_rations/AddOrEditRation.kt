@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.domain.models.RationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 

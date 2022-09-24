@@ -33,5 +33,4 @@ class ManageRationsViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
     }
-
 }

@@ -19,7 +19,7 @@ public class DeleteAllLocalData extends AsyncTask<Context, Void, Void> {
         db.penDao().deletePenTable();
         db.lotDao().deleteLotEntityTable();
         db.archivedLotDao().deleteArchivedLotTable();
-        db.callDao().deleteCallTable();
+//        db.callDao().deleteCallTable();
         db.feedDao().deleteFeedTable();
         db.userDao().deleteUserTable();
         db.loadDao().deleteLoadTable();

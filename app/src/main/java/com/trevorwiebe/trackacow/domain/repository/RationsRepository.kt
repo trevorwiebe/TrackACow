@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.domain.repository
 
-import com.trevorwiebe.trackacow.domain.models.HoldingRationModel
-import com.trevorwiebe.trackacow.domain.models.RationModel
+import com.trevorwiebe.trackacow.domain.models.ration.HoldingRationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import kotlinx.coroutines.flow.Flow
 
 interface RationsRepository {

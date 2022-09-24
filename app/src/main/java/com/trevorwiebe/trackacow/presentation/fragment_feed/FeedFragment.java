@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.presentation.fragments;
+package com.trevorwiebe.trackacow.presentation.fragment_feed;
 
 import android.content.Context;
 import android.os.Bundle;

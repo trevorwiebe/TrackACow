@@ -194,21 +194,21 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             db.holdingLoadDao().deleteHoldingLoadTable();
 
             // update callEntity node
-            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
-            for (int j=0; j<holdingCallEntities.size(); j++){
-                HoldingCallEntity holdingCallEntity = holdingCallEntities.get(j);
-                CallEntity callEntity = new CallEntity(holdingCallEntity);
-
-                switch (holdingCallEntity.getWhatHappened()){
-                    case Constants.INSERT_UPDATE:
-                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).setValue(callEntity);
-                        break;
-                    case Constants.DELETE:
-                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).removeValue();
-                        break;
-                }
-            }
-            db.holdingCallDao().deleteCallTable();
+//            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
+//            for (int j=0; j<holdingCallEntities.size(); j++){
+//                HoldingCallEntity holdingCallEntity = holdingCallEntities.get(j);
+//                CallEntity callEntity = new CallEntity(holdingCallEntity);
+//
+//                switch (holdingCallEntity.getWhatHappened()){
+//                    case Constants.INSERT_UPDATE:
+//                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).setValue(callEntity);
+//                        break;
+//                    case Constants.DELETE:
+//                        baseRef.child(CallEntity.CALL).child(callEntity.getId()).removeValue();
+//                        break;
+//                }
+//            }
+//            db.holdingCallDao().deleteCallTable();
 
             // update feedEntity node
             List<HoldingFeedEntity> holdingFeedEntities = db.holdingFeedDao().getHoldingFeedEntities();

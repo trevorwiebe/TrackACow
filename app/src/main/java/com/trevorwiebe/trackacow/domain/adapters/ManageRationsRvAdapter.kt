@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.data.db.entities.RationEntity
-import com.trevorwiebe.trackacow.domain.models.RationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
 class ManageRationsRvAdapter() :
     RecyclerView.Adapter<ManageRationsRvAdapter.ManageRationViewHolder>() {

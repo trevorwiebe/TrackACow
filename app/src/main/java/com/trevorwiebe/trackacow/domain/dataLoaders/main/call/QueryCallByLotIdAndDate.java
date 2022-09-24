@@ -24,7 +24,8 @@ public class QueryCallByLotIdAndDate extends AsyncTask<Context, Void, CallEntity
 
     @Override
     protected CallEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntityByDateAndLotId(date, lotId);
+        return null;
+//        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntityByDateAndLotId(date, lotId);
     }
 
     @Override

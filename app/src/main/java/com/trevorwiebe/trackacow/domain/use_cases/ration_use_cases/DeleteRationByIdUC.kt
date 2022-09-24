@@ -2,7 +2,7 @@ package com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases
 
 import android.app.Application
 import com.trevorwiebe.trackacow.data.mapper.toHoldingRationModel
-import com.trevorwiebe.trackacow.domain.models.RationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility

@@ -25,8 +25,8 @@ public class QueryCallsByLotId extends AsyncTask<Context, Void, ArrayList<CallEn
 
     @Override
     protected ArrayList<CallEntity> doInBackground(Context... contexts) {
-        List<CallEntity> callEntities = AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntitiesByLotId(lotId);
-        return (ArrayList<CallEntity>) callEntities;
+//        List<CallEntity> callEntities = AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntitiesByLotId(lotId);
+        return null;
     }
 
     @Override

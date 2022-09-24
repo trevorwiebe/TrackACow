@@ -1,7 +1,9 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
+import com.trevorwiebe.trackacow.domain.repository.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
+import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
 import dagger.Provides
@@ -24,6 +26,20 @@ object TrackACowDomainModule {
             getAllRationsUC = GetAllRationsUC(rationsRepository),
             editRationUC = EditRationUC(rationsRepository, context),
             deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, context)
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideCallUseCases(
+        callRepository: CallRepository,
+        context: Application
+    ): CallUseCases {
+        return CallUseCases(
+            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+            readCallsByLotId = ReadCallsByLotIdUC(callRepository),
+            createCallUC = CreateCallUC(callRepository, context),
+            updateCallUC = UpdateCallUC(callRepository, context)
         )
     }
 }

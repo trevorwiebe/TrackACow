@@ -39,7 +39,7 @@
             android:exported="false"
             android:label="Add cattle" />
         <activity
-            android:name=".presentation.activities.FeedLotActivity"
+            android:name=".presentation.feedlot.FeedLotActivity"
             android:exported="false"
             android:label="Feed Lot"
             android:parentActivityName=".presentation.activities.MainActivity" />

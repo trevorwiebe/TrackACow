@@ -1,47 +1,36 @@
-package com.trevorwiebe.trackacow.data.db.dao;
+package com.trevorwiebe.trackacow.data.db.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.db.entities.CallEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-public interface CallDao {
+interface CallDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCall(CallEntity callEntity);
+    suspend fun insertCall(callEntity: CallEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCallList(List<CallEntity> callEntities);
+    suspend fun insertCallList(callEntities: List<CallEntity>)
 
     @Query("SELECT * FROM call")
-    List<CallEntity> getCallEntities();
+    fun getCalls(): Flow<List<CallEntity>>
 
     @Query("SELECT * FROM call WHERE id = :id")
-    CallEntity getCallEntity(String id);
+    fun getCallById(id: String): Flow<CallEntity>
 
-    @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId")
-    CallEntity getCallEntityByDateAndLotId(long date, String lotId);
-
-    @Query("UPDATE call SET callAmount = :callAmount WHERE id = :callId")
-    void updateCallByCallId(String callId, int callAmount);
+    @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId LIMIT 1")
+    fun getCallByDateAndLotId(date: Long, lotId: String): Flow<CallEntity>
 
     @Query("SELECT * FROM call WHERE lotId = :lotId")
-    List<CallEntity> getCallEntitiesByLotId(String lotId);
+    fun getCallByLotId(lotId: String): Flow<List<CallEntity>>
 
     @Query("DELETE FROM call")
-    void deleteCallTable();
+    suspend fun deleteCallTable()
 
     @Update
-    void updateCallEntity(CallEntity callEntity);
+    suspend fun updateCall(callEntity: CallEntity)
 
     @Delete
-    void deleteCallEntity(CallEntity callEntity);
-
+    suspend fun deleteCall(callEntity: CallEntity?)
 }

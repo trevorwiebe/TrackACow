@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.domain.models
+package com.trevorwiebe.trackacow.domain.models.ration
 
 data class HoldingRationModel(
     var primaryKey: Int,

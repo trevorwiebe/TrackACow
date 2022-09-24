@@ -1,436 +1,356 @@
-package com.trevorwiebe.trackacow.presentation.activities;
+package com.trevorwiebe.trackacow.presentation.feedlot
 
-import android.content.Intent;
+import androidx.appcompat.app.AppCompatActivity
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.QueryCallByLotIdAndDate.OnCallByLotIdAndDateLoaded
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId.OnLotByLotIdLoaded
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId.OnFeedEntitiesByDateAndLotIdDeleted
+import com.google.android.material.textfield.TextInputEditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.text.TextWatcher
+import com.trevorwiebe.trackacow.data.db.entities.FeedEntity
+import android.os.Bundle
+import com.trevorwiebe.trackacow.R
+import android.text.Editable
+import android.text.InputType
+import android.util.Log
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
+import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingCallEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCall.InsertHoldingCall
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.InsertCallEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.UpdateCallById
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
+import com.trevorwiebe.trackacow.data.db.entities.LotEntity
+import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingFeedEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHoldingFeedEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById
+import android.view.ViewGroup
+import android.widget.Button
+import com.google.android.material.textfield.TextInputLayout
+import android.widget.ImageButton
+import androidx.activity.viewModels
+import com.trevorwiebe.trackacow.data.db.entities.CallEntity
+import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.Utility
+import java.text.NumberFormat
+import java.text.ParseException
+import java.util.*
 
-import androidx.annotation.Nullable;
+class FeedLotActivity : AppCompatActivity(),
+    OnCallByLotIdAndDateLoaded,
+    OnLotByLotIdLoaded,
+    OnFeedByLotIdAndDateLoaded,
+    OnFeedEntitiesByDateAndLotIdDeleted {
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+    private lateinit var mCallET: TextInputEditText
+    private lateinit var mFeedAgainLayout: LinearLayout
+    private lateinit var mTotalFed: TextView
+    private lateinit var mLeftToFeed: TextView
+    private lateinit var mSave: Button
+    private lateinit var mSelectedCallEntity: CallEntity
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+    private var mFeedAgainNumber = 0
+    private var isLoadingMore = false
+    private var mDate: Long = 0
+    private var mLotId: String? = null
+    private var mShouldAddNewFeedEditText = false
+    private lateinit var mFeedTextWatcher: TextWatcher
+    private val numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault())
+    private var mFeedEntities = ArrayList<FeedEntity>()
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.InsertCallEntity;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities;
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCall.InsertHoldingCall;
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHoldingFeedEntity;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.QueryCallByLotIdAndDate;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.UpdateCallById;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
-import com.trevorwiebe.trackacow.data.db.entities.FeedEntity;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingCallEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingFeedEntity;
-import com.trevorwiebe.trackacow.domain.utils.Constants;
-import com.trevorwiebe.trackacow.domain.utils.Utility;
+    private val feedLotViewModel: FeedLotViewModel by viewModels()
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Locale;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_feed_lot)
 
-public class FeedLotActivity extends AppCompatActivity implements
-        QueryCallByLotIdAndDate.OnCallByLotIdAndDateLoaded,
-        QueryLotByLotId.OnLotByLotIdLoaded,
-        QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded,
-        DeleteFeedEntitiesByDateAndLotId.OnFeedEntitiesByDateAndLotIdDeleted {
+        mDate = intent.getLongExtra("date", 0)
+        mLotId = intent.getStringExtra("lotId")
 
-    private static final String TAG = "FeedLotActivity";
+        mCallET = findViewById(R.id.feed_lot_call_et)
+        mFeedAgainLayout = findViewById(R.id.feed_again_layout)
+        mTotalFed = findViewById(R.id.pen_total_fed)
+        mLeftToFeed = findViewById(R.id.pen_left_to_feed)
+        mSave = findViewById(R.id.save_feed_lot_btn)
 
-    private TextInputEditText mCallET;
-    private LinearLayout mFeedAgainLayout;
-    private TextView mTotalFed;
-    private TextView mLeftToFeed;
-    private Button mSave;
-
-    private CallEntity mSelectedCallEntity;
-    private int mFeedAgainNumber = 0;
-    private boolean isLoadingMore;
-    private long mDate;
-    private String mLotId;
-    private boolean mShouldAddNewFeedEditText = false;
-    private TextWatcher mFeedTextWatcher;
-    private NumberFormat numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault());
-    private ArrayList<FeedEntity> mFeedEntities = new ArrayList<>();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_lot);
-
-        Intent intent = getIntent();
-
-        mDate = intent.getLongExtra("date", 0);
-        mLotId = intent.getStringExtra("lotId");
-
-        mCallET = findViewById(R.id.feed_lot_call_et);
-        mFeedAgainLayout = findViewById(R.id.feed_again_layout);
-        mTotalFed = findViewById(R.id.pen_total_fed);
-        mLeftToFeed = findViewById(R.id.pen_left_to_feed);
-        mSave = findViewById(R.id.save_feed_lot_btn);
-
-        mCallET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+        mCallET.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                updateReports()
             }
+            override fun afterTextChanged(s: Editable) {}
+        })
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateReports();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        mFeedTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    mShouldAddNewFeedEditText = shouldAddAnotherEditText();
+        mFeedTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length != 0) {
+                    mShouldAddNewFeedEditText = shouldAddAnotherEditText()
                     if (mShouldAddNewFeedEditText) {
-                        addNewFeedEditText(null);
+                        addNewFeedEditText(null)
                     }
                 }
-                updateReports();
+                updateReports()
             }
+            override fun afterTextChanged(s: Editable) {}
+        }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        mSave.setOnClickListener {
+            if (mCallET.length() == 0) {
+                mCallET.requestFocus()
+                mCallET.setError("Please fill this blank")
+            } else {
 
+                // code for updating the call entity
+                val callAmount = mCallET.getText().toString().toInt()
+                // create the call Model
+                val callModel = CallModel(0, callAmount, mDate, mLotId!!, "")
+                // send event to the view model
+                feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedCallEntity.callAmount == 0))
+
+                // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
+//                DeleteFeedEntitiesByDateAndLotId(
+//                    mDate,
+//                    mLotId,
+//                    this@FeedLotActivity
+//                ).execute(this@FeedLotActivity)
             }
-        };
+        }
 
-        mSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCallET.length() == 0) {
-                    mCallET.requestFocus();
-                    mCallET.setError("Please fill this blank");
-                } else {
-
-                    // code for updating the call entity
-                    int callAmount = Integer.parseInt(mCallET.getText().toString());
-
-                    DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(CallEntity.CALL);
-                    DatabaseReference pushRef = baseRef.push();
-
-                    String callKey = pushRef.getKey();
-                    CallEntity callEntity = new CallEntity(callAmount, mDate, mLotId, callKey);
-
-                    if (Utility.haveNetworkConnection(FeedLotActivity.this)) {
-                        if (mSelectedCallEntity == null) {
-                            // push new callEntity to cloud if null
-                            pushRef.setValue(callEntity);
-                        } else {
-                            // push updated callEntity to cloud
-                            mSelectedCallEntity.setCallAmount(callAmount);
-                            baseRef.child(mSelectedCallEntity.getId()).setValue(mSelectedCallEntity);
-                        }
-                    } else {
-
-                        Utility.setNewDataToUpload(FeedLotActivity.this, true);
-
-                        HoldingCallEntity holdingCallEntity;
-
-                        if(mSelectedCallEntity == null){
-                            holdingCallEntity = new HoldingCallEntity(callEntity, Constants.INSERT_UPDATE);
-                            new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
-                        }else{
-                            mSelectedCallEntity.setCallAmount(callAmount);
-                            holdingCallEntity = new HoldingCallEntity(mSelectedCallEntity, Constants.INSERT_UPDATE);
-                            new InsertHoldingCall(holdingCallEntity).execute(FeedLotActivity.this);
-                        }
-                    }
-
-                    if (mSelectedCallEntity == null) {
-                        new InsertCallEntity(callEntity).execute(FeedLotActivity.this);
-                    } else {
-                        callKey = mSelectedCallEntity.getId();
-                        new UpdateCallById(callAmount, callKey).execute(FeedLotActivity.this);
-                    }
-
-                    // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
-                    new DeleteFeedEntitiesByDateAndLotId(mDate, mLotId, FeedLotActivity.this).execute(FeedLotActivity.this);
-                }
-
-            }
-        });
-
-        new QueryCallByLotIdAndDate(mDate, mLotId, this).execute(this);
-        new QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this);
-        new QueryLotByLotId(mLotId, this).execute(this);
+//        QueryCallByLotIdAndDate(mDate, mLotId, this).execute(this)
+//        QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
+//        QueryLotByLotId(mLotId, this).execute(this)
     }
 
-    @Override
-    public void onCallByLotIdAndDateLoaded(CallEntity callEntity) {
-        mSelectedCallEntity = callEntity;
-        if (callEntity == null) {
-            mSave.setText("Save");
+    override fun onCallByLotIdAndDateLoaded(callEntity: CallEntity) {
+        mSelectedCallEntity = callEntity
+        if (callEntity.callAmount == 0) {
+            mSave.text = "Save"
         } else {
-            mSave.setText("Update");
-            int call = mSelectedCallEntity.getCallAmount();
-            String callStr = Integer.toString(call);
-            mCallET.setText(callStr);
+            mSave.text = "Update"
+            val call = mSelectedCallEntity.callAmount
+            val callStr = call.toString()
+            mCallET.setText(callStr)
         }
     }
 
-    @Override
-    public void onFeedByLotIdAndDateLoaded(ArrayList<FeedEntity> feedEntities) {
-        mFeedEntities = feedEntities;
-        isLoadingMore = true;
-        for (int o = 0; o < mFeedEntities.size(); o++) {
-            FeedEntity feedEntity = mFeedEntities.get(o);
-            int amountFed = feedEntity.getFeed();
-            String amountFedStr = numberFormatter.format(amountFed);
-            addNewFeedEditText(amountFedStr);
+    override fun onFeedByLotIdAndDateLoaded(feedEntities: ArrayList<FeedEntity>) {
+        mFeedEntities = feedEntities
+        isLoadingMore = true
+        for (o in mFeedEntities.indices) {
+            val feedEntity = mFeedEntities[o]
+            val amountFed = feedEntity.feed
+            val amountFedStr = numberFormatter.format(amountFed.toLong())
+            addNewFeedEditText(amountFedStr)
         }
-        addNewFeedEditText(null);
-        isLoadingMore = false;
+        addNewFeedEditText(null)
+        isLoadingMore = false
     }
 
-    @Override
-    public void onLotByLotIdLoaded(LotEntity lotEntity) {
-        String lotName = lotEntity.getLotName();
-        String friendlyDate = Utility.convertMillisToFriendlyDate(mDate);
-        setTitle(lotName + ": " + friendlyDate);
+    override fun onLotByLotIdLoaded(lotEntity: LotEntity) {
+        val lotName = lotEntity.lotName
+        val friendlyDate = Utility.convertMillisToFriendlyDate(mDate)
+        title = "$lotName: $friendlyDate"
     }
 
-    @Override
-    public void onFeedEntitiesByDateAndLotIdDeleted() {
+    override fun onFeedEntitiesByDateAndLotIdDeleted() {
         // code for updating the feed entities
-        ArrayList<Integer> feedsIntList = getFeedsFromLayout();
-        ArrayList<FeedEntity> newFeedEntityList = new ArrayList<>();
+        val feedsIntList = feedsFromLayout
+        val newFeedEntityList = ArrayList<FeedEntity>()
 
         // iterate through the new feed amounts
-        for (int n = 0; n < feedsIntList.size(); n++) {
+        for (n in feedsIntList.indices) {
 
             // get feed reference
-            DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED);
-            String feedEntityId = feedRef.push().getKey();
+            val feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED)
+            val feedEntityId = feedRef.push().key
 
             // initialize feed entity
-            FeedEntity feedEntity;
-            int amountFed = feedsIntList.get(n);
-
-            if(mFeedEntities.size() > n) {
-                feedEntity = mFeedEntities.get(n);
-                feedEntity.setFeed(amountFed);
-            }else{
-                feedEntity = new FeedEntity(amountFed, mDate, feedEntityId, mLotId);
+            var feedEntity: FeedEntity
+            val amountFed = feedsIntList[n]
+            if (mFeedEntities.size > n) {
+                feedEntity = mFeedEntities[n]
+                feedEntity.feed = amountFed
+            } else {
+                feedEntity = FeedEntity(amountFed, mDate, feedEntityId, mLotId)
             }
-
-            if(Utility.haveNetworkConnection(FeedLotActivity.this)){
+            if (Utility.haveNetworkConnection(this@FeedLotActivity)) {
                 // update cloud
-                feedRef.child(feedEntity.getId()).setValue(feedEntity);
-            }else{
+                feedRef.child(feedEntity.id).setValue(feedEntity)
+            } else {
                 // if cloud not available, add to holding feed entity to upload later
-                Utility.setNewDataToUpload(FeedLotActivity.this, true);
-                HoldingFeedEntity holdingFeedEntity = new HoldingFeedEntity(feedEntity, Constants.INSERT_UPDATE);
-                new InsertHoldingFeedEntity(holdingFeedEntity).execute(FeedLotActivity.this);
+                Utility.setNewDataToUpload(this@FeedLotActivity, true)
+                val holdingFeedEntity = HoldingFeedEntity(feedEntity, Constants.INSERT_UPDATE)
+                InsertHoldingFeedEntity(holdingFeedEntity).execute(this@FeedLotActivity)
             }
 
             // add feedEntity to array to push to local database
-            newFeedEntityList.add(feedEntity);
+            newFeedEntityList.add(feedEntity)
         }
 
         // insert new feed entities into local database
-        new InsertFeedEntities(newFeedEntityList).execute(FeedLotActivity.this);
+        InsertFeedEntities(newFeedEntityList).execute(this@FeedLotActivity)
 
         // check to see if any feedEntities have been deleted
-        if(mFeedEntities.size() > newFeedEntityList.size()){
+        if (mFeedEntities.size > newFeedEntityList.size) {
 
             // yes, some have been deleted from the UI, let's go ahead and delete them from the database
 
             // get database reference
-            DatabaseReference feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED);
-
-            for(int g=0; g<mFeedEntities.size(); g++){
-                FeedEntity feedEntityToDelete = mFeedEntities.get(g);
-                if(!newFeedEntityList.contains(feedEntityToDelete)){
-                    String feedEntityIdToDelete = feedEntityToDelete.getId();
-
-                    if(Utility.haveNetworkConnection(FeedLotActivity.this)){
+            val feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED)
+            for (g in mFeedEntities.indices) {
+                val feedEntityToDelete = mFeedEntities[g]
+                if (!newFeedEntityList.contains(feedEntityToDelete)) {
+                    val feedEntityIdToDelete = feedEntityToDelete.id
+                    if (Utility.haveNetworkConnection(this@FeedLotActivity)) {
                         // delete from cloud if available
-                        feedRef.child(feedEntityIdToDelete).removeValue();
-                    }else{
+                        feedRef.child(feedEntityIdToDelete).removeValue()
+                    } else {
                         // add to holding database to delete when cloud is available
-                        HoldingFeedEntity holdingFeedEntity = new HoldingFeedEntity(feedEntityToDelete, Constants.DELETE);
-                        new InsertHoldingFeedEntity(holdingFeedEntity).execute(FeedLotActivity.this);
+                        val holdingFeedEntity =
+                            HoldingFeedEntity(feedEntityToDelete, Constants.DELETE)
+                        InsertHoldingFeedEntity(holdingFeedEntity).execute(this@FeedLotActivity)
                     }
 
                     // delete locally
-                    new DeleteFeedEntitiesById(feedEntityIdToDelete).execute(FeedLotActivity.this);
-
+                    DeleteFeedEntitiesById(feedEntityIdToDelete).execute(this@FeedLotActivity)
                 }
             }
         }
 
         // close activity after all work is done
-        finish();
+        finish()
     }
 
-    private void addNewFeedEditText(@Nullable String text) {
-
-        mFeedAgainNumber = mFeedAgainNumber + 1;
-
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels24 = (int) (24 * scale + 0.5f);
-        int pixels16 = (int) (16 * scale + 0.5f);
-        int pixels8 = (int) (8 * scale + 0.5f);
-
-        LinearLayout linearLayout = new LinearLayout(FeedLotActivity.this);
-        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        linearLayout.setId(mFeedAgainNumber);
-        linearLayout.setLayoutParams(linearLayoutParams);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-        TextInputLayout textInputLayout = new TextInputLayout(FeedLotActivity.this);
-        LinearLayout.LayoutParams textInputLayoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        textInputLayout.setLayoutParams(textInputLayoutParams);
-
-        TextInputEditText textInputEditText = new TextInputEditText(FeedLotActivity.this);
-        LinearLayout.LayoutParams textInputEditTextParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        textInputEditTextParams.setMargins(pixels16, 0, pixels16, pixels8);
-        textInputEditText.setLayoutParams(textInputEditTextParams);
+    private fun addNewFeedEditText(text: String?) {
+        mFeedAgainNumber = mFeedAgainNumber + 1
+        val scale = resources.displayMetrics.density
+        val pixels24 = (24 * scale + 0.5f).toInt()
+        val pixels16 = (16 * scale + 0.5f).toInt()
+        val pixels8 = (8 * scale + 0.5f).toInt()
+        val linearLayout = LinearLayout(this@FeedLotActivity)
+        val linearLayoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        linearLayout.id = mFeedAgainNumber
+        linearLayout.layoutParams = linearLayoutParams
+        linearLayout.orientation = LinearLayout.HORIZONTAL
+        val textInputLayout = TextInputLayout(this@FeedLotActivity)
+        val textInputLayoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        textInputLayout.layoutParams = textInputLayoutParams
+        val textInputEditText = TextInputEditText(this@FeedLotActivity)
+        val textInputEditTextParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        textInputEditTextParams.setMargins(pixels16, 0, pixels16, pixels8)
+        textInputEditText.layoutParams = textInputEditTextParams
         if (text != null) {
-            textInputEditText.setText(text);
+            textInputEditText.setText(text)
         }
-        textInputEditText.setEms(6);
-        textInputEditText.addTextChangedListener(mFeedTextWatcher);
-        textInputEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        textInputEditText.setTextSize(16f);
-        textInputEditText.setHint("Feed");
+        textInputEditText.setEms(6)
+        textInputEditText.addTextChangedListener(mFeedTextWatcher)
+        textInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        textInputEditText.textSize = 16f
+        textInputEditText.hint = "Feed"
+        textInputLayout.addView(textInputEditText)
+        val deleteButton = ImageButton(this@FeedLotActivity)
+        val deleteBtnParams = LinearLayout.LayoutParams(
+            pixels24,
+            pixels24
+        )
+        deleteButton.setPadding(pixels8, pixels8, pixels8, pixels8)
+        deleteBtnParams.setMargins(0, pixels24, pixels16, pixels8)
+        deleteButton.background = resources.getDrawable(R.drawable.ic_delete_black_24dp)
+        deleteButton.id = mFeedAgainNumber
+        deleteButton.setOnClickListener { view ->
+            val viewToDelete = view.id
+            var i = 0
+            while (i < mFeedAgainLayout.childCount) {
+                val v = mFeedAgainLayout.getChildAt(i)
+                val tagToCompare = v.id
+                if (tagToCompare == viewToDelete) {
+                    i = i - 1
+                    mFeedAgainNumber -= 1
+                    mFeedAgainLayout.removeView(v)
+                }
+                i++
+            }
+            updateReports()
+        }
+        deleteButton.layoutParams = deleteBtnParams
+        linearLayout.addView(textInputLayout)
+        linearLayout.addView(deleteButton)
+        mFeedAgainLayout.addView(linearLayout)
+    }
 
-        textInputLayout.addView(textInputEditText);
+    private fun shouldAddAnotherEditText(): Boolean {
+        if (isLoadingMore) return false
+        for (i in 0 until mFeedAgainLayout.childCount) {
+            val v = mFeedAgainLayout.getChildAt(i)
+            val linearLayout = v as LinearLayout
+            val textLayout = linearLayout.getChildAt(0)
+            val textInputLayout = textLayout as TextInputLayout
+            val text = textInputLayout.editText!!.text.toString()
+            if (text.isEmpty()) return false
+        }
+        return true
+    }
 
-        ImageButton deleteButton = new ImageButton(FeedLotActivity.this);
-
-        LinearLayout.LayoutParams deleteBtnParams = new LinearLayout.LayoutParams(
-                pixels24,
-                pixels24
-        );
-        deleteButton.setPadding(pixels8, pixels8, pixels8, pixels8);
-        deleteBtnParams.setMargins(0, pixels24, pixels16, pixels8);
-        deleteButton.setBackground(getResources().getDrawable(R.drawable.ic_delete_black_24dp));
-        deleteButton.setId(mFeedAgainNumber);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int viewToDelete = view.getId();
-
-                for (int i = 0; i < mFeedAgainLayout.getChildCount(); i++) {
-                    View v = mFeedAgainLayout.getChildAt(i);
-
-                    int tagToCompare = v.getId();
-                    if (tagToCompare == viewToDelete) {
-                        i = i - 1;
-                        mFeedAgainNumber = mFeedAgainNumber - 1;
-                        mFeedAgainLayout.removeView(v);
+    private val feedsFromLayout: ArrayList<Int>
+        private get() {
+            val feedIntList = ArrayList<Int>()
+            for (i in 0 until mFeedAgainLayout.childCount) {
+                val v = mFeedAgainLayout.getChildAt(i)
+                val linearLayout = v as LinearLayout
+                val textLayout = linearLayout.getChildAt(0)
+                val textInputLayout = textLayout as TextInputLayout
+                val text = textInputLayout.editText!!.text.toString()
+                if (text.isNotEmpty()) {
+                    try {
+                        val amountFed = numberFormatter.parse(text).toInt()
+                        feedIntList.add(amountFed)
+                    } catch (e: ParseException) {
+                        Log.e(TAG, "getFeedsFromLayout: ", e)
                     }
                 }
-
-                updateReports();
             }
-        });
-        deleteButton.setLayoutParams(deleteBtnParams);
-
-        linearLayout.addView(textInputLayout);
-        linearLayout.addView(deleteButton);
-        mFeedAgainLayout.addView(linearLayout);
-    }
-
-    private boolean shouldAddAnotherEditText() {
-        if (isLoadingMore) return false;
-        for (int i = 0; i < mFeedAgainLayout.getChildCount(); i++) {
-            View v = mFeedAgainLayout.getChildAt(i);
-            LinearLayout linearLayout = (LinearLayout) v;
-            View textLayout = linearLayout.getChildAt(0);
-            TextInputLayout textInputLayout = (TextInputLayout) textLayout;
-            String text = textInputLayout.getEditText().getText().toString();
-            if (text.length() == 0) return false;
+            return feedIntList
         }
-        return true;
-    }
 
-    private ArrayList<Integer> getFeedsFromLayout() {
-        ArrayList<Integer> feedIntList = new ArrayList<>();
-        for (int i = 0; i < mFeedAgainLayout.getChildCount(); i++) {
-            View v = mFeedAgainLayout.getChildAt(i);
-            LinearLayout linearLayout = (LinearLayout) v;
-            View textLayout = linearLayout.getChildAt(0);
-            TextInputLayout textInputLayout = (TextInputLayout) textLayout;
-            String text = textInputLayout.getEditText().getText().toString();
-            if (text.length() != 0) {
-                try {
-                    int amountFed = numberFormatter.parse(text).intValue();
-                    feedIntList.add(amountFed);
-                } catch (ParseException e) {
-                    Log.e(TAG, "getFeedsFromLayout: ", e);
-                }
-            }
-        }
-        return feedIntList;
-    }
-
-    private void updateReports() {
-        ArrayList<Integer> feedList = getFeedsFromLayout();
-        int sum = 0;
-        for (Integer i : feedList) sum += i;
-
-        String totalFedStr = numberFormatter.format(sum);
-        mTotalFed.setText(totalFedStr);
-
-        String callStr;
-        if (mCallET.length() == 0) {
-            callStr = "0";
+    private fun updateReports() {
+        val feedList = feedsFromLayout
+        var sum = 0
+        for (i in feedList) sum += i
+        val totalFedStr = numberFormatter.format(sum.toLong())
+        mTotalFed.text = totalFedStr
+        val callStr: String
+        callStr = if (mCallET.length() == 0) {
+            "0"
         } else {
-            callStr = mCallET.getText().toString();
+            mCallET.text.toString()
         }
-        int call;
-        try {
-            call = numberFormatter.parse(callStr).intValue();
-        } catch (ParseException e) {
-            Log.e(TAG, "updateReports: ", e);
-            call = 0;
+        val call: Int
+        call = try {
+            numberFormatter.parse(callStr).toInt()
+        } catch (e: ParseException) {
+            Log.e(TAG, "updateReports: ", e)
+            0
         }
-        int leftToFeed = call - sum;
-        String leftToFeedStr = numberFormatter.format(leftToFeed);
-        mLeftToFeed.setText(leftToFeedStr);
+        val leftToFeed = call - sum
+        val leftToFeedStr = numberFormatter.format(leftToFeed.toLong())
+        mLeftToFeed.text = leftToFeedStr
+    }
+
+    companion object {
+        private const val TAG = "FeedLotActivity"
     }
 }

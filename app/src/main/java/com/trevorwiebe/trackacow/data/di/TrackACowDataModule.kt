@@ -3,7 +3,9 @@ package com.trevorwiebe.trackacow.data.di
 import android.app.Application
 import androidx.room.Room
 import com.trevorwiebe.trackacow.data.db.AppDatabase
+import com.trevorwiebe.trackacow.data.repository.CallRepositoryImpl
 import com.trevorwiebe.trackacow.data.repository.RationRepositoryImpl
+import com.trevorwiebe.trackacow.domain.repository.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.RationsRepository
 import dagger.Module
 import dagger.Provides
@@ -30,6 +32,17 @@ object TrackACowDataModule {
         return RationRepositoryImpl(
             rationDao = db.rationDao(),
             holdingRationDao = db.holdingRationDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideCallRepository(
+        db: AppDatabase
+    ): CallRepository{
+        return CallRepositoryImpl(
+            callDao = db.callDao(),
+            holdingCallDao = db.holdingCallDao()
         )
     }
 }

@@ -61,7 +61,7 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.lotDao().deleteLotEntityTable();
         db.archivedLotDao().deleteArchivedLotTable();
         db.loadDao().deleteLoadTable();
-        db.callDao().deleteCallTable();
+//        db.callDao().deleteCallTable();
         db.feedDao().deleteFeedTable();
         db.userDao().deleteUserTable();
 
@@ -72,7 +72,7 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.lotDao().insertLotEntityList(mLotEntityList);
         db.archivedLotDao().insertArchivedLotEntityList(mArchivedLotEntityList);
         db.loadDao().insertLoadList(mLoadEntityList);
-        db.callDao().insertCallList(mCallEntityList);
+//        db.callDao().insertCallList(mCallEntityList);
         db.feedDao().insertFeedEntityList(mFeedEntityList);
         db.userDao().insertUserList(mUserEntityList);
 

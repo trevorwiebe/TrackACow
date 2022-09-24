@@ -16,7 +16,7 @@ public class InsertCallEntity extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).callDao().insertCall(callEntity);
+//        AppDatabase.getAppDatabase(contexts[0]).callDao().insertCall(callEntity);
         return null;
     }
 }

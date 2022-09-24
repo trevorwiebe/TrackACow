@@ -119,14 +119,14 @@ public class QueryAllCloudData {
                                     mUserEntity.add(userEntity);
                                 }
                                 break;
-                            case CallEntity.CALL:
-                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
-                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
-                                    if(callEntity != null){
-                                        mCallList.add(callEntity);
-                                    }
-                                }
-                                break;
+//                            case CallEntity.CALL:
+//                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
+//                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
+//                                    if(callEntity != null){
+//                                        mCallList.add(callEntity);
+//                                    }
+//                                }
+//                                break;
                             case FeedEntity.FEED:
                                 for(DataSnapshot feedSnapShot : snapshot.getChildren()){
                                     FeedEntity feedEntity = feedSnapShot.getValue(FeedEntity.class);

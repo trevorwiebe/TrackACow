@@ -34,7 +34,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity;
 import com.trevorwiebe.trackacow.data.db.entities.UserEntity;
-import com.trevorwiebe.trackacow.presentation.fragments.FeedFragment;
+import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MedicateFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoreFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoveFragment;

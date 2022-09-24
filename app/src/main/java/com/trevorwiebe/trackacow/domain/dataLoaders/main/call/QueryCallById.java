@@ -21,7 +21,8 @@ public class QueryCallById extends AsyncTask<Context, Void, CallEntity> {
 
     @Override
     protected CallEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntity(callId);
+        return null;
+//        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntity(callId);
     }
 
     @Override

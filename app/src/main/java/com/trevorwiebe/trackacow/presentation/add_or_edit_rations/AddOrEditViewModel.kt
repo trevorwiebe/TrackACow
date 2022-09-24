@@ -2,7 +2,7 @@ package com.trevorwiebe.trackacow.presentation.add_or_edit_rations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.trackacow.domain.models.RationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

@@ -1,158 +1,151 @@
-package com.trevorwiebe.trackacow.presentation.fragments;
+package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
-import android.content.Intent;
-import android.os.Bundle;
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId.OnLotsByPenIdLoaded
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.QueryCallsByLotId.OnCallsByLotIdReturned
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.OnFeedsByLotIdReturned
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.domain.adapters.FeedPenRecyclerViewAdapter
+import com.trevorwiebe.trackacow.data.db.entities.LotEntity
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.trevorwiebe.trackacow.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
+import android.content.Intent
+import android.util.Log
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.trevorwiebe.trackacow.presentation.feedlot.FeedLotActivity
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
+import com.trevorwiebe.trackacow.data.db.entities.FeedEntity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.*
+import java.util.concurrent.TimeUnit
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+@AndroidEntryPoint
+class PenFeedFragment : Fragment(),
+    OnLotsByPenIdLoaded,
+    OnFeedsByLotIdReturned {
 
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.presentation.activities.FeedLotActivity;
-import com.trevorwiebe.trackacow.domain.adapters.FeedPenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.QueryCallsByLotId;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
-import com.trevorwiebe.trackacow.data.db.entities.FeedEntity;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
+    private var mPenId: String? = null
+    private lateinit var mEmptyPen: TextView
+    private lateinit var mFeedPenRv: RecyclerView
+    private lateinit var feedPenRecyclerViewAdapter: FeedPenRecyclerViewAdapter
+    private lateinit var mSelectedLotEntity: LotEntity
+    private lateinit var mDatesList: ArrayList<Long>
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
+    private val penFeedViewModel: PenFeedViewModel by viewModels()
 
-public class PenFeedFragment extends Fragment implements
-        QueryLotsByPenId.OnLotsByPenIdLoaded,
-        QueryCallsByLotId.OnCallsByLotIdReturned,
-        QueryFeedsByLotId.OnFeedsByLotIdReturned {
-
-    String mPenId;
-
-    private static final String TAG = "PenFeedFragment";
-
-    private TextView mEmptyPen;
-    private RecyclerView mFeedPenRv;
-    private FeedPenRecyclerViewAdapter feedPenRecyclerViewAdapter;
-
-    private LotEntity mSelectedLotEntity;
-    private ArrayList<Long> mDatesList = new ArrayList<>();
-
-    public static PenFeedFragment newInstance(String penId) {
-        Bundle args = new Bundle();
-        args.putString("fragment_pen_id", penId);
-        PenFeedFragment fragment = new PenFeedFragment();
-        fragment.setArguments(args);
-        return fragment;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mPenId = arguments?.getString("fragment_pen_id")
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPenId = getArguments().getString("fragment_pen_id");
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_pen_feed, container, false);
+        val rootView = inflater.inflate(R.layout.fragment_pen_feed, container, false)
 
-        mEmptyPen = rootView.findViewById(R.id.feed_pen_empty);
-        mFeedPenRv = rootView.findViewById(R.id.feed_pen_rv);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        mFeedPenRv.setLayoutManager(linearLayoutManager);
-        feedPenRecyclerViewAdapter = new FeedPenRecyclerViewAdapter();
-        mFeedPenRv.setAdapter(feedPenRecyclerViewAdapter);
+        mEmptyPen = rootView.findViewById(R.id.feed_pen_empty)
+        mFeedPenRv = rootView.findViewById(R.id.feed_pen_rv)
+        val linearLayoutManager = LinearLayoutManager(context)
+        linearLayoutManager.reverseLayout = true
+        mFeedPenRv.layoutManager = linearLayoutManager
 
-        mFeedPenRv.addOnItemTouchListener(new ItemClickListener(getContext(), mFeedPenRv, new ItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
+        feedPenRecyclerViewAdapter = FeedPenRecyclerViewAdapter()
+        mFeedPenRv.adapter = feedPenRecyclerViewAdapter
 
-                long date = mDatesList.get(position);
-                String lotId = mSelectedLotEntity.getLotId();
+        mFeedPenRv.addOnItemTouchListener(
+            ItemClickListener(
+                context,
+                mFeedPenRv,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val date = mDatesList[position]
+                        val lotId = mSelectedLotEntity.lotId
+                        val feedLotIntent = Intent(activity, FeedLotActivity::class.java)
+                        feedLotIntent.putExtra("date", date)
+                        feedLotIntent.putExtra("lotId", lotId)
+                        startActivity(feedLotIntent)
+                    }
 
-                Intent feedLotIntent = new Intent(getActivity(), FeedLotActivity.class);
-                feedLotIntent.putExtra("date", date);
-                feedLotIntent.putExtra("lotId", lotId);
-                startActivity(feedLotIntent);
+                    override fun onLongItemClick(view: View, position: Int) {}
+                })
+        )
 
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                penFeedViewModel.uiState.collect{
+                    feedPenRecyclerViewAdapter.setCallList(it.callList)
+                }
             }
+        }
 
-            @Override
-            public void onLongItemClick(View view, int position) {
+        QueryLotsByPenId(mPenId, this).execute(context)
 
-            }
-        }));
-
-        new QueryLotsByPenId(mPenId, this).execute(getContext());
-
-        return rootView;
+        return rootView
     }
 
-    @Override
-    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
-        if (lotEntities.size() == 0) {
-            mEmptyPen.setVisibility(View.VISIBLE);
+    override fun onLotsByPenIdLoaded(lotEntities: ArrayList<LotEntity>) {
+        if (lotEntities.size == 0) {
+            mEmptyPen.visibility = View.VISIBLE
         } else {
-            mEmptyPen.setVisibility(View.INVISIBLE);
+            mEmptyPen.visibility = View.INVISIBLE
+            mSelectedLotEntity = lotEntities[0]
+            val lotId = mSelectedLotEntity!!.lotId
+            QueryFeedsByLotId(lotId, this@PenFeedFragment).execute(context)
 
-            mSelectedLotEntity = lotEntities.get(0);
-
-            String lotId = mSelectedLotEntity.getLotId();
-
-            new QueryCallsByLotId(lotId, PenFeedFragment.this).execute(getContext());
-            new QueryFeedsByLotId(lotId, PenFeedFragment.this).execute(getContext());
-
+            val dateStarted = mSelectedLotEntity!!.date
+            mDatesList = getDaysList(dateStarted)
+            mDatesList.reverse()
+            feedPenRecyclerViewAdapter!!.setDateList(mDatesList)
         }
     }
 
-    @Override
-    public void onCallsByLotIdReturned(ArrayList<CallEntity> callEntities) {
-
-        long dateStarted = mSelectedLotEntity.getDate();
-        mDatesList = getDaysList(dateStarted);
-        Collections.reverse(mDatesList);
-
-        feedPenRecyclerViewAdapter.setDateList(mDatesList);
-        feedPenRecyclerViewAdapter.setCallList(callEntities);
-    }
-
-    private ArrayList<Long> getDaysList(long roughDateStarted) {
-        ArrayList<Long> days = new ArrayList<>();
-
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(roughDateStarted);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        long dateStarted = c.getTimeInMillis();
-
-        days.add(dateStarted);
-
-        long oneDay = TimeUnit.DAYS.toMillis(1);
-        long currentTime = System.currentTimeMillis();
-
+    private fun getDaysList(roughDateStarted: Long): ArrayList<Long> {
+        val days = ArrayList<Long>()
+        val c = Calendar.getInstance()
+        c.timeInMillis = roughDateStarted
+        c[Calendar.HOUR_OF_DAY] = 0
+        c[Calendar.MINUTE] = 0
+        c[Calendar.SECOND] = 0
+        c[Calendar.MILLISECOND] = 0
+        var dateStarted = c.timeInMillis
+        days.add(dateStarted)
+        val oneDay = TimeUnit.DAYS.toMillis(1)
+        val currentTime = System.currentTimeMillis()
         while (dateStarted + oneDay < currentTime) {
-            dateStarted = dateStarted + oneDay;
-            days.add(dateStarted);
+            dateStarted = dateStarted + oneDay
+            days.add(dateStarted)
         }
-
-        return days;
+        return days
     }
 
-    @Override
-    public void onFeedsByLotIdReturned(ArrayList<FeedEntity> feedEntities) {
-        Log.d(TAG, "onFeedsByLotIdReturned: " + feedEntities.toString());
-        feedPenRecyclerViewAdapter.setFeedList(feedEntities);
+    override fun onFeedsByLotIdReturned(feedEntities: ArrayList<FeedEntity>) {
+        Log.d(TAG, "onFeedsByLotIdReturned: $feedEntities")
+        feedPenRecyclerViewAdapter!!.setFeedList(feedEntities)
+    }
+
+    companion object {
+        private const val TAG = "PenFeedFragment"
+        @JvmStatic
+        fun newInstance(penId: String?): PenFeedFragment {
+            val args = Bundle()
+            args.putString("fragment_pen_id", penId)
+            val fragment = PenFeedFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
