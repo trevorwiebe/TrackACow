@@ -40,4 +40,8 @@ public class Constants {
     public static final int MONTH = 2;
     public static final int ALL = 3;
     public static final int CUSTOM = 4;
+
+    // Manage Ration Type
+    public static final int ADD_RATION = 1;
+    public static final int EDIT_RATION = 2;
 }

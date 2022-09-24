@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.feed;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
 public class DeleteFeedEntitiesById extends AsyncTask<Context, Void, Integer> {
 

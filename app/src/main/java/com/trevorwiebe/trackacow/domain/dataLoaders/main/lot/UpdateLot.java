@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.lot;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
 
 public class UpdateLot extends AsyncTask<Context, Void, Void> {
 

@@ -8,15 +8,22 @@
         android:allowBackup="false"
         android:icon="@mipmap/track_a_cow_launcher"
         android:label="@string/app_name"
+        android:name=".TrackACowApp"
         android:roundIcon="@mipmap/track_a_cow_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".presentation.activities.ManageRationsActivity"
+            android:name=".presentation.add_or_edit_rations.AddOrEditRation"
+            android:label="@string/add_ration"
+            android:parentActivityName=".presentation.manage_rations.ManageRationsActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".presentation.manage_rations.ManageRationsActivity"
             android:exported="false"
             android:label="@string/more_manage_rations"
-            android:parentActivityName=".presentation.activities.MainActivity"/>
+            android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.activities.DrugsGivenReportActivity"
             android:exported="false"
@@ -32,7 +39,7 @@
             android:exported="false"
             android:label="Add cattle" />
         <activity
-            android:name=".presentation.activities.FeedLotActivity"
+            android:name=".presentation.feedlot.FeedLotActivity"
             android:exported="false"
             android:label="Feed Lot"
             android:parentActivityName=".presentation.activities.MainActivity" />

@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.trevorwiebe.trackacow.data.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.presentation.fragments.PenFeedFragment;
+import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
+import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.PenFeedFragment;
 
 import java.util.ArrayList;
 

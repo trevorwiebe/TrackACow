@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.db.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.local.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.ArrayList;

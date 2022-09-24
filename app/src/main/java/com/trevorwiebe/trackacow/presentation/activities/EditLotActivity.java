@@ -19,8 +19,8 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.UpdateLot;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

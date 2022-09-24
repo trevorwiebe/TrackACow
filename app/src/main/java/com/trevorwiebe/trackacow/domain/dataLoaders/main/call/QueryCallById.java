@@ -3,8 +3,7 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.call;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
 
 public class QueryCallById extends AsyncTask<Context, Void, CallEntity> {
 
@@ -21,7 +20,8 @@ public class QueryCallById extends AsyncTask<Context, Void, CallEntity> {
 
     @Override
     protected CallEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntity(callId);
+        return null;
+//        return AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntity(callId);
     }
 
     @Override

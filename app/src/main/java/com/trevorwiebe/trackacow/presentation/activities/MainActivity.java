@@ -33,8 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity;
-import com.trevorwiebe.trackacow.data.db.entities.UserEntity;
-import com.trevorwiebe.trackacow.presentation.fragments.FeedFragment;
+import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
+import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MedicateFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoreFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoveFragment;
@@ -48,6 +48,9 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity implements
         SyncDatabase.OnDatabaseSynced,
         QueryUserEntity.OnUserLoaded {
@@ -105,17 +108,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         invalidateOptionsMenu();
-        if (mSyncDatabase != null) {
-            mSyncDatabase.setSyncAvailability(true);
-        }
         mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onPause() {
-        if (mSyncDatabase != null) {
-            mSyncDatabase.setSyncAvailability(false);
-        }
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
         super.onPause();
     }

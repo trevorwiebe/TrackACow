@@ -13,8 +13,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.InsertDrug;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrug.InsertHoldingDrug;
-import com.trevorwiebe.trackacow.data.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingDrugEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

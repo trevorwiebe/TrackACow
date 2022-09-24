@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.user;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
 
 public class QueryUserEntity extends AsyncTask<Context, Void, UserEntity> {
 

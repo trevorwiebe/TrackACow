@@ -15,8 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.InsertLoadEntity;
-import com.trevorwiebe.trackacow.data.db.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.db.holdingUpdateEntities.HoldingLoadEntity;
+import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

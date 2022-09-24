@@ -3,11 +3,9 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.call;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class QueryCallsByLotId extends AsyncTask<Context, Void, ArrayList<CallEntity>> {
 
@@ -25,8 +23,8 @@ public class QueryCallsByLotId extends AsyncTask<Context, Void, ArrayList<CallEn
 
     @Override
     protected ArrayList<CallEntity> doInBackground(Context... contexts) {
-        List<CallEntity> callEntities = AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntitiesByLotId(lotId);
-        return (ArrayList<CallEntity>) callEntities;
+//        List<CallEntity> callEntities = AppDatabase.getAppDatabase(contexts[0]).callDao().getCallEntitiesByLotId(lotId);
+        return null;
     }
 
     @Override

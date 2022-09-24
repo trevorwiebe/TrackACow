@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
 
 import java.util.ArrayList;
 import java.util.List;

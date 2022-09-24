@@ -3,8 +3,8 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.cow;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.db.AppDatabase;
-import com.trevorwiebe.trackacow.data.db.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.local.AppDatabase;
+import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
 
 public class InsertSingleCow extends AsyncTask<Context, Void, Void> {
 

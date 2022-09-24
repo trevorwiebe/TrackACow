@@ -10,16 +10,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.trevorwiebe.trackacow.data.db.entities.ArchivedLotEntity;
-import com.trevorwiebe.trackacow.data.db.entities.CallEntity;
-import com.trevorwiebe.trackacow.data.db.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.db.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.db.entities.FeedEntity;
-import com.trevorwiebe.trackacow.data.db.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.db.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.db.entities.PenEntity;
-import com.trevorwiebe.trackacow.data.db.entities.UserEntity;
+import com.trevorwiebe.trackacow.data.local.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.FeedEntity;
+import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 
 import java.util.ArrayList;
@@ -119,14 +119,14 @@ public class QueryAllCloudData {
                                     mUserEntity.add(userEntity);
                                 }
                                 break;
-                            case CallEntity.CALL:
-                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
-                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
-                                    if(callEntity != null){
-                                        mCallList.add(callEntity);
-                                    }
-                                }
-                                break;
+//                            case CallEntity.CALL:
+//                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
+//                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
+//                                    if(callEntity != null){
+//                                        mCallList.add(callEntity);
+//                                    }
+//                                }
+//                                break;
                             case FeedEntity.FEED:
                                 for(DataSnapshot feedSnapShot : snapshot.getChildren()){
                                     FeedEntity feedEntity = feedSnapShot.getValue(FeedEntity.class);
