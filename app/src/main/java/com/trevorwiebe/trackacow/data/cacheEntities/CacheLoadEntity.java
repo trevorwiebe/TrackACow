@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -10,7 +10,7 @@ import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 
 @Keep
 @Entity(tableName = "holdingLoad")
-public class HoldingLoadEntity {
+public class CacheLoadEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -34,7 +34,7 @@ public class HoldingLoadEntity {
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-    public HoldingLoadEntity(int numberOfHead, long date, String description, String lotId, String loadId, int whatHappened) {
+    public CacheLoadEntity(int numberOfHead, long date, String description, String lotId, String loadId, int whatHappened) {
         this.numberOfHead = numberOfHead;
         this.date = date;
         this.description = description;
@@ -44,7 +44,7 @@ public class HoldingLoadEntity {
     }
 
     @Ignore
-    public HoldingLoadEntity(LoadEntity loadEntity, int whatHappened) {
+    public CacheLoadEntity(LoadEntity loadEntity, int whatHappened) {
         this.numberOfHead = loadEntity.getNumberOfHead();
         this.date = loadEntity.getDate();
         this.description = loadEntity.getDescription();
@@ -54,7 +54,7 @@ public class HoldingLoadEntity {
     }
 
     @Ignore
-    public HoldingLoadEntity() {
+    public CacheLoadEntity() {
     }
 
     public int getPrimaryKey() {

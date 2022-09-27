@@ -7,6 +7,10 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
@@ -17,15 +21,11 @@ import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
 import com.trevorwiebe.trackacow.data.entities.UserEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingArchivedLotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingFeedEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingPenEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingUserEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -58,13 +58,13 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
         try {
             // update drug entities
-            List<HoldingDrugEntity> holdingDrugEntities = db.holdingDrugDao().getHoldingDrugList();
+            List<CacheDrugEntity> holdingDrugEntities = db.cacheDrugDao().getHoldingDrugList();
             for (int a = 0; a < holdingDrugEntities.size(); a++) {
-                HoldingDrugEntity holdingDrugEntity = holdingDrugEntities.get(a);
+                CacheDrugEntity cacheDrugEntity = holdingDrugEntities.get(a);
 
-                DrugEntity drugEntity = new DrugEntity(holdingDrugEntity.getDefaultAmount(), holdingDrugEntity.getDrugId(), holdingDrugEntity.getDrugName());
+                DrugEntity drugEntity = new DrugEntity(cacheDrugEntity.getDefaultAmount(), cacheDrugEntity.getDrugId(), cacheDrugEntity.getDrugName());
 
-                switch (holdingDrugEntity.getWhatHappened()) {
+                switch (cacheDrugEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(DrugEntity.DRUG_OBJECT).child(drugEntity.getDrugId()).setValue(drugEntity);
                         break;
@@ -75,16 +75,16 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingDrugDao().deleteHoldingDrugTable();
+            db.cacheDrugDao().deleteHoldingDrugTable();
 
             //update pen entities
-            List<HoldingPenEntity> holdingPenEntities = db.holdingPenDao().getHoldingPenList();
+            List<CachePenEntity> holdingPenEntities = db.cachePenDao().getHoldingPenList();
             for (int b = 0; b < holdingPenEntities.size(); b++) {
-                HoldingPenEntity holdingPenEntity = holdingPenEntities.get(b);
+                CachePenEntity cachePenEntity = holdingPenEntities.get(b);
 
-                PenEntity penEntity = new PenEntity(holdingPenEntity.getPenId(), holdingPenEntity.getPenName());
+                PenEntity penEntity = new PenEntity(cachePenEntity.getPenId(), cachePenEntity.getPenName());
 
-                switch (holdingPenEntity.getWhatHappened()) {
+                switch (cachePenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).setValue(penEntity);
                         break;
@@ -95,17 +95,17 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingPenDao().deleteHoldingPenTable();
+            db.cachePenDao().deleteHoldingPenTable();
 
             //update cow entities
-            List<HoldingCowEntity> holdingCowEntities = db.holdingCowDao().getHoldingCowEntityList();
+            List<CacheCowEntity> holdingCowEntities = db.cacheCowDao().getHoldingCowEntityList();
             for (int c = 0; c < holdingCowEntities.size(); c++) {
 
-                HoldingCowEntity holdingCowEntity = holdingCowEntities.get(c);
+                CacheCowEntity cacheCowEntity = holdingCowEntities.get(c);
 
-                CowEntity cowEntity = new CowEntity(holdingCowEntity.isAlive(), holdingCowEntity.getCowId(), holdingCowEntity.getTagNumber(), holdingCowEntity.getDate(), holdingCowEntity.getNotes(), holdingCowEntity.getLotId());
+                CowEntity cowEntity = new CowEntity(cacheCowEntity.isAlive(), cacheCowEntity.getCowId(), cacheCowEntity.getTagNumber(), cacheCowEntity.getDate(), cacheCowEntity.getNotes(), cacheCowEntity.getLotId());
 
-                switch (holdingCowEntity.getWhatHappened()) {
+                switch (cacheCowEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).setValue(cowEntity);
                         break;
@@ -116,17 +116,17 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingCowDao().deleteHoldingCowTable();
+            db.cacheCowDao().deleteHoldingCowTable();
 
             // update drugs given entities
-            List<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = db.holdingDrugsGivenDao().getHoldingDrugsGivenList();
+            List<CacheDrugsGivenEntity> holdingDrugsGivenEntities = db.cacheDrugsGivenDao().getHoldingDrugsGivenList();
             for (int d = 0; d < holdingDrugsGivenEntities.size(); d++) {
 
-                HoldingDrugsGivenEntity holdingDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
+                CacheDrugsGivenEntity cacheDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
 
-                DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(holdingDrugsGivenEntity.getDrugGivenId(), holdingDrugsGivenEntity.getDrugId(), holdingDrugsGivenEntity.getAmountGiven(), holdingDrugsGivenEntity.getCowId(), holdingDrugsGivenEntity.getLotId(), holdingDrugsGivenEntity.getDate());
+                DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(cacheDrugsGivenEntity.getDrugGivenId(), cacheDrugsGivenEntity.getDrugId(), cacheDrugsGivenEntity.getAmountGiven(), cacheDrugsGivenEntity.getCowId(), cacheDrugsGivenEntity.getLotId(), cacheDrugsGivenEntity.getDate());
 
-                switch (holdingDrugsGivenEntity.getWhatHappened()) {
+                switch (cacheDrugsGivenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
                         break;
@@ -135,16 +135,16 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
+            db.cacheDrugsGivenDao().deleteHoldingDrugsGivenTable();
 
             // update lot entities
-            List<HoldingLotEntity> holdingLotEntities = db.holdingLotDao().getHoldingLotList();
+            List<CacheLotEntity> holdingLotEntities = db.cacheLotDao().getHoldingLotList();
             for (int e = 0; e < holdingLotEntities.size(); e++) {
 
-                HoldingLotEntity holdingLotEntity = holdingLotEntities.get(e);
+                CacheLotEntity cacheLotEntity = holdingLotEntities.get(e);
 
-                LotEntity lotEntity = new LotEntity(holdingLotEntity);
-                switch (holdingLotEntity.getWhatHappened()) {
+                LotEntity lotEntity = new LotEntity(cacheLotEntity);
+                switch (cacheLotEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).setValue(lotEntity);
                         break;
@@ -153,16 +153,16 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingLotDao().deleteHoldingLotTable();
+            db.cacheLotDao().deleteHoldingLotTable();
 
             // update archive lot entities
-            List<HoldingArchivedLotEntity> holdingArchivedLotEntities = db.holdingArchivedLotDao().getHoldingArchivedLotList();
+            List<CacheArchivedLotEntity> holdingArchivedLotEntities = db.cacheArchivedLotDao().getHoldingArchivedLotList();
             for (int f = 0; f < holdingArchivedLotEntities.size(); f++) {
 
-                HoldingArchivedLotEntity holdingArchivedLotEntity = holdingArchivedLotEntities.get(f);
+                CacheArchivedLotEntity cacheArchivedLotEntity = holdingArchivedLotEntities.get(f);
 
-                ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(holdingArchivedLotEntity);
-                switch (holdingArchivedLotEntity.getWhatHappened()) {
+                ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(cacheArchivedLotEntity);
+                switch (cacheArchivedLotEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
                         break;
@@ -171,16 +171,16 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
+            db.cacheArchivedLotDao().deleteHoldingArchivedLotTable();
 
             // update load entities
-            List<HoldingLoadEntity> holdingLoadEntities = db.holdingLoadDao().getHoldingLoadList();
+            List<CacheLoadEntity> holdingLoadEntities = db.cacheLoadDao().getHoldingLoadList();
             for (int h = 0; h < holdingLoadEntities.size(); h++) {
 
-                HoldingLoadEntity holdingLoadEntity = holdingLoadEntities.get(h);
+                CacheLoadEntity cacheLoadEntity = holdingLoadEntities.get(h);
 
-                LoadEntity loadEntity = new LoadEntity(holdingLoadEntity);
-                switch (holdingLoadEntity.getWhatHappened()) {
+                LoadEntity loadEntity = new LoadEntity(cacheLoadEntity);
+                switch (cacheLoadEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(LoadEntity.LOAD).child(loadEntity.getLoadId()).setValue(loadEntity);
                         break;
@@ -189,7 +189,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingLoadDao().deleteHoldingLoadTable();
+            db.cacheLoadDao().deleteHoldingLoadTable();
 
             // update callEntity node
 //            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
@@ -209,12 +209,12 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 //            db.holdingCallDao().deleteCallTable();
 
             // update feedEntity node
-            List<HoldingFeedEntity> holdingFeedEntities = db.holdingFeedDao().getHoldingFeedEntities();
+            List<CacheFeedEntity> holdingFeedEntities = db.cacheFeedDao().getHoldingFeedEntities();
             for(int f=0; f<holdingFeedEntities.size(); f++){
-                HoldingFeedEntity holdingFeedEntity = holdingFeedEntities.get(f);
-                FeedEntity feedEntity = new FeedEntity(holdingFeedEntity);
+                CacheFeedEntity cacheFeedEntity = holdingFeedEntities.get(f);
+                FeedEntity feedEntity = new FeedEntity(cacheFeedEntity);
 
-                switch (holdingFeedEntity.getWhatHappened()){
+                switch (cacheFeedEntity.getWhatHappened()){
                     case Constants.INSERT_UPDATE:
                         baseRef.child(FeedEntity.FEED).child(feedEntity.getId()).setValue(feedEntity);
                         break;
@@ -223,16 +223,16 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingFeedDao().deleteHoldingFeedTable();
+            db.cacheFeedDao().deleteHoldingFeedTable();
 
             // update user node
-            List<HoldingUserEntity> holdingUserEntities = db.holdingUserDao().getHoldingUserList();
+            List<CacheUserEntity> holdingUserEntities = db.cacheUserDao().getHoldingUserList();
             for (int g = 0; g < holdingUserEntities.size(); g++) {
 
-                HoldingUserEntity holdingUserEntity = holdingUserEntities.get(g);
+                CacheUserEntity cacheUserEntity = holdingUserEntities.get(g);
 
-                UserEntity userEntity = new UserEntity(holdingUserEntity);
-                switch (holdingUserEntity.getWhatHappened()) {
+                UserEntity userEntity = new UserEntity(cacheUserEntity);
+                switch (cacheUserEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
                         baseRef.child(UserEntity.USER).setValue(userEntity);
                         break;
@@ -241,7 +241,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         break;
                 }
             }
-            db.holdingUserDao().deleteHoldingUserTable();
+            db.cacheUserDao().deleteHoldingUserTable();
 
         } catch (Exception e) {
             Log.e(TAG, "doInBackground: ", e);

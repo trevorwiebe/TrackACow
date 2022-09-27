@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingUserEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity;
 
 @Keep
 @Entity(tableName = "user")
@@ -52,13 +52,13 @@ public class UserEntity {
     }
 
     @Ignore
-    public UserEntity(HoldingUserEntity holdingUserEntity) {
-        this.dateCreated = holdingUserEntity.getDateCreated();
-        this.accountType = holdingUserEntity.getAccountType();
-        this.name = holdingUserEntity.getName();
-        this.email = holdingUserEntity.getEmail();
-        this.renewalDate = holdingUserEntity.getRenewalDate();
-        this.uid = holdingUserEntity.getUid();
+    public UserEntity(CacheUserEntity cacheUserEntity) {
+        this.dateCreated = cacheUserEntity.getDateCreated();
+        this.accountType = cacheUserEntity.getAccountType();
+        this.name = cacheUserEntity.getName();
+        this.email = cacheUserEntity.getEmail();
+        this.renewalDate = cacheUserEntity.getRenewalDate();
+        this.uid = cacheUserEntity.getUid();
     }
 
     @Ignore

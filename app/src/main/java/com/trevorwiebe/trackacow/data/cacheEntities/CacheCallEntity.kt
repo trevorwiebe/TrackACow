@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities
+package com.trevorwiebe.trackacow.data.cacheEntities
 
 import androidx.annotation.Keep
 import androidx.room.PrimaryKey
@@ -6,7 +6,7 @@ import androidx.room.Entity
 
 @Keep
 @Entity(tableName = "holdingCall")
-data class HoldingCallEntity (
+data class CacheCallEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,
     var callAmount: Int,

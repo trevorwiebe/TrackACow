@@ -46,7 +46,7 @@ object TrackACowDataModule {
     ): RationsRepository {
         return RationRepositoryImpl(
             rationDao = db.rationDao(),
-            holdingRationDao = db.holdingRationDao()
+            cacheRationDao = db.cacheRationDao()
         )
     }
     @Provides
@@ -68,7 +68,7 @@ object TrackACowDataModule {
     ): CallRepository {
         return CallRepositoryImpl(
             callDao = db.callDao(),
-            holdingCallDao = db.holdingCallDao()
+            cacheCallDao = db.cacheCallDao()
         )
     }
     @Provides

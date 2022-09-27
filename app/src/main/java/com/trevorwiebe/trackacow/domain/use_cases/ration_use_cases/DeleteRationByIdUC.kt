@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.data.mapper.toHoldingRationModel
+import com.trevorwiebe.trackacow.data.mapper.toCacheRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -19,7 +19,7 @@ class DeleteRationByIdUC(
             // TODO set up firebase
         }else{
             val rationModel = RationModel(rationId, "", "")
-            rationsRepository.insertHoldingRation(rationModel.toHoldingRationModel(Constants.DELETE))
+            rationsRepository.insertHoldingRation(rationModel.toCacheRationModel(Constants.DELETE))
             Utility.setNewDataToUpload(context, true)
         }
 

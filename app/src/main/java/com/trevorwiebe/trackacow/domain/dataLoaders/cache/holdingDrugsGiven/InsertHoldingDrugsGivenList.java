@@ -3,22 +3,22 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrugsGiven;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugsGivenEntity;
 
 import java.util.ArrayList;
 
 public class InsertHoldingDrugsGivenList extends AsyncTask<Context, Void, Void> {
 
-    private ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities;
+    private ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities;
 
-    public InsertHoldingDrugsGivenList(ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities){
+    public InsertHoldingDrugsGivenList(ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities){
         this.holdingDrugsGivenEntities = holdingDrugsGivenEntities;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingDrugsGivenDao().insertHoldingDrugsGivenList(holdingDrugsGivenEntities);
+        AppDatabase.getAppDatabase(contexts[0]).cacheDrugsGivenDao().insertHoldingDrugsGivenList(holdingDrugsGivenEntities);
         return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -7,7 +7,7 @@ import androidx.annotation.Keep;
 
 @Keep
 @Entity(tableName = "HoldingDrug")
-public class HoldingDrugEntity {
+public class CacheDrugEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -25,7 +25,7 @@ public class HoldingDrugEntity {
     @ColumnInfo(name = "whatHappened")
     public int whatHappened;
 
-    public HoldingDrugEntity() {}
+    public CacheDrugEntity() {}
 
     public int getPrimaryKey() {
         return primaryKey;

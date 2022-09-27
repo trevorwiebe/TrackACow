@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.mapper
 
 import com.trevorwiebe.trackacow.data.entities.RationEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingRationEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheRationEntity
 import com.trevorwiebe.trackacow.domain.models.ration.HoldingRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
@@ -21,7 +21,7 @@ fun RationEntity.toRationModel(): RationModel {
     )
 }
 
-fun RationModel.toHoldingRationModel(whatHappened: Int): HoldingRationModel {
+fun RationModel.toCacheRationModel(whatHappened: Int): HoldingRationModel {
     return HoldingRationModel(
         primaryKey = primaryKey,
         rationId = rationId,
@@ -30,7 +30,7 @@ fun RationModel.toHoldingRationModel(whatHappened: Int): HoldingRationModel {
     )
 }
 
-fun HoldingRationEntity.toHoldingRationModel(): HoldingRationModel {
+fun CacheRationEntity.toCacheRationModel(): HoldingRationModel {
     return HoldingRationModel(
         primaryKey = primaryKey,
         rationId = rationId,
@@ -39,8 +39,8 @@ fun HoldingRationEntity.toHoldingRationModel(): HoldingRationModel {
     )
 }
 
-fun HoldingRationModel.toHoldingRationEntity(): HoldingRationEntity {
-    return HoldingRationEntity(
+fun HoldingRationModel.toCacheRationEntity(): CacheRationEntity {
+    return CacheRationEntity(
         primaryKey = primaryKey,
         rationId = rationId,
         rationName = rationName,

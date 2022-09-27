@@ -13,10 +13,10 @@ import android.widget.DatePicker;
 
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.InsertLoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -101,8 +101,8 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
 
                         Utility.setNewDataToUpload(AddLoadOfCattleActivity.this, true);
 
-                        HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(loadEntity, Constants.INSERT_UPDATE);
-                        new InsertHoldingLoad(holdingLoadEntity).execute(AddLoadOfCattleActivity.this);
+                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                        new InsertHoldingLoad(cacheLoadEntity).execute(AddLoadOfCattleActivity.this);
                     }
 
                     new InsertLoadEntity(loadEntity).execute(AddLoadOfCattleActivity.this);

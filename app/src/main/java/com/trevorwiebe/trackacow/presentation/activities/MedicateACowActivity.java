@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCow.InsertHoldingCow;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrugsGiven.InsertHoldingDrugsGivenList;
@@ -41,8 +42,7 @@ import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.InsertSingleCow;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -384,17 +384,17 @@ public class MedicateACowActivity extends AppCompatActivity implements
             } else {
 
                 Utility.setNewDataToUpload(MedicateACowActivity.this, true);
-                HoldingCowEntity holdingCowEntity = new HoldingCowEntity(cowEntity, Constants.INSERT_UPDATE);
-                new InsertHoldingCow(holdingCowEntity).execute(MedicateACowActivity.this);
+                CacheCowEntity cacheCowEntity = new CacheCowEntity(cowEntity, Constants.INSERT_UPDATE);
+                new InsertHoldingCow(cacheCowEntity).execute(MedicateACowActivity.this);
 
                 // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
-                ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+                ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
 
                 // iterate over the drugGivenEntityList
                 for (int q = 0; q < drugList.size(); q++) {
                     DrugsGivenEntity drugsGivenEntity = drugList.get(q);
-                    HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
-                    holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                    CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
+                    holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
                 }
 
                 new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(MedicateACowActivity.this);

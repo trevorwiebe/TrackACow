@@ -3,20 +3,20 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingPen;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingPenEntity;
 
 public class InsertHoldingPen extends AsyncTask<Context, Void, Void> {
 
-    private HoldingPenEntity holdingPenEntity;
+    private CachePenEntity cachePenEntity;
 
-    public InsertHoldingPen(HoldingPenEntity holdingPenEntity){
-        this.holdingPenEntity = holdingPenEntity;
+    public InsertHoldingPen(CachePenEntity cachePenEntity){
+        this.cachePenEntity = cachePenEntity;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingPenDao().insertHoldingPen(holdingPenEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cachePenDao().insertHoldingPen(cachePenEntity);
         return null;
     }
 

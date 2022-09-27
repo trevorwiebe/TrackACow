@@ -24,16 +24,16 @@ public class DeleteAllLocalData extends AsyncTask<Context, Void, Void> {
         db.userDao().deleteUserTable();
         db.loadDao().deleteLoadTable();
 
-        db.holdingCowDao().deleteHoldingCowTable();
-        db.holdingDrugsGivenDao().deleteHoldingDrugsGivenTable();
-        db.holdingDrugDao().deleteHoldingDrugTable();
-        db.holdingPenDao().deleteHoldingPenTable();
-        db.holdingLotDao().deleteHoldingLotTable();
-        db.holdingArchivedLotDao().deleteHoldingArchivedLotTable();
-        db.holdingCallDao().deleteCallTable();
-        db.holdingFeedDao().deleteHoldingFeedTable();
-        db.holdingUserDao().deleteHoldingUserTable();
-        db.holdingLoadDao().deleteHoldingLoadTable();
+        db.cacheCowDao().deleteHoldingCowTable();
+        db.cacheDrugsGivenDao().deleteHoldingDrugsGivenTable();
+        db.cacheDrugDao().deleteHoldingDrugTable();
+        db.cachePenDao().deleteHoldingPenTable();
+        db.cacheLotDao().deleteHoldingLotTable();
+        db.cacheArchivedLotDao().deleteHoldingArchivedLotTable();
+        db.cacheCallDao().deleteCallTable();
+        db.cacheFeedDao().deleteHoldingFeedTable();
+        db.cacheUserDao().deleteHoldingUserTable();
+        db.cacheLoadDao().deleteHoldingLoadTable();
 
         return null;
     }

@@ -31,7 +31,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.pen.UpdatePenName;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingPenEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
@@ -102,12 +102,12 @@ public class ManagePensActivity extends AppCompatActivity implements
                                         } else {
                                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                            holdingPenEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                                            holdingPenEntity.setPenId(penEntity.getPenId());
-                                            holdingPenEntity.setPenName(penEntity.getPenName());
+                                            CachePenEntity cachePenEntity = new CachePenEntity();
+                                            cachePenEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                                            cachePenEntity.setPenId(penEntity.getPenId());
+                                            cachePenEntity.setPenName(penEntity.getPenName());
 
-                                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                            new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                         }
                                         new InsertPen(penEntity, ManagePensActivity.this).execute(ManagePensActivity.this);
 
@@ -176,12 +176,12 @@ public class ManagePensActivity extends AppCompatActivity implements
                                         } else {
                                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                            HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                            holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-                                            holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                            holdingPenEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                                            CachePenEntity cachePenEntity = new CachePenEntity();
+                                            cachePenEntity.setPenName(selectedPenEntity.getPenName());
+                                            cachePenEntity.setPenId(selectedPenEntity.getPenId());
+                                            cachePenEntity.setWhatHappened(Constants.INSERT_UPDATE);
 
-                                            new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                            new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                         }
 
                                         new UpdatePenName(selectedPenEntity.getPenId(), updatedText, ManagePensActivity.this).execute(ManagePensActivity.this);
@@ -214,12 +214,12 @@ public class ManagePensActivity extends AppCompatActivity implements
                                     } else {
                                         Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                        HoldingPenEntity holdingPenEntity = new HoldingPenEntity();
-                                        holdingPenEntity.setPenName(selectedPenEntity.getPenName());
-                                        holdingPenEntity.setPenId(selectedPenEntity.getPenId());
-                                        holdingPenEntity.setWhatHappened(Constants.DELETE);
+                                        CachePenEntity cachePenEntity = new CachePenEntity();
+                                        cachePenEntity.setPenName(selectedPenEntity.getPenName());
+                                        cachePenEntity.setPenId(selectedPenEntity.getPenId());
+                                        cachePenEntity.setWhatHappened(Constants.DELETE);
 
-                                        new InsertHoldingPen(holdingPenEntity).execute(ManagePensActivity.this);
+                                        new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                     }
 
                                     new DeletePen(selectedPenEntity).execute(ManagePensActivity.this);

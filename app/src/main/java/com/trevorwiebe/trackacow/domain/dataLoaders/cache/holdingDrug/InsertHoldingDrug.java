@@ -3,20 +3,20 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrug;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity;
 
 public class InsertHoldingDrug extends AsyncTask<Context, Void, Void> {
 
-    private HoldingDrugEntity holdingDrugEntity;
+    private CacheDrugEntity cacheDrugEntity;
 
-    public InsertHoldingDrug(HoldingDrugEntity holdingDrugEntity){
-        this.holdingDrugEntity = holdingDrugEntity;
+    public InsertHoldingDrug(CacheDrugEntity cacheDrugEntity){
+        this.cacheDrugEntity = cacheDrugEntity;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingDrugDao().insertHoldingDrug(holdingDrugEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cacheDrugDao().insertHoldingDrug(cacheDrugEntity);
         return null;
     }
 

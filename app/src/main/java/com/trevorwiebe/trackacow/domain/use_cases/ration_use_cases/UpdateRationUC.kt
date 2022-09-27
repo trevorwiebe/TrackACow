@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.data.mapper.toHoldingRationModel
+import com.trevorwiebe.trackacow.data.mapper.toCacheRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
@@ -19,7 +19,7 @@ class UpdateRationUC(
         if(isConnectionActive){
             rationsRepositoryRemote.insertRationRemote(rationModel)
         }else{
-            rationsRepository.insertHoldingRation(rationModel.toHoldingRationModel(Constants.INSERT_UPDATE))
+            rationsRepository.insertHoldingRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
         }
         rationsRepository.updateRations(rationModel)

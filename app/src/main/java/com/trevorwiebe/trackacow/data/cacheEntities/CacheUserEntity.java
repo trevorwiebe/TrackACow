@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -10,7 +10,7 @@ import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 @Keep
 @Entity(tableName = "holdingUser")
-public class HoldingUserEntity {
+public class CacheUserEntity {
 
     @ColumnInfo(name = "primaryKey")
     @PrimaryKey(autoGenerate = true)
@@ -37,7 +37,7 @@ public class HoldingUserEntity {
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-    public HoldingUserEntity(long dateCreated, int accountType, String name, String email, long renewalDate, String uid, int whatHappened) {
+    public CacheUserEntity(long dateCreated, int accountType, String name, String email, long renewalDate, String uid, int whatHappened) {
         this.dateCreated = dateCreated;
         this.accountType = accountType;
         this.name = name;
@@ -48,7 +48,7 @@ public class HoldingUserEntity {
     }
 
     @Ignore
-    public HoldingUserEntity(UserEntity userEntity, int whatHappened) {
+    public CacheUserEntity(UserEntity userEntity, int whatHappened) {
         this.dateCreated = userEntity.getDateCreated();
         this.accountType = userEntity.getAccountType();
         this.name = userEntity.getName();
@@ -59,7 +59,7 @@ public class HoldingUserEntity {
     }
 
     @Ignore
-    public HoldingUserEntity() {
+    public CacheUserEntity() {
     }
 
     public int getPrimaryKey() {

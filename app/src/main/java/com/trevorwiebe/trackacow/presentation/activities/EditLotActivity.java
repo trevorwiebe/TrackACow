@@ -16,11 +16,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.UpdateLot;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -109,9 +109,9 @@ public class EditLotActivity extends AppCompatActivity implements
 
                         Utility.setNewDataToUpload(EditLotActivity.this, true);
 
-                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLot, Constants.INSERT_UPDATE);
+                        CacheLotEntity cacheLotEntity = new CacheLotEntity(mSelectedLot, Constants.INSERT_UPDATE);
 
-                        new InsertHoldingLot(holdingLotEntity).execute(EditLotActivity.this);
+                        new InsertHoldingLot(cacheLotEntity).execute(EditLotActivity.this);
                     }
 
                     new UpdateLot(mSelectedLot).execute(EditLotActivity.this);

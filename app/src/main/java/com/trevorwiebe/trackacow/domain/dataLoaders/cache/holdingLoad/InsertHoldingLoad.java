@@ -4,19 +4,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
 
 public class InsertHoldingLoad extends AsyncTask<Context, Void, Void> {
 
-    private HoldingLoadEntity holdingLoadEntity;
+    private CacheLoadEntity cacheLoadEntity;
 
-    public InsertHoldingLoad(HoldingLoadEntity holdingLoadEntity) {
-        this.holdingLoadEntity = holdingLoadEntity;
+    public InsertHoldingLoad(CacheLoadEntity cacheLoadEntity) {
+        this.cacheLoadEntity = cacheLoadEntity;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingLoadDao().insertHoldingLoad(holdingLoadEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cacheLoadDao().insertHoldingLoad(cacheLoadEntity);
         return null;
     }
 }

@@ -15,12 +15,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.DeleteLoadByLoadId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLoadId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.UpdateLoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -106,8 +106,8 @@ public class EditLoadActivity extends AppCompatActivity implements
                     if (Utility.haveNetworkConnection(EditLoadActivity.this)) {
                         Constants.BASE_REFERENCE.child(LoadEntity.LOAD).child(mSelectedLoadEntity.getLoadId()).setValue(mSelectedLoadEntity);
                     } else {
-                        HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(mSelectedLoadEntity, Constants.INSERT_UPDATE);
-                        new InsertHoldingLoad(holdingLoadEntity).execute(EditLoadActivity.this);
+                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(mSelectedLoadEntity, Constants.INSERT_UPDATE);
+                        new InsertHoldingLoad(cacheLoadEntity).execute(EditLoadActivity.this);
                     }
 
                     new UpdateLoadEntity(mSelectedLoadEntity).execute(EditLoadActivity.this);
@@ -131,8 +131,8 @@ public class EditLoadActivity extends AppCompatActivity implements
                         if (Utility.haveNetworkConnection(EditLoadActivity.this)) {
                             Constants.BASE_REFERENCE.child(LoadEntity.LOAD).child(mSelectedLoadEntity.getLoadId()).removeValue();
                         } else {
-                            HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(mSelectedLoadEntity, Constants.DELETE);
-                            new InsertHoldingLoad(holdingLoadEntity).execute(EditLoadActivity.this);
+                            CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(mSelectedLoadEntity, Constants.DELETE);
+                            new InsertHoldingLoad(cacheLoadEntity).execute(EditLoadActivity.this);
                         }
                         new DeleteLoadByLoadId(mSelectedLoadEntity.getLoadId()).execute(EditLoadActivity.this);
 

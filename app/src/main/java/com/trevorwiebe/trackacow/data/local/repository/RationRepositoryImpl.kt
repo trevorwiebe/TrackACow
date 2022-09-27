@@ -1,8 +1,8 @@
 package com.trevorwiebe.trackacow.data.local.repository
 
 import com.trevorwiebe.trackacow.data.local.dao.RationDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingRationDao
-import com.trevorwiebe.trackacow.data.mapper.toHoldingRationEntity
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheRationDao
+import com.trevorwiebe.trackacow.data.mapper.toCacheRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.HoldingRationModel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 
 class RationRepositoryImpl(
     private val rationDao: RationDao,
-    private val holdingRationDao: HoldingRationDao
+    private val cacheRationDao: CacheRationDao
 ): RationsRepository {
 
     override suspend fun insertRation(rationModel: RationModel) {
@@ -36,6 +36,6 @@ class RationRepositoryImpl(
     }
 
     override suspend fun insertHoldingRation(holdingRationModel: HoldingRationModel) {
-        holdingRationDao.insertHoldingRation(holdingRationModel.toHoldingRationEntity())
+        cacheRationDao.insertHoldingRation(holdingRationModel.toCacheRationEntity())
     }
 }

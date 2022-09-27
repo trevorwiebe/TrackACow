@@ -3,20 +3,20 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingArchivedLot;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingArchivedLotEntity;
 
 public class InsertHoldingArchivedLot extends AsyncTask<Context, Void, Void> {
 
-    private HoldingArchivedLotEntity holdingArchivedLotEntity;
+    private CacheArchivedLotEntity cacheArchivedLotEntity;
 
-    public InsertHoldingArchivedLot(HoldingArchivedLotEntity holdingArchivedLotEntity) {
-        this.holdingArchivedLotEntity = holdingArchivedLotEntity;
+    public InsertHoldingArchivedLot(CacheArchivedLotEntity cacheArchivedLotEntity) {
+        this.cacheArchivedLotEntity = cacheArchivedLotEntity;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingArchivedLotDao().insertHoldingArchivedLot(holdingArchivedLotEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cacheArchivedLotDao().insertHoldingArchivedLot(cacheArchivedLotEntity);
         return null;
     }
 }

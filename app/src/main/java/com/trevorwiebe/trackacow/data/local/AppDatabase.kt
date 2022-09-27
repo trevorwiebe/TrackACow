@@ -13,17 +13,17 @@ import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import com.trevorwiebe.trackacow.data.entities.UserEntity
 import com.trevorwiebe.trackacow.data.entities.LoadEntity
 import com.trevorwiebe.trackacow.data.entities.RationEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingPenEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugsGivenEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingArchivedLotEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingUserEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCallEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingFeedEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingRationEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheRationEntity
 import androidx.room.RoomDatabase
 import com.trevorwiebe.trackacow.data.local.dao.PenDao
 import com.trevorwiebe.trackacow.data.local.dao.CowDao
@@ -36,17 +36,17 @@ import com.trevorwiebe.trackacow.data.local.dao.FeedDao
 import com.trevorwiebe.trackacow.data.local.dao.UserDao
 import com.trevorwiebe.trackacow.data.local.dao.LoadDao
 import com.trevorwiebe.trackacow.data.local.dao.RationDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingPenDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingCowDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingDrugsGivenDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingDrugDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingLotDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingUserDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingArchivedLotDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingLoadDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingCallDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingFeedDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingRationDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CachePenDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCowDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugsGivenDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLotDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheUserDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheArchivedLotDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLoadDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCallDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheFeedDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheRationDao
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.Room
 import androidx.room.migration.Migration
@@ -64,17 +64,17 @@ import androidx.room.migration.Migration
         UserEntity::class,
         LoadEntity::class,
         RationEntity::class,
-        HoldingPenEntity::class,
-        HoldingCowEntity::class,
-        HoldingDrugsGivenEntity::class,
-        HoldingDrugEntity::class,
-        HoldingLotEntity::class,
-        HoldingArchivedLotEntity::class,
-        HoldingUserEntity::class,
-        HoldingLoadEntity::class,
-        HoldingCallEntity::class,
-        HoldingFeedEntity::class,
-        HoldingRationEntity::class],
+        CachePenEntity::class,
+        CacheCowEntity::class,
+        CacheDrugsGivenEntity::class,
+        CacheDrugEntity::class,
+        CacheLotEntity::class,
+        CacheArchivedLotEntity::class,
+        CacheUserEntity::class,
+        CacheLoadEntity::class,
+        CacheCallEntity::class,
+        CacheFeedEntity::class,
+        CacheRationEntity::class],
     version = 6,
     exportSchema = false
 )
@@ -91,17 +91,17 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun loadDao(): LoadDao
     abstract fun rationDao(): RationDao
-    abstract fun holdingPenDao(): HoldingPenDao
-    abstract fun holdingCowDao(): HoldingCowDao
-    abstract fun holdingDrugsGivenDao(): HoldingDrugsGivenDao
-    abstract fun holdingDrugDao(): HoldingDrugDao
-    abstract fun holdingLotDao(): HoldingLotDao
-    abstract fun holdingUserDao(): HoldingUserDao
-    abstract fun holdingArchivedLotDao(): HoldingArchivedLotDao
-    abstract fun holdingLoadDao(): HoldingLoadDao
-    abstract fun holdingCallDao(): HoldingCallDao
-    abstract fun holdingFeedDao(): HoldingFeedDao
-    abstract fun holdingRationDao(): HoldingRationDao
+    abstract fun cachePenDao(): CachePenDao
+    abstract fun cacheCowDao(): CacheCowDao
+    abstract fun cacheDrugsGivenDao(): CacheDrugsGivenDao
+    abstract fun cacheDrugDao(): CacheDrugDao
+    abstract fun cacheLotDao(): CacheLotDao
+    abstract fun cacheUserDao(): CacheUserDao
+    abstract fun cacheArchivedLotDao(): CacheArchivedLotDao
+    abstract fun cacheLoadDao(): CacheLoadDao
+    abstract fun cacheCallDao(): CacheCallDao
+    abstract fun cacheFeedDao(): CacheFeedDao
+    abstract fun cacheRationDao(): CacheRationDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

@@ -26,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.domain.adapters.ViewCattleListAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity;
@@ -45,8 +47,6 @@ import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.data.entities.FeedEntity;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingArchivedLotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
 import com.trevorwiebe.trackacow.domain.objects.DrugReportsObject;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
@@ -390,11 +390,11 @@ public class LotReportActivity extends AppCompatActivity implements
 
                     } else {
 
-                        HoldingLotEntity holdingLotEntity = new HoldingLotEntity(mSelectedLotEntity, Constants.DELETE);
-                        new InsertHoldingLot(holdingLotEntity).execute(LotReportActivity.this);
+                        CacheLotEntity cacheLotEntity = new CacheLotEntity(mSelectedLotEntity, Constants.DELETE);
+                        new InsertHoldingLot(cacheLotEntity).execute(LotReportActivity.this);
 
-                        HoldingArchivedLotEntity holdingArchivedLotEntity = new HoldingArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
-                        new InsertHoldingArchivedLot(holdingArchivedLotEntity).execute(LotReportActivity.this);
+                        CacheArchivedLotEntity cacheArchivedLotEntity = new CacheArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
+                        new InsertHoldingArchivedLot(cacheArchivedLotEntity).execute(LotReportActivity.this);
 
                     }
 

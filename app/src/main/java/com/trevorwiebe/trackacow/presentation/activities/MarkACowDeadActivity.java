@@ -23,13 +23,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCow.InsertHoldingCow;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.InsertSingleCow;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -167,8 +167,8 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             pushRef.setValue(cowEntity);
         }else{
             Utility.setNewDataToUpload(MarkACowDeadActivity.this, true);
-            HoldingCowEntity holdingCowEntity = new HoldingCowEntity(cowEntity, Constants.INSERT_UPDATE);
-            new InsertHoldingCow(holdingCowEntity).execute(MarkACowDeadActivity.this);
+            CacheCowEntity cacheCowEntity = new CacheCowEntity(cowEntity, Constants.INSERT_UPDATE);
+            new InsertHoldingCow(cacheCowEntity).execute(MarkACowDeadActivity.this);
         }
 
         new InsertSingleCow(cowEntity).execute(this);

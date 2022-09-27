@@ -4,19 +4,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity;
 
 public class InsertHoldingCow extends AsyncTask<Context, Void, Void> {
 
-    private HoldingCowEntity holdingCowEntity;
+    private CacheCowEntity cacheCowEntity;
 
-    public InsertHoldingCow(HoldingCowEntity holdingCowEntity){
-        this.holdingCowEntity = holdingCowEntity;
+    public InsertHoldingCow(CacheCowEntity cacheCowEntity){
+        this.cacheCowEntity = cacheCowEntity;
     }
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).holdingCowDao().insertHoldingCow(holdingCowEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cacheCowDao().insertHoldingCow(cacheCowEntity);
         return null;
     }
 }

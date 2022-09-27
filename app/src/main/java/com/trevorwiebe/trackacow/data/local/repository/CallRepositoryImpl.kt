@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.local.repository
 
 import com.trevorwiebe.trackacow.data.local.dao.CallDao
-import com.trevorwiebe.trackacow.data.local.holdingDao.HoldingCallDao
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCallDao
 import com.trevorwiebe.trackacow.data.mapper.toCallEntity
 import com.trevorwiebe.trackacow.data.mapper.toCallModel
 import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 
 class CallRepositoryImpl(
     private val callDao: CallDao,
-    private val holdingCallDao: HoldingCallDao
+    private val cacheCallDao: CacheCallDao
 ): CallRepository {
 
     override suspend fun insertCall(callModel: CallModel) {
@@ -48,6 +48,6 @@ class CallRepositoryImpl(
     }
 
     override suspend fun insertHoldingCall(holdingCallModel: HoldingCallModel) {
-        holdingCallDao.insertHoldingCall(holdingCallModel.toHoldingCallEntity())
+        cacheCallDao.insertHoldingCall(holdingCallModel.toHoldingCallEntity())
     }
 }

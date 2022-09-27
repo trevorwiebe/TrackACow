@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -7,7 +7,7 @@ import androidx.annotation.Keep;
 
 @Keep
 @Entity(tableName = "HoldingPen")
-public class HoldingPenEntity {
+public class CachePenEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -21,7 +21,7 @@ public class HoldingPenEntity {
     @ColumnInfo(name = "whatHappened")
     public int whatHappened;
 
-    public HoldingPenEntity(){}
+    public CachePenEntity(){}
 
     public int getPrimaryKey() {
         return primaryKey;

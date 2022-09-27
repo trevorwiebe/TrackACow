@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -6,11 +6,11 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 
 @Keep
-@Entity(tableName = "holdingArchivedLot")
-public class HoldingArchivedLotEntity {
+@Entity(tableName = "holdingLot")
+public class CacheLotEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -28,41 +28,42 @@ public class HoldingArchivedLotEntity {
     @ColumnInfo(name = "notes")
     private String notes;
 
-    @ColumnInfo(name = "dateStarted")
-    private long dateStarted;
+    @ColumnInfo(name = "date")
+    private long date;
 
-    @ColumnInfo(name = "dateEnded")
-    private long dateEnded;
+    @ColumnInfo(name = "penId")
+    private String penId;
 
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-
-    public HoldingArchivedLotEntity(String lotName, String lotId, String customerName, String notes, long dateStarted, long dateEnded, int whatHappened) {
+    public CacheLotEntity(String lotName, String lotId, String customerName, String notes, long date, String penId, int whatHappened) {
         this.lotName = lotName;
         this.lotId = lotId;
         this.customerName = customerName;
         this.notes = notes;
-        this.dateStarted = dateStarted;
-        this.dateEnded = dateEnded;
+        this.date = date;
+        this.penId = penId;
+        this.whatHappened = whatHappened;
+    }
+
+    public CacheLotEntity(LotEntity lotEntity, int whatHappened) {
+        this.lotName = lotEntity.getLotName();
+        this.lotId = lotEntity.getLotId();
+        this.customerName = lotEntity.getCustomerName();
+        this.notes = lotEntity.getNotes();
+        this.date = lotEntity.getDate();
+        this.penId = lotEntity.getPenId();
         this.whatHappened = whatHappened;
     }
 
     @Ignore
-    public HoldingArchivedLotEntity(ArchivedLotEntity archivedLotEntity, int whatHappened) {
-        this.lotName = archivedLotEntity.getLotName();
-        this.lotId = archivedLotEntity.getLotId();
-        this.customerName = archivedLotEntity.getCustomerName();
-        this.notes = archivedLotEntity.getNotes();
-        this.dateStarted = archivedLotEntity.getDateStarted();
-        this.dateEnded = archivedLotEntity.getDateEnded();
-        this.whatHappened = whatHappened;
+    public CacheLotEntity() {
     }
 
-    @Ignore
-    public HoldingArchivedLotEntity() {
+    public String getLotName() {
+        return lotName;
     }
-
 
     public int getPrimaryKey() {
         return primaryKey;
@@ -70,10 +71,6 @@ public class HoldingArchivedLotEntity {
 
     public void setPrimaryKey(int primaryKey) {
         this.primaryKey = primaryKey;
-    }
-
-    public String getLotName() {
-        return lotName;
     }
 
     public void setLotName(String lotName) {
@@ -104,20 +101,20 @@ public class HoldingArchivedLotEntity {
         this.notes = notes;
     }
 
-    public long getDateStarted() {
-        return dateStarted;
+    public long getDate() {
+        return date;
     }
 
-    public void setDateStarted(long dateStarted) {
-        this.dateStarted = dateStarted;
+    public void setDate(long date) {
+        this.date = date;
     }
 
-    public long getDateEnded() {
-        return dateEnded;
+    public String getPenId() {
+        return penId;
     }
 
-    public void setDateEnded(long dateEnded) {
-        this.dateEnded = dateEnded;
+    public void setPenId(String penId) {
+        this.penId = penId;
     }
 
     public int getWhatHappened() {

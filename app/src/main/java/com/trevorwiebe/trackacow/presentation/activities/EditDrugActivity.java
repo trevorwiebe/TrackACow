@@ -20,11 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.DeleteDrug;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrug.InsertHoldingDrug;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.UpdateDrug;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -95,13 +95,13 @@ public class EditDrugActivity extends AppCompatActivity {
 
                         Utility.setNewDataToUpload(EditDrugActivity.this, true);
 
-                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                        holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
-                        holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
-                        holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                        holdingDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
+                        cacheDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                        cacheDrugEntity.setDrugId(mDrugEntity.getDrugId());
+                        cacheDrugEntity.setDrugName(mDrugEntity.getDrugName());
+                        cacheDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
 
-                        new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
+                        new InsertHoldingDrug(cacheDrugEntity).execute(EditDrugActivity.this);
 
                     }
 
@@ -142,12 +142,12 @@ public class EditDrugActivity extends AppCompatActivity {
                         mDrugRef.child(mDrugEntity.getDrugId()).removeValue();
                     } else {
                         Utility.setNewDataToUpload(EditDrugActivity.this, true);
-                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                        holdingDrugEntity.setWhatHappened(Constants.DELETE);
-                        holdingDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                        holdingDrugEntity.setDrugId(mDrugEntity.getDrugId());
-                        holdingDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
-                        new InsertHoldingDrug(holdingDrugEntity).execute(EditDrugActivity.this);
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
+                        cacheDrugEntity.setWhatHappened(Constants.DELETE);
+                        cacheDrugEntity.setDrugName(mDrugEntity.getDrugName());
+                        cacheDrugEntity.setDrugId(mDrugEntity.getDrugId());
+                        cacheDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                        new InsertHoldingDrug(cacheDrugEntity).execute(EditDrugActivity.this);
                     }
 
                     new DeleteDrug(mDrugEntity).execute(EditDrugActivity.this);

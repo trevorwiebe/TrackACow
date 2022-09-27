@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.local.holdingDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,22 +6,22 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCallEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity;
 import com.trevorwiebe.trackacow.data.entities.CallEntity;
 
 import java.util.List;
 
 @Dao
-public interface HoldingCallDao {
+public interface CacheCallDao {
 
     @Insert
-    void insertHoldingCall(HoldingCallEntity holdingCallEntity);
+    void insertHoldingCall(CacheCallEntity cacheCallEntity);
 
     @Insert
-    void insertHoldingCallList(List<HoldingCallEntity> holdingCallEntities);
+    void insertHoldingCallList(List<CacheCallEntity> holdingCallEntities);
 
     @Query("SELECT * FROM holdingCall")
-    List<HoldingCallEntity> getHoldingCallEntities();
+    List<CacheCallEntity> getHoldingCallEntities();
 
     @Query("DELETE FROM holdingCall")
     void deleteCallTable();

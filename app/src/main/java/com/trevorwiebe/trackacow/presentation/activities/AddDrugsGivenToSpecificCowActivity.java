@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.InsertDrugsGivenList;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrugsGiven.InsertHoldingDrugsGivenList;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
@@ -28,7 +29,6 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryCowIdByCowId;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -147,21 +147,21 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                     Utility.setNewDataToUpload(AddDrugsGivenToSpecificCowActivity.this, true);
 
                     // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
-                    ArrayList<HoldingDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
+                    ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
 
                     // iterate over the drugGivenEntityList
                     for (int q = 0; q < drugList.size(); q++) {
                         DrugsGivenEntity drugsGivenEntity = drugList.get(q);
 
-                        HoldingDrugsGivenEntity holdingDrugsGivenEntity = new HoldingDrugsGivenEntity();
-                        holdingDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
-                        holdingDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
-                        holdingDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
-                        holdingDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
-                        holdingDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                        holdingDrugsGivenEntity.setLotId(drugsGivenEntity.getLotId());
+                        CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity();
+                        cacheDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
+                        cacheDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
+                        cacheDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
+                        cacheDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
+                        cacheDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                        cacheDrugsGivenEntity.setLotId(drugsGivenEntity.getLotId());
 
-                        holdingDrugsGivenEntities.add(holdingDrugsGivenEntity);
+                        holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
                     }
 
                     new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(AddDrugsGivenToSpecificCowActivity.this);

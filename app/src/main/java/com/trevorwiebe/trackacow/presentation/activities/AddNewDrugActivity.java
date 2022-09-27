@@ -14,7 +14,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.InsertDrug;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingDrug.InsertHoldingDrug;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
@@ -61,12 +61,12 @@ public class AddNewDrugActivity extends AppCompatActivity {
                     }else{
                         Utility.setNewDataToUpload(AddNewDrugActivity.this, true);
 
-                        HoldingDrugEntity holdingDrugEntity = new HoldingDrugEntity();
-                        holdingDrugEntity.setDefaultAmount(drugEntity.getDefaultAmount());
-                        holdingDrugEntity.setDrugId(drugEntity.getDrugId());
-                        holdingDrugEntity.setDrugName(drugEntity.getDrugName());
-                        holdingDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                        new InsertHoldingDrug(holdingDrugEntity).execute(AddNewDrugActivity.this);
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
+                        cacheDrugEntity.setDefaultAmount(drugEntity.getDefaultAmount());
+                        cacheDrugEntity.setDrugId(drugEntity.getDrugId());
+                        cacheDrugEntity.setDrugName(drugEntity.getDrugName());
+                        cacheDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                        new InsertHoldingDrug(cacheDrugEntity).execute(AddNewDrugActivity.this);
                     }
 
                     new InsertDrug(drugEntity).execute(AddNewDrugActivity.this);

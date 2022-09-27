@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.trevorwiebe.trackacow.R;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.domain.adapters.MedicatedCowsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot;
@@ -51,8 +52,7 @@ import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 import com.trevorwiebe.trackacow.domain.utils.SyncDatabase;
@@ -173,11 +173,11 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    HoldingLotEntity holdingLotEntity = new HoldingLotEntity(lotEntity, Constants.INSERT_UPDATE);
-                    new InsertHoldingLot(holdingLotEntity).execute(MedicatedCowsActivity.this);
+                    CacheLotEntity cacheLotEntity = new CacheLotEntity(lotEntity, Constants.INSERT_UPDATE);
+                    new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
 
-                    HoldingLoadEntity holdingLoadEntity = new HoldingLoadEntity(loadEntity, Constants.INSERT_UPDATE);
-                    new InsertHoldingLoad(holdingLoadEntity).execute(MedicatedCowsActivity.this);
+                    CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                    new InsertHoldingLoad(cacheLoadEntity).execute(MedicatedCowsActivity.this);
                 }
 
                 new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);

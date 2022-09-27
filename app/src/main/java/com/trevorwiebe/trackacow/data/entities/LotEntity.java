@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 
 @Keep
 @Entity(tableName = "lot")
@@ -45,13 +45,13 @@ public class LotEntity {
         this.penId = penId;
     }
 
-    public LotEntity(HoldingLotEntity holdingLotEntity) {
-        this.lotName = holdingLotEntity.getLotName();
-        this.lotId = holdingLotEntity.getLotId();
-        this.customerName = holdingLotEntity.getCustomerName();
-        this.notes = holdingLotEntity.getNotes();
-        this.date = holdingLotEntity.getDate();
-        this.penId = holdingLotEntity.getPenId();
+    public LotEntity(CacheLotEntity cacheLotEntity) {
+        this.lotName = cacheLotEntity.getLotName();
+        this.lotId = cacheLotEntity.getLotId();
+        this.customerName = cacheLotEntity.getCustomerName();
+        this.notes = cacheLotEntity.getNotes();
+        this.date = cacheLotEntity.getDate();
+        this.penId = cacheLotEntity.getPenId();
     }
 
     public LotEntity(ArchivedLotEntity archivedLotEntity) {

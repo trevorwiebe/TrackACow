@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingFeedEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity;
 
 @Keep
 @Entity(tableName = "feed")
@@ -37,11 +37,11 @@ public class FeedEntity {
         this.lotId = lotId;
     }
 
-    public FeedEntity(HoldingFeedEntity holdingFeedEntity){
-        this.feed = holdingFeedEntity.getFeed();
-        this.date = holdingFeedEntity.getDate();
-        this.id = holdingFeedEntity.getId();
-        this.lotId = holdingFeedEntity.getLotId();
+    public FeedEntity(CacheFeedEntity cacheFeedEntity){
+        this.feed = cacheFeedEntity.getFeed();
+        this.date = cacheFeedEntity.getDate();
+        this.id = cacheFeedEntity.getId();
+        this.lotId = cacheFeedEntity.getLotId();
     }
 
     @Ignore

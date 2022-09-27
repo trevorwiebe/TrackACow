@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.data.holdingUpdateEntities;
+package com.trevorwiebe.trackacow.data.cacheEntities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -10,7 +10,7 @@ import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 
 @Keep
 @Entity(tableName = "HoldingDrugsGiven")
-public class HoldingDrugsGivenEntity {
+public class CacheDrugsGivenEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "primaryKey")
@@ -37,10 +37,10 @@ public class HoldingDrugsGivenEntity {
     @ColumnInfo(name = "whatHappened")
     private int whatHappened;
 
-    public HoldingDrugsGivenEntity(){}
+    public CacheDrugsGivenEntity(){}
 
     @Ignore
-    public HoldingDrugsGivenEntity(DrugsGivenEntity drugsGivenEntity, int whatHappened) {
+    public CacheDrugsGivenEntity(DrugsGivenEntity drugsGivenEntity, int whatHappened) {
         this.drugGivenId = drugsGivenEntity.getDrugGivenId();
         this.drugId = drugsGivenEntity.getDrugId();
         this.amountGiven = drugsGivenEntity.getAmountGiven();

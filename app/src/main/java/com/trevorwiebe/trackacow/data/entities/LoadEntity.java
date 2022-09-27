@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.Keep;
 
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
 
 @Keep
 @Entity(tableName = "load")
@@ -42,12 +42,12 @@ public class LoadEntity {
     }
 
     @Ignore
-    public LoadEntity(HoldingLoadEntity holdingLoadEntity) {
-        this.numberOfHead = holdingLoadEntity.getNumberOfHead();
-        this.date = holdingLoadEntity.getDate();
-        this.description = holdingLoadEntity.getDescription();
-        this.lotId = holdingLoadEntity.getLotId();
-        this.loadId = holdingLoadEntity.getLoadId();
+    public LoadEntity(CacheLoadEntity cacheLoadEntity) {
+        this.numberOfHead = cacheLoadEntity.getNumberOfHead();
+        this.date = cacheLoadEntity.getDate();
+        this.description = cacheLoadEntity.getDescription();
+        this.lotId = cacheLoadEntity.getLotId();
+        this.loadId = cacheLoadEntity.getLoadId();
     }
 
     @Ignore

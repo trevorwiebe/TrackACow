@@ -16,7 +16,7 @@ import android.text.Editable
 import android.text.InputType
 import android.util.Log
 import com.trevorwiebe.trackacow.data.entities.LotEntity
-import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingFeedEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHoldingFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById
@@ -177,8 +177,12 @@ class FeedLotActivity : AppCompatActivity(),
             } else {
                 // if cloud not available, add to holding feed entity to upload later
                 Utility.setNewDataToUpload(this@FeedLotActivity, true)
-                val holdingFeedEntity = HoldingFeedEntity(feedEntity, Constants.INSERT_UPDATE)
-                InsertHoldingFeedEntity(holdingFeedEntity).execute(this@FeedLotActivity)
+                val cacheFeedEntity =
+                    CacheFeedEntity(
+                        feedEntity,
+                        Constants.INSERT_UPDATE
+                    )
+                InsertHoldingFeedEntity(cacheFeedEntity).execute(this@FeedLotActivity)
             }
 
             // add feedEntity to array to push to local database
@@ -204,9 +208,12 @@ class FeedLotActivity : AppCompatActivity(),
                         feedRef.child(feedEntityIdToDelete).removeValue()
                     } else {
                         // add to holding database to delete when cloud is available
-                        val holdingFeedEntity =
-                            HoldingFeedEntity(feedEntityToDelete, Constants.DELETE)
-                        InsertHoldingFeedEntity(holdingFeedEntity).execute(this@FeedLotActivity)
+                        val cacheFeedEntity =
+                            CacheFeedEntity(
+                                feedEntityToDelete,
+                                Constants.DELETE
+                            )
+                        InsertHoldingFeedEntity(cacheFeedEntity).execute(this@FeedLotActivity)
                     }
 
                     // delete locally
