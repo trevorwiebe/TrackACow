@@ -7,6 +7,10 @@ import com.google.firebase.database.FirebaseDatabase;
 public class Constants {
 
     public static final DatabaseReference BASE_REFERENCE = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    public static final String BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/";
+    public static final String RATIONS = "/rations";
+    public static final String CALLS = "/calls";
+
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;
     public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;

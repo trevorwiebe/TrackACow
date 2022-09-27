@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.PenEntity;
 
 import java.util.ArrayList;
 

@@ -29,13 +29,13 @@ class AddOrEditViewModel @Inject constructor(
 
     private fun addRation(rationModel: RationModel){
         viewModelScope.launch {
-            rationUseCases.addRationUC(rationModel)
+            rationUseCases.createRationUC(rationModel)
         }
     }
 
     private fun updateRation(rationModel: RationModel){
         viewModelScope.launch {
-            rationUseCases.editRationUC(rationModel)
+            rationUseCases.updateRationUC(rationModel)
         }
     }
 

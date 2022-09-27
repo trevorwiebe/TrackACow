@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.manage_rations
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
@@ -25,7 +24,7 @@ class ManageRationsViewModel @Inject constructor(
 
     private fun loadRations(){
         loadRationsJob?.cancel()
-        loadRationsJob = rationUseCases.getAllRationsUC()
+        loadRationsJob = rationUseCases.readAllRationsUC()
             .map { listFromDB ->
                 _uiState.update { uiState ->
                     uiState.copy(rationsList = listFromDB)

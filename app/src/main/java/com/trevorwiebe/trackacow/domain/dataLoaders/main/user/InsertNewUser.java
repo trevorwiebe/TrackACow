@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
+import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 public class InsertNewUser extends AsyncTask<Context, Void, Void> {
 

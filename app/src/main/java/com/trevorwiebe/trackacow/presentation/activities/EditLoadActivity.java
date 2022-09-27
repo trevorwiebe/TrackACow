@@ -19,8 +19,8 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.DeleteLoadByLoadId
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLoadId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.UpdateLoadEntity;
-import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingLoadEntity;
+import com.trevorwiebe.trackacow.data.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

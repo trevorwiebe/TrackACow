@@ -19,7 +19,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.presentation.activities.LotReportActivity;
 import com.trevorwiebe.trackacow.domain.adapters.ReportsRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLots;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 

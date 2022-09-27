@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.entities.CowEntity;
 
 public class DeleteCow extends AsyncTask<Context, Void, Void> {
 

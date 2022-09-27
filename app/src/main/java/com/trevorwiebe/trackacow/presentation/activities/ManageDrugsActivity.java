@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.adapters.ManageDrugRecyclerViewAdapter;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
 
 import java.util.ArrayList;

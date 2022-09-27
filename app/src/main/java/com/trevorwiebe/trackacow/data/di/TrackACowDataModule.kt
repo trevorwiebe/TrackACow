@@ -2,11 +2,19 @@ package com.trevorwiebe.trackacow.data.di
 
 import android.app.Application
 import androidx.room.Room
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
-import com.trevorwiebe.trackacow.data.repository.CallRepositoryImpl
-import com.trevorwiebe.trackacow.data.repository.RationRepositoryImpl
-import com.trevorwiebe.trackacow.domain.repository.CallRepository
-import com.trevorwiebe.trackacow.domain.repository.RationsRepository
+import com.trevorwiebe.trackacow.data.local.repository.CallRepositoryImpl
+import com.trevorwiebe.trackacow.data.local.repository.RationRepositoryImpl
+import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
+import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
+import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
+import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,23 +34,52 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
+    fun provideRemoteDatabase(): FirebaseDatabase{
+        return Firebase.database
+    }
+
+    // Ration
+    @Provides
+    @Singleton
     fun provideRationRepository(
         db: AppDatabase
-    ): RationsRepository{
+    ): RationsRepository {
         return RationRepositoryImpl(
             rationDao = db.rationDao(),
             holdingRationDao = db.holdingRationDao()
         )
     }
+    @Provides
+    @Singleton
+    fun provideRationRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): RationRepositoryRemote {
+        return RationRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.RATIONS
+        )
+    }
 
+    // Call
     @Provides
     @Singleton
     fun provideCallRepository(
         db: AppDatabase
-    ): CallRepository{
+    ): CallRepository {
         return CallRepositoryImpl(
             callDao = db.callDao(),
             holdingCallDao = db.holdingCallDao()
         )
     }
+    @Provides
+    @Singleton
+    fun provideCallRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): CallRepositoryRemote{
+        return CallRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.CALLS
+        )
+    }
+
 }

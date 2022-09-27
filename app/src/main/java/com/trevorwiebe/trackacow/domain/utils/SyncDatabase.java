@@ -5,16 +5,16 @@ import android.content.Context;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.QueryAllCloudData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.InsertAllLocalChangeToCloud;
-import com.trevorwiebe.trackacow.data.local.entities.ArchivedLotEntity;
-import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
-import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.local.entities.FeedEntity;
-import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
-import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
+import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.entities.FeedEntity;
+import com.trevorwiebe.trackacow.data.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 import java.util.ArrayList;
 

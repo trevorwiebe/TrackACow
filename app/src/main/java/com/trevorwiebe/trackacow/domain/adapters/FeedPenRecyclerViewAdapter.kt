@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.domain.adapters
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenRecyclerViewAdapter.FeedPenViewHolder
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.data.local.entities.FeedEntity
+import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View

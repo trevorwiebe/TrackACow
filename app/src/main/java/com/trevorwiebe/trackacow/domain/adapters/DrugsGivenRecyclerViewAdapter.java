@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.text.NumberFormat;

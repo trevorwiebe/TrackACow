@@ -27,9 +27,9 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingCow.InsertHoldi
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.InsertSingleCow;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId;
-import com.trevorwiebe.trackacow.data.local.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.data.entities.CowEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

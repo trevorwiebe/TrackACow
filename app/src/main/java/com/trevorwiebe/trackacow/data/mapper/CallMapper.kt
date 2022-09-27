@@ -1,11 +1,11 @@
 package com.trevorwiebe.trackacow.data.mapper
 
-import com.trevorwiebe.trackacow.data.local.entities.CallEntity
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCallEntity
+import com.trevorwiebe.trackacow.data.entities.CallEntity
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
 
-fun CallModel.toCallEntity(): CallEntity{
+fun CallModel.toCallEntity(): CallEntity {
     return CallEntity(
         primaryKey = primaryKey,
         callAmount = callAmount,
@@ -36,7 +36,7 @@ fun HoldingCallEntity.toHoldingCallModel(): HoldingCallModel{
     )
 }
 
-fun HoldingCallModel.toHoldingCallEntity(): HoldingCallEntity{
+fun HoldingCallModel.toHoldingCallEntity(): HoldingCallEntity {
     return HoldingCallEntity(
         primaryKey = primaryKey,
         callAmount = callAmount,

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 
 public class QueryLotByLotId extends AsyncTask<Context, Void, LotEntity> {
 

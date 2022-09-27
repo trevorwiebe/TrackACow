@@ -1,8 +1,10 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.repository.CallRepository
-import com.trevorwiebe.trackacow.domain.repository.RationsRepository
+import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
+import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
@@ -19,12 +21,13 @@ object TrackACowDomainModule {
     @Provides
     fun provideRationUseCases(
         rationsRepository: RationsRepository,
+        rationsRepositoryRemote: RationRepositoryRemote,
         context: Application
     ): RationUseCases {
         return RationUseCases(
-            addRationUC = AddRationUC(rationsRepository, context),
-            getAllRationsUC = GetAllRationsUC(rationsRepository),
-            editRationUC = EditRationUC(rationsRepository, context),
+            createRationUC = CreateRationUC(rationsRepository, rationsRepositoryRemote, context),
+            readAllRationsUC = ReadAllRationsUC(rationsRepository),
+            updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
             deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, context)
         )
     }
@@ -33,13 +36,14 @@ object TrackACowDomainModule {
     @Provides
     fun provideCallUseCases(
         callRepository: CallRepository,
+        callRepositoryRemote: CallRepositoryRemote,
         context: Application
     ): CallUseCases {
         return CallUseCases(
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
             readCallsByLotId = ReadCallsByLotIdUC(callRepository),
-            createCallUC = CreateCallUC(callRepository, context),
-            updateCallUC = UpdateCallUC(callRepository, context)
+            createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
+            updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
         )
     }
 }

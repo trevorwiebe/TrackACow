@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.call;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.entities.CallEntity;
 
 public class InsertCallEntity extends AsyncTask<Context, Void, Void> {
 

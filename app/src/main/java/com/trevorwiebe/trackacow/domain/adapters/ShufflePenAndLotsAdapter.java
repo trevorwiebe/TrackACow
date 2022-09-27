@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.UpdateHoldingLot;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.UpdateLotWithNewPenId;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.domain.objects.ShuffleObject;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.DragHelper;

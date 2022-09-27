@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
-import com.trevorwiebe.trackacow.data.local.entities.CallEntity
+import com.trevorwiebe.trackacow.data.entities.CallEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

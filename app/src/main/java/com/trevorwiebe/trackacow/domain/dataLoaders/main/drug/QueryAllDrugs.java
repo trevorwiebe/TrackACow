@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 
 import java.util.ArrayList;
 import java.util.List;

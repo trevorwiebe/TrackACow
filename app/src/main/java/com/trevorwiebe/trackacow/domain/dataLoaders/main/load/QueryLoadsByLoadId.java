@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 
 public class QueryLoadsByLoadId extends AsyncTask<Context, Void, LoadEntity> {
 

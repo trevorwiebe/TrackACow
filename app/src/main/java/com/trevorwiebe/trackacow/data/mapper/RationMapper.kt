@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.mapper
 
-import com.trevorwiebe.trackacow.data.local.entities.RationEntity
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingRationEntity
+import com.trevorwiebe.trackacow.data.entities.RationEntity
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingRationEntity
 import com.trevorwiebe.trackacow.domain.models.ration.HoldingRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCowEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCowEntity;
 
 public class InsertHoldingCow extends AsyncTask<Context, Void, Void> {
 

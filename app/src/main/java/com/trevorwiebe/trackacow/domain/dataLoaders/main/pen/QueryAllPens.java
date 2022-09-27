@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.entities.PenEntity;
 
 import java.util.ArrayList;
 import java.util.List;

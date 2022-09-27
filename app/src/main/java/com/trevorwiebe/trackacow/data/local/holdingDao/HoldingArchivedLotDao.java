@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingArchivedLotEntity;
 
 import java.util.List;
 

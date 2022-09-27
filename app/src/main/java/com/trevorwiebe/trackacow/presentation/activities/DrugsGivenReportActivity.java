@@ -19,10 +19,10 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByLotIdAndDateRange;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId;
-import com.trevorwiebe.trackacow.data.local.entities.ArchivedLotEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.local.entities.LotEntity;
+import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 

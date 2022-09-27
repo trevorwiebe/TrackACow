@@ -6,8 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCallEntity;
-import com.trevorwiebe.trackacow.data.local.entities.CallEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCallEntity;
+import com.trevorwiebe.trackacow.data.entities.CallEntity;
 
 import java.util.List;
 

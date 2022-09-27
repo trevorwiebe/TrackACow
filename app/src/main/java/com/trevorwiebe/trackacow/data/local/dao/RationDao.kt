@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.trevorwiebe.trackacow.data.local.entities.RationEntity
+import com.trevorwiebe.trackacow.data.entities.RationEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

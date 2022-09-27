@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.trevorwiebe.trackacow.data.local.entities.UserEntity;
+import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 import java.util.List;
 

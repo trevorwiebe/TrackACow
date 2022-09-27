@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.local.entities.LoadEntity;
+import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.text.NumberFormat;

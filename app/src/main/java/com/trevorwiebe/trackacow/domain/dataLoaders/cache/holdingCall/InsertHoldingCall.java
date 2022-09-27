@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingCallEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingCallEntity;
 
 public class InsertHoldingCall extends AsyncTask<Context, Void, Void> {
 

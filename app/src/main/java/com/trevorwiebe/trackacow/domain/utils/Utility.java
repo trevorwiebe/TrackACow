@@ -13,8 +13,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.local.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.local.entities.DrugsGivenEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugEntity;
+import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

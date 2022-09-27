@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingRationEntity
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingRationEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

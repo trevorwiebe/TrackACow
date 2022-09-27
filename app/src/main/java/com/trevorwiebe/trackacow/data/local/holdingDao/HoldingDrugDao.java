@@ -7,7 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingDrugEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingDrugEntity;
 
 import java.util.List;
 

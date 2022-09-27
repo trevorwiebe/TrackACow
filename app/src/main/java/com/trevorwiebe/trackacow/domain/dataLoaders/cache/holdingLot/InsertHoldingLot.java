@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.local.holdingUpdateEntities.HoldingLotEntity;
+import com.trevorwiebe.trackacow.data.holdingUpdateEntities.HoldingLotEntity;
 
 public class InsertHoldingLot extends AsyncTask<Context, Void, Void> {
 
