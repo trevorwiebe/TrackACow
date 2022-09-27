@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
-import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.PenFeedFragment;
+import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.FeedPenListFragment;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class FeedPenViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int i) {
         String penId = penEntities.get(i).getPenId();
-        return PenFeedFragment.newInstance(penId);
+        return FeedPenListFragment.newInstance(penId);
     }
 
     @Override

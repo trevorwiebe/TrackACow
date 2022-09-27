@@ -23,11 +23,11 @@ import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.ArrayList;
 
-public class FeedFragment extends Fragment implements QueryAllPens.OnPensLoaded {
+public class FeedContainerFragment extends Fragment implements QueryAllPens.OnPensLoaded {
 
-    private static final String TAG = "FeedFragment";
+    private static final String TAG = "FeedContainerFragment";
 
-    public FeedFragment() {
+    public FeedContainerFragment() {
     }
 
     private ViewPager feedPenViewPager;

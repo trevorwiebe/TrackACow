@@ -30,7 +30,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
-class PenFeedFragment : Fragment(),
+class FeedPenListFragment : Fragment(),
     OnLotsByPenIdLoaded,
     OnFeedsByLotIdReturned {
 
@@ -41,7 +41,7 @@ class PenFeedFragment : Fragment(),
     private lateinit var mSelectedLotEntity: LotEntity
     private lateinit var mDatesList: ArrayList<Long>
 
-    private val penFeedViewModel: PenFeedViewModel by viewModels()
+    private val feedPenListViewModel: FeedPenListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +85,7 @@ class PenFeedFragment : Fragment(),
 
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                penFeedViewModel.uiState.collect{
+                feedPenListViewModel.uiState.collect{
                     feedPenRecyclerViewAdapter.setCallList(it.callList)
                 }
             }
@@ -103,7 +103,7 @@ class PenFeedFragment : Fragment(),
             mEmptyPen.visibility = View.INVISIBLE
             mSelectedLotEntity = lotEntities[0]
             val lotId = mSelectedLotEntity!!.lotId
-            QueryFeedsByLotId(lotId, this@PenFeedFragment).execute(context)
+            QueryFeedsByLotId(lotId, this@FeedPenListFragment).execute(context)
 
             val dateStarted = mSelectedLotEntity!!.date
             mDatesList = getDaysList(dateStarted)
@@ -139,10 +139,10 @@ class PenFeedFragment : Fragment(),
     companion object {
         private const val TAG = "PenFeedFragment"
         @JvmStatic
-        fun newInstance(penId: String?): PenFeedFragment {
+        fun newInstance(penId: String?): FeedPenListFragment {
             val args = Bundle()
             args.putString("fragment_pen_id", penId)
-            val fragment = PenFeedFragment()
+            val fragment = FeedPenListFragment()
             fragment.arguments = args
             return fragment
         }

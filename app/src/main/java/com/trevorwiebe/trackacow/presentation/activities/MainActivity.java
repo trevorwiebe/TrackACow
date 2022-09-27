@@ -34,7 +34,7 @@ import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity;
 import com.trevorwiebe.trackacow.data.entities.UserEntity;
-import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedFragment;
+import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedContainerFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MedicateFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoreFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoveFragment;
@@ -377,9 +377,9 @@ public class MainActivity extends AppCompatActivity implements
         switch (fragmentId) {
             case Constants.FEED:
                 setTitle("Feed");
-                FeedFragment feedFragment = new FeedFragment();
+                FeedContainerFragment feedContainerFragment = new FeedContainerFragment();
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
-                feedTransactionManager.replace(R.id.main_fragment_container, feedFragment);
+                feedTransactionManager.replace(R.id.main_fragment_container, feedContainerFragment);
                 feedTransactionManager.commit();
                 break;
             case Constants.REPORTS:

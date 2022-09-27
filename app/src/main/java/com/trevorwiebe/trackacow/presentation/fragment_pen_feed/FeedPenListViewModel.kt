@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class PenFeedViewModel @Inject constructor(
+class FeedPenListViewModel @Inject constructor(
     private val callUseCases: CallUseCases
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(PenFeedUiState())
-    val uiState: StateFlow<PenFeedUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(FeedPenListUiState())
+    val uiState: StateFlow<FeedPenListUiState> = _uiState.asStateFlow()
 
     private var readCallsJob: Job? = null
 
