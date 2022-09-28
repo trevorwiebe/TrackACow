@@ -15,7 +15,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
 @InstallIn(ViewModelComponent::class)
-object TrackACowDomainModule {
+object ViewModelDomainModule {
 
     @ViewModelScoped
     @Provides

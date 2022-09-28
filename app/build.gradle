@@ -28,6 +28,9 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug{
+            ext.enableCrashlytics = false
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

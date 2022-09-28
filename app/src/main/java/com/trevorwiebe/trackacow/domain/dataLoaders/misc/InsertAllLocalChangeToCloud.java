@@ -191,7 +191,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
             db.cacheLoadDao().deleteHoldingLoadTable();
 
-            // update callEntity node
+//             update callEntity node
 //            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
 //            for (int j=0; j<holdingCallEntities.size(); j++){
 //                HoldingCallEntity holdingCallEntity = holdingCallEntities.get(j);

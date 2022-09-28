@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.feedlot
 
 import androidx.appcompat.app.AppCompatActivity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.call.QueryCallByLotIdAndDate.OnCallByLotIdAndDateLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId.OnLotByLotIdLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId.OnFeedEntitiesByDateAndLotIdDeleted
@@ -25,16 +24,20 @@ import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import com.trevorwiebe.trackacow.data.entities.CallEntity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.ParseException
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FeedLotActivity : AppCompatActivity(),
-    OnCallByLotIdAndDateLoaded,
     OnLotByLotIdLoaded,
     OnFeedByLotIdAndDateLoaded,
     OnFeedEntitiesByDateAndLotIdDeleted {
@@ -44,25 +47,32 @@ class FeedLotActivity : AppCompatActivity(),
     private lateinit var mTotalFed: TextView
     private lateinit var mLeftToFeed: TextView
     private lateinit var mSave: Button
-    private lateinit var mSelectedCallEntity: CallEntity
+    private var mSelectedCall: CallModel? = null
 
     private var mFeedAgainNumber = 0
     private var isLoadingMore = false
     private var mDate: Long = 0
-    private var mLotId: String? = null
+    private var mLotId: String = ""
     private var mShouldAddNewFeedEditText = false
     private lateinit var mFeedTextWatcher: TextWatcher
     private val numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault())
     private var mFeedEntities = ArrayList<FeedEntity>()
 
-    private val feedLotViewModel: FeedLotViewModel by viewModels()
+    @Inject  lateinit var feedLotViewModelFactory: FeedLotViewModel.FeedLotViewModelFactory
+
+    private val feedLotViewModel: FeedLotViewModel by viewModels {
+        FeedLotViewModel.providesFactory(
+            assistedFactory = feedLotViewModelFactory,
+            defaultArgs = intent.extras
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_lot)
 
         mDate = intent.getLongExtra("date", 0)
-        mLotId = intent.getStringExtra("lotId")
+        mLotId = intent.getStringExtra("lotId").toString()
 
         mCallET = findViewById(R.id.feed_lot_call_et)
         mFeedAgainLayout = findViewById(R.id.feed_again_layout)
@@ -81,7 +91,7 @@ class FeedLotActivity : AppCompatActivity(),
         mFeedTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length != 0) {
+                if (s.isNotEmpty()) {
                     mShouldAddNewFeedEditText = shouldAddAnotherEditText()
                     if (mShouldAddNewFeedEditText) {
                         addNewFeedEditText(null)
@@ -95,15 +105,25 @@ class FeedLotActivity : AppCompatActivity(),
         mSave.setOnClickListener {
             if (mCallET.length() == 0) {
                 mCallET.requestFocus()
-                mCallET.setError("Please fill this blank")
+                mCallET.error = "Please fill this blank"
             } else {
 
                 // code for updating the call entity
-                val callAmount = mCallET.getText().toString().toInt()
-                // create the call Model
-                val callModel = CallModel(0, callAmount, mDate, mLotId!!, "")
+                val callAmount = mCallET.text.toString().toInt()
+
+                val callModel: CallModel
+                if(mSelectedCall == null){
+                    // create the call Model
+                    callModel = CallModel(0, callAmount, mDate, mLotId, "")
+                }else{
+                    // assign callModel to mSelectedCallModel
+                    callModel = mSelectedCall as CallModel
+                    // update call amount
+                    callModel.callAmount = callAmount
+                }
+
                 // send event to the view model
-                feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedCallEntity.callAmount == 0))
+                feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedCall != null))
 
                 // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
 //                DeleteFeedEntitiesByDateAndLotId(
@@ -114,21 +134,27 @@ class FeedLotActivity : AppCompatActivity(),
             }
         }
 
-//        QueryCallByLotIdAndDate(mDate, mLotId, this).execute(this)
+        lifecycleScope.launch {
+            feedLotViewModel.uiState.collect{
+                mSelectedCall = it.callModel
+
+                if (mSelectedCall == null) {
+                    mSave.text = getString(R.string.save)
+                    val call = 0
+                    val callStr = call.toString()
+                    mCallET.setText(callStr)
+                } else {
+                    mSave.text = getString(R.string.update)
+                    val call = mSelectedCall!!.callAmount
+                    val callStr = call.toString()
+                    mCallET.setText(callStr)
+                }
+            }
+        }
+
+
 //        QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
 //        QueryLotByLotId(mLotId, this).execute(this)
-    }
-
-    override fun onCallByLotIdAndDateLoaded(callEntity: CallEntity) {
-        mSelectedCallEntity = callEntity
-        if (callEntity.callAmount == 0) {
-            mSave.text = "Save"
-        } else {
-            mSave.text = "Update"
-            val call = mSelectedCallEntity.callAmount
-            val callStr = call.toString()
-            mCallET.setText(callStr)
-        }
     }
 
     override fun onFeedByLotIdAndDateLoaded(feedEntities: ArrayList<FeedEntity>) {

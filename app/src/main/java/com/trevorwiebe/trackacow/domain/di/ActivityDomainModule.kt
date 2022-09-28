@@ -1,0 +1,31 @@
+package com.trevorwiebe.trackacow.domain.di
+
+import android.app.Application
+import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.scopes.ActivityScoped
+
+@Module
+@InstallIn(ActivityComponent::class)
+object ActivityDomainModule {
+
+    @ActivityScoped
+    @Provides
+    fun provideCallUseCases(
+        callRepository: CallRepository,
+        callRepositoryRemote: CallRepositoryRemote,
+        context: Application
+    ): CallUseCases {
+        return CallUseCases(
+            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+            readCallsByLotId = ReadCallsByLotIdUC(callRepository),
+            createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
+            updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+        )
+    }
+}

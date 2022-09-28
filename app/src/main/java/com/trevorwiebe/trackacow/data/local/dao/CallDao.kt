@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface CallDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCall(callEntity: CallEntity)
+    suspend fun insertCall(callEntity: CallEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCallList(callEntities: List<CallEntity>)
@@ -20,7 +20,7 @@ interface CallDao {
     fun getCallById(id: String): Flow<CallEntity>
 
     @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId LIMIT 1")
-    fun getCallByDateAndLotId(date: Long, lotId: String): Flow<CallEntity>
+    fun getCallByDateAndLotId(date: Long, lotId: String): Flow<CallEntity?>
 
     @Query("SELECT * FROM call WHERE lotId = :lotId")
     fun getCallByLotId(lotId: String): Flow<List<CallEntity>>
@@ -28,8 +28,8 @@ interface CallDao {
     @Query("DELETE FROM call")
     suspend fun deleteCallTable()
 
-    @Update
-    suspend fun updateCall(callEntity: CallEntity)
+    @Query("UPDATE call SET callAmount = :callAmount WHERE primaryKey = :primaryKey")
+    suspend fun updateCallAmount(callAmount: Int, primaryKey: Int)
 
     @Delete
     suspend fun deleteCall(callEntity: CallEntity?)
