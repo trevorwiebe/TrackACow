@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -12,22 +13,23 @@ import kotlinx.coroutines.flow.*
 
 class FeedPenListViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
-    @Assisted lotId: String
+    private val lotUseCases: LotUseCases,
+    @Assisted penId: String
 ): ViewModel() {
 
     @AssistedFactory
     interface FeedPenListViewModelFactory {
-        fun create(lotId: String): FeedPenListViewModel
+        fun create(penId: String): FeedPenListViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object{
         fun providesFactory(
             assistedFactory: FeedPenListViewModelFactory,
-            lotId: String
+            penId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(lotId) as T
+                return assistedFactory.create(penId) as T
             }
         }
     }
@@ -36,9 +38,11 @@ class FeedPenListViewModel @AssistedInject constructor(
     val uiState: StateFlow<FeedPenListUiState> = _uiState.asStateFlow()
 
     private var readCallsJob: Job? = null
+    private var readLotJob: Job? = null
 
     init {
-        readCallsByLotId(lotId)
+        readCallsByLotId("")
+        readLotsByPenId(penId)
     }
 
     private fun readCallsByLotId(lotId: String){
@@ -47,6 +51,17 @@ class FeedPenListViewModel @AssistedInject constructor(
             .map { listFromDB ->
                 _uiState.update { uiState ->
                     uiState.copy(callList = listFromDB)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun readLotsByPenId(penId: String){
+        readLotJob?.cancel()
+        readLotJob = lotUseCases.readLotsByPenId(penId)
+            .map { listFromDb ->
+                _uiState.update { uiState ->
+                    uiState.copy(lotList = listFromDb)
                 }
             }
             .launchIn(viewModelScope)

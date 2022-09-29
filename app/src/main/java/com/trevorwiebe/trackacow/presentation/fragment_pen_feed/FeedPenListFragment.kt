@@ -24,6 +24,7 @@ import com.trevorwiebe.trackacow.presentation.feedlot.FeedLotActivity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -32,14 +33,13 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedPenListFragment : Fragment(),
-    OnLotsByPenIdLoaded,
     OnFeedsByLotIdReturned {
 
     private var mPenId: String? = null
     private lateinit var mEmptyPen: TextView
     private lateinit var mFeedPenRv: RecyclerView
     private lateinit var feedPenRecyclerViewAdapter: FeedPenRecyclerViewAdapter
-    private lateinit var mSelectedLotEntity: LotEntity
+    private lateinit var mSelectedLotEntity: LotModel
     private lateinit var mDatesList: ArrayList<Long>
 
     @Inject lateinit var feedPenListViewModelFactory: FeedPenListViewModel.FeedPenListViewModelFactory
@@ -47,7 +47,7 @@ class FeedPenListFragment : Fragment(),
     private val feedPenListViewModel: FeedPenListViewModel by viewModels{
         FeedPenListViewModel.providesFactory(
             assistedFactory = feedPenListViewModelFactory,
-            lotId = "-NCwDNH9tkuEqUJvVLfj"
+            penId = arguments?.getString("fragment_pen_id") ?: ""
         )
     }
 
@@ -94,30 +94,29 @@ class FeedPenListFragment : Fragment(),
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 feedPenListViewModel.uiState.collect{
+
+                    // update ui with lot list
+                    if(it.lotList.isEmpty()){
+                        mEmptyPen.visibility = View.VISIBLE
+                    }else{
+                        mEmptyPen.visibility = View.INVISIBLE
+                        mSelectedLotEntity = it.lotList[0]
+                        val lotId = mSelectedLotEntity.lotId
+                        QueryFeedsByLotId(lotId, this@FeedPenListFragment).execute(context)
+
+                        val dateStarted = mSelectedLotEntity.date
+                        mDatesList = getDaysList(dateStarted)
+                        mDatesList.reverse()
+                        feedPenRecyclerViewAdapter.setDateList(mDatesList)
+                    }
+
+                    // update adapter will call list
                     feedPenRecyclerViewAdapter.setCallList(it.callList)
                 }
             }
         }
 
-        QueryLotsByPenId(mPenId, this).execute(context)
-
         return rootView
-    }
-
-    override fun onLotsByPenIdLoaded(lotEntities: ArrayList<LotEntity>) {
-        if (lotEntities.size == 0) {
-            mEmptyPen.visibility = View.VISIBLE
-        } else {
-            mEmptyPen.visibility = View.INVISIBLE
-            mSelectedLotEntity = lotEntities[0]
-            val lotId = mSelectedLotEntity.lotId
-            QueryFeedsByLotId(lotId, this@FeedPenListFragment).execute(context)
-
-            val dateStarted = mSelectedLotEntity.date
-            mDatesList = getDaysList(dateStarted)
-            mDatesList.reverse()
-            feedPenRecyclerViewAdapter.setDateList(mDatesList)
-        }
     }
 
     private fun getDaysList(roughDateStarted: Long): ArrayList<Long> {
@@ -133,21 +132,19 @@ class FeedPenListFragment : Fragment(),
         val oneDay = TimeUnit.DAYS.toMillis(1)
         val currentTime = System.currentTimeMillis()
         while (dateStarted + oneDay < currentTime) {
-            dateStarted = dateStarted + oneDay
+            dateStarted += oneDay
             days.add(dateStarted)
         }
         return days
     }
 
     override fun onFeedsByLotIdReturned(feedEntities: ArrayList<FeedEntity>) {
-        Log.d(TAG, "onFeedsByLotIdReturned: $feedEntities")
-        feedPenRecyclerViewAdapter!!.setFeedList(feedEntities)
+        feedPenRecyclerViewAdapter.setFeedList(feedEntities)
     }
 
     companion object {
-        private const val TAG = "PenFeedFragment"
         @JvmStatic
-        fun newInstance(penId: String?): FeedPenListFragment {
+        fun newInstance(penId: String): FeedPenListFragment {
             val args = Bundle()
             args.putString("fragment_pen_id", penId)
             val fragment = FeedPenListFragment()
