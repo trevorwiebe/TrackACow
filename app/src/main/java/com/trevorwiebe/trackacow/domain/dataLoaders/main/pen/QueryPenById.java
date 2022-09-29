@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
 
+@Deprecated(since = "Use use-cases instead")
 public class QueryPenById extends AsyncTask<Context, Void, PenEntity> {
 
     private String mPenId;
@@ -22,7 +23,7 @@ public class QueryPenById extends AsyncTask<Context, Void, PenEntity> {
 
     @Override
     protected PenEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).penDao().getPenById(mPenId);
+        return AppDatabase.getAppDatabase(contexts[0]).penDao().getPenById2(mPenId);
     }
 
     @Override

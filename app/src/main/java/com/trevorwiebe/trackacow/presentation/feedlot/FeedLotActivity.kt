@@ -26,6 +26,9 @@ import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -126,11 +129,11 @@ class FeedLotActivity : AppCompatActivity(),
                 feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedCall != null))
 
                 // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
-//                DeleteFeedEntitiesByDateAndLotId(
-//                    mDate,
-//                    mLotId,
-//                    this@FeedLotActivity
-//                ).execute(this@FeedLotActivity)
+                DeleteFeedEntitiesByDateAndLotId(
+                    mDate,
+                    mLotId,
+                    this@FeedLotActivity
+                ).execute(this@FeedLotActivity)
             }
         }
 
@@ -153,8 +156,8 @@ class FeedLotActivity : AppCompatActivity(),
         }
 
 
-//        QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
-//        QueryLotByLotId(mLotId, this).execute(this)
+        QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
+        QueryLotByLotId(mLotId, this).execute(this)
     }
 
     override fun onFeedByLotIdAndDateLoaded(feedEntities: ArrayList<FeedEntity>) {

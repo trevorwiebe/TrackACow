@@ -10,6 +10,7 @@ import com.trevorwiebe.trackacow.data.entities.PenEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since = "Use use-cases instead")
 public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>> {
 
     private static final String TAG = "QueryAllPens";
@@ -26,7 +27,7 @@ public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>>
 
     @Override
     protected ArrayList<PenEntity> doInBackground(Context... contexts) {
-        List<PenEntity> penEntities = AppDatabase.getAppDatabase(contexts[0]).penDao().getPenList();
+        List<PenEntity> penEntities = AppDatabase.getAppDatabase(contexts[0]).penDao().getPenList2();
         return (ArrayList<PenEntity>) penEntities;
     }
 

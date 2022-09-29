@@ -1,35 +1,26 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity;
-import com.trevorwiebe.trackacow.data.entities.CallEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
+import com.trevorwiebe.trackacow.data.entities.CallEntity
 
 @Dao
-public interface CacheCallDao {
+interface CacheCallDao {
+    @Insert
+    fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
 
     @Insert
-    void insertHoldingCall(CacheCallEntity cacheCallEntity);
+    fun insertHoldingCallList(holdingCallEntities: List<CacheCallEntity>)
 
-    @Insert
-    void insertHoldingCallList(List<CacheCallEntity> holdingCallEntities);
-
-    @Query("SELECT * FROM holdingCall")
-    List<CacheCallEntity> getHoldingCallEntities();
+    @get:Query("SELECT * FROM holdingCall")
+    val holdingCallEntities: List<CacheCallEntity>
 
     @Query("DELETE FROM holdingCall")
-    void deleteCallTable();
+    fun deleteCallTable()
 
     @Update
-    void updateCallEntity(CallEntity callEntity);
+    fun updateCallEntity(callEntity: CallEntity)
 
     @Delete
-    void deleteCallEntity(CallEntity callEntity);
-
+    fun deleteCallEntity(callEntity: CallEntity)
 }

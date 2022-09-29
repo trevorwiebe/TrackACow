@@ -1,37 +1,28 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity
 
 @Dao
-public interface CachePenDao {
+interface CachePenDao {
+    @Insert
+    fun insertHoldingPen(cachePenEntity: CachePenEntity)
 
     @Insert
-    void insertHoldingPen(CachePenEntity cachePenEntity);
-
-    @Insert
-    void insertHoldingPenList(List<CachePenEntity> holdingPenEntities);
+    fun insertHoldingPenList(holdingPenEntities: List<CachePenEntity>)
 
     @Query("SELECT * FROM HoldingPen WHERE penId = :id")
-    CachePenEntity getHoldingPenById(String id);
+    fun getHoldingPenById(id: String?): CachePenEntity?
 
-    @Query("SELECT * FROM HoldingPen")
-    List<CachePenEntity> getHoldingPenList();
+    @get:Query("SELECT * FROM HoldingPen")
+    val holdingPenList: List<CachePenEntity>
 
     @Query("DELETE FROM HoldingPen")
-    void deleteHoldingPenTable();
+    fun deleteHoldingPenTable()
 
     @Update
-    void updateHoldingPen(CachePenEntity cachePenEntity);
+    fun updateHoldingPen(cachePenEntity: CachePenEntity)
 
     @Delete
-    void deleteHoldingPen(CachePenEntity cachePenEntity);
-
+    fun deleteHoldingPen(cachePenEntity: CachePenEntity)
 }

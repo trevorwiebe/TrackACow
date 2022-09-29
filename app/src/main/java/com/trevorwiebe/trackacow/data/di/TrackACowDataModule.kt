@@ -7,10 +7,12 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.CallRepositoryImpl
+import com.trevorwiebe.trackacow.data.local.repository.PenRepositoryImpl
 import com.trevorwiebe.trackacow.data.local.repository.RationRepositoryImpl
 import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
@@ -79,6 +81,16 @@ object TrackACowDataModule {
         return CallRepositoryRemoteImpl(
             firebaseDatabase = remoteDb,
             databasePath = Constants.BASE_REFERENCE_STRING + Constants.CALLS
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providePenRepository(
+        db: AppDatabase
+    ): PenRepository{
+        return PenRepositoryImpl(
+            penDao = db.penDao()
         )
     }
 

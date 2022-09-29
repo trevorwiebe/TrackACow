@@ -1,41 +1,40 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.PenEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.PenEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-public interface PenDao {
+interface PenDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPen(penEntity: PenEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPen(PenEntity penEntity);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPenList(List<PenEntity> penEntities);
+    fun insertPenList(penEntities: List<PenEntity>)
 
     @Query("SELECT * FROM Pen WHERE penId = :id")
-    PenEntity getPenById(String id);
+    fun getPenById(id: String): Flow<PenEntity?>
+
+    @Deprecated("Use getPenByPenId with return type: Flow, instead")
+    @Query("SELECT * FROM Pen WHERE penId = :id")
+    fun getPenById2(id: String): PenEntity?
 
     @Query("SELECT * FROM Pen ORDER BY penName ASC")
-    List<PenEntity> getPenList();
+    fun getPenList(): Flow<List<PenEntity>>
+
+    @Deprecated("Use getPenList with return type: Flow, instead")
+    @Query("SELECT * FROM Pen ORDER BY penName ASC")
+    fun getPenList2(): List<PenEntity>
 
     @Query("UPDATE Pen SET penName = :penName WHERE penId = :penId")
-    void updatePenNameById(String penName, String penId);
+    fun updatePenNameById(penName: String, penId: String)
 
     @Query("DELETE FROM Pen")
-    void deletePenTable();
+    fun deletePenTable()
 
     @Update
-    void updatePen(PenEntity penEntity);
+    fun updatePen(penEntity: PenEntity)
 
     @Delete
-    void deletePen(PenEntity penEntity);
-
+    fun deletePen(penEntity: PenEntity)
 }
