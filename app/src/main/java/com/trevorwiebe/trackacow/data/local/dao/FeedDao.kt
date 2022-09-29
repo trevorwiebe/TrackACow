@@ -1,49 +1,49 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import static androidx.room.OnConflictStrategy.REPLACE;
-
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.FeedEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.FeedEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-public interface FeedDao {
-
-    @Insert(onConflict = REPLACE)
-    void insertFeedEntity(FeedEntity feedEntity);
+interface FeedDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertFeedEntityList(List<FeedEntity> feedEntities);
-
-    @Query("SELECT * FROM feed")
-    List<FeedEntity> getAllFeedEntities();
-
-    @Query("SELECT * FROM feed WHERE lotId = :lotId")
-    List<FeedEntity> getFeedEntitiesByLotId(String lotId);
-
-    @Query("SELECT * FROM feed WHERE lotId = :lotId AND date = :date")
-    List<FeedEntity> getFeedEntitiesByLotAndDate(String lotId, long date);
-
-    @Query("DELETE FROM feed WHERE date = :date AND lotId = :lotId")
-    int deleteFeedEntitiesByDateAndLotId(long date, String lotId);
-
-    @Query("DELETE FROM feed WHERE id = :id")
-    int deleteFeedEntityById(String id);
-
-    @Query("DELETE FROM feed")
-    void deleteFeedTable();
+    suspend fun insertFeedEntity(feedEntity: FeedEntity)
 
     @Update
-    void updateFeedEntity(FeedEntity feedEntity);
+    suspend fun updateFeedEntity(feedEntity: FeedEntity)
 
     @Delete
-    void deleteFeedEntity(FeedEntity feedEntity);
+    suspend fun deleteFeedEntity(feedEntity: FeedEntity)
 
+
+    /* Deprecated functions */
+
+    @Deprecated("use function with return type: flow")
+    @Query("SELECT * FROM feed")
+    fun allFeedEntities(): List<FeedEntity>
+
+    @Deprecated("use suspend function")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertFeedEntityList(feedEntities: List<FeedEntity>)
+
+    @Deprecated("use function with return type: flow")
+    @Query("SELECT * FROM feed WHERE lotId = :lotId")
+    fun getFeedEntitiesByLotId(lotId: String): List<FeedEntity>
+
+    @Deprecated("use function with return type: flow")
+    @Query("SELECT * FROM feed WHERE lotId = :lotId AND date = :date")
+    fun getFeedEntitiesByLotAndDate(lotId: String, date: Long): List<FeedEntity>
+
+    @Deprecated("use suspend function")
+    @Query("DELETE FROM feed WHERE date = :date AND lotId = :lotId")
+    fun deleteFeedEntitiesByDateAndLotId(date: Long, lotId: String): Int
+
+    @Deprecated("use suspend function")
+    @Query("DELETE FROM feed WHERE id = :id")
+    fun deleteFeedEntityById(id: String): Int
+
+    @Deprecated("use suspend function")
+    @Query("DELETE FROM feed")
+    fun deleteFeedTable()
 }

@@ -150,7 +150,7 @@ public class QueryAllCloudData {
 //                                    }
 //                                }
 //                                break;
-                            case FeedEntity.FEED:
+                            case Constants.FEEDS:
                                 for(DataSnapshot feedSnapShot : snapshot.getChildren()){
                                     FeedEntity feedEntity = feedSnapShot.getValue(FeedEntity.class);
                                     if(feedEntity != null){

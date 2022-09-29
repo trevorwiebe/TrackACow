@@ -188,8 +188,8 @@ class FeedLotActivity : AppCompatActivity(),
         for (n in feedsIntList.indices) {
 
             // get feed reference
-            val feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED)
-            val feedEntityId = feedRef.push().key
+            val feedRef = Constants.BASE_REFERENCE.child(Constants.FEEDS)
+            val feedEntityId = feedRef.push().key ?: ""
 
             // initialize feed entity
             var feedEntity: FeedEntity
@@ -198,7 +198,7 @@ class FeedLotActivity : AppCompatActivity(),
                 feedEntity = mFeedEntities[n]
                 feedEntity.feed = amountFed
             } else {
-                feedEntity = FeedEntity(amountFed, mDate, feedEntityId, mLotId)
+                feedEntity = FeedEntity(0, amountFed, mDate, feedEntityId, mLotId)
             }
             if (Utility.haveNetworkConnection(this@FeedLotActivity)) {
                 // update cloud
@@ -208,7 +208,11 @@ class FeedLotActivity : AppCompatActivity(),
                 Utility.setNewDataToUpload(this@FeedLotActivity, true)
                 val cacheFeedEntity =
                     CacheFeedEntity(
-                        feedEntity,
+                        feedEntity.primaryKey,
+                        feedEntity.feed,
+                        feedEntity.date,
+                        feedEntity.id,
+                        feedEntity.lotId,
                         Constants.INSERT_UPDATE
                     )
                 InsertHoldingFeedEntity(cacheFeedEntity).execute(this@FeedLotActivity)
@@ -227,7 +231,7 @@ class FeedLotActivity : AppCompatActivity(),
             // yes, some have been deleted from the UI, let's go ahead and delete them from the database
 
             // get database reference
-            val feedRef = Constants.BASE_REFERENCE.child(FeedEntity.FEED)
+            val feedRef = Constants.BASE_REFERENCE.child(Constants.FEEDS)
             for (g in mFeedEntities.indices) {
                 val feedEntityToDelete = mFeedEntities[g]
                 if (!newFeedEntityList.contains(feedEntityToDelete)) {
@@ -239,7 +243,11 @@ class FeedLotActivity : AppCompatActivity(),
                         // add to holding database to delete when cloud is available
                         val cacheFeedEntity =
                             CacheFeedEntity(
-                                feedEntityToDelete,
+                                feedEntityToDelete.primaryKey,
+                                feedEntityToDelete.feed,
+                                feedEntityToDelete.date,
+                                feedEntityToDelete.id,
+                                feedEntityToDelete.lotId,
                                 Constants.DELETE
                             )
                         InsertHoldingFeedEntity(cacheFeedEntity).execute(this@FeedLotActivity)
@@ -256,7 +264,7 @@ class FeedLotActivity : AppCompatActivity(),
     }
 
     private fun addNewFeedEditText(text: String?) {
-        mFeedAgainNumber = mFeedAgainNumber + 1
+        mFeedAgainNumber += 1
         val scale = resources.displayMetrics.density
         val pixels24 = (24 * scale + 0.5f).toInt()
         val pixels16 = (16 * scale + 0.5f).toInt()
