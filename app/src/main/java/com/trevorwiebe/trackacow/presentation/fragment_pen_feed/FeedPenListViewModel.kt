@@ -1,17 +1,36 @@
 package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
 
-@HiltViewModel
-class FeedPenListViewModel @Inject constructor(
-    private val callUseCases: CallUseCases
+class FeedPenListViewModel @AssistedInject constructor(
+    private val callUseCases: CallUseCases,
+    @Assisted lotId: String
 ): ViewModel() {
+
+    @AssistedFactory
+    interface FeedPenListViewModelFactory {
+        fun create(lotId: String): FeedPenListViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object{
+        fun providesFactory(
+            assistedFactory: FeedPenListViewModelFactory,
+            lotId: String
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(lotId) as T
+            }
+        }
+    }
 
     private val _uiState = MutableStateFlow(FeedPenListUiState())
     val uiState: StateFlow<FeedPenListUiState> = _uiState.asStateFlow()
@@ -19,7 +38,7 @@ class FeedPenListViewModel @Inject constructor(
     private var readCallsJob: Job? = null
 
     init {
-        readCallsByLotId("-MsDcfplki27AZwFlBGl")
+        readCallsByLotId(lotId)
     }
 
     private fun readCallsByLotId(lotId: String){

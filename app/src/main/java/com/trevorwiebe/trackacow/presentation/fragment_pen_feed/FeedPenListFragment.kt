@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedPenListFragment : Fragment(),
@@ -41,7 +42,14 @@ class FeedPenListFragment : Fragment(),
     private lateinit var mSelectedLotEntity: LotEntity
     private lateinit var mDatesList: ArrayList<Long>
 
-    private val feedPenListViewModel: FeedPenListViewModel by viewModels()
+    @Inject lateinit var feedPenListViewModelFactory: FeedPenListViewModel.FeedPenListViewModelFactory
+
+    private val feedPenListViewModel: FeedPenListViewModel by viewModels{
+        FeedPenListViewModel.providesFactory(
+            assistedFactory = feedPenListViewModelFactory,
+            lotId = "-NCwDNH9tkuEqUJvVLfj"
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,13 +110,13 @@ class FeedPenListFragment : Fragment(),
         } else {
             mEmptyPen.visibility = View.INVISIBLE
             mSelectedLotEntity = lotEntities[0]
-            val lotId = mSelectedLotEntity!!.lotId
+            val lotId = mSelectedLotEntity.lotId
             QueryFeedsByLotId(lotId, this@FeedPenListFragment).execute(context)
 
-            val dateStarted = mSelectedLotEntity!!.date
+            val dateStarted = mSelectedLotEntity.date
             mDatesList = getDaysList(dateStarted)
             mDatesList.reverse()
-            feedPenRecyclerViewAdapter!!.setDateList(mDatesList)
+            feedPenRecyclerViewAdapter.setDateList(mDatesList)
         }
     }
 
