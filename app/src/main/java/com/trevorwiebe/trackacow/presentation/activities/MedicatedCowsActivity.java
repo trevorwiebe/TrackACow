@@ -157,9 +157,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 String notes = mNotes.getText().toString();
                 long date = mCalendar.getTimeInMillis();
 
-                DatabaseReference lotPushRef = mBaseRef.child(LotEntity.LOT).push();
+                DatabaseReference lotPushRef = mBaseRef.child(Constants.LOTS).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(lotName, id, customerName, notes, date, mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenId());
 
                 String loadDescription = mLoadMemo.getText().toString();
                 DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();
@@ -173,7 +173,16 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
-                    CacheLotEntity cacheLotEntity = new CacheLotEntity(lotEntity, Constants.INSERT_UPDATE);
+                    CacheLotEntity cacheLotEntity = new CacheLotEntity(
+                            lotEntity.getPrimaryKey(),
+                            lotEntity.getLotName(),
+                            lotEntity.getLotId(),
+                            lotEntity.getCustomerName(),
+                            lotEntity.getNotes(),
+                            lotEntity.getDate(),
+                            lotEntity.getPenId(),
+                            Constants.INSERT_UPDATE
+                    );
                     new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
 
                     CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(loadEntity, Constants.INSERT_UPDATE);

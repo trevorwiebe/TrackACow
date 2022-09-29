@@ -1,31 +1,22 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
 
 @Dao
-public interface CacheLotDao {
-
+interface CacheLotDao {
     @Insert
-    void insertHoldingLot(CacheLotEntity cacheLotEntity);
+    fun insertHoldingLot(cacheLotEntity: CacheLotEntity)
 
-    @Query("SELECT * FROM holdingLot")
-    List<CacheLotEntity> getHoldingLotList();
+    @get:Query("SELECT * FROM holdingLot")
+    val holdingLotList: List<CacheLotEntity>
 
     @Update
-    void updateHoldingLot(CacheLotEntity cacheLotEntity);
+    fun updateHoldingLot(cacheLotEntity: CacheLotEntity)
 
     @Delete
-    void deleteHoldingLot(CacheLotEntity cacheLotEntity);
+    fun deleteHoldingLot(cacheLotEntity: CacheLotEntity)
 
     @Query("DELETE FROM holdingLot")
-    void deleteHoldingLotTable();
-
+    fun deleteHoldingLotTable()
 }

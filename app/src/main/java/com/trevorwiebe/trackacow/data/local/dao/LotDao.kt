@@ -1,46 +1,50 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.LotEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.LotEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-public interface LotDao {
+interface LotDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertLot(lotEntity: LotEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLot(LotEntity lotEntity);
+    fun insertLotEntityList(lotEntities: List<LotEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLotEntityList(List<LotEntity> lotEntities);
-
+    @Deprecated("Use flows return types")
     @Query("SELECT * FROM lot")
-    List<LotEntity> getLotEntityList();
+    fun getLotEntityList(): List<LotEntity>
 
     @Query("SELECT * FROM lot WHERE penId = :penId")
-    List<LotEntity> getLotEntitiesByPenId(String penId);
+    fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 
+    @Deprecated("Use getLotEntitiesByPenId with return type of Flow instead")
+    @Query("SELECT * FROM lot WHERE penId = :penId")
+    fun getLotEntitiesByPenId2(penId: String): List<LotEntity>
+
+    @Deprecated("Use flow return types")
     @Query("SELECT * FROM lot WHERE lotId = :lotId")
-    LotEntity getLotEntityById(String lotId);
+    fun getLotEntityById(lotId: String): LotEntity?
 
     @Update
-    void updateLotEntity(LotEntity lotEntity);
+    fun updateLotEntity(lotEntity: LotEntity)
 
     @Query("UPDATE lot SET lotName = :lotName, customerName = :customerName, date = :date, notes = :notes WHERE lotId = :lotId")
-    void updateLotByFields(String lotName, String customerName, String notes, long date, String lotId);
+    fun updateLotByFields(
+        lotName: String?,
+        customerName: String?,
+        notes: String?,
+        date: Long,
+        lotId: String
+    )
 
     @Query("UPDATE lot SET penId = :penId WHERE lotId = :lotId")
-    void updateLotWithNewPenId(String lotId, String penId);
+    fun updateLotWithNewPenId(lotId: String, penId: String)
 
     @Query("DELETE FROM lot")
-    void deleteLotEntityTable();
+    fun deleteLotEntityTable()
 
     @Query("DELETE FROM lot WHERE lotId = :lotId")
-    void deleteLotEntity(String lotId);
-
+    fun deleteLotEntity(lotId: String)
 }

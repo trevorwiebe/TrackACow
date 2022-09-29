@@ -211,7 +211,15 @@ public class LotReportActivity extends AppCompatActivity implements
 
     @Override
     public void onArchivedLotLoaded(ArchivedLotEntity archivedLotEntity) {
-        mSelectedLotEntity = new LotEntity(archivedLotEntity);
+        mSelectedLotEntity = new LotEntity(
+                archivedLotEntity.getPrimaryKey(),
+                archivedLotEntity.getLotName(),
+                archivedLotEntity.getLotId(),
+                archivedLotEntity.getCustomerName(),
+                archivedLotEntity.getNotes(),
+                archivedLotEntity.getDateEnded(),
+                ""
+        );
         lotEntityLoaded(mSelectedLotEntity);
     }
 
@@ -383,14 +391,23 @@ public class LotReportActivity extends AppCompatActivity implements
                         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                         // delete the lot entity
-                        baseRef.child(LotEntity.LOT).child(mSelectedLotEntity.getLotId()).removeValue();
+                        baseRef.child(Constants.LOTS).child(mSelectedLotEntity.getLotId()).removeValue();
 
                         // push archived lot to the cloud;
                         baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
 
                     } else {
 
-                        CacheLotEntity cacheLotEntity = new CacheLotEntity(mSelectedLotEntity, Constants.DELETE);
+                        CacheLotEntity cacheLotEntity = new CacheLotEntity(
+                                mSelectedLotEntity.getPrimaryKey(),
+                                mSelectedLotEntity.getLotName(),
+                                mSelectedLotEntity.getLotId(),
+                                mSelectedLotEntity.getCustomerName(),
+                                mSelectedLotEntity.getNotes(),
+                                mSelectedLotEntity.getDate(),
+                                mSelectedLotEntity.getPenId(),
+                                Constants.DELETE
+                        );
                         new InsertHoldingLot(cacheLotEntity).execute(LotReportActivity.this);
 
                         CacheArchivedLotEntity cacheArchivedLotEntity = new CacheArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);

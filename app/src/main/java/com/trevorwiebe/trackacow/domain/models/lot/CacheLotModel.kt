@@ -1,13 +1,6 @@
-package com.trevorwiebe.trackacow.data.cacheEntities
+package com.trevorwiebe.trackacow.domain.models.lot
 
-import androidx.annotation.Keep
-import androidx.room.PrimaryKey
-import androidx.room.Entity
-
-@Keep
-@Entity(tableName = "holdingLot")
-class CacheLotEntity (
-    @PrimaryKey(autoGenerate = true)
+data class CacheLotModel(
     var primaryKey: Int = 0,
     var lotName: String? = null,
     var lotId: String? = null,

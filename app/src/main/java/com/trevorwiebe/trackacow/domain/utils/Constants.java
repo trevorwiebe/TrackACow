@@ -11,6 +11,7 @@ public class Constants {
     public static final String RATIONS = "/rations";
     public static final String CALLS = "/calls";
     public static final String PENS = "pens";
+    public static final String LOTS = "cattleLot";
 
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;

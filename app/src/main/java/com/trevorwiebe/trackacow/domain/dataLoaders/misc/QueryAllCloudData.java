@@ -105,7 +105,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case LotEntity.LOT:
+                            case Constants.LOTS:
                                 for (DataSnapshot lotSnapshot : snapshot.getChildren()) {
                                     LotEntity lotEntity = lotSnapshot.getValue(LotEntity.class);
                                     if (lotEntity != null) {

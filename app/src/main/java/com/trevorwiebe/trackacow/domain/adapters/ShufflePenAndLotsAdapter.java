@@ -117,7 +117,7 @@ public class ShufflePenAndLotsAdapter extends RecyclerView.Adapter<RecyclerView.
                 String penId = penShuffleObject.getId();
 
                 if (Utility.haveNetworkConnection(context)) {
-                    DatabaseReference baseRef = Constants.BASE_REFERENCE.child(LotEntity.LOT).child(lotId).child("penId");
+                    DatabaseReference baseRef = Constants.BASE_REFERENCE.child(Constants.LOTS).child(lotId).child("penId");
                     baseRef.setValue(penId);
                 } else {
                     Utility.setNewDataToUpload(context, true);

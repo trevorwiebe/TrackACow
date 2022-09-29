@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 
+@Deprecated(since = "Use use-cases instead")
 public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
 
     private String lotId;
@@ -26,7 +27,16 @@ public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
         LotEntity lotEntity = db.lotDao().getLotEntityById(lotId);
         lotEntity.setPenId(penId);
 
-        CacheLotEntity cacheLotEntity = new CacheLotEntity(lotEntity, Constants.INSERT_UPDATE);
+        CacheLotEntity cacheLotEntity = new CacheLotEntity(
+                lotEntity.getPrimaryKey(),
+                lotEntity.getLotName(),
+                lotEntity.getLotId(),
+                lotEntity.getCustomerName(),
+                lotEntity.getNotes(),
+                lotEntity.getDate(),
+                lotEntity.getPenId(),
+                Constants.INSERT_UPDATE
+        );
 
         db.cacheLotDao().insertHoldingLot(cacheLotEntity);
 
