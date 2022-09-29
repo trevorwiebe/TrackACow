@@ -89,7 +89,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case PenEntity.PEN_OBJECT:
+                            case "pens":
                                 for (DataSnapshot penSnapshot : snapshot.getChildren()) {
                                     PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
                                     if (penEntity != null) {

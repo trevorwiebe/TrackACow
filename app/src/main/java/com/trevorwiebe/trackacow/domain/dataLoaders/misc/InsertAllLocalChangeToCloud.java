@@ -82,14 +82,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             for (int b = 0; b < holdingPenEntities.size(); b++) {
                 CachePenEntity cachePenEntity = holdingPenEntities.get(b);
 
-                PenEntity penEntity = new PenEntity(cachePenEntity.getPenId(), cachePenEntity.getPenName());
+                PenEntity penEntity = new PenEntity(0,cachePenEntity.getPenId(), cachePenEntity.getPenName());
 
                 switch (cachePenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).setValue(penEntity);
+                        baseRef.child("pens").child(penEntity.getPenId()).setValue(penEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).removeValue();
+                        baseRef.child("pens").child(penEntity.getPenId()).removeValue();
                         break;
                     default:
                         break;

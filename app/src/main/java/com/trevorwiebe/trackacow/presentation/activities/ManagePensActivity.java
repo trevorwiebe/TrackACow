@@ -45,7 +45,7 @@ public class ManagePensActivity extends AppCompatActivity implements
         QueryLotsByPenId.OnLotsByPenIdLoaded {
 
     private DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private DatabaseReference mPenRef = mBaseRef.child(PenEntity.PEN_OBJECT);
+    private DatabaseReference mPenRef = mBaseRef.child(Constants.PENS);
     private ArrayList<PenEntity> mPenEntityList = new ArrayList<>();
     private ArrayList<LotEntity> mLotEntities = new ArrayList<>();
 
@@ -95,17 +95,19 @@ public class ManagePensActivity extends AppCompatActivity implements
 
                                         DatabaseReference pushRef = mPenRef.push();
                                         String key = pushRef.getKey();
-                                        PenEntity penEntity = new PenEntity(key, penText);
+                                        PenEntity penEntity = new PenEntity(0, key, penText);
 
                                         if (Utility.haveNetworkConnection(ManagePensActivity.this)) {
                                             pushRef.setValue(penEntity);
                                         } else {
                                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                            CachePenEntity cachePenEntity = new CachePenEntity();
-                                            cachePenEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                                            cachePenEntity.setPenId(penEntity.getPenId());
-                                            cachePenEntity.setPenName(penEntity.getPenName());
+                                            CachePenEntity cachePenEntity = new CachePenEntity(
+                                                    0,
+                                                    penEntity.getPenId(),
+                                                    penEntity.getPenName(),
+                                                    Constants.INSERT_UPDATE
+                                            );
 
                                             new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                         }
@@ -176,10 +178,12 @@ public class ManagePensActivity extends AppCompatActivity implements
                                         } else {
                                             Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                            CachePenEntity cachePenEntity = new CachePenEntity();
-                                            cachePenEntity.setPenName(selectedPenEntity.getPenName());
-                                            cachePenEntity.setPenId(selectedPenEntity.getPenId());
-                                            cachePenEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                                            CachePenEntity cachePenEntity = new CachePenEntity(
+                                                    0,
+                                                    selectedPenEntity.getPenId(),
+                                                    selectedPenEntity.getPenName(),
+                                                    Constants.INSERT_UPDATE
+                                            );
 
                                             new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                         }
@@ -214,10 +218,12 @@ public class ManagePensActivity extends AppCompatActivity implements
                                     } else {
                                         Utility.setNewDataToUpload(ManagePensActivity.this, true);
 
-                                        CachePenEntity cachePenEntity = new CachePenEntity();
-                                        cachePenEntity.setPenName(selectedPenEntity.getPenName());
-                                        cachePenEntity.setPenId(selectedPenEntity.getPenId());
-                                        cachePenEntity.setWhatHappened(Constants.DELETE);
+                                        CachePenEntity cachePenEntity = new CachePenEntity(
+                                                0,
+                                                selectedPenEntity.getPenId(),
+                                                selectedPenEntity.getPenName(),
+                                                Constants.DELETE
+                                        );
 
                                         new InsertHoldingPen(cachePenEntity).execute(ManagePensActivity.this);
                                     }
