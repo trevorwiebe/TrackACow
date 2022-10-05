@@ -1,62 +1,54 @@
-package com.trevorwiebe.trackacow.domain.utils;
+package com.trevorwiebe.trackacow.presentation.fragment_move.utils
 
-import android.graphics.Canvas;
+import android.graphics.Canvas
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.domain.utils.PenViewHolder
+import kotlin.math.abs
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
-
-public class DragHelper extends ItemTouchHelper.Callback {
-
-    private ActionCompletionContract contract;
-
-    public DragHelper(ActionCompletionContract contract) {
-        this.contract = contract;
-    }
-
-    @Override
-    public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        if (viewHolder instanceof PenViewHolder) {
-            return 0;
+class DragHelper(private val contract: ActionCompletionContract) : ItemTouchHelper.Callback() {
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        if (viewHolder is PenViewHolder) {
+            return 0
         }
-        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-//        int swipeFlags = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
-        return makeMovementFlags(dragFlags, 0);
+        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        return makeMovementFlags(dragFlags, 0)
     }
 
-    @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        contract.onViewMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-        return true;
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean {
+        contract.onViewMoved(viewHolder.adapterPosition, target.adapterPosition)
+        return true
     }
 
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+    override fun isLongPressDragEnabled(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean isLongPressDragEnabled() {
-        return false;
-    }
-
-    @Override
-    public void onChildDraw(Canvas c,
-                            RecyclerView recyclerView,
-                            RecyclerView.ViewHolder viewHolder,
-                            float dX,
-                            float dY,
-                            int actionState,
-                            boolean isCurrentlyActive) {
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
-            viewHolder.itemView.setAlpha(alpha);
+            val alpha = 1 - abs(dX) / recyclerView.width
+            viewHolder.itemView.alpha = alpha
         }
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    public interface ActionCompletionContract {
-        void onViewMoved(int oldPosition, int newPosition);
+    interface ActionCompletionContract {
+        fun onViewMoved(oldPosition: Int, newPosition: Int)
     }
-
-
 }
