@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements
         }else if(id == R.id.action_sync_data){
             mMainProgressBar.setVisibility(View.VISIBLE);
             mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-            mSyncDatabase.setSyncAvailability(true);
             mSyncDatabase.beginSync();
         }else{
             AlertDialog.Builder data_to_upload_dialog = new AlertDialog.Builder(MainActivity.this);
@@ -155,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements
                     mMainProgressBar.setVisibility(View.VISIBLE);
 
                     mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-                    mSyncDatabase.setSyncAvailability(true);
                     mSyncDatabase.beginSync();
                 }
             });
@@ -176,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements
             mMainProgressBar.setVisibility(View.VISIBLE);
 
             mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-            mSyncDatabase.setSyncAvailability(true);
             mSyncDatabase.beginSync();
         }
 

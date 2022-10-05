@@ -83,14 +83,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             for (int b = 0; b < holdingPenEntities.size(); b++) {
                 CachePenEntity cachePenEntity = holdingPenEntities.get(b);
 
-                PenEntity penEntity = new PenEntity(cachePenEntity.getPenId(), cachePenEntity.getPenName());
+                PenEntity penEntity = new PenEntity(0,cachePenEntity.getPenId(), cachePenEntity.getPenName());
 
                 switch (cachePenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).setValue(penEntity);
+                        baseRef.child("pens").child(penEntity.getPenPenId()).setValue(penEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(PenEntity.PEN_OBJECT).child(penEntity.getPenId()).removeValue();
+                        baseRef.child("pens").child(penEntity.getPenPenId()).removeValue();
                         break;
                     default:
                         break;
@@ -144,13 +144,21 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 CacheLotEntity cacheLotEntity = holdingLotEntities.get(e);
 
-                LotEntity lotEntity = new LotEntity(cacheLotEntity);
+                LotEntity lotEntity = new LotEntity(
+                        cacheLotEntity.getPrimaryKey(),
+                        cacheLotEntity.getLotName(),
+                        cacheLotEntity.getLotId(),
+                        cacheLotEntity.getCustomerName(),
+                        cacheLotEntity.getNotes(),
+                        cacheLotEntity.getDate(),
+                        cacheLotEntity.getPenId()
+                );
                 switch (cacheLotEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).setValue(lotEntity);
+                        baseRef.child(Constants.LOTS).child(lotEntity.getLotId()).setValue(lotEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(LotEntity.LOT).child(lotEntity.getLotId()).removeValue();
+                        baseRef.child(Constants.LOTS).child(lotEntity.getLotId()).removeValue();
                         break;
                 }
             }
@@ -192,7 +200,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             }
             db.cacheLoadDao().deleteHoldingLoadTable();
 
-            // update callEntity node
+//             update callEntity node
 //            List<HoldingCallEntity> holdingCallEntities = db.holdingCallDao().getHoldingCallEntities();
 //            for (int j=0; j<holdingCallEntities.size(); j++){
 //                HoldingCallEntity holdingCallEntity = holdingCallEntities.get(j);
@@ -213,14 +221,20 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             List<CacheFeedEntity> holdingFeedEntities = db.cacheFeedDao().getHoldingFeedEntities();
             for(int f=0; f<holdingFeedEntities.size(); f++){
                 CacheFeedEntity cacheFeedEntity = holdingFeedEntities.get(f);
-                FeedEntity feedEntity = new FeedEntity(cacheFeedEntity);
+                FeedEntity feedEntity = new FeedEntity(
+                        cacheFeedEntity.getPrimaryKey(),
+                        cacheFeedEntity.getFeed(),
+                        cacheFeedEntity.getDate(),
+                        cacheFeedEntity.getId(),
+                        cacheFeedEntity.getLotId()
+                );
 
                 switch (cacheFeedEntity.getWhatHappened()){
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(FeedEntity.FEED).child(feedEntity.getId()).setValue(feedEntity);
+                        baseRef.child(Constants.FEEDS).child(feedEntity.getId()).setValue(feedEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(FeedEntity.FEED).child(feedEntity.getId()).removeValue();
+                        baseRef.child(Constants.FEEDS).child(feedEntity.getId()).removeValue();
                         break;
                 }
             }

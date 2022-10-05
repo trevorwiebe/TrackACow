@@ -26,7 +26,7 @@ public class QueryLotsByPenId extends AsyncTask<Context, Void, ArrayList<LotEnti
 
     @Override
     protected ArrayList<LotEntity> doInBackground(Context... contexts) {
-        List<LotEntity> lotEntities = AppDatabase.getAppDatabase(contexts[0]).lotDao().getLotEntitiesByPenId(penId);
+        List<LotEntity> lotEntities = AppDatabase.getAppDatabase(contexts[0]).lotDao().getLotEntitiesByPenId2(penId);
         return (ArrayList<LotEntity>) lotEntities;
     }
 

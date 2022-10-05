@@ -16,8 +16,8 @@ class CallRepositoryImpl(
     private val cacheCallDao: CacheCallDao
 ): CallRepository {
 
-    override suspend fun insertCall(callModel: CallModel) {
-        callDao.insertCall(callModel.toCallEntity())
+    override suspend fun insertCall(callModel: CallModel): Long {
+        return callDao.insertCall(callModel.toCallEntity())
     }
 
     override fun getCalls(): Flow<List<CallModel>> {
@@ -28,9 +28,11 @@ class CallRepositoryImpl(
         }
     }
 
-    override fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel> {
+    override fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel?> {
         return callDao.getCallByDateAndLotId(date, lotId)
-            .map { it.toCallModel() }
+            .map {
+                it?.toCallModel()
+            }
     }
 
     override fun getCallsByLotId(lotId: String): Flow<List<CallModel>> {
@@ -40,7 +42,7 @@ class CallRepositoryImpl(
     }
 
     override suspend fun updateCall(callModel: CallModel) {
-        callDao.updateCall(callModel.toCallEntity())
+        callDao.updateCallAmount(callModel.callAmount, callModel.primaryKey)
     }
 
     override suspend fun deleteCall(callModel: CallModel) {

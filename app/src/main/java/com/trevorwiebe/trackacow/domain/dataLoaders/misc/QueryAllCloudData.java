@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.data.entities.FeedEntity;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
+import com.trevorwiebe.trackacow.data.entities.RationEntity;
 import com.trevorwiebe.trackacow.data.entities.UserEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 
@@ -29,17 +30,18 @@ public class QueryAllCloudData {
 
     private static final String TAG = "QueryAllCloudData";
 
-    private DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
-    private ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
-    private ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
-    private ArrayList<ArchivedLotEntity> mArchivedLotList = new ArrayList<>();
-    private ArrayList<UserEntity> mUserEntity = new ArrayList<>();
-    private ArrayList<LoadEntity> mLoadList = new ArrayList<>();
-    private ArrayList<CallEntity> mCallList = new ArrayList<>();
-    private ArrayList<FeedEntity> mFeedList = new ArrayList<>();
+    private final DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private final ArrayList<CowEntity> mCowEntityUpdateList = new ArrayList<>();
+    private final ArrayList<DrugEntity> mDrugEntityUpdateList = new ArrayList<>();
+    private final ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
+    private final ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
+    private final ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
+    private final ArrayList<ArchivedLotEntity> mArchivedLotList = new ArrayList<>();
+    private final ArrayList<UserEntity> mUserEntity = new ArrayList<>();
+    private final ArrayList<LoadEntity> mLoadList = new ArrayList<>();
+    private final ArrayList<CallEntity> mCallList = new ArrayList<>();
+    private final ArrayList<FeedEntity> mFeedList = new ArrayList<>();
+    private final ArrayList<RationEntity> mRationList = new ArrayList<>();
 
     public OnAllCloudDataLoaded onAllCloudDataLoaded;
 
@@ -48,7 +50,20 @@ public class QueryAllCloudData {
     }
 
     public interface OnAllCloudDataLoaded {
-        void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<FeedEntity> feedEntities, ArrayList<UserEntity> userEntities);
+        void onAllCloudDataLoaded(
+                int resultCode,
+                ArrayList<CowEntity> cowEntities,
+                ArrayList<DrugEntity> drugEntities,
+                ArrayList<DrugsGivenEntity> drugsGivenEntities,
+                ArrayList<PenEntity> penEntities,
+                ArrayList<LotEntity> lotEntities,
+                ArrayList<ArchivedLotEntity> archivedLotEntities,
+                ArrayList<LoadEntity> loadEntities,
+                ArrayList<CallEntity> callEntities,
+                ArrayList<FeedEntity> feedEntities,
+                ArrayList<UserEntity> userEntities,
+                ArrayList<RationEntity> rationEntities
+        );
     }
 
     public void loadCloudData() {
@@ -75,7 +90,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case PenEntity.PEN_OBJECT:
+                            case "pens":
                                 for (DataSnapshot penSnapshot : snapshot.getChildren()) {
                                     PenEntity penEntity = penSnapshot.getValue(PenEntity.class);
                                     if (penEntity != null) {
@@ -91,7 +106,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case LotEntity.LOT:
+                            case Constants.LOTS:
                                 for (DataSnapshot lotSnapshot : snapshot.getChildren()) {
                                     LotEntity lotEntity = lotSnapshot.getValue(LotEntity.class);
                                     if (lotEntity != null) {
@@ -120,15 +135,23 @@ public class QueryAllCloudData {
                                     mUserEntity.add(userEntity);
                                 }
                                 break;
-//                            case CallEntity.CALL:
-//                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
-//                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
-//                                    if(callEntity != null){
-//                                        mCallList.add(callEntity);
+                            case "call":
+                                for(DataSnapshot callSnapShot : snapshot.getChildren()){
+                                    CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
+                                    if(callEntity != null){
+                                        mCallList.add(callEntity);
+                                    }
+                                }
+                                break;
+//                            case "rations":
+//                                for(DataSnapshot rationSnapShot : snapshot.getChildren()){
+//                                    RationEntity rationEntity = rationSnapShot.getValue(RationEntity.class);
+//                                    if(rationEntity != null){
+//                                        mRationList.add(rationEntity);
 //                                    }
 //                                }
 //                                break;
-                            case FeedEntity.FEED:
+                            case Constants.FEEDS:
                                 for(DataSnapshot feedSnapShot : snapshot.getChildren()){
                                     FeedEntity feedEntity = feedSnapShot.getValue(FeedEntity.class);
                                     if(feedEntity != null){
@@ -138,19 +161,54 @@ public class QueryAllCloudData {
                                 break;
                             default:
                                 Log.e(TAG, "onDataChange: unknown snapshot key - " + key);
-                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList, mCallList, mFeedList, mUserEntity);
+                                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS,
+                                        mCowEntityUpdateList,
+                                        mDrugEntityUpdateList,
+                                        mDrugsGivenEntityUpdateList,
+                                        mPenEntityUpdateList,
+                                        mLotEntityList,
+                                        mArchivedLotList,
+                                        mLoadList,
+                                        mCallList,
+                                        mFeedList,
+                                        mUserEntity,
+                                        mRationList
+                                );
                                 break;
                         }
                     }
                 }
 
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList, mCallList, mFeedList, mUserEntity);
-
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.SUCCESS,
+                        mCowEntityUpdateList,
+                        mDrugEntityUpdateList,
+                        mDrugsGivenEntityUpdateList,
+                        mPenEntityUpdateList,
+                        mLotEntityList,
+                        mArchivedLotList,
+                        mLoadList,
+                        mCallList,
+                        mFeedList,
+                        mUserEntity,
+                        mRationList
+                );
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD, mCowEntityUpdateList, mDrugEntityUpdateList, mDrugsGivenEntityUpdateList, mPenEntityUpdateList, mLotEntityList, mArchivedLotList, mLoadList, mCallList, mFeedList, mUserEntity);
+                onAllCloudDataLoaded.onAllCloudDataLoaded(Constants.ERROR_FETCHING_DATA_FROM_CLOUD,
+                        mCowEntityUpdateList,
+                        mDrugEntityUpdateList,
+                        mDrugsGivenEntityUpdateList,
+                        mPenEntityUpdateList,
+                        mLotEntityList,
+                        mArchivedLotList,
+                        mLoadList,
+                        mCallList,
+                        mFeedList,
+                        mUserEntity,
+                        mRationList
+                );
             }
         });
 

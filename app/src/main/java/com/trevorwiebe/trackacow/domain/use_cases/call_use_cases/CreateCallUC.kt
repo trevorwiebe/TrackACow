@@ -14,6 +14,11 @@ data class CreateCallUC(
     private val context: Application
 ){
     suspend operator fun invoke(callModel: CallModel){
+
+        val id: Long = callRepository.insertCall(callModel)
+
+        callModel.primaryKey = id.toInt()
+
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
             callRepositoryRemote.insertCallRemote(callModel)
@@ -21,6 +26,5 @@ data class CreateCallUC(
             callRepository.insertHoldingCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
         }
-        callRepository.insertCall(callModel)
     }
 }

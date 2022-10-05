@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface CallRepository {
 
-    suspend fun insertCall(callModel: CallModel)
+    suspend fun insertCall(callModel: CallModel): Long
 
     fun getCalls(): Flow<List<CallModel>>
 
-    fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel>
+    fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel?>
 
     fun getCallsByLotId(lotId: String): Flow<List<CallModel>>
 

@@ -6,12 +6,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
-import com.trevorwiebe.trackacow.data.local.repository.CallRepositoryImpl
-import com.trevorwiebe.trackacow.data.local.repository.RationRepositoryImpl
+import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
-import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
-import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
+import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -82,4 +80,33 @@ object TrackACowDataModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun providePenRepository(
+        db: AppDatabase
+    ): PenRepository{
+        return PenRepositoryImpl(
+            penDao = db.penDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideLotRepository(
+        db: AppDatabase
+    ): LotRepository {
+        return LotRepositoryImpl(
+            lotDao = db.lotDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideFeedRepository(
+        db: AppDatabase
+    ): FeedRepository {
+        return FeedRepositoryImpl(
+            feedDao = db.feedDao()
+        )
+    }
 }

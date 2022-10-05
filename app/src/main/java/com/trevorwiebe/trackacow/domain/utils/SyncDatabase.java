@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.domain.utils;
 
 import android.content.Context;
 
+import com.trevorwiebe.trackacow.data.entities.RationEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.QueryAllCloudData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.InsertAllLocalChangeToCloud;
@@ -23,11 +24,8 @@ public class SyncDatabase implements
         QueryAllCloudData.OnAllCloudDataLoaded,
         CloneCloudDatabaseToLocalDatabase.OnDatabaseCloned {
 
-    private static final String TAG = "SyncDatabase";
-
-    private OnDatabaseSynced onDatabaseSynced;
-    private Context context;
-    private boolean mIsSyncAvailable;
+    private final OnDatabaseSynced onDatabaseSynced;
+    private final Context context;
 
     public SyncDatabase(OnDatabaseSynced onDatabaseSynced, Context context) {
         this.onDatabaseSynced = onDatabaseSynced;
@@ -41,15 +39,11 @@ public class SyncDatabase implements
     public void beginSync() {
 
         if (Utility.haveNetworkConnection(context)) {
-//            if (mIsSyncAvailable) {
-                if (Utility.isThereNewDataToUpload(context)) {
-                    new InsertAllLocalChangeToCloud(SyncDatabase.this).execute(context);
-                } else {
-                    new QueryAllCloudData(SyncDatabase.this).loadCloudData();
-                }
-//            } else {
-//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-//            }
+            if (Utility.isThereNewDataToUpload(context)) {
+                new InsertAllLocalChangeToCloud(SyncDatabase.this).execute(context);
+            } else {
+                new QueryAllCloudData(SyncDatabase.this).loadCloudData();
+            }
         } else {
             onDatabaseSynced.onDatabaseSynced(Constants.NO_NETWORK_CONNECTION);
         }
@@ -59,24 +53,41 @@ public class SyncDatabase implements
     @Override
     public void onAllLocalDbInsertedToCloud(int resultCode) {
         if (resultCode == Constants.SUCCESS) {
-//            if (mIsSyncAvailable) {
-                new QueryAllCloudData(this).loadCloudData();
-//            } else {
-//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-//            }
+            new QueryAllCloudData(this).loadCloudData();
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
     }
 
     @Override
-    public void onAllCloudDataLoaded(int resultCode, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<FeedEntity> feedEntities, ArrayList<UserEntity> userEntities) {
+    public void onAllCloudDataLoaded(
+            int resultCode,
+            ArrayList<CowEntity> cowEntities,
+            ArrayList<DrugEntity> drugEntities,
+            ArrayList<DrugsGivenEntity> drugsGivenEntities,
+            ArrayList<PenEntity> penEntities,
+            ArrayList<LotEntity> lotEntities,
+            ArrayList<ArchivedLotEntity> archivedLotEntities,
+            ArrayList<LoadEntity> loadEntities,
+            ArrayList<CallEntity> callEntities,
+            ArrayList<FeedEntity> feedEntities,
+            ArrayList<UserEntity> userEntities,
+            ArrayList<RationEntity> rationEntities
+    ) {
         if (resultCode == Constants.SUCCESS) {
-//            if (mIsSyncAvailable) {
-                new CloneCloudDatabaseToLocalDatabase(this, cowEntities, drugEntities, drugsGivenEntities, penEntities, lotEntities, archivedLotEntities, loadEntities, callEntities, feedEntities, userEntities).execute(context);
-//            } else {
-//                onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-//            }
+                new CloneCloudDatabaseToLocalDatabase(
+                    this,
+                    cowEntities,
+                    drugEntities,
+                    drugsGivenEntities,
+                    penEntities,
+                    lotEntities,
+                    archivedLotEntities,
+                    loadEntities,
+                    callEntities,
+                    feedEntities,
+                    userEntities
+                ).execute(context);
         } else {
             onDatabaseSynced.onDatabaseSynced(resultCode);
         }
@@ -84,14 +95,6 @@ public class SyncDatabase implements
 
     @Override
     public void onDatabaseCloned() {
-//        if (mIsSyncAvailable) {
-            onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
-//        } else {
-//            onDatabaseSynced.onDatabaseSynced(Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED);
-//        }
-    }
-
-    public void setSyncAvailability(boolean isSyncAvailable) {
-        mIsSyncAvailable = isSyncAvailable;
+        onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
     }
 }
