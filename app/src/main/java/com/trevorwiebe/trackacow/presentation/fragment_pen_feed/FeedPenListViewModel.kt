@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit
 
 class FeedPenListViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
+    private val feedUseCases: FeedUseCases,
     @Assisted("lotModel") lotModel: LotModel
 ): ViewModel() {
 
@@ -55,17 +58,24 @@ class FeedPenListViewModel @AssistedInject constructor(
         readCallsJob = callUseCases.readCallsByLotId(lotId ?: "")
             .map { callList ->
                 mCallList = callList
-                _uiState.update { uiState ->
-                    uiState.copy(
-                        feedPenUiList = buildFeedList(lotDate, mCallList)
-                    )
-                }
-
+                readFeedsByLotId(lotDate, lotId?:"")
             }
             .launchIn(viewModelScope)
     }
 
-    private fun buildFeedList(lotStartDate: Long, callList: List<CallModel>): MutableList<FeedPenListUiModel> {
+    private fun readFeedsByLotId(lotDate: Long, lotId: String){
+        feedUseCases.readFeedsByLotId(lotId)
+            .map { feedList ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        feedPenUiList = buildFeedList(lotDate, mCallList, feedList)
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun buildFeedList(lotStartDate: Long, callList: List<CallModel>, feedList: List<FeedModel>): MutableList<FeedPenListUiModel> {
 
         val feedPenUiModelList: MutableList<FeedPenListUiModel> = mutableListOf()
 
@@ -86,10 +96,12 @@ class FeedPenListViewModel @AssistedInject constructor(
         val initialCallModel = callList.find { it.date == dateStarted }
             ?: CallModel(0, 0, 0,"", "")
 
+        val initialFeedList: List<FeedModel> = feedList.filter { it.date == dateStarted }
+
         val initialFeedPenListUiModel = FeedPenListUiModel(
             date = dateStarted,
             callModel = initialCallModel,
-            feedList = emptyList()
+            feedList = initialFeedList
         )
 
         feedPenUiModelList.add(initialFeedPenListUiModel)
@@ -103,7 +115,7 @@ class FeedPenListViewModel @AssistedInject constructor(
             val feedPenListUiModel = FeedPenListUiModel(
                 date = dateStarted,
                 callModel = callModel,
-                feedList = emptyList()
+                feedList = feedList.filter { it.date == dateStarted }
             )
 
             feedPenUiModelList.add(feedPenListUiModel)
