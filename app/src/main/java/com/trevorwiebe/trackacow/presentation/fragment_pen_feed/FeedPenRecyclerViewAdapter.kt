@@ -35,17 +35,20 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
 
         val feedPenListUiModel = feedPenUiModelList[i]
 
-        // get date
+        // set date
         val date = feedPenListUiModel.date
         val friendlyDate = Utility.convertMillisToFriendlyDate(date)
         feedPenViewHolder.mDate.text = friendlyDate
 
-        // get call model
+        // set call model
         val callModel = feedPenListUiModel.callModel
         val call = callModel.callAmount.toLong()
         feedPenViewHolder.mCall.text = numberFormat.format(call)
 
-        // get feed entities
+        // set ration
+        feedPenViewHolder.mRation.text = "R1"
+
+        // set feed entities
         val feedEntities = feedPenListUiModel.feedList
         var totalFed = 0
         feedPenViewHolder.mFed.text = ""
@@ -80,6 +83,7 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
     inner class FeedPenViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mDate: TextView
         val mCall: TextView
+        val mRation: TextView
         val mFed: TextView
         val mLeftToFeed: TextView
         val mTotalFed: TextView
@@ -87,6 +91,7 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
         init {
             mDate = view.findViewById(R.id.feed_pen_date)
             mCall = view.findViewById(R.id.feed_lot_call)
+            mRation = view.findViewById(R.id.feed_lot_ration)
             mFed = view.findViewById(R.id.feed_lot_fed)
             mLeftToFeed = view.findViewById(R.id.feed_lot_left_to_feed)
             mTotalFed = view.findViewById(R.id.feed_lot_total_fed)
