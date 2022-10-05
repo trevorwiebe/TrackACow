@@ -25,9 +25,17 @@ public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
         AppDatabase db = AppDatabase.getAppDatabase(contexts[0]);
 
         LotEntity lotEntity = db.lotDao().getLotEntityById(lotId);
-        lotEntity.setPenId(penId);
+        lotEntity.setLotPenId(penId);
 
-        CacheLotEntity cacheLotEntity = new CacheLotEntity(lotEntity, Constants.INSERT_UPDATE);
+        CacheLotEntity cacheLotEntity = new CacheLotEntity(
+                lotEntity.getPrimaryKey(),
+                lotEntity.getLotName(),
+                lotEntity.getLotId(),
+                lotEntity.getCustomerName(),
+                lotEntity.getNotes(),
+                lotEntity.getDate(),
+                lotEntity.getLotPenId(),
+                Constants.INSERT_UPDATE);
 
         db.cacheLotDao().insertHoldingLot(cacheLotEntity);
 

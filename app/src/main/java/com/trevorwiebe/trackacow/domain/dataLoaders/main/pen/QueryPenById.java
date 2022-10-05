@@ -23,7 +23,7 @@ public class QueryPenById extends AsyncTask<Context, Void, PenEntity> {
 
     @Override
     protected PenEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).penDao().getPenById(mPenId);
+        return AppDatabase.getAppDatabase(contexts[0]).penDao().getPenById2(mPenId);
     }
 
     @Override
