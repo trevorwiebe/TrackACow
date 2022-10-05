@@ -80,7 +80,7 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         return shuffleObject.type
     }
 
-    fun setAdapterVariables(shuffleObjects: ArrayList<ShuffleObject>, context: Context) {
+    fun setAdapterVariables(shuffleObjects: MutableList<ShuffleObject>, context: Context) {
         this.shuffleObjects = ArrayList(shuffleObjects)
         this.context = context
         notifyDataSetChanged()
