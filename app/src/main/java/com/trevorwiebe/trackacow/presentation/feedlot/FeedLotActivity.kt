@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.feedlot
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId.OnLotByLotIdLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded
@@ -21,16 +20,17 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHold
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,8 +51,9 @@ class FeedLotActivity : AppCompatActivity(),
     private lateinit var mTotalFed: TextView
     private lateinit var mLeftToFeed: TextView
     private lateinit var mSave: Button
-    private var mSelectedCall: CallModel? = null
+    private lateinit var mRationSpinner: Spinner
 
+    private var mSelectedCall: CallModel? = null
     private var mFeedAgainNumber = 0
     private var isLoadingMore = false
     private var mShouldAddNewFeedEditText = false
@@ -78,6 +79,7 @@ class FeedLotActivity : AppCompatActivity(),
         mDate = intent.getLongExtra("feed_ui_model_date", 0L)
         mLotId = intent.getStringExtra("lot_id")?:""
 
+        mRationSpinner = findViewById(R.id.select_ration)
         mCallET = findViewById(R.id.feed_lot_call_et)
         mFeedAgainLayout = findViewById(R.id.feed_again_layout)
         mTotalFed = findViewById(R.id.pen_total_fed)
@@ -147,8 +149,8 @@ class FeedLotActivity : AppCompatActivity(),
         }
 
         lifecycleScope.launch {
-            feedLotViewModel.uiState.collect{
-                mSelectedCall = it.callModel
+            feedLotViewModel.uiState.collect{ feedLotUiState ->
+                mSelectedCall = feedLotUiState.callModel
 
                 if (mSelectedCall == null) {
                     mSave.text = getString(R.string.save)
@@ -161,6 +163,13 @@ class FeedLotActivity : AppCompatActivity(),
                     val callStr = call.toString()
                     mCallET.setText(callStr)
                 }
+
+                val rationsList: List<String> = feedLotUiState.rationList.map { it.rationName }
+
+                mRationSpinner.adapter = ArrayAdapter(
+                    applicationContext,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    rationsList)
             }
         }
 

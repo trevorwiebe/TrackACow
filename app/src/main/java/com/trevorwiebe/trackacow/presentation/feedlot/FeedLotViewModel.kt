@@ -1,14 +1,12 @@
 package com.trevorwiebe.trackacow.presentation.feedlot
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,10 +17,12 @@ import java.util.*
 
 class FeedLotViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
+    private val rationUseCases: RationUseCases,
     @Assisted defaultArgs: Bundle? = null
 ): ViewModel() {
 
     private var readCallByLotIdAndDateJob: Job? = null
+    private var readRationsJob: Job? = null
 
     @AssistedFactory
     interface FeedLotViewModelFactory {
@@ -61,6 +61,8 @@ class FeedLotViewModel @AssistedInject constructor(
 
             readCallByLotIdAndDate(lotId, dateStarted)
         }
+
+        readRations()
     }
 
     fun onEvent(event: FeedLotEvents){
@@ -94,6 +96,19 @@ class FeedLotViewModel @AssistedInject constructor(
                 _uiState.update { uiState ->
                     uiState.copy(
                         callModel = receivedCallModel
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun readRations(){
+        readRationsJob?.cancel()
+        readRationsJob = rationUseCases.readAllRationsUC()
+            .map { thisRationList ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        rationList = thisRationList
                     )
                 }
             }

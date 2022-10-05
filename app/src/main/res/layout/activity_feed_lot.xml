@@ -19,10 +19,14 @@
             android:backgroundTint="@color/colorAccentVeryLight">
 
             <Spinner
+                android:backgroundTint="@color/colorAccentVeryLight"
                 android:id="@+id/select_ration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"/>
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingEnd="11dp"
+                android:paddingStart="11dp"/>
 
         </androidx.cardview.widget.CardView>
 

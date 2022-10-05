@@ -1,11 +1,9 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
-import com.trevorwiebe.trackacow.domain.repository.local.FeedRepository
-import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
-import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
+import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
@@ -15,15 +13,32 @@ import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
+import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
 @InstallIn(ActivityComponent::class)
 object ActivityDomainModule {
+
+    @ActivityScoped
+    @Provides
+    fun provideRationUseCases(
+        rationsRepository: RationsRepository,
+        rationsRepositoryRemote: RationRepositoryRemote,
+        context: Application
+    ): RationUseCases {
+        return RationUseCases(
+            createRationUC = CreateRationUC(rationsRepository, rationsRepositoryRemote, context),
+            readAllRationsUC = ReadAllRationsUC(rationsRepository),
+            updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
+            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, context)
+        )
+    }
 
     @ActivityScoped
     @Provides
