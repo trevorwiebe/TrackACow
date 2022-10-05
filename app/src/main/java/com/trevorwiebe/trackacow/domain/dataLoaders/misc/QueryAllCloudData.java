@@ -24,6 +24,7 @@ import com.trevorwiebe.trackacow.domain.utils.Constants;
 
 import java.util.ArrayList;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryAllCloudData {
 
     private static final String TAG = "QueryAllCloudData";

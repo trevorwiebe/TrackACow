@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.entities.CallEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryCallByLotIdAndDate extends AsyncTask<Context, Void, CallEntity> {
 
     private long date;

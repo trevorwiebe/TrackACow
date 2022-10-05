@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.domain.dataLoaders.main.call;
 import android.content.Context;
 import android.os.AsyncTask;
 
+@Deprecated(since="Use use-cases instead")
 public class UpdateCallById extends AsyncTask<Context, Void, Void> {
 
     private int call;

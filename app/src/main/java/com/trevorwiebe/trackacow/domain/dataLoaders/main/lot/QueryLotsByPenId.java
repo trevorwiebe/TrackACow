@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryLotsByPenId extends AsyncTask<Context, Void, ArrayList<LotEntity>> {
 
     private String penId;

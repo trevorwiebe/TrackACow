@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryArchivedLotsByLotId extends AsyncTask<Context, Void, ArchivedLotEntity> {
 
     private String lotId;

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryUserEntity extends AsyncTask<Context, Void, UserEntity> {
 
     private OnUserLoaded onUserLoaded;

@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryMedicatedCowsByLotIds extends AsyncTask<Context, Void, ArrayList<CowEntity>> {
 
     private ArrayList<String> mLotIds;

@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryArchivedLots extends AsyncTask<Context, Void, ArrayList<ArchivedLotEntity>> {
 
     private OnArchivedLotsLoaded onArchivedLotsLoaded;

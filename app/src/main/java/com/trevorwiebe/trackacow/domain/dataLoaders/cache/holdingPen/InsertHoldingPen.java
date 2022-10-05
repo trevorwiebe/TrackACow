@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertHoldingPen extends AsyncTask<Context, Void, Void> {
 
     private CachePenEntity cachePenEntity;

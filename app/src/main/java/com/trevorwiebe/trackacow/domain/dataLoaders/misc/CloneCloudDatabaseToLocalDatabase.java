@@ -17,6 +17,7 @@ import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 import java.util.ArrayList;
 
+@Deprecated(since="Use use-cases instead")
 public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, Void> {
 
     private ArrayList<CowEntity> mCowEntityUpdateList;

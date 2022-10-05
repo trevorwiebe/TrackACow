@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity>> {
 
     private OnAllDrugsLoaded mOnAllDrugsLoaded;

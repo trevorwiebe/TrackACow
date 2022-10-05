@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertHoldingFeedEntity extends AsyncTask<Context, Void, Void> {
 
     private CacheFeedEntity cacheFeedEntity;

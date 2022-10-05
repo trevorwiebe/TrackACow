@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryLoadsByLotId extends AsyncTask<Context, Void, ArrayList<LoadEntity>> {
 
     private String lotId;

@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 
+@Deprecated(since="Use use-cases instead")
 public class UpdateHoldingLot extends AsyncTask<Context, Void, Void> {
 
     private String lotId;

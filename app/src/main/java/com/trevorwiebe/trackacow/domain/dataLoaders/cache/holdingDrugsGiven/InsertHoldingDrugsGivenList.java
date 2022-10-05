@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
 import java.util.ArrayList;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertHoldingDrugsGivenList extends AsyncTask<Context, Void, Void> {
 
     private ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities;

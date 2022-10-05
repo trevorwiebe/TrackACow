@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryPenById extends AsyncTask<Context, Void, PenEntity> {
 
     private String mPenId;

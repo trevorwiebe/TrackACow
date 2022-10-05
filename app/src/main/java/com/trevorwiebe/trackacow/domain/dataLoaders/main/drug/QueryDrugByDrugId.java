@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryDrugByDrugId extends AsyncTask<Context, Void, DrugEntity> {
 
     private String drugId;

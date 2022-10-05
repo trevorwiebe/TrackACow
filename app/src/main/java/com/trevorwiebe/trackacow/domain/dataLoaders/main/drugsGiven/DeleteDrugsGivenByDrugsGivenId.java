@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
+@Deprecated(since="Use use-cases instead")
 public class DeleteDrugsGivenByDrugsGivenId extends AsyncTask<Context, Void, Void> {
 
     private String drugsGivenId;

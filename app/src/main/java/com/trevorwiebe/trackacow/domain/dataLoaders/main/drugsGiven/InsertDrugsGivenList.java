@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
 
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertDrugsGivenList extends AsyncTask<Context, Void, Void> {
 
     private static final String TAG = "InsertDrugsGivenList";

@@ -31,6 +31,7 @@ import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Integer> {
 
     private static final String TAG = "InsertAllLocalChangeToC";

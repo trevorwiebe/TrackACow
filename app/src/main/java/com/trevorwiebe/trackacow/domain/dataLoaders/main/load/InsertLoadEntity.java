@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertLoadEntity extends AsyncTask<Context, Void, Void> {
 
     private LoadEntity loadEntity;

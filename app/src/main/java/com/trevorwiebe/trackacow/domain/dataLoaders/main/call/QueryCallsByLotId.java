@@ -7,6 +7,7 @@ import com.trevorwiebe.trackacow.data.entities.CallEntity;
 
 import java.util.ArrayList;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryCallsByLotId extends AsyncTask<Context, Void, ArrayList<CallEntity>> {
 
     private String lotId;

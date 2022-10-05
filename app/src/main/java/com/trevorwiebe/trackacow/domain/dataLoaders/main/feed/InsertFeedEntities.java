@@ -8,6 +8,7 @@ import com.trevorwiebe.trackacow.data.entities.FeedEntity;
 
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class InsertFeedEntities extends AsyncTask<Context, Void, Void> {
 
     private List<FeedEntity> feedEntities;

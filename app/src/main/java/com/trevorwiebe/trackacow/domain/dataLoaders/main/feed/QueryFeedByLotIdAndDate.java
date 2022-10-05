@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.entities.FeedEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryFeedByLotIdAndDate extends AsyncTask<Context, Void, ArrayList<FeedEntity>> {
 
     private String lotId;

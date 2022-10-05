@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
 
+@Deprecated(since="Use use-cases instead")
 public class DeleteFeedEntitiesByDateAndLotId extends AsyncTask<Context, Void, Void> {
 
     private static final String TAG = "DeleteFeedEntitiesByDat";

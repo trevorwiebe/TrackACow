@@ -10,6 +10,7 @@ import com.trevorwiebe.trackacow.data.entities.PenEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since="Use use-cases instead")
 public class QueryAllPens extends AsyncTask<Context, Void, ArrayList<PenEntity>> {
 
     private static final String TAG = "QueryAllPens";
