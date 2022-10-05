@@ -13,7 +13,7 @@ fun LotModel.toLotEntity(): LotEntity {
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId
+        lotPenId = penId
     )
 }
 
@@ -25,7 +25,7 @@ fun LotEntity.toLotModel(): LotModel {
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId
+        penId = lotPenId
     )
 }
 
@@ -74,7 +74,7 @@ fun LotEntity.toCacheLotEntity(whatHappened: Int): CacheLotEntity{
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId,
+        penId = lotPenId,
         whatHappened = whatHappened
     )
 }

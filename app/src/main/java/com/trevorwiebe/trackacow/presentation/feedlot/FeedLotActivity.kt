@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.feedlot
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId.OnLotByLotIdLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate.OnFeedByLotIdAndDateLoaded
@@ -24,12 +25,12 @@ import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,12 +55,12 @@ class FeedLotActivity : AppCompatActivity(),
 
     private var mFeedAgainNumber = 0
     private var isLoadingMore = false
-    private var mDate: Long = 0
-    private var mLotId: String = ""
     private var mShouldAddNewFeedEditText = false
     private lateinit var mFeedTextWatcher: TextWatcher
     private val numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault())
     private var mFeedEntities = ArrayList<FeedEntity>()
+    private var mDate: Long = 0L
+    private var mLotId: String = ""
 
     @Inject  lateinit var feedLotViewModelFactory: FeedLotViewModel.FeedLotViewModelFactory
 
@@ -74,8 +75,8 @@ class FeedLotActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_lot)
 
-        mDate = intent.getLongExtra("date", 0)
-        mLotId = intent.getStringExtra("lotId").toString()
+        mDate = intent.getLongExtra("feed_ui_model_date", 0L)
+        mLotId = intent.getStringExtra("lot_id")?:""
 
         mCallET = findViewById(R.id.feed_lot_call_et)
         mFeedAgainLayout = findViewById(R.id.feed_again_layout)
@@ -114,10 +115,18 @@ class FeedLotActivity : AppCompatActivity(),
                 // code for updating the call entity
                 val callAmount = mCallET.text.toString().toInt()
 
+                val c = Calendar.getInstance()
+                c.timeInMillis = mDate
+                c[Calendar.HOUR_OF_DAY] = 0
+                c[Calendar.MINUTE] = 0
+                c[Calendar.SECOND] = 0
+                c[Calendar.MILLISECOND] = 0
+                val dateStarted = c.timeInMillis
+
                 val callModel: CallModel
                 if(mSelectedCall == null){
                     // create the call Model
-                    callModel = CallModel(0, callAmount, mDate, mLotId, "")
+                    callModel = CallModel(0, callAmount, dateStarted, mLotId, "")
                 }else{
                     // assign callModel to mSelectedCallModel
                     callModel = mSelectedCall as CallModel
@@ -155,9 +164,11 @@ class FeedLotActivity : AppCompatActivity(),
             }
         }
 
+        if(mDate != 0L && mLotId != "") {
 
-        QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
-        QueryLotByLotId(mLotId, this).execute(this)
+            QueryFeedByLotIdAndDate(mDate, mLotId, this).execute(this)
+            QueryLotByLotId(mLotId, this).execute(this)
+        }
     }
 
     override fun onFeedByLotIdAndDateLoaded(feedEntities: ArrayList<FeedEntity>) {

@@ -16,11 +16,11 @@ interface LotDao {
     @Query("SELECT * FROM lot")
     fun getLotEntityList(): List<LotEntity>
 
-    @Query("SELECT * FROM lot WHERE penId = :penId")
+    @Query("SELECT * FROM lot WHERE lotPenId = :penId")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 
     @Deprecated("Use getLotEntitiesByPenId with return type of Flow instead")
-    @Query("SELECT * FROM lot WHERE penId = :penId")
+    @Query("SELECT * FROM lot WHERE lotPenId = :penId")
     fun getLotEntitiesByPenId2(penId: String): List<LotEntity>
 
     @Deprecated("Use flow return types")
@@ -39,7 +39,7 @@ interface LotDao {
         lotId: String
     )
 
-    @Query("UPDATE lot SET penId = :penId WHERE lotId = :lotId")
+    @Query("UPDATE lot SET lotPenId = :penId WHERE lotId = :lotId")
     fun updateLotWithNewPenId(lotId: String, penId: String)
 
     @Query("DELETE FROM lot")

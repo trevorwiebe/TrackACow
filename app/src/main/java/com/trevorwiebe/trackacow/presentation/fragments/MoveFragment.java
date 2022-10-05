@@ -85,12 +85,12 @@ public class MoveFragment extends Fragment implements
 
             PenEntity penEntity = mPenEntities.get(r);
             String penName = penEntity.getPenName();
-            String penId = penEntity.getPenId();
+            String penId = penEntity.getPenPenId();
 
             ShuffleObject penShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.PEN_NAME, penName, penId);
             shuffleObjects.add(penShuffleObject);
 
-            ArrayList<LotEntity> selectedLotEntities = getLotEntities(penEntity.getPenId(), lotEntities);
+            ArrayList<LotEntity> selectedLotEntities = getLotEntities(penEntity.getPenPenId(), lotEntities);
             if (selectedLotEntities.size() != 0) {
                 for (int p = 0; p < selectedLotEntities.size(); p++) {
                     LotEntity lotEntity = selectedLotEntities.get(p);
@@ -116,7 +116,7 @@ public class MoveFragment extends Fragment implements
         ArrayList<LotEntity> selectedLotEntities = new ArrayList<>();
         for (int o = 0; o < lotEntities.size(); o++) {
             LotEntity lotEntity = lotEntities.get(o);
-            if (lotEntity.getPenId().equals(penId)) {
+            if (lotEntity.getLotPenId().equals(penId)) {
                 selectedLotEntities.add(lotEntity);
             }
         }

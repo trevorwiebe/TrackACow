@@ -9,6 +9,6 @@ import androidx.room.Entity
 data class PenEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,
-    var penId: String = "",
+    var penPenId: String = "",
     var penName: String = "",
 )

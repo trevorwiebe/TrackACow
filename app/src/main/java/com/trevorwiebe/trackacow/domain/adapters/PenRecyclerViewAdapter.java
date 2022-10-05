@@ -53,7 +53,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
 
         if (mLotList != null) {
 
-            ArrayList<LotEntity> lotEntities = findLotEntities(penEntity.getPenId());
+            ArrayList<LotEntity> lotEntities = findLotEntities(penEntity.getPenPenId());
             if (lotEntities.size() != 0) {
                 penViewHolder.mLotNames.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
                 penViewHolder.mLotNames.setTypeface(null, Typeface.BOLD);
@@ -102,7 +102,7 @@ public class PenRecyclerViewAdapter extends RecyclerView.Adapter<PenRecyclerView
         ArrayList<LotEntity> lotEntities = new ArrayList<>();
         for (int o = 0; o < mLotList.size(); o++) {
             LotEntity lotEntity = mLotList.get(o);
-            if (lotEntity.getPenId().equals(penId)) {
+            if (lotEntity.getLotPenId().equals(penId)) {
                 lotEntities.add(lotEntity);
             }
         }

@@ -405,7 +405,7 @@ public class LotReportActivity extends AppCompatActivity implements
                                 mSelectedLotEntity.getCustomerName(),
                                 mSelectedLotEntity.getNotes(),
                                 mSelectedLotEntity.getDate(),
-                                mSelectedLotEntity.getPenId(),
+                                mSelectedLotEntity.getLotPenId(),
                                 Constants.DELETE
                         );
                         new InsertHoldingLot(cacheLotEntity).execute(LotReportActivity.this);

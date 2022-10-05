@@ -2,15 +2,21 @@ package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -44,6 +50,18 @@ object ViewModelDomainModule {
             readCallsByLotId = ReadCallsByLotIdUC(callRepository),
             createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
             updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun providePenUseCases(
+        penRepository: PenRepository
+    ): PenUseCases {
+        return PenUseCases(
+            readPens = ReadPens(penRepository),
+            readPenByPenId = ReadPenByPenId(penRepository),
+            readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository)
         )
     }
 }

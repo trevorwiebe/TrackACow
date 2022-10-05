@@ -10,6 +10,9 @@ interface FeedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFeedEntity(feedEntity: FeedEntity)
 
+    @Query("SELECT * FROM feed WHERE lotId = :lotId")
+    fun getFeedsByLotId(lotId: String): Flow<List<FeedEntity>>
+
     @Update
     suspend fun updateFeedEntity(feedEntity: FeedEntity)
 

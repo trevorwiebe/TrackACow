@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
     id 'dagger.hilt.android.plugin'
     id 'com.google.firebase.crashlytics'
 }
@@ -27,9 +29,6 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug{
-            ext.enableCrashlytics = false
         }
     }
     compileOptions {
@@ -59,6 +58,9 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:1.3.0-beta02"
     implementation "androidx.navigation:navigation-compose:2.5.2"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+
+    // ViewPager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     // Work Manager
     implementation 'androidx.work:work-runtime:2.7.1'
@@ -94,13 +96,14 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-database-ktx'
+    // Crashlytics
+    releaseImplementation 'com.google.firebase:firebase-analytics'
+    releaseImplementation 'com.google.firebase:firebase-crashlytics'
 
     // Testing dependencies
     testImplementation 'junit:junit:4.13.2'

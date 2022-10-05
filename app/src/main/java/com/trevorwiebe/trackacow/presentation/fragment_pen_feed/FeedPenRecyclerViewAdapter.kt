@@ -1,7 +1,7 @@
-package com.trevorwiebe.trackacow.domain.adapters
+package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
 import androidx.recyclerview.widget.RecyclerView
-import com.trevorwiebe.trackacow.domain.adapters.FeedPenRecyclerViewAdapter.FeedPenViewHolder
+import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.FeedPenRecyclerViewAdapter.FeedPenViewHolder
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import android.view.ViewGroup
@@ -10,19 +10,18 @@ import android.view.View
 import com.trevorwiebe.trackacow.R
 import android.widget.TextView
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
 import java.text.NumberFormat
 import java.util.*
 
 class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
 
-    private var mDateList: List<Long> = emptyList()
-    private var mCallModels: List<CallModel> = emptyList()
-    private var mFeedEntities: List<FeedEntity> = emptyList()
+    private var feedPenUiModelList: List<FeedPenListUiModel> = emptyList()
 
     private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
 
     override fun getItemCount(): Int {
-        return mDateList.size
+        return feedPenUiModelList.size
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): FeedPenViewHolder {
@@ -33,26 +32,30 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
     }
 
     override fun onBindViewHolder(feedPenViewHolder: FeedPenViewHolder, i: Int) {
-        val date = mDateList[i]
+
+        val feedPenListUiModel = feedPenUiModelList[i]
+
+        // get date
+        val date = feedPenListUiModel.date
         val friendlyDate = Utility.convertMillisToFriendlyDate(date)
         feedPenViewHolder.mDate.text = friendlyDate
-        val callModel = getCallByDate(date)
-        var call = 0
-        if (callModel != null) {
-            call = callModel.callAmount
-            val callStr = numberFormat.format(call.toLong())
-            feedPenViewHolder.mCall.text = callStr
-        }
-        val feedEntities = getFeedEntitiesByDate(date)
+
+        // get call model
+        val callModel = feedPenListUiModel.callModel
+        val call = callModel.callAmount.toLong()
+        feedPenViewHolder.mCall.text = numberFormat.format(call)
+
+        // get feed entities
+        val feedEntities = feedPenListUiModel.feedList
         var totalFed = 0
         feedPenViewHolder.mFed.text = ""
-        if (feedEntities.size == 0) {
+        if (feedEntities.isEmpty()) {
             feedPenViewHolder.mFed.text = "0"
         } else {
             for (t in feedEntities.indices) {
                 val feedEntity = feedEntities[t]
                 val amountFed = feedEntity.feed
-                totalFed = totalFed + amountFed
+                totalFed += amountFed
                 val amountFedStr = numberFormat.format(amountFed.toLong())
                 feedPenViewHolder.mFed.append(amountFedStr)
                 if (t < (feedEntities.size - 1)) {
@@ -60,25 +63,17 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
                 }
             }
         }
+
+        // calculate feed and left to feed
         val totalFedStr = numberFormat.format(totalFed.toLong())
         feedPenViewHolder.mTotalFed.text = totalFedStr
         val leftToFeed = call - totalFed
-        val leftToFeedStr = numberFormat.format(leftToFeed.toLong())
+        val leftToFeedStr = numberFormat.format(leftToFeed)
         feedPenViewHolder.mLeftToFeed.text = leftToFeedStr
     }
 
-    fun setDateList(dateList: List<Long>) {
-        mDateList = dateList
-        notifyDataSetChanged()
-    }
-
-    fun setCallList(callList: List<CallModel>) {
-        mCallModels = callList
-        notifyDataSetChanged()
-    }
-
-    fun setFeedList(feedList: ArrayList<FeedEntity>) {
-        mFeedEntities = feedList
+    fun setFeedPenList(feedPenListUiList: List<FeedPenListUiModel>){
+        feedPenUiModelList = feedPenListUiList
         notifyDataSetChanged()
     }
 
@@ -96,26 +91,5 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
             mLeftToFeed = view.findViewById(R.id.feed_lot_left_to_feed)
             mTotalFed = view.findViewById(R.id.feed_lot_total_fed)
         }
-    }
-
-    private fun getCallByDate(date: Long): CallModel? {
-        for (r in mCallModels.indices) {
-            val callModel = mCallModels[r]
-            if (callModel.date == date) {
-                return callModel
-            }
-        }
-        return null
-    }
-
-    private fun getFeedEntitiesByDate(date: Long): ArrayList<FeedEntity> {
-        val feedEntities = ArrayList<FeedEntity>()
-        for (q in mFeedEntities.indices) {
-            val feedEntity = mFeedEntities[q]
-            if (feedEntity.date == date) {
-                feedEntities.add(feedEntity)
-            }
-        }
-        return feedEntities
     }
 }

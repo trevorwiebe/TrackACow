@@ -30,8 +30,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.crashlytics.internal.common.CrashlyticsCore;
-import com.trevorwiebe.trackacow.BuildConfig;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity;

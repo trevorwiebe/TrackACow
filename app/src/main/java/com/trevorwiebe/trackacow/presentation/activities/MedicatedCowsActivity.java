@@ -159,7 +159,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 DatabaseReference lotPushRef = mBaseRef.child(Constants.LOTS).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenId());
+                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenPenId());
 
                 String loadDescription = mLoadMemo.getText().toString();
                 DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();
@@ -180,7 +180,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                             lotEntity.getCustomerName(),
                             lotEntity.getNotes(),
                             lotEntity.getDate(),
-                            lotEntity.getPenId(),
+                            lotEntity.getLotPenId(),
                             Constants.INSERT_UPDATE
                     );
                     new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
@@ -379,7 +379,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         String activityTitle = "Pen: " + mSelectedPen.getPenName();
         setTitle(activityTitle);
 
-        new QueryLotsByPenId(mSelectedPen.getPenId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
+        new QueryLotsByPenId(mSelectedPen.getPenPenId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
     }
 
     @Override
@@ -434,14 +434,14 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     public void medicateCow(View view) {
         mMedicateACowFabMenu.collapse();
         Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
-        medicateCowIntent.putExtra("penId", mSelectedPen.getPenId());
+        medicateCowIntent.putExtra("penId", mSelectedPen.getPenPenId());
         startActivity(medicateCowIntent);
     }
 
     public void markACowDead(View view) {
         mMedicateACowFabMenu.collapse();
         Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
-        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenId());
+        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenPenId());
         startActivity(markCowDeadIntent);
     }
 

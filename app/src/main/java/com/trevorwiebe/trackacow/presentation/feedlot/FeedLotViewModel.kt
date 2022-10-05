@@ -1,10 +1,13 @@
 package com.trevorwiebe.trackacow.presentation.feedlot
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -12,6 +15,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 
 class FeedLotViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
@@ -42,9 +46,20 @@ class FeedLotViewModel @AssistedInject constructor(
 
     init {
         if(defaultArgs != null){
-            val date: Long = defaultArgs.getLong("date")
-            val lotId: String = defaultArgs.getString("lotId") ?: ""
-            readCallByLotIdAndDate(lotId, date)
+
+            val date = defaultArgs.getLong("feed_ui_model_date")
+            val lotId = defaultArgs.getString("lot_id") ?: ""
+
+            // convert lot date to beginning of the day
+            val c = Calendar.getInstance()
+            c.timeInMillis = date
+            c[Calendar.HOUR_OF_DAY] = 0
+            c[Calendar.MINUTE] = 0
+            c[Calendar.SECOND] = 0
+            c[Calendar.MILLISECOND] = 0
+            val dateStarted = c.timeInMillis
+
+            readCallByLotIdAndDate(lotId, dateStarted)
         }
     }
 

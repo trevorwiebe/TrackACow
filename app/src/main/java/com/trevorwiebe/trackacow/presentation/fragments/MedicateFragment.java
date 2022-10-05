@@ -61,7 +61,7 @@ public class MedicateFragment extends Fragment implements
             @Override
             public void onItemClick(View view, int position) {
                 Intent trackCowIntent = new Intent(mContext, MedicatedCowsActivity.class);
-                String penId = mPenList.get(position).getPenId();
+                String penId = mPenList.get(position).getPenPenId();
                 Utility.setPenId(mContext, penId);
                 trackCowIntent.putExtra("penEntityId", penId);
                 startActivity(trackCowIntent);

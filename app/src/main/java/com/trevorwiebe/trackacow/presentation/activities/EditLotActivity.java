@@ -116,7 +116,7 @@ public class EditLotActivity extends AppCompatActivity implements
                                 mSelectedLot.getCustomerName(),
                                 mSelectedLot.getNotes(),
                                 mSelectedLot.getDate(),
-                                mSelectedLot.getPenId(),
+                                mSelectedLot.getLotPenId(),
                                 Constants.INSERT_UPDATE
                         );
 

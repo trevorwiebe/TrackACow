@@ -8,7 +8,7 @@ import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 fun PenModel.toPenEntity(): PenEntity {
     return PenEntity(
         primaryKey = primaryKey,
-        penId = penId,
+        penPenId = penId,
         penName = penName
     )
 }
@@ -16,7 +16,7 @@ fun PenModel.toPenEntity(): PenEntity {
 fun PenEntity.toPenModel(): PenModel {
     return PenModel(
         primaryKey = primaryKey,
-        penId = penId,
+        penId = penPenId,
         penName = penName
     )
 }
