@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.data.entities.UserEntity;
 
 import java.util.ArrayList;
 
+@Deprecated(since = "must build new syncing mechanism")
 public class SyncDatabase implements
         InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud,
         QueryAllCloudData.OnAllCloudDataLoaded,
@@ -96,5 +97,6 @@ public class SyncDatabase implements
     @Override
     public void onDatabaseCloned() {
         onDatabaseSynced.onDatabaseSynced(Constants.SUCCESS);
+        Utility.setLastSync(context, System.currentTimeMillis());
     }
 }
