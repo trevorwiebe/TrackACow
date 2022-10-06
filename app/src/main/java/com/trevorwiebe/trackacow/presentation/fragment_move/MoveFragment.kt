@@ -3,16 +3,17 @@ package com.trevorwiebe.trackacow.presentation.fragment_move
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
-import com.trevorwiebe.trackacow.data.entities.PenEntity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper
@@ -20,7 +21,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.ShuffleObject
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 
 @AndroidEntryPoint
 class MoveFragment : Fragment() {
@@ -48,6 +48,10 @@ class MoveFragment : Fragment() {
         mShuffleAdapter =
             ShufflePenAndLotsAdapter()
 
+        mShuffleAdapter.onItemShuffled { lotModel ->
+            moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotModel))
+        }
+
         val dragHelper = DragHelper(mShuffleAdapter)
         val itemTouchHelper = ItemTouchHelper(dragHelper)
         mShuffleAdapter.setTouchHelper(itemTouchHelper)
@@ -63,6 +67,14 @@ class MoveFragment : Fragment() {
                     val penAndLotList = it.penAndLotList
 
                     val shuffleObjectsList: MutableList<ShuffleObject> = mutableListOf()
+
+                    val mergeShuffleObject = ShuffleObject(
+                        ShufflePenAndLotsAdapter.MERGE_AND_SPLIT,
+                        "Drag here to merge or split a lot",
+                        "id"
+                    )
+
+                    shuffleObjectsList.add(mergeShuffleObject)
 
                     for (r in penAndLotList.indices){
 
@@ -91,7 +103,7 @@ class MoveFragment : Fragment() {
                     } else {
                         mEmptyMoveList.visibility = View.INVISIBLE
                     }
-                    mShuffleAdapter.setAdapterVariables(shuffleObjectsList, mContext)
+                    mShuffleAdapter.setShuffleObjectList(shuffleObjectsList, mContext)
                 }
             }
         }

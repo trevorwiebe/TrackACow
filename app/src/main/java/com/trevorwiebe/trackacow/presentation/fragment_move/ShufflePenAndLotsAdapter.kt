@@ -1,6 +1,8 @@
 package com.trevorwiebe.trackacow.presentation.fragment_move
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper.ActionCompletionContract
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.ShuffleObject
@@ -8,22 +10,29 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.domain.utils.LotViewHolder
+import com.trevorwiebe.trackacow.presentation.fragment_move.utils.LotViewHolder
 import android.view.MotionEvent
 import android.view.View
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.UpdateHoldingLot
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.UpdateLotWithNewPenId
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
-import com.trevorwiebe.trackacow.domain.utils.PenViewHolder
+import com.trevorwiebe.trackacow.presentation.fragment_move.utils.PenViewHolder
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.fragment_move.utils.MergeOrShuffleViewHolder
 import java.util.ArrayList
 
-class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     ActionCompletionContract {
 
     private var shuffleObjects: ArrayList<ShuffleObject> = ArrayList()
     private lateinit var context: Context
     private lateinit var touchHelper: ItemTouchHelper
+    private lateinit var onItemShuffledCallback: (lotModel: LotModel) -> Unit
+
+    fun onItemShuffled(callback: (lotModel: LotModel) -> Unit ){
+        onItemShuffledCallback = callback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
@@ -38,6 +47,11 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                     .inflate(R.layout.list_shuffle_pen, parent, false)
                 PenViewHolder(view)
             }
+            MERGE_AND_SPLIT -> {
+                view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.list_shuffle_merge_or_split_lot, parent,false)
+                MergeOrShuffleViewHolder(view)
+            }
             else -> {
                 view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.list_shuffle_lot, parent, false)
@@ -46,28 +60,36 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemViewType = getItemViewType(position)
         val shuffleObject = shuffleObjects[position]
-        if (itemViewType == LOT_NAME) {
-            val lotName = shuffleObject.name
-            val lotViewHolder = holder as LotViewHolder
-            lotViewHolder.lotName.text = lotName
-            lotViewHolder.reorder.setOnTouchListener { v, event ->
-                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    touchHelper!!.startDrag(holder)
-                    lotViewHolder.lotMoveView.visibility = View.VISIBLE
-                    true
-                } else {
-                    lotViewHolder.lotMoveView.visibility = View.INVISIBLE
-                    true
+        when(shuffleObject.type){
+            LOT_NAME -> {
+                val lotName = shuffleObject.name
+                val lotViewHolder = holder as LotViewHolder
+                lotViewHolder.lotName.text = lotName
+                lotViewHolder.reorder.setOnTouchListener { v, event ->
+                    if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                        touchHelper.startDrag(holder)
+                        lotViewHolder.lotMoveViewBottom.visibility = View.VISIBLE
+                        true
+                    } else {
+                        lotViewHolder.lotMoveViewBottom.visibility = View.INVISIBLE
+                        true
+                    }
                 }
             }
-        } else {
-            val penName = shuffleObject.name
-            val penText = "Pen: $penName"
-            val penViewHolder = holder as PenViewHolder
-            penViewHolder.penName.text = penText
+            PEN_NAME -> {
+                val penName = shuffleObject.name
+                val penText = "Pen: $penName"
+                val penViewHolder = holder as PenViewHolder
+                penViewHolder.penName.text = penText
+                penViewHolder.tooManyLots.visibility = View.GONE
+            }
+            MERGE_AND_SPLIT -> {
+                val mergeOrSplitViewHolder = holder as MergeOrShuffleViewHolder
+                mergeOrSplitViewHolder.title.text = shuffleObject.name
+            }
         }
     }
 
@@ -80,31 +102,49 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         return shuffleObject.type
     }
 
-    fun setAdapterVariables(shuffleObjects: MutableList<ShuffleObject>, context: Context) {
+    fun setShuffleObjectList(shuffleObjects: MutableList<ShuffleObject>, context: Context) {
         this.shuffleObjects = ArrayList(shuffleObjects)
         this.context = context
         notifyDataSetChanged()
     }
 
     override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-        if (newPosition != 0) {
+        if(newPosition == 1){
+            val lotShuffleObject = shuffleObjects[oldPosition]
+            shuffleObjects.removeAt(oldPosition)
+            shuffleObjects.add(newPosition, lotShuffleObject)
+            notifyItemMoved(oldPosition, newPosition)
+            Log.d(TAG, "onViewMoved: under merge and split lot")
+        }
+        if (newPosition > 1) {
             val lotShuffleObject = shuffleObjects[oldPosition]
             val lotId = lotShuffleObject.id
             shuffleObjects.removeAt(oldPosition)
             shuffleObjects.add(newPosition, lotShuffleObject)
             notifyItemMoved(oldPosition, newPosition)
-            val penShuffleObject = findNearestPen(newPosition)
-            if (penShuffleObject != null) {
-                val penId = penShuffleObject.id
-                if (Utility.haveNetworkConnection(context)) {
-                    val baseRef = Constants.BASE_REFERENCE.child(Constants.LOTS).child(lotId)
-                        .child("lotPenId")
-                    baseRef.setValue(penId)
-                } else {
-                    Utility.setNewDataToUpload(context, true)
-                    UpdateHoldingLot(lotId, penId).execute(context)
-                }
-                UpdateLotWithNewPenId(lotId, penId).execute(context)
+
+            val shuffleObjectNeighbors = getShuffleObjectsBeside(newPosition)
+
+            if(shuffleObjectNeighbors[0] != null && shuffleObjectNeighbors[0]!!.type == LOT_NAME) {
+                Log.d(TAG, "onViewMoved: two items under one pen (below lot)")
+            }
+
+            if(shuffleObjectNeighbors[1] != null && shuffleObjectNeighbors[1]!!.type == LOT_NAME){
+                Log.d(TAG, "onViewMoved: two items under one pen (above lot)")
+            }
+
+            if (shuffleObjectNeighbors[0] != null && shuffleObjectNeighbors[0]!!.type == PEN_NAME) {
+//                 update database with new order
+                val penId = shuffleObjectNeighbors[0]!!.id
+                onItemShuffledCallback(LotModel(
+                    0,
+                    "",
+                    lotId,
+                    "",
+                    "",
+                    0L,
+                    penId)
+                )
             }
         }
     }
@@ -113,21 +153,16 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         this.touchHelper = touchHelper
     }
 
-    private fun findNearestPen(position: Int): ShuffleObject? {
-        var i = position
-        while (i < shuffleObjects.size) {
-            val shuffleObject = shuffleObjects[i]
-            if (shuffleObject.type == PEN_NAME) {
-                return shuffleObject
-            }
-            i--
-        }
-        return null
+    private fun getShuffleObjectsBeside(position: Int): List<ShuffleObject?> {
+        val topShuffleObject: ShuffleObject? = if(position == 0) null else shuffleObjects[position-1]
+        val bottomShuffleObject: ShuffleObject? = if(position+1 == shuffleObjects.size) null else shuffleObjects[position+1]
+        return listOf(topShuffleObject, bottomShuffleObject)
     }
 
     companion object {
         private const val TAG = "ShufflePenAndLotsAdapte"
         const val LOT_NAME = 1
         const val PEN_NAME = 2
+        const val MERGE_AND_SPLIT = 3
     }
 }

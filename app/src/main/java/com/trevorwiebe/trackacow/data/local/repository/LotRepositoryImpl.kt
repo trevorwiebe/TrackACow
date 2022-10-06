@@ -1,14 +1,18 @@
 package com.trevorwiebe.trackacow.data.local.repository
 
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLotDao
 import com.trevorwiebe.trackacow.data.local.dao.LotDao
+import com.trevorwiebe.trackacow.data.mapper.toCacheLotEntity
 import com.trevorwiebe.trackacow.data.mapper.toLotModel
+import com.trevorwiebe.trackacow.domain.models.lot.CacheLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class LotRepositoryImpl(
-    private val lotDao: LotDao
+    private val lotDao: LotDao,
+    private val cacheLotDao: CacheLotDao
 ): LotRepository {
 
     override fun readLotsByPenId(penId: String): Flow<List<LotModel>> {
@@ -19,4 +23,11 @@ class LotRepositoryImpl(
         }
     }
 
+    override suspend fun updateLotByLotIdWithNewPenID(lotId: String, penId: String) {
+        lotDao.updateLotWithNewPenId(lotId, penId)
+    }
+
+    override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {
+        cacheLotDao.insertHoldingLot(cacheLotModel.toCacheLotEntity())
+    }
 }

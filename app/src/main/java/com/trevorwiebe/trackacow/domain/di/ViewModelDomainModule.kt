@@ -2,11 +2,16 @@ package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
 import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
@@ -16,7 +21,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -62,6 +66,19 @@ object ViewModelDomainModule {
             readPens = ReadPens(penRepository),
             readPenByPenId = ReadPenByPenId(penRepository),
             readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository)
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideLotUseCases(
+        lotRepository: LotRepository,
+        lotRepositoryRemote: LotRepositoryRemote,
+        context: Application
+    ): LotUseCases {
+        return LotUseCases(
+            readLotsByPenId = ReadLotsByPenId(lotRepository),
+            updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context)
         )
     }
 }
