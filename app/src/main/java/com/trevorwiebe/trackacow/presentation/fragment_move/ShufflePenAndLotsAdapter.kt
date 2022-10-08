@@ -13,12 +13,8 @@ import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.LotViewHolder
 import android.view.MotionEvent
 import android.view.View
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.UpdateHoldingLot
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.UpdateLotWithNewPenId
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.PenViewHolder
-import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.MergeOrShuffleViewHolder
 import java.util.ArrayList
 
@@ -28,10 +24,21 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
     private var shuffleObjects: ArrayList<ShuffleObject> = ArrayList()
     private lateinit var context: Context
     private lateinit var touchHelper: ItemTouchHelper
+
     private lateinit var onItemShuffledCallback: (lotModel: LotModel) -> Unit
+    private lateinit var onDragStartCallback: () -> Unit
+    private lateinit var onDragStopCallback: () -> Unit
 
     fun onItemShuffled(callback: (lotModel: LotModel) -> Unit ){
         onItemShuffledCallback = callback
+    }
+
+    fun onDragStart(dragStartCallback: () -> Unit){
+        onDragStartCallback = dragStartCallback
+    }
+
+    fun onDragStop(dragStopCallback: () -> Unit){
+        onDragStopCallback = dragStopCallback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -71,12 +78,9 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
                 lotViewHolder.reorder.setOnTouchListener { v, event ->
                     if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                         touchHelper.startDrag(holder)
-                        lotViewHolder.lotMoveViewBottom.visibility = View.VISIBLE
-                        true
-                    } else {
-                        lotViewHolder.lotMoveViewBottom.visibility = View.INVISIBLE
-                        true
+                        onDragStartCallback()
                     }
+                    true
                 }
             }
             PEN_NAME -> {
@@ -146,6 +150,12 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
                     penId)
                 )
             }
+        }
+    }
+
+    override fun onClearView(viewHolder: RecyclerView.ViewHolder) {
+        if(viewHolder.itemViewType == LOT_NAME) {
+            onDragStopCallback()
         }
     }
 

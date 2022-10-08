@@ -6,14 +6,12 @@ import android.widget.TextView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper
@@ -45,11 +43,18 @@ class MoveFragment : Fragment() {
 
         mMoveRv.layoutManager = LinearLayoutManager(mContext)
 
-        mShuffleAdapter =
-            ShufflePenAndLotsAdapter()
+        mShuffleAdapter = ShufflePenAndLotsAdapter()
 
         mShuffleAdapter.onItemShuffled { lotModel ->
             moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotModel))
+        }
+
+        mShuffleAdapter.onDragStart {
+            moveViewModel.onEvent(MoveUiEvents.OnDragStart)
+        }
+
+        mShuffleAdapter.onDragStop {
+            moveViewModel.onEvent(MoveUiEvents.OnDragStop)
         }
 
         val dragHelper = DragHelper(mShuffleAdapter)

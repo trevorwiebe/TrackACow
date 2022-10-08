@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.presentation.fragment_move.utils
 
 import android.graphics.Canvas
+import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -49,5 +50,12 @@ class DragHelper(private val contract: ActionCompletionContract) : ItemTouchHelp
 
     interface ActionCompletionContract {
         fun onViewMoved(oldPosition: Int, newPosition: Int)
+        fun onClearView(viewHolder: ViewHolder)
+    }
+
+    // Called after view has settled, then onDragStop is called
+    override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+        contract.onClearView(viewHolder)
     }
 }
