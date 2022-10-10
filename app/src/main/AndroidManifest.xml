@@ -96,7 +96,7 @@
             android:label="Manage Drugs"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.ManagePensActivity"
+            android:name=".presentation.manage_pens.ManagePensActivity"
             android:exported="false"
             android:label="Manage Pens"
             android:parentActivityName=".presentation.activities.MainActivity" />

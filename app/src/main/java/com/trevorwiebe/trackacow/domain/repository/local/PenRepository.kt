@@ -16,4 +16,6 @@ interface PenRepository {
     fun readPensAndLots(): Flow<List<PenAndLotModel>>
 
     fun readPensByPenId(penId: String): Flow<PenModel?>
+
+    suspend fun deletePen(penModel: PenModel)
 }

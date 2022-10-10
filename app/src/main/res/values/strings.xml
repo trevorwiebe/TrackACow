@@ -12,6 +12,9 @@
     <string name="please_fill_blank">Please fill this blank</string>
     <string name="generic_error">An unknown error occurred</string>
 
+    Work Fragment Strings
+    <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
+
     More Fragment Strings
     <string name="more_manage_pens">Manage Pens</string>
     <string name="more_manage_drugs">Manage Drugs</string>
