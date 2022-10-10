@@ -1,115 +1,87 @@
-package com.trevorwiebe.trackacow.presentation.fragments;
+package com.trevorwiebe.trackacow.presentation.fragment_medicate
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Context
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import com.trevorwiebe.trackacow.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
+import android.content.Intent
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.trevorwiebe.trackacow.presentation.activities.MedicatedCowsActivity
+import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.utils.Utility
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+@AndroidEntryPoint
+class MedicateFragment : Fragment() {
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+    private var mPenRecyclerViewAdapter: PenRecyclerViewAdapter? = null
+    private val mMedicateListViewModel: MedicateListViewModel by viewModels()
 
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.presentation.activities.MedicatedCowsActivity;
-import com.trevorwiebe.trackacow.domain.adapters.PenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.pen.QueryAllPens;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLots;
-import com.trevorwiebe.trackacow.data.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.entities.PenEntity;
-import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
-import com.trevorwiebe.trackacow.domain.utils.Utility;
+    private var mPenAndLotModelList = emptyList<PenAndLotModel>()
 
-import java.util.ArrayList;
+    private lateinit var mNoPensTv: TextView
+    private lateinit var mPenRv: RecyclerView
 
-public class MedicateFragment extends Fragment implements
-        QueryAllPens.OnPensLoaded,
-        QueryLots.OnLotsLoaded {
+    private lateinit var mContext: Context
 
-    private PenRecyclerViewAdapter mPenRecyclerViewAdapter;
-    private ArrayList<PenEntity> mPenList = new ArrayList<>();
-    private ArrayList<LotEntity> mLotList = new ArrayList<>();
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val rootView = inflater.inflate(R.layout.fragment_medicate, container, false)
 
-    private static final String TAG = "MedicateFragment";
+        mNoPensTv = rootView.findViewById(R.id.no_pens_tv)
+        mPenRv = rootView.findViewById(R.id.main_rv)
+        mPenRv.layoutManager = LinearLayoutManager(mContext)
+        mPenRecyclerViewAdapter = PenRecyclerViewAdapter(mPenAndLotModelList, true, mContext)
+        mPenRv.adapter = mPenRecyclerViewAdapter
+        mPenRv.addOnItemTouchListener(
+            ItemClickListener(
+                mContext,
+                mPenRv,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val trackCowIntent = Intent(mContext, MedicatedCowsActivity::class.java)
+                        val penId = mPenAndLotModelList[position].penCloudDatabaseId
+                        Utility.setPenId(mContext, penId)
+                        trackCowIntent.putExtra("penEntityId", penId)
+                        startActivity(trackCowIntent)
+                    }
 
-    private TextView mNoPensTv;
-    private RecyclerView mPenRv;
+                    override fun onLongItemClick(view: View, position: Int) {}
+                })
+        )
 
-    private Context mContext;
-
-    public MedicateFragment() {
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_medicate, container, false);
-
-        mNoPensTv = rootView.findViewById(R.id.no_pens_tv);
-        mPenRv = rootView.findViewById(R.id.main_rv);
-        mPenRv.setLayoutManager(new LinearLayoutManager(mContext));
-        mPenRecyclerViewAdapter = new PenRecyclerViewAdapter(mPenList, mLotList, mContext);
-        mPenRv.setAdapter(mPenRecyclerViewAdapter);
-
-        mPenRv.addOnItemTouchListener(new ItemClickListener(mContext, mPenRv, new ItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent trackCowIntent = new Intent(mContext, MedicatedCowsActivity.class);
-                String penId = mPenList.get(position).getPenPenId();
-                Utility.setPenId(mContext, penId);
-                trackCowIntent.putExtra("penEntityId", penId);
-                startActivity(trackCowIntent);
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                mMedicateListViewModel.uiState.collect{
+                    if(it.penAndLotModelList.isEmpty()){
+                        mNoPensTv.visibility = View.VISIBLE
+                    }else {
+                        mNoPensTv.visibility = View.INVISIBLE
+                        mPenRecyclerViewAdapter!!.swapData(it.penAndLotModelList)
+                    }
+                }
             }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-
-        return rootView;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
-
-
-    @Override
-    public void onResume() {
-
-        new QueryLots(MedicateFragment.this).execute(mContext);
-
-        super.onResume();
-    }
-
-
-    @Override
-    public void onLotsLoaded(ArrayList<LotEntity> lotEntities) {
-        mLotList = lotEntities;
-        new QueryAllPens(MedicateFragment.this).execute(mContext);
-    }
-
-    @Override
-    public void onPensLoaded(ArrayList<PenEntity> penEntitiesList) {
-        mPenList = penEntitiesList;
-        setPenRecyclerView();
-    }
-
-    private void setPenRecyclerView() {
-        if (mPenList.size() == 0) {
-            mNoPensTv.setVisibility(View.VISIBLE);
-        } else {
-            mNoPensTv.setVisibility(View.INVISIBLE);
         }
-        mPenRecyclerViewAdapter.swapData(mPenList, mLotList);
+
+        return rootView
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
     }
 }
