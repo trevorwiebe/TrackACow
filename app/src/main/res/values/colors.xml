@@ -28,6 +28,7 @@
 
     <color name="lightGray">#EEEEEE</color>
 
-    <color name="signInGray">#d1d1d1</color>
+    <color name="light_gray">#d1d1d1</color>
+    <color name="light_gray2">#f5f5f5</color>
 
 </resources>

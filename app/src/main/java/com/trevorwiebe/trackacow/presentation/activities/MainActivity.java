@@ -37,7 +37,7 @@ import com.trevorwiebe.trackacow.data.entities.UserEntity;
 import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedContainerFragment;
 import com.trevorwiebe.trackacow.presentation.fragment_medicate.MedicateFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.MoreFragment;
-import com.trevorwiebe.trackacow.presentation.fragments.MoveFragment;
+import com.trevorwiebe.trackacow.presentation.fragment_move.MoveFragment;
 import com.trevorwiebe.trackacow.presentation.fragments.ReportsFragment;
 import com.trevorwiebe.trackacow.domain.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.domain.utils.Constants;

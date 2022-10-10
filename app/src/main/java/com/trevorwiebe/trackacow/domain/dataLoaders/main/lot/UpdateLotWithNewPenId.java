@@ -18,7 +18,7 @@ public class UpdateLotWithNewPenId extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).lotDao().updateLotWithNewPenId(lotId, penId);
+        AppDatabase.getAppDatabase(contexts[0]).lotDao().updateLotWithNewPenId2(lotId, penId);
         return null;
     }
 }

@@ -8,10 +8,12 @@ import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
+import com.trevorwiebe.trackacow.data.remote.repository.LotRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.data.remote.repository.PenRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -110,7 +112,19 @@ object TrackACowDataModule {
         db: AppDatabase
     ): LotRepository {
         return LotRepositoryImpl(
-            lotDao = db.lotDao()
+            lotDao = db.lotDao(),
+            cacheLotDao = db.cacheLotDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideLotRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): LotRepositoryRemote {
+        return LotRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
         )
     }
 
