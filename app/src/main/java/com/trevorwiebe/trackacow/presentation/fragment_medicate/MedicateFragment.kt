@@ -67,11 +67,12 @@ class MedicateFragment : Fragment() {
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 mMedicateListViewModel.uiState.collect{
+                    mPenAndLotModelList = it.penAndLotModelList
                     if(it.penAndLotModelList.isEmpty()){
                         mNoPensTv.visibility = View.VISIBLE
                     }else {
                         mNoPensTv.visibility = View.INVISIBLE
-                        mPenRecyclerViewAdapter!!.swapData(it.penAndLotModelList)
+                        mPenRecyclerViewAdapter!!.swapData(mPenAndLotModelList)
                     }
                 }
             }
