@@ -8,9 +8,11 @@ import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
+import com.trevorwiebe.trackacow.data.remote.repository.PenRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
@@ -86,7 +88,19 @@ object TrackACowDataModule {
         db: AppDatabase
     ): PenRepository{
         return PenRepositoryImpl(
-            penDao = db.penDao()
+            penDao = db.penDao(),
+            cachePenDao = db.cachePenDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providePenRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): PenRepositoryRemote{
+        return PenRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_PENS
         )
     }
 

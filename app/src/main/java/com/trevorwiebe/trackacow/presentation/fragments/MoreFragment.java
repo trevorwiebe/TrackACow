@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.trevorwiebe.trackacow.R;
 import com.trevorwiebe.trackacow.presentation.activities.ArchivesActivity;
 import com.trevorwiebe.trackacow.presentation.activities.ManageDrugsActivity;
-import com.trevorwiebe.trackacow.presentation.activities.ManagePensActivity;
+import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity;
 import com.trevorwiebe.trackacow.presentation.manage_rations.ManageRationsActivity;
 import com.trevorwiebe.trackacow.presentation.activities.SettingsActivity;
 

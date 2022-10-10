@@ -10,6 +10,7 @@ public class Constants {
     public static final String BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/";
     public static final String RATIONS = "/rations";
     public static final String CALLS = "/calls";
+    public static final String DATABASE_PENS = "/pens";
     public static final String PENS = "pens";
     public static final String LOTS = "cattleLot";
     public static final String FEEDS = "feed";
