@@ -11,7 +11,7 @@ interface CachePenDao {
     @Insert
     fun insertHoldingPenList(holdingPenEntities: List<CachePenEntity>)
 
-    @Query("SELECT * FROM HoldingPen WHERE penId = :id")
+    @Query("SELECT * FROM HoldingPen WHERE penCloudDatabaseId = :id")
     fun getHoldingPenById(id: String?): CachePenEntity?
 
     @get:Query("SELECT * FROM HoldingPen")

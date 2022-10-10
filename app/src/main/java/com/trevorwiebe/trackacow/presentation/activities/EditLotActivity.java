@@ -104,19 +104,19 @@ public class EditLotActivity extends AppCompatActivity implements
 
                     if (Utility.haveNetworkConnection(EditLotActivity.this)) {
                         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        baseRef.child(Constants.LOTS).child(mSelectedLot.getLotId()).setValue(mSelectedLot);
+                        baseRef.child(Constants.LOTS).child(mSelectedLot.getLotCloudDatabaseId()).setValue(mSelectedLot);
                     }else{
 
                         Utility.setNewDataToUpload(EditLotActivity.this, true);
 
                         CacheLotEntity cacheLotEntity = new CacheLotEntity(
-                                mSelectedLot.getPrimaryKey(),
+                                mSelectedLot.getLotPrimaryKey(),
                                 mSelectedLot.getLotName(),
-                                mSelectedLot.getLotId(),
+                                mSelectedLot.getLotCloudDatabaseId(),
                                 mSelectedLot.getCustomerName(),
                                 mSelectedLot.getNotes(),
                                 mSelectedLot.getDate(),
-                                mSelectedLot.getLotPenId(),
+                                mSelectedLot.getLotPenCloudDatabaseId(),
                                 Constants.INSERT_UPDATE
                         );
 

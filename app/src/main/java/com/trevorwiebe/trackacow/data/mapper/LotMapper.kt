@@ -7,25 +7,25 @@ import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 
 fun LotModel.toLotEntity(): LotEntity {
     return LotEntity(
-        primaryKey = primaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        lotPenId = penId
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
 
 fun LotEntity.toLotModel(): LotModel {
     return LotModel(
-        primaryKey = primaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = lotPenId
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
 
@@ -33,11 +33,11 @@ fun CacheLotEntity.toCacheLotModel(): CacheLotModel{
     return CacheLotModel(
         primaryKey = primaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
 
@@ -45,36 +45,36 @@ fun CacheLotModel.toCacheLotEntity(): CacheLotEntity {
     return CacheLotEntity(
         primaryKey = primaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
 
 fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
     return CacheLotModel(
-        primaryKey = primaryKey,
+        primaryKey = lotPrimaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = penId,
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId,
         whatHappened = whatHappened
     )
 }
 
 fun LotEntity.toCacheLotEntity(whatHappened: Int): CacheLotEntity{
     return CacheLotEntity(
-        primaryKey = primaryKey,
+        primaryKey = lotPrimaryKey,
         lotName = lotName,
-        lotId = lotId,
+        lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
         date = date,
-        penId = lotPenId,
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId,
         whatHappened = whatHappened
     )
 }

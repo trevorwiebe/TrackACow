@@ -161,7 +161,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
 
         DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
 
-        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedLot.getLotId());
+        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
 
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);
@@ -209,7 +209,7 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         ArrayList<String> lotIds = new ArrayList<>();
         for (int e = 0; e < lotEntities.size(); e++) {
             LotEntity lotEntity = lotEntities.get(e);
-            String lotId = lotEntity.getLotId();
+            String lotId = lotEntity.getLotCloudDatabaseId();
             lotIds.add(lotId);
         }
 

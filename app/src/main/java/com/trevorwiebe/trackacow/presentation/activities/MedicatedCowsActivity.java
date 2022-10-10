@@ -159,7 +159,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
 
                 DatabaseReference lotPushRef = mBaseRef.child(Constants.LOTS).push();
                 String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenPenId());
+                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenCloudDatabaseId());
 
                 String loadDescription = mLoadMemo.getText().toString();
                 DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();
@@ -174,13 +174,13 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                     Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
 
                     CacheLotEntity cacheLotEntity = new CacheLotEntity(
-                            lotEntity.getPrimaryKey(),
+                            lotEntity.getLotPrimaryKey(),
                             lotEntity.getLotName(),
-                            lotEntity.getLotId(),
+                            lotEntity.getLotCloudDatabaseId(),
                             lotEntity.getCustomerName(),
                             lotEntity.getNotes(),
                             lotEntity.getDate(),
-                            lotEntity.getLotPenId(),
+                            lotEntity.getLotPenCloudDatabaseId(),
                             Constants.INSERT_UPDATE
                     );
                     new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
@@ -379,7 +379,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         String activityTitle = "Pen: " + mSelectedPen.getPenName();
         setTitle(activityTitle);
 
-        new QueryLotsByPenId(mSelectedPen.getPenPenId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
+        new QueryLotsByPenId(mSelectedPen.getPenCloudDatabaseId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
     }
 
     @Override
@@ -390,7 +390,7 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
         } else {
             LotEntity lotEntity = lotEntities.get(0);
             mLotIds = new ArrayList<>();
-            mLotIds.add(lotEntity.getLotId());
+            mLotIds.add(lotEntity.getLotCloudDatabaseId());
             String lotNameTitle = lotEntity.getLotName();
             ab.setSubtitle(lotNameTitle);
             setActive();
@@ -434,14 +434,14 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
     public void medicateCow(View view) {
         mMedicateACowFabMenu.collapse();
         Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
-        medicateCowIntent.putExtra("penId", mSelectedPen.getPenPenId());
+        medicateCowIntent.putExtra("penId", mSelectedPen.getPenCloudDatabaseId());
         startActivity(medicateCowIntent);
     }
 
     public void markACowDead(View view) {
         mMedicateACowFabMenu.collapse();
         Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
-        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenPenId());
+        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenCloudDatabaseId());
         startActivity(markCowDeadIntent);
     }
 

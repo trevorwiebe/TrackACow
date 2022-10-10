@@ -5,12 +5,10 @@ import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import dagger.Module
 import dagger.Provides
@@ -56,12 +54,16 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun providePenUseCases(
-        penRepository: PenRepository
+        penRepository: PenRepository,
+        penRepositoryRemote: PenRepositoryRemote,
+        context: Application
     ): PenUseCases {
         return PenUseCases(
             readPens = ReadPens(penRepository),
             readPenByPenId = ReadPenByPenId(penRepository),
-            readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository)
+            readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository),
+            createPenUC = CreatePenUC(penRepository, penRepositoryRemote, context),
+            deletePenUC = DeletePenUC(penRepository)
         )
     }
 }

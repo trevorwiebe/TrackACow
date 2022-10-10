@@ -16,21 +16,21 @@ interface LotDao {
     @Query("SELECT * FROM lot")
     fun getLotEntityList(): List<LotEntity>
 
-    @Query("SELECT * FROM lot WHERE lotPenId = :penId")
+    @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 
     @Deprecated("Use getLotEntitiesByPenId with return type of Flow instead")
-    @Query("SELECT * FROM lot WHERE lotPenId = :penId")
+    @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId")
     fun getLotEntitiesByPenId2(penId: String): List<LotEntity>
 
     @Deprecated("Use flow return types")
-    @Query("SELECT * FROM lot WHERE lotId = :lotId")
+    @Query("SELECT * FROM lot WHERE lotCloudDatabaseId = :lotId")
     fun getLotEntityById(lotId: String): LotEntity?
 
     @Update
     fun updateLotEntity(lotEntity: LotEntity)
 
-    @Query("UPDATE lot SET lotName = :lotName, customerName = :customerName, date = :date, notes = :notes WHERE lotId = :lotId")
+    @Query("UPDATE lot SET lotName = :lotName, customerName = :customerName, date = :date, notes = :notes WHERE lotCloudDatabaseId = :lotId")
     fun updateLotByFields(
         lotName: String?,
         customerName: String?,
@@ -39,12 +39,12 @@ interface LotDao {
         lotId: String
     )
 
-    @Query("UPDATE lot SET lotPenId = :penId WHERE lotId = :lotId")
+    @Query("UPDATE lot SET lotPenCloudDatabaseId = :penId WHERE lotCloudDatabaseId = :lotId")
     fun updateLotWithNewPenId(lotId: String, penId: String)
 
     @Query("DELETE FROM lot")
     fun deleteLotEntityTable()
 
-    @Query("DELETE FROM lot WHERE lotId = :lotId")
+    @Query("DELETE FROM lot WHERE lotCloudDatabaseId = :lotId")
     fun deleteLotEntity(lotId: String)
 }

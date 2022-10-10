@@ -8,7 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "Pen")
 data class PenEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
-    var penPenId: String = "",
+    var penPrimaryKey: Int = 0,
+    var penCloudDatabaseId: String? = null,
     var penName: String = "",
 )

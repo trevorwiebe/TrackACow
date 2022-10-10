@@ -23,7 +23,7 @@ public class InsertPen extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).penDao().insertPen(penEntity);
+        AppDatabase.getAppDatabase(contexts[0]).penDao().insertPen2(penEntity);
         return null;
     }
 

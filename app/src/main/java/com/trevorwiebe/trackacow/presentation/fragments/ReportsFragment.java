@@ -54,7 +54,7 @@ public class ReportsFragment extends Fragment implements QueryLots.OnLotsLoaded 
             @Override
             public void onItemClick(View view, int position) {
                 Intent reportsIntent = new Intent(getContext(), LotReportActivity.class);
-                String lotId = mLotList.get(position).getLotId();
+                String lotId = mLotList.get(position).getLotCloudDatabaseId();
                 reportsIntent.putExtra("lotId", lotId);
                 reportsIntent.putExtra("reportType", Constants.LOT);
                 startActivity(reportsIntent);

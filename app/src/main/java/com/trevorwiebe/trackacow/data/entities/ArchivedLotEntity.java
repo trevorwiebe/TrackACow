@@ -58,7 +58,7 @@ public class ArchivedLotEntity {
     @Ignore
     public ArchivedLotEntity(LotEntity lotEntity, long dateEnded) {
         this.lotName = lotEntity.getLotName();
-        this.lotId = lotEntity.getLotId();
+        this.lotId = lotEntity.getLotCloudDatabaseId();
         this.customerName = lotEntity.getCustomerName();
         this.notes = lotEntity.getNotes();
         this.dateStarted = lotEntity.getDate();

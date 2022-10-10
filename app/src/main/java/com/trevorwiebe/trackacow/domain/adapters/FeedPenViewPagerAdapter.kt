@@ -18,7 +18,7 @@ class FeedPenViewPagerAdapter(
     BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 ) {
     override fun getItem(i: Int): Fragment {
-        val penId = penAndLotList[i].penId
+        val penId = penAndLotList[i].penCloudDatabaseId
         val lotModel = penAndLotList[i].toLotModel()
         return newInstance(penId, lotModel)
     }

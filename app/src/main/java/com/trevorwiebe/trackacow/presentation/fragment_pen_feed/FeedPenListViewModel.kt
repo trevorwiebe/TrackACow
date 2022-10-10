@@ -50,7 +50,7 @@ class FeedPenListViewModel @AssistedInject constructor(
     private var readCallsJob: Job? = null
 
     init {
-        readCallsByLotId(lotModel.date, lotModel.lotId)
+        readCallsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
     }
 
     private fun readCallsByLotId(lotDate: Long, lotId: String?){

@@ -353,7 +353,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setLotId(mSelectedLot.getLotId());
+                                    drugsGivenEntity.setLotId(mSelectedLot.getLotCloudDatabaseId());
                                     drugsGivenEntity.setDrugGivenId(drugsGivenKey);
                                     drugsGivenEntity.setDate(System.currentTimeMillis());
 
@@ -369,7 +369,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
             int tagNumber = Integer.parseInt(mTagName.getText().toString());
             String notes = mNotes.getText().toString();
 
-            CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotId());
+            CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
 
             mCowEntities.add(cowEntity);
 
@@ -511,7 +511,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         ArrayList<String> lotIds = new ArrayList<>();
         for (int x = 0; x < lotEntities.size(); x++) {
             LotEntity lotEntity = lotEntities.get(x);
-            String lotId = lotEntity.getLotId();
+            String lotId = lotEntity.getLotCloudDatabaseId();
             lotIds.add(lotId);
         }
         new QueryMedicatedCowsByLotIds(this, lotIds).execute(this);

@@ -7,24 +7,24 @@ import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 
 fun PenModel.toPenEntity(): PenEntity {
     return PenEntity(
-        primaryKey = primaryKey,
-        penPenId = penId,
+        penPrimaryKey = penPrimaryKey,
+        penCloudDatabaseId = penCloudDatabaseId,
         penName = penName
     )
 }
 
 fun PenEntity.toPenModel(): PenModel {
     return PenModel(
-        primaryKey = primaryKey,
-        penId = penPenId,
+        penPrimaryKey = penPrimaryKey,
+        penCloudDatabaseId = penCloudDatabaseId,
         penName = penName
     )
 }
 
 fun PenModel.toCachePenModel(whatHappened: Int): CachePenModel {
     return CachePenModel(
-        primaryKey = primaryKey,
-        penId = penId,
+        primaryKey = penPrimaryKey,
+        penCloudDatabaseId = penCloudDatabaseId,
         penName = penName,
         whatHappened = whatHappened
     )
@@ -33,7 +33,7 @@ fun PenModel.toCachePenModel(whatHappened: Int): CachePenModel {
 fun CachePenModel.toCachePenEntity(): CachePenEntity{
     return CachePenEntity(
         primaryKey = primaryKey,
-        penId = penId,
+        penCloudDatabaseId = penCloudDatabaseId,
         penName = penName,
         whatHappened = whatHappened
     )
@@ -42,7 +42,7 @@ fun CachePenModel.toCachePenEntity(): CachePenEntity{
 fun CachePenEntity.toCachePenModel(): CachePenModel{
     return CachePenModel(
         primaryKey = primaryKey,
-        penId = penId,
+        penCloudDatabaseId = penCloudDatabaseId,
         penName = penName,
         whatHappened = whatHappened
     )

@@ -8,11 +8,11 @@ import androidx.room.Entity
 @Entity(tableName = "lot")
 class LotEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
+    var lotPrimaryKey: Int = 0,
     var lotName: String = "",
-    var lotId: String = "",
+    var lotCloudDatabaseId: String? = "",
     var customerName: String? = null,
     var notes: String? = null,
     var date: Long = 0,
-    var lotPenId: String = ""
+    var lotPenCloudDatabaseId: String = ""
 )

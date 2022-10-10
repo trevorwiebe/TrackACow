@@ -9,7 +9,7 @@ import androidx.room.Entity
 data class CachePenEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int,
-    var penId: String,
+    var penCloudDatabaseId: String?,
     var penName: String,
     var whatHappened: Int
 )

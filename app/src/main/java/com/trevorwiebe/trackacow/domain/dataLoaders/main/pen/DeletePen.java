@@ -17,7 +17,7 @@ public class DeletePen extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).penDao().deletePen(penEntity);
+        AppDatabase.getAppDatabase(contexts[0]).penDao().deletePen2(penEntity);
         return null;
     }
 }

@@ -85,17 +85,17 @@ public class MoveFragment extends Fragment implements
 
             PenEntity penEntity = mPenEntities.get(r);
             String penName = penEntity.getPenName();
-            String penId = penEntity.getPenPenId();
+            String penId = penEntity.getPenCloudDatabaseId();
 
             ShuffleObject penShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.PEN_NAME, penName, penId);
             shuffleObjects.add(penShuffleObject);
 
-            ArrayList<LotEntity> selectedLotEntities = getLotEntities(penEntity.getPenPenId(), lotEntities);
+            ArrayList<LotEntity> selectedLotEntities = getLotEntities(penEntity.getPenCloudDatabaseId(), lotEntities);
             if (selectedLotEntities.size() != 0) {
                 for (int p = 0; p < selectedLotEntities.size(); p++) {
                     LotEntity lotEntity = selectedLotEntities.get(p);
                     String lotName = lotEntity.getLotName();
-                    String lotId = lotEntity.getLotId();
+                    String lotId = lotEntity.getLotCloudDatabaseId();
                     ShuffleObject lotShuffleObject = new ShuffleObject(ShufflePenAndLotsAdapter.LOT_NAME, lotName, lotId);
                     shuffleObjects.add(lotShuffleObject);
                 }
@@ -116,7 +116,7 @@ public class MoveFragment extends Fragment implements
         ArrayList<LotEntity> selectedLotEntities = new ArrayList<>();
         for (int o = 0; o < lotEntities.size(); o++) {
             LotEntity lotEntity = lotEntities.get(o);
-            if (lotEntity.getLotPenId().equals(penId)) {
+            if (lotEntity.getLotPenCloudDatabaseId().equals(penId)) {
                 selectedLotEntities.add(lotEntity);
             }
         }

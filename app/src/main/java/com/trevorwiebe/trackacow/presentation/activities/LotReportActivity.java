@@ -189,7 +189,7 @@ public class LotReportActivity extends AppCompatActivity implements
         int id = item.getItemId();
         if (id == R.id.reports_action_edit) {
             Intent editLotIntent = new Intent(LotReportActivity.this, EditLotActivity.class);
-            editLotIntent.putExtra("lotId", mSelectedLotEntity.getLotId());
+            editLotIntent.putExtra("lotId", mSelectedLotEntity.getLotCloudDatabaseId());
             startActivityForResult(editLotIntent, EDIT_PEN_CODE);
         }
         return super.onOptionsItemSelected(item);
@@ -199,7 +199,7 @@ public class LotReportActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == EDIT_PEN_CODE || requestCode == EDIT_LOAD_CODE) && resultCode == RESULT_OK) {
-            new QueryLotByLotId(mSelectedLotEntity.getLotId(), LotReportActivity.this).execute(LotReportActivity.this);
+            new QueryLotByLotId(mSelectedLotEntity.getLotCloudDatabaseId(), LotReportActivity.this).execute(LotReportActivity.this);
         }
     }
 
@@ -228,7 +228,7 @@ public class LotReportActivity extends AppCompatActivity implements
         mDrugList = drugEntities;
 
         ArrayList<String> lotIds = new ArrayList<>();
-        lotIds.add(mSelectedLotEntity.getLotId());
+        lotIds.add(mSelectedLotEntity.getLotCloudDatabaseId());
 
         new QueryDrugsGivenByLotIds(this, lotIds).execute(this);
     }
@@ -391,7 +391,7 @@ public class LotReportActivity extends AppCompatActivity implements
                         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                         // delete the lot entity
-                        baseRef.child(Constants.LOTS).child(mSelectedLotEntity.getLotId()).removeValue();
+                        baseRef.child(Constants.LOTS).child(mSelectedLotEntity.getLotCloudDatabaseId()).removeValue();
 
                         // push archived lot to the cloud;
                         baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
@@ -399,13 +399,13 @@ public class LotReportActivity extends AppCompatActivity implements
                     } else {
 
                         CacheLotEntity cacheLotEntity = new CacheLotEntity(
-                                mSelectedLotEntity.getPrimaryKey(),
+                                mSelectedLotEntity.getLotPrimaryKey(),
                                 mSelectedLotEntity.getLotName(),
-                                mSelectedLotEntity.getLotId(),
+                                mSelectedLotEntity.getLotCloudDatabaseId(),
                                 mSelectedLotEntity.getCustomerName(),
                                 mSelectedLotEntity.getNotes(),
                                 mSelectedLotEntity.getDate(),
-                                mSelectedLotEntity.getLotPenId(),
+                                mSelectedLotEntity.getLotPenCloudDatabaseId(),
                                 Constants.DELETE
                         );
                         new InsertHoldingLot(cacheLotEntity).execute(LotReportActivity.this);
@@ -415,7 +415,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
                     }
 
-                    new DeleteLotEntity(mSelectedLotEntity.getLotId()).execute(LotReportActivity.this);
+                    new DeleteLotEntity(mSelectedLotEntity.getLotCloudDatabaseId()).execute(LotReportActivity.this);
                     new InsertArchivedLotEntity(archivedLotEntity).execute(LotReportActivity.this);
 
                     finish();
@@ -474,7 +474,7 @@ public class LotReportActivity extends AppCompatActivity implements
 
         new QueryAllDrugs(this).execute(this);
 
-        mLotId = lotEntity.getLotId();
+        mLotId = lotEntity.getLotCloudDatabaseId();
 
         new QueryFeedsByLotId(mLotId, this).execute(this);
         new QueryLoadsByLotId(mLotId, this).execute(this);

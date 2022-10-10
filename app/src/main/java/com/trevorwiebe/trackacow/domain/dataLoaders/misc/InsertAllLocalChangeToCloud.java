@@ -83,14 +83,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             for (int b = 0; b < holdingPenEntities.size(); b++) {
                 CachePenEntity cachePenEntity = holdingPenEntities.get(b);
 
-                PenEntity penEntity = new PenEntity(0,cachePenEntity.getPenId(), cachePenEntity.getPenName());
+                PenEntity penEntity = new PenEntity(0,cachePenEntity.getPenCloudDatabaseId(), cachePenEntity.getPenName());
 
                 switch (cachePenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child("pens").child(penEntity.getPenPenId()).setValue(penEntity);
+                        baseRef.child("pens").child(penEntity.getPenCloudDatabaseId()).setValue(penEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child("pens").child(penEntity.getPenPenId()).removeValue();
+                        baseRef.child("pens").child(penEntity.getPenCloudDatabaseId()).removeValue();
                         break;
                     default:
                         break;
@@ -147,18 +147,18 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                 LotEntity lotEntity = new LotEntity(
                         cacheLotEntity.getPrimaryKey(),
                         cacheLotEntity.getLotName(),
-                        cacheLotEntity.getLotId(),
+                        cacheLotEntity.getLotCloudDatabaseId(),
                         cacheLotEntity.getCustomerName(),
                         cacheLotEntity.getNotes(),
                         cacheLotEntity.getDate(),
-                        cacheLotEntity.getPenId()
+                        cacheLotEntity.getLotPenCloudDatabaseId()
                 );
                 switch (cacheLotEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(Constants.LOTS).child(lotEntity.getLotId()).setValue(lotEntity);
+                        baseRef.child(Constants.LOTS).child(lotEntity.getLotCloudDatabaseId()).setValue(lotEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(Constants.LOTS).child(lotEntity.getLotId()).removeValue();
+                        baseRef.child(Constants.LOTS).child(lotEntity.getLotCloudDatabaseId()).removeValue();
                         break;
                 }
             }

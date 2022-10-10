@@ -70,7 +70,7 @@ class FeedPenListFragment : Fragment(){
                     override fun onItemClick(view: View, position: Int) {
                         val feedLotIntent = Intent(activity, FeedLotActivity::class.java)
                         feedLotIntent.putExtra("feed_ui_model_date", feedPenListUiModelList[position].date)
-                        feedLotIntent.putExtra("lot_id", mLotModel.lotId)
+                        feedLotIntent.putExtra("lot_id", mLotModel.lotCloudDatabaseId)
                         startActivity(feedLotIntent)
                     }
 
@@ -112,7 +112,7 @@ class FeedPenListFragment : Fragment(){
 
     companion object {
         @JvmStatic
-        fun newInstance(penId: String, lotModel: LotModel): FeedPenListFragment {
+        fun newInstance(penId: String?, lotModel: LotModel): FeedPenListFragment {
             val args = Bundle()
             args.putParcelable("fragment_lot", lotModel)
             args.putString("fragment_pen_id", penId)
