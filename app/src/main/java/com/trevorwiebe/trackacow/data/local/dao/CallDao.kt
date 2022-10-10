@@ -16,7 +16,7 @@ interface CallDao {
     @Query("SELECT * FROM call")
     fun getCalls(): Flow<List<CallEntity>>
 
-    @Query("SELECT * FROM call WHERE id = :id")
+    @Query("SELECT * FROM call WHERE callCloudDatabaseId = :id")
     fun getCallById(id: String): Flow<CallEntity>
 
     @Query("SELECT * FROM call WHERE date = :date AND lotId = :lotId LIMIT 1")
