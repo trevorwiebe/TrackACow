@@ -1,74 +1,58 @@
-package com.trevorwiebe.trackacow.presentation.fragments;
+package com.trevorwiebe.trackacow.presentation.fragment_more
 
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.presentation.activities.ArchivesActivity;
-import com.trevorwiebe.trackacow.presentation.activities.ManageDrugsActivity;
-import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity;
-import com.trevorwiebe.trackacow.presentation.manage_rations.ManageRationsActivity;
-import com.trevorwiebe.trackacow.presentation.activities.SettingsActivity;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import com.trevorwiebe.trackacow.R
+import android.widget.TextView
+import android.content.Intent
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
+import com.trevorwiebe.trackacow.presentation.activities.ManageDrugsActivity
+import com.trevorwiebe.trackacow.presentation.manage_rations.ManageRationsActivity
+import com.trevorwiebe.trackacow.presentation.activities.ArchivesActivity
+import com.trevorwiebe.trackacow.presentation.activities.SettingsActivity
 
-public class MoreFragment extends Fragment{
+class MoreFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        val rootView = inflater.inflate(R.layout.fragment_more, container, false)
 
-        View rootView = inflater.inflate(R.layout.fragment_more, container, false);
+        val managePens = rootView.findViewById<TextView>(R.id.manage_pen_tv)
+        managePens.setOnClickListener {
+            val managePensIntent = Intent(context, ManagePensActivity::class.java)
+            startActivity(managePensIntent)
+        }
 
-        TextView managePens = rootView.findViewById(R.id.manage_pen_tv);
-        managePens.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent managePensIntent = new Intent(getContext(), ManagePensActivity.class);
-                startActivity(managePensIntent);
-            }
-        });
+        val manageDrugs = rootView.findViewById<TextView>(R.id.manage_drugs_tv)
+        manageDrugs.setOnClickListener {
+            val manageDrugsIntent = Intent(context, ManageDrugsActivity::class.java)
+            startActivity(manageDrugsIntent)
+        }
 
-        TextView manageDrugs = rootView.findViewById(R.id.manage_drugs_tv);
-        manageDrugs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent manageDrugsIntent = new Intent(getContext(), ManageDrugsActivity.class);
-                startActivity(manageDrugsIntent);
-            }
-        });
+        val manageRations = rootView.findViewById<TextView>(R.id.manage_rations_tv)
+        manageRations.setOnClickListener {
+            val manageRationsIntent = Intent(context, ManageRationsActivity::class.java)
+            startActivity(manageRationsIntent)
+        }
 
-        TextView manageRations = rootView.findViewById(R.id.manage_rations_tv);
-        manageRations.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent manageRations = new Intent(getContext(), ManageRationsActivity.class);
-                startActivity(manageRations);
-            }
-        });
+        val archives = rootView.findViewById<TextView>(R.id.archives_tv)
+        archives.setOnClickListener {
+            val archivesIntent = Intent(context, ArchivesActivity::class.java)
+            startActivity(archivesIntent)
+        }
 
-        TextView archives = rootView.findViewById(R.id.archives_tv);
-        archives.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent archivesIntent = new Intent(getContext(), ArchivesActivity.class);
-                startActivity(archivesIntent);
-            }
-        });
+        val settings = rootView.findViewById<TextView>(R.id.more_settings_tv)
+        settings.setOnClickListener {
+            val settingsIntent = Intent(context, SettingsActivity::class.java)
+            startActivity(settingsIntent)
+        }
 
-        TextView settings = rootView.findViewById(R.id.more_settings_tv);
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent(getContext(), SettingsActivity.class);
-                startActivity(settingsIntent);
-            }
-        });
-
-        return rootView;
+        return rootView
     }
 }
