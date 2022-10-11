@@ -44,15 +44,13 @@ class PenRecyclerViewAdapter(
                 penViewHolder.mLotNames.text = lotName
             } else {
                 penViewHolder.mLotNames.setTypeface(null, Typeface.NORMAL)
-                penViewHolder.mLotNames.setTypeface(null, Typeface.ITALIC)
                 penViewHolder.mLotNames.setTextColor(
                     ContextCompat.getColor(
                         mContext,
-                        android.R.color.black
+                        android.R.color.darker_gray
                     )
                 )
-                penViewHolder.mLotNames.text =
-                    mContext.getString(R.string.work_no_cattle_in_this_pen)
+                penViewHolder.mLotNames.text = mContext.getString(R.string.work_no_cattle_in_this_pen)
             }
         }else{
             penViewHolder.mLotNames.visibility = View.INVISIBLE

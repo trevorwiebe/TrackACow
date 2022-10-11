@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/feed_pen_empty"
         android:visibility="invisible"
-        android:text="This pen is empty"
+        android:text="@string/work_no_cattle_in_this_pen"
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="36dp"
         android:layout_marginRight="16dp"
