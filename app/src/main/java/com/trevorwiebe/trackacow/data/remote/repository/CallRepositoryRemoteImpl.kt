@@ -13,7 +13,7 @@ class CallRepositoryRemoteImpl(
     override suspend fun insertCallRemote(callModel: CallModel) {
         val databaseReference: DatabaseReference = firebaseDatabase.getReference(databasePath)
         val cloudDatabaseId = databaseReference.push().key
-        callModel.id = cloudDatabaseId ?: ""
+        callModel.callCloudDatabaseId = cloudDatabaseId ?: ""
         databaseReference.child(cloudDatabaseId?:"").setValue(callModel)
     }
 
