@@ -59,6 +59,9 @@ class FeedContainerFragment : Fragment() {
         feedPenViewPagerAdapter = fragmentManager?.let { FeedPenViewPagerAdapter(it, emptyList()) }
 
         feedPenViewPager.adapter = feedPenViewPagerAdapter
+        feedPenViewPager.viewTreeObserver.addOnGlobalLayoutListener {
+            feedPenViewPager.setCurrentItem(Utility.getLastFeedPen(mContext), false)
+        }
 
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
