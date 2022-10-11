@@ -3,18 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/no_pens_tv"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="36dp"
-        android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
+    <LinearLayout
+        android:id="@+id/fragment_medicate_no_pens_layout"
+        android:orientation="vertical"
+        android:visibility="gone"
         android:gravity="center_horizontal"
-        android:visibility="invisible"
-        android:text="To begin add your cattle pens.  To do so, select 'More' then select 'Manage Pens'."
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/no_pens_create_one"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/fragment_medicate_add_pen_btn"
+            android:text="@string/add_pen"
+            android:padding="16dp"
+            android:background="@drawable/accent_sign_in_btn"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_rv"

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -16,16 +17,21 @@ class FeedContainerViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FeedContainerUiState())
     val uiState: StateFlow<FeedContainerUiState> = _uiState.asStateFlow()
 
+    private var penAndLotModelsJob: Job? = null
+
     init {
         getPenAndLotModels()
     }
 
     private fun getPenAndLotModels(){
-        penUseCases.readPenAndLotModelUC()
+        _uiState.update { it.copy(isLoading = true) }
+        penAndLotModelsJob?.cancel()
+        penAndLotModelsJob = penUseCases.readPenAndLotModelUC()
             .map { penAndLotList ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penAndLotList = penAndLotList
+                        penAndLotList = penAndLotList,
+                        isLoading = false
                     )
                 }
             }

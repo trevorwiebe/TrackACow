@@ -10,7 +10,10 @@ import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
+import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +22,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.presentation.activities.MedicatedCowsActivity
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,7 +34,7 @@ class MedicateFragment : Fragment() {
 
     private var mPenAndLotModelList = emptyList<PenAndLotModel>()
 
-    private lateinit var mNoPensTv: TextView
+    private lateinit var mNoPensLl: LinearLayout
     private lateinit var mPenRv: RecyclerView
 
     private lateinit var mContext: Context
@@ -42,7 +46,14 @@ class MedicateFragment : Fragment() {
     ): View {
         val rootView = inflater.inflate(R.layout.fragment_medicate, container, false)
 
-        mNoPensTv = rootView.findViewById(R.id.no_pens_tv)
+        rootView.findViewById<Button>(R.id.fragment_medicate_add_pen_btn)
+            .setOnClickListener{
+                val addPenIntent = Intent(mContext, ManagePensActivity::class.java)
+                startActivity(addPenIntent)
+            }
+
+        mNoPensLl = rootView.findViewById(R.id.fragment_medicate_no_pens_layout)
+
         mPenRv = rootView.findViewById(R.id.main_rv)
         mPenRv.layoutManager = LinearLayoutManager(mContext)
         mPenRecyclerViewAdapter = PenRecyclerViewAdapter(mPenAndLotModelList, true, mContext)
@@ -69,9 +80,13 @@ class MedicateFragment : Fragment() {
                 mMedicateListViewModel.uiState.collect{
                     mPenAndLotModelList = it.penAndLotModelList
                     if(it.penAndLotModelList.isEmpty()){
-                        mNoPensTv.visibility = View.VISIBLE
+                        mPenRv.visibility = View.GONE
+                        if(!it.isLoading){
+                            mNoPensLl.visibility = View.VISIBLE
+                        }
                     }else {
-                        mNoPensTv.visibility = View.INVISIBLE
+                        mNoPensLl.visibility = View.GONE
+                        mPenRv.visibility = View.VISIBLE
                         mPenRecyclerViewAdapter!!.swapData(mPenAndLotModelList)
                     }
                 }

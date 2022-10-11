@@ -6,5 +6,6 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 
 data class FeedContainerUiState (
-    val penAndLotList: List<PenAndLotModel> = emptyList()
+    val penAndLotList: List<PenAndLotModel> = emptyList(),
+    val isLoading: Boolean = false
 )

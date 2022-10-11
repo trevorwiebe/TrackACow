@@ -15,8 +15,12 @@
     Work Fragment Strings
     <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
 
+    Feed Fragment Strings
+    <string name="no_pens_create_one">No pens saved. You must add one to continue</string>
+
     More Fragment Strings
     <string name="more_manage_pens">Manage Pens</string>
+    <string name="add_pen">Add new pen</string>
     <string name="more_manage_drugs">Manage Drugs</string>
     <string name="more_manage_rations">Manage Rations</string>
     <string name="more_archives">Archives</string>
