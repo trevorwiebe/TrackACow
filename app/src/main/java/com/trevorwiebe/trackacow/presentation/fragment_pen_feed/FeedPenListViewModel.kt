@@ -54,6 +54,7 @@ class FeedPenListViewModel @AssistedInject constructor(
     }
 
     private fun readCallsByLotId(lotDate: Long, lotId: String?){
+        _uiState.update { it.copy(isLoading = true) }
         readCallsJob?.cancel()
         readCallsJob = callUseCases.readCallsByLotId(lotId ?: "")
             .map { callList ->
@@ -68,7 +69,8 @@ class FeedPenListViewModel @AssistedInject constructor(
             .map { feedList ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        feedPenUiList = buildFeedList(lotDate, mCallList, feedList)
+                        feedPenUiList = buildFeedList(lotDate, mCallList, feedList),
+                        isLoading = false
                     )
                 }
             }

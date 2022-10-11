@@ -85,7 +85,7 @@ class FeedPenListFragment : Fragment(){
                     feedPenListUiModelList = it.feedPenUiList
 
                     // update ui with lot list
-                    if(feedPenListUiModelList.isEmpty()){
+                    if(feedPenListUiModelList.isEmpty() && !it.isLoading){
                         mEmptyPen.visibility = View.VISIBLE
                     }else{
                         mEmptyPen.visibility = View.INVISIBLE
