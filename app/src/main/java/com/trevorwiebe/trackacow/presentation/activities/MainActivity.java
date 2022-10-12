@@ -43,6 +43,7 @@ import com.trevorwiebe.trackacow.domain.services.SyncDatabaseService;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.SyncDatabase;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
+import com.trevorwiebe.trackacow.presentation.sign_in.SignInActivity;
 
 import java.text.NumberFormat;
 import java.util.Locale;
