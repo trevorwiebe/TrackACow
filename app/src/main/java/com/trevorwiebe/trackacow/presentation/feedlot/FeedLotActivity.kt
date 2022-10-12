@@ -143,7 +143,7 @@ class FeedLotActivity : AppCompatActivity(),
                 val callModel: CallModel
                 if(mSelectedCall == null){
                     // create the call Model
-                    callModel = CallModel(0, callAmount, dateStarted, mLotId, mSelectedRation?.primaryKey,"")
+                    callModel = CallModel(0, callAmount, dateStarted, mLotId, mSelectedRation?.rationPrimaryKey,"")
                 }else{
                     // assign callModel to mSelectedCallModel
                     callModel = mSelectedCall as CallModel

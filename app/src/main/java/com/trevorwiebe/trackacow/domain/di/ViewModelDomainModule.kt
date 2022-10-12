@@ -53,7 +53,7 @@ object ViewModelDomainModule {
     ): CallUseCases {
         return CallUseCases(
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
-            readCallsByLotId = ReadCallsByLotIdUC(callRepository),
+            readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
             createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
             updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
         )

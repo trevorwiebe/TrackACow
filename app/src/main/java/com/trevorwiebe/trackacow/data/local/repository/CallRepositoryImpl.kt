@@ -37,10 +37,11 @@ class CallRepositoryImpl(
             }
     }
 
-    override fun getCallsByLotId(lotId: String): Flow<List<CallModel>> {
-        return callDao.getCallByLotId(lotId).map { list ->
-            list.map { it.toCallModel() }
-        }
+    override fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationModel>> {
+        return callDao.getCallAndRationByLotId(lotId)
+            .map { callAndRationList ->
+                callAndRationList.map { it.toCallAndRationModel() }
+            }
     }
 
 

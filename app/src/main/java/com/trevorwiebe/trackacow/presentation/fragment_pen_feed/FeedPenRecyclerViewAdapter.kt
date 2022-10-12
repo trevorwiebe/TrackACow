@@ -2,8 +2,6 @@ package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.FeedPenRecyclerViewAdapter.FeedPenViewHolder
-import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -41,12 +39,12 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
         feedPenViewHolder.mDate.text = friendlyDate
 
         // set call model
-        val callModel = feedPenListUiModel.callModel
+        val callModel = feedPenListUiModel.callAndRationModel
         val call = callModel.callAmount.toLong()
         feedPenViewHolder.mCall.text = numberFormat.format(call)
 
         // set ration
-        feedPenViewHolder.mRation.text = "R1"
+        feedPenViewHolder.mRation.text = feedPenListUiModel.callAndRationModel.rationName
 
         // set feed entities
         val feedEntities = feedPenListUiModel.feedList

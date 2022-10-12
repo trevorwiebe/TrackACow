@@ -1,10 +1,9 @@
 package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
@@ -45,18 +44,18 @@ class FeedPenListViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(FeedPenListUiState())
     val uiState: StateFlow<FeedPenListUiState> = _uiState.asStateFlow()
 
-    private lateinit var mCallList: List<CallModel>
+    private lateinit var mCallList: List<CallAndRationModel>
 
     private var readCallsJob: Job? = null
 
     init {
-        readCallsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
+        readCallsAndRationsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
     }
 
-    private fun readCallsByLotId(lotDate: Long, lotId: String?){
+    private fun readCallsAndRationsByLotId(lotDate: Long, lotId: String?){
         _uiState.update { it.copy(isLoading = true) }
         readCallsJob?.cancel()
-        readCallsJob = callUseCases.readCallsByLotId(lotId ?: "")
+        readCallsJob = callUseCases.readCallsAndRationsByLotId(lotId ?: "")
             .map { callList ->
                 mCallList = callList
                 readFeedsByLotId(lotDate, lotId?:"")
@@ -77,7 +76,7 @@ class FeedPenListViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun buildFeedList(lotStartDate: Long, callList: List<CallModel>, feedList: List<FeedModel>): MutableList<FeedPenListUiModel> {
+    private fun buildFeedList(lotStartDate: Long, callList: List<CallAndRationModel>, feedList: List<FeedModel>): MutableList<FeedPenListUiModel> {
 
         val feedPenUiModelList: MutableList<FeedPenListUiModel> = mutableListOf()
 
@@ -95,14 +94,24 @@ class FeedPenListViewModel @AssistedInject constructor(
         val oneDay = TimeUnit.DAYS.toMillis(1)
         val currentTime = System.currentTimeMillis()
 
-        val initialCallModel = callList.find { it.date == dateStarted }
-            ?: CallModel(0, 0, 0,"", 0,"")
+        val initialCallAndRationModel: CallAndRationModel = callList.find { it.date == dateStarted }
+            ?: CallAndRationModel(
+                0,
+                0,
+                0,
+                "",
+                0,
+                "",
+                0,
+                "",
+                ""
+            )
 
         val initialFeedList: List<FeedModel> = feedList.filter { it.date == dateStarted }
 
         val initialFeedPenListUiModel = FeedPenListUiModel(
             date = dateStarted,
-            callModel = initialCallModel,
+            callAndRationModel = initialCallAndRationModel,
             feedList = initialFeedList
         )
 
@@ -111,12 +120,22 @@ class FeedPenListViewModel @AssistedInject constructor(
         while ((dateStarted + oneDay) < currentTime) {
             dateStarted += oneDay
 
-            val callModel = callList.find { it.date == dateStarted }
-                ?: CallModel(0, 0, 0,"", 0,"")
+            val callAndRationModel = callList.find { it.date == dateStarted }
+                ?: CallAndRationModel(
+                    0,
+                    0,
+                    0,
+                    "",
+                    0,
+                    "",
+                    0,
+                    "",
+                    ""
+                )
 
             val feedPenListUiModel = FeedPenListUiModel(
                 date = dateStarted,
-                callModel = callModel,
+                callAndRationModel = callAndRationModel,
                 feedList = feedList.filter { it.date == dateStarted }
             )
 

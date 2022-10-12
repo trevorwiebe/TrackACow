@@ -17,7 +17,7 @@ data class CreateCallUC(
 
         val id: Long = callRepository.insertCall(callModel)
 
-        callModel.primaryKey = id.toInt()
+        callModel.callPrimaryKey = id.toInt()
 
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
