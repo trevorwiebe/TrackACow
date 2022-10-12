@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
 
 fun CallModel.toCallEntity(): CallEntity {
     return CallEntity(
-        primaryKey = primaryKey,
+        callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
         lotId = lotId,
@@ -18,7 +18,7 @@ fun CallModel.toCallEntity(): CallEntity {
 
 fun CallEntity.toCallModel(): CallModel {
     return CallModel(
-        primaryKey = primaryKey,
+        callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
         lotId = lotId,
@@ -29,7 +29,7 @@ fun CallEntity.toCallModel(): CallModel {
 
 fun CacheCallEntity.toHoldingCallModel(): HoldingCallModel{
     return HoldingCallModel(
-        primaryKey = primaryKey,
+        callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
         lotId = lotId,
@@ -41,7 +41,7 @@ fun CacheCallEntity.toHoldingCallModel(): HoldingCallModel{
 
 fun HoldingCallModel.toHoldingCallEntity(): CacheCallEntity {
     return CacheCallEntity(
-        primaryKey = primaryKey,
+        callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
         lotId = lotId,
@@ -53,7 +53,7 @@ fun HoldingCallModel.toHoldingCallEntity(): CacheCallEntity {
 
 fun CallModel.toHoldingCallModel(whatHappened: Int): HoldingCallModel{
     return HoldingCallModel(
-        primaryKey = primaryKey,
+        callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
         lotId = lotId,

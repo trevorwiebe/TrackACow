@@ -49,7 +49,7 @@ class ManageRationsActivity : AppCompatActivity() {
                             AddOrEditRation::class.java)
                         editRationIntent.putExtra("add_or_edit", Constants.EDIT_RATION)
                         editRationIntent.putExtra("ration_name", selectedRation.rationName)
-                        editRationIntent.putExtra("ration_id", selectedRation.primaryKey)
+                        editRationIntent.putExtra("ration_id", selectedRation.rationPrimaryKey)
                         startActivity(editRationIntent)
                     }
                     override fun onLongItemClick(view: View, position: Int) {}

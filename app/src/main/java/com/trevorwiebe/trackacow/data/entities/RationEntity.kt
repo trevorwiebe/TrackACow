@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ration")
 data class RationEntity(
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
+    var rationPrimaryKey: Int = 0,
     var rationId: String,
     var rationName: String
 )

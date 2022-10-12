@@ -8,7 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "holdingLot")
 class CacheLotEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
+    var lotPrimaryKey: Int = 0,
     var lotName: String? = null,
     var lotCloudDatabaseId: String? = null,
     var customerName: String? = null,

@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.domain.models.lot
 
 data class CacheLotModel(
-    var primaryKey: Int = 0,
+    var lotPrimaryKey: Int = 0,
     var lotName: String? = null,
     var lotCloudDatabaseId: String? = null,
     var customerName: String? = null,

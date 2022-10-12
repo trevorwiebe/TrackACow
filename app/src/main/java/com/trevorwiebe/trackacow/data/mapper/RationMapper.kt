@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
 fun RationModel.toRationEntity(): RationEntity {
     return RationEntity(
-        primaryKey = primaryKey,
+        rationPrimaryKey = rationPrimaryKey,
         rationId = rationId,
         rationName = rationName
     )
@@ -15,7 +15,7 @@ fun RationModel.toRationEntity(): RationEntity {
 
 fun RationEntity.toRationModel(): RationModel {
     return RationModel(
-        primaryKey = primaryKey,
+        rationPrimaryKey = rationPrimaryKey,
         rationId = rationId,
         rationName = rationName
     )
@@ -23,7 +23,7 @@ fun RationEntity.toRationModel(): RationModel {
 
 fun RationModel.toCacheRationModel(whatHappened: Int): HoldingRationModel {
     return HoldingRationModel(
-        primaryKey = primaryKey,
+        rationPrimaryKey = rationPrimaryKey,
         rationId = rationId,
         rationName = rationName,
         whatHappened = whatHappened
@@ -32,7 +32,7 @@ fun RationModel.toCacheRationModel(whatHappened: Int): HoldingRationModel {
 
 fun CacheRationEntity.toCacheRationModel(): HoldingRationModel {
     return HoldingRationModel(
-        primaryKey = primaryKey,
+        rationPrimaryKey = rationPrimaryKey,
         rationId = rationId,
         rationName = rationName,
         whatHappened = whatHappened
@@ -41,7 +41,7 @@ fun CacheRationEntity.toCacheRationModel(): HoldingRationModel {
 
 fun HoldingRationModel.toCacheRationEntity(): CacheRationEntity {
     return CacheRationEntity(
-        primaryKey = primaryKey,
+        rationPrimaryKey = rationPrimaryKey,
         rationId = rationId,
         rationName = rationName,
         whatHappened = whatHappened

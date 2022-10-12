@@ -145,7 +145,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                 CacheLotEntity cacheLotEntity = holdingLotEntities.get(e);
 
                 LotEntity lotEntity = new LotEntity(
-                        cacheLotEntity.getPrimaryKey(),
+                        cacheLotEntity.getLotPrimaryKey(),
                         cacheLotEntity.getLotName(),
                         cacheLotEntity.getLotCloudDatabaseId(),
                         cacheLotEntity.getCustomerName(),

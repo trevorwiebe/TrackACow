@@ -18,13 +18,13 @@ interface RationDao {
     @Query("SELECT * FROM ration")
     fun getRations(): Flow<List<RationEntity>>
 
-    @Query("SELECT * FROM ration WHERE primaryKey = :id")
+    @Query("SELECT * FROM ration WHERE rationPrimaryKey = :id")
     fun getRationsById(id: Int): Flow<RationEntity>
 
     @Update
     suspend fun updateRation(rationEntity: RationEntity)
 
-    @Query("DELETE FROM ration WHERE primaryKey = :rationId")
+    @Query("DELETE FROM ration WHERE rationPrimaryKey = :rationId")
     suspend fun deleteRationById(rationId: Int)
 
     @Query("DELETE FROM ration")

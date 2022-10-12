@@ -8,7 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "call")
 data class CallEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
+    var callPrimaryKey: Int = 0,
     var callAmount: Int,
     var date: Long,
     var lotId: String,

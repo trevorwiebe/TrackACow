@@ -31,7 +31,7 @@ fun LotEntity.toLotModel(): LotModel {
 
 fun CacheLotEntity.toCacheLotModel(): CacheLotModel{
     return CacheLotModel(
-        primaryKey = primaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
@@ -43,7 +43,7 @@ fun CacheLotEntity.toCacheLotModel(): CacheLotModel{
 
 fun CacheLotModel.toCacheLotEntity(): CacheLotEntity {
     return CacheLotEntity(
-        primaryKey = primaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
@@ -55,7 +55,7 @@ fun CacheLotModel.toCacheLotEntity(): CacheLotEntity {
 
 fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
     return CacheLotModel(
-        primaryKey = lotPrimaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
@@ -68,7 +68,7 @@ fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
 
 fun LotEntity.toCacheLotEntity(whatHappened: Int): CacheLotEntity{
     return CacheLotEntity(
-        primaryKey = lotPrimaryKey,
+        lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,

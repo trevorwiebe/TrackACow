@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.domain.repository.local
 
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import kotlinx.coroutines.flow.Flow
 
 interface CallRepository {
@@ -12,7 +13,7 @@ interface CallRepository {
 
     fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel?>
 
-    fun getCallsByLotId(lotId: String): Flow<List<CallModel>>
+    fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationModel>>
 
     suspend fun updateCall(callModel: CallModel)
 

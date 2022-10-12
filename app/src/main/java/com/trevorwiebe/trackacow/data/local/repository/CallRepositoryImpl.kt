@@ -2,11 +2,13 @@ package com.trevorwiebe.trackacow.data.local.repository
 
 import com.trevorwiebe.trackacow.data.local.dao.CallDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCallDao
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toCallAndRationModel
 import com.trevorwiebe.trackacow.data.mapper.toCallEntity
 import com.trevorwiebe.trackacow.data.mapper.toCallModel
 import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -41,8 +43,9 @@ class CallRepositoryImpl(
         }
     }
 
+
     override suspend fun updateCall(callModel: CallModel) {
-        callDao.updateCallAmount(callModel.callAmount, callModel.primaryKey)
+        callDao.updateCallAmount(callModel.callAmount, callModel.callPrimaryKey)
     }
 
     override suspend fun deleteCall(callModel: CallModel) {
