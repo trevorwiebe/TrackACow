@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.data.mapper.toCallEntity
 import com.trevorwiebe.trackacow.data.mapper.toCallModel
 import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
+import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +53,7 @@ class CallRepositoryImpl(
         callDao.deleteCall(callModel.toCallEntity())
     }
 
-    override suspend fun insertHoldingCall(holdingCallModel: HoldingCallModel) {
-        cacheCallDao.insertHoldingCall(holdingCallModel.toHoldingCallEntity())
+    override suspend fun insertHoldingCall(cacheCallModel: CacheCallModel) {
+        cacheCallDao.insertHoldingCall(cacheCallModel.toHoldingCallEntity())
     }
 }

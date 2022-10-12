@@ -1,6 +1,6 @@
 package com.trevorwiebe.trackacow.domain.models.call
 
-data class HoldingCallModel (
+data class CacheCallModel (
     var callPrimaryKey: Int = 0,
     val callAmount: Int,
     val date: Long,

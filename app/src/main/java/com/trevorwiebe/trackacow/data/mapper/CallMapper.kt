@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.data.mapper
 import com.trevorwiebe.trackacow.data.entities.CallEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.domain.models.call.HoldingCallModel
+import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 
 fun CallModel.toCallEntity(): CallEntity {
     return CallEntity(
@@ -27,8 +27,8 @@ fun CallEntity.toCallModel(): CallModel {
     )
 }
 
-fun CacheCallEntity.toHoldingCallModel(): HoldingCallModel{
-    return HoldingCallModel(
+fun CacheCallEntity.toHoldingCallModel(): CacheCallModel{
+    return CacheCallModel(
         callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,
@@ -39,7 +39,7 @@ fun CacheCallEntity.toHoldingCallModel(): HoldingCallModel{
     )
 }
 
-fun HoldingCallModel.toHoldingCallEntity(): CacheCallEntity {
+fun CacheCallModel.toHoldingCallEntity(): CacheCallEntity {
     return CacheCallEntity(
         callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
@@ -51,8 +51,8 @@ fun HoldingCallModel.toHoldingCallEntity(): CacheCallEntity {
     )
 }
 
-fun CallModel.toHoldingCallModel(whatHappened: Int): HoldingCallModel{
-    return HoldingCallModel(
+fun CallModel.toHoldingCallModel(whatHappened: Int): CacheCallModel{
+    return CacheCallModel(
         callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
         date = date,

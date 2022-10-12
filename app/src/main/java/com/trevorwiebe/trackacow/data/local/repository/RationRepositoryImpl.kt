@@ -5,7 +5,7 @@ import com.trevorwiebe.trackacow.data.local.cacheDao.CacheRationDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationModel
-import com.trevorwiebe.trackacow.domain.models.ration.HoldingRationModel
+import com.trevorwiebe.trackacow.domain.models.ration.CacheRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,7 @@ class RationRepositoryImpl(
         rationDao.deleteRationById(rationId)
     }
 
-    override suspend fun insertHoldingRation(holdingRationModel: HoldingRationModel) {
-        cacheRationDao.insertHoldingRation(holdingRationModel.toCacheRationEntity())
+    override suspend fun insertHoldingRation(cacheRationModel: CacheRationModel) {
+        cacheRationDao.insertHoldingRation(cacheRationModel.toCacheRationEntity())
     }
 }
