@@ -14,14 +14,16 @@ class CreateRationUC(
     private val context: Application
 ) {
     suspend operator fun invoke(rationModel: RationModel){
-        // check to see if network is available
-        val isConnectionActive = Utility.haveNetworkConnection(context)
-        if(isConnectionActive){
+
+        val localDbId = rationsRepository.insertRation(rationModel)
+
+        rationModel.rationPrimaryKey = localDbId.toInt()
+
+        if(Utility.haveNetworkConnection(context)){
             rationRepositoryRemote.insertRationRemote(rationModel)
         }else{
             rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
         }
-        rationsRepository.insertRation(rationModel)
     }
 }

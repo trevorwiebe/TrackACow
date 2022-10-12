@@ -16,8 +16,8 @@ class RationRepositoryImpl(
     private val cacheRationDao: CacheRationDao
 ): RationsRepository {
 
-    override suspend fun insertRation(rationModel: RationModel) {
-        rationDao.insertRation(rationModel.toRationEntity())
+    override suspend fun insertRation(rationModel: RationModel): Long {
+        return rationDao.insertRation(rationModel.toRationEntity())
     }
 
     override fun getRations(): Flow<List<RationModel>> {

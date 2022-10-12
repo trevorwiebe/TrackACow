@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface RationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRation(rationEntity: RationEntity)
+    suspend fun insertRation(rationEntity: RationEntity): Long
 
     @Query("SELECT * FROM ration")
     fun getRations(): Flow<List<RationEntity>>

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RationsRepository {
 
-    suspend fun insertRation(rationModel: RationModel)
+    suspend fun insertRation(rationModel: RationModel): Long
 
     fun getRations(): Flow<List<RationModel>>
 
