@@ -22,6 +22,7 @@
 
     Report Strings
     <string name="reports">Reports</string>
+    <string name="empty_reports_list">This is where the reports for each of your lots will be.</string>
 
     Move Strings
     <string name="move">Move</string>
@@ -35,13 +36,23 @@
     <string name="more_archives">Archives</string>
     <string name="more_settings">Settings</string>
 
+    Manage Pens
+    <string name="empty_pen_list">No saved pens.  Please add one to use full functionality.</string>
+
+    Manage Drugs
+    <string name="add_drug">Add drug</string>
+    <string name="empty_drug_list">No saved drugs.  Please add one to use full functionality.</string>
+
     Manage Rations
     <string name="add_ration">Add Ration</string>
     <string name="edit_ration">Edit Ration</string>
     <string name="update_ration">Update Ration</string>
-    <string name="empty_ration_list">No saved rations.  Please add one to use full functionality</string>
+    <string name="empty_ration_list">No saved rations.  Please add one to use full functionality.</string>
     <string name="ration_name">Ration Name</string>
     <string name="ration_saved">Ration Saved</string>
+
+    Archives
+    <string name="empty_archive_list">No lots have been archived.</string>
 
     Utility Strings
     <string name="save_pen_id_key" translatable="false">save_pen_id</string>
