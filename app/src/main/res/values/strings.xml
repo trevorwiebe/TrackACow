@@ -13,7 +13,7 @@
     <string name="generic_error">An unknown error occurred</string>
 
     Work Fragment Strings
-    <string name="work">Word</string>
+    <string name="work">Work</string>
     <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
 
     Feed Fragment Strings
