@@ -82,7 +82,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case DrugEntity.DRUG_OBJECT:
+                            case Constants.DRUG:
                                 for (DataSnapshot drugsSnapshot : snapshot.getChildren()) {
                                     DrugEntity drugEntity = drugsSnapshot.getValue(DrugEntity.class);
                                     if (drugEntity != null) {

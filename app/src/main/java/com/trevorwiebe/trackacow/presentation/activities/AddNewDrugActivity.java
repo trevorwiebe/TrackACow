@@ -20,7 +20,7 @@ import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 public class AddNewDrugActivity extends AppCompatActivity {
 
-    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(DrugEntity.DRUG_OBJECT);
+    private DatabaseReference mDrugRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(Constants.DRUG);
 
     private TextInputEditText mDrugName;
     private TextInputEditText mDefaultAmount;
@@ -54,18 +54,21 @@ public class AddNewDrugActivity extends AppCompatActivity {
                     String drugName = mDrugName.getText().toString();
                     int defaultGiven = Integer.parseInt(mDefaultAmount.getText().toString());
 
-                    DrugEntity drugEntity = new DrugEntity(defaultGiven, key, drugName);
+                    DrugEntity drugEntity = new DrugEntity(0, defaultGiven, key, drugName);
 
                     if(Utility.haveNetworkConnection(AddNewDrugActivity.this)){
                         pushRef.setValue(drugEntity);
                     }else{
                         Utility.setNewDataToUpload(AddNewDrugActivity.this, true);
 
-                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
-                        cacheDrugEntity.setDefaultAmount(drugEntity.getDefaultAmount());
-                        cacheDrugEntity.setDrugId(drugEntity.getDrugId());
-                        cacheDrugEntity.setDrugName(drugEntity.getDrugName());
-                        cacheDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity(
+                                drugEntity.getPrimaryKey(),
+                                drugEntity.getDefaultAmount(),
+                                drugEntity.getDrugId(),
+                                drugEntity.getDrugName(),
+                                Constants.INSERT_UPDATE
+                        );
+
                         new InsertHoldingDrug(cacheDrugEntity).execute(AddNewDrugActivity.this);
                     }
 

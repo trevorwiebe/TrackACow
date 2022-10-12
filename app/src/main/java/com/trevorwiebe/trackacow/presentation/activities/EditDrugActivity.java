@@ -56,7 +56,7 @@ public class EditDrugActivity extends AppCompatActivity {
         }
 
         mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        mDrugRef = mBaseRef.child(DrugEntity.DRUG_OBJECT);
+        mDrugRef = mBaseRef.child(Constants.DRUG);
 
         mUpdateDrugName = findViewById(R.id.update_drug_name);
         mUpdateDefaultAmount = findViewById(R.id.update_default_amount_given);
@@ -95,11 +95,13 @@ public class EditDrugActivity extends AppCompatActivity {
 
                         Utility.setNewDataToUpload(EditDrugActivity.this, true);
 
-                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
-                        cacheDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
-                        cacheDrugEntity.setDrugId(mDrugEntity.getDrugId());
-                        cacheDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                        cacheDrugEntity.setWhatHappened(Constants.INSERT_UPDATE);
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity(
+                                mDrugEntity.getPrimaryKey(),
+                                mDrugEntity.getDefaultAmount(),
+                                mDrugEntity.getDrugId(),
+                                mDrugEntity.getDrugName(),
+                                Constants.INSERT_UPDATE
+                        );
 
                         new InsertHoldingDrug(cacheDrugEntity).execute(EditDrugActivity.this);
 
@@ -142,11 +144,13 @@ public class EditDrugActivity extends AppCompatActivity {
                         mDrugRef.child(mDrugEntity.getDrugId()).removeValue();
                     } else {
                         Utility.setNewDataToUpload(EditDrugActivity.this, true);
-                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity();
-                        cacheDrugEntity.setWhatHappened(Constants.DELETE);
-                        cacheDrugEntity.setDrugName(mDrugEntity.getDrugName());
-                        cacheDrugEntity.setDrugId(mDrugEntity.getDrugId());
-                        cacheDrugEntity.setDefaultAmount(mDrugEntity.getDefaultAmount());
+                        CacheDrugEntity cacheDrugEntity = new CacheDrugEntity(
+                                mDrugEntity.getPrimaryKey(),
+                                mDrugEntity.getDefaultAmount(),
+                                mDrugEntity.getDrugId(),
+                                mDrugEntity.getDrugName(),
+                                Constants.DELETE
+                        );
                         new InsertHoldingDrug(cacheDrugEntity).execute(EditDrugActivity.this);
                     }
 

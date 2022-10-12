@@ -1,44 +1,34 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.DrugEntity
 
 @Dao
-public interface DrugDao {
+interface DrugDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDrug(drugEntity: DrugEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertDrug(DrugEntity drugEntity);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertListDrug(List<DrugEntity> drugEntities);
+    fun insertListDrug(drugEntities: List<DrugEntity>)
 
     @Query("SELECT * FROM Drug WHERE drugId = :id")
-    DrugEntity getDrugById(String id);
+    fun getDrugById(id: String): DrugEntity?
 
-    @Query("SELECT * FROM Drug")
-    List<DrugEntity> getDrugList();
+    @get:Query("SELECT * FROM Drug")
+    val drugList: List<DrugEntity>
 
     @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugId = :drugId")
-    void updateDrugById(int defaultAmount, String drugName, String drugId);
+    fun updateDrugById(defaultAmount: Int, drugName: String, drugId: String)
 
     @Query("DELETE FROM Drug")
-    void deleteDrugTable();
+    fun deleteDrugTable()
 
     @Query("DELETE FROM Drug WHERE drugId = :drugId")
-    void deleteDrugById(String drugId);
+    fun deleteDrugById(drugId: String)
 
     @Update
-    void updateDrug(DrugEntity drugEntity);
+    fun updateDrug(drugEntity: DrugEntity)
 
     @Delete
-    void deleteDrug(DrugEntity drugEntity);
-
+    fun deleteDrug(drugEntity: DrugEntity)
 }

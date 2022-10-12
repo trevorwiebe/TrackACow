@@ -1,42 +1,31 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity
 
 @Dao
-public interface CacheDrugDao {
+interface CacheDrugDao {
+    @Insert
+    fun insertHoldingDrug(cacheDrugEntity: CacheDrugEntity)
 
     @Insert
-    void insertHoldingDrug(CacheDrugEntity cacheDrugEntity);
-
-    @Insert
-    void insertListHoldingDrug(List<CacheDrugEntity> holdingDrugEntities);
+    fun insertListHoldingDrug(holdingDrugEntities: List<CacheDrugEntity>)
 
     @Query("SELECT * FROM HoldingDrug WHERE drugId = :id")
-    CacheDrugEntity getHoldingDrugById(String id);
+    fun getHoldingDrugById(id: String): CacheDrugEntity?
 
     @Query("SELECT * FROM HoldingDrug")
-    List<CacheDrugEntity> getHoldingDrugList();
+    fun getHoldingDrugList(): List<CacheDrugEntity>
 
     @Query("DELETE FROM HoldingDrug WHERE drugId = :drugId")
-    void deleteHoldingDrugById(String drugId);
+    fun deleteHoldingDrugById(drugId: String)
 
     @Query("DELETE FROM HoldingDrug")
-    void deleteHoldingDrugTable();
+    fun deleteHoldingDrugTable()
 
     @Update
-    void updateDrug(CacheDrugEntity cacheDrugEntity);
+    fun updateDrug(cacheDrugEntity: CacheDrugEntity)
 
     @Delete
-    void deleteDrug(CacheDrugEntity cacheDrugEntity);
-
-
+    fun deleteDrug(cacheDrugEntity: CacheDrugEntity)
 }

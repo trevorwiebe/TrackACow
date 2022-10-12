@@ -12,6 +12,8 @@ public class Constants {
     public static final String CALLS = "/calls";
     public static final String DATABASE_PENS = "/pens";
     public static final String DATABASE_STRING_LOT = "/cattleLot";
+    public static final String DATABASE_PATH_DRUG = "/drugs";
+    public static final String DRUG = "drugs";
     public static final String PENS = "pens";
     public static final String LOTS = "cattleLot";
     public static final String FEEDS = "feed";

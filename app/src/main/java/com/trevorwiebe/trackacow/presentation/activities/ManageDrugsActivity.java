@@ -82,7 +82,7 @@ public class ManageDrugsActivity extends AppCompatActivity implements QueryAllDr
     private void openEditDrugActivityForResult(int position){
         DrugEntity selectedDrugObject = mDrugList.get(position);
         Intent editDrugIntent = new Intent(ManageDrugsActivity.this, EditDrugActivity.class);
-        editDrugIntent.putExtra("drugObject", selectedDrugObject);
+//        editDrugIntent.putExtra("drugObject", selectedDrugObject);
         editDrugActivityForResult.launch(editDrugIntent);
     }
 
