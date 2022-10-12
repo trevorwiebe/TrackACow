@@ -131,10 +131,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_move_pens){
-            setSelectedFragment(Constants.MOVE);
-            mBottomNavigationView.getMenu().setGroupCheckable(0, false, true);
-        }else if(id == R.id.action_sync_data){
+        if(id == R.id.action_sync_data){
             mMainProgressBar.setVisibility(View.VISIBLE);
             mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
             mSyncDatabase.beginSync();
@@ -373,35 +370,35 @@ public class MainActivity extends AppCompatActivity implements
         // open the correct fragment
         switch (fragmentId) {
             case Constants.FEED:
-                setTitle("Feed");
+                setTitle(getString(R.string.feed));
                 FeedContainerFragment feedContainerFragment = new FeedContainerFragment();
                 FragmentTransaction feedTransactionManager = getSupportFragmentManager().beginTransaction();
                 feedTransactionManager.replace(R.id.main_fragment_container, feedContainerFragment);
                 feedTransactionManager.commit();
                 break;
             case Constants.REPORTS:
-                setTitle("Reports");
+                setTitle(getString(R.string.reports));
                 ReportsFragment reportsFragment = new ReportsFragment();
                 FragmentTransaction reportsTransactionManager = getSupportFragmentManager().beginTransaction();
                 reportsTransactionManager.replace(R.id.main_fragment_container, reportsFragment);
                 reportsTransactionManager.commit();
                 break;
             case Constants.MORE:
-                setTitle("More");
+                setTitle(getString(R.string.more));
                 MoreFragment moreFragment = new MoreFragment();
                 FragmentTransaction moreTransactionManager = getSupportFragmentManager().beginTransaction();
                 moreTransactionManager.replace(R.id.main_fragment_container, moreFragment);
                 moreTransactionManager.commit();
                 break;
             case Constants.MOVE:
-                setTitle("Move");
+                setTitle(getString(R.string.move));
                 MoveFragment moveFragment = new MoveFragment();
                 FragmentTransaction moveTransactionManager = getSupportFragmentManager().beginTransaction();
                 moveTransactionManager.replace(R.id.main_fragment_container, moveFragment);
                 moveTransactionManager.commit();
                 break;
             default:
-                setTitle("Work");
+                setTitle(getString(R.string.work));
                 MedicateFragment medicateFragmentDefault = new MedicateFragment();
                 FragmentTransaction medicateTransactionManagerDefault = getSupportFragmentManager().beginTransaction();
                 medicateTransactionManagerDefault.replace(R.id.main_fragment_container, medicateFragmentDefault);
