@@ -7,15 +7,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
-import com.trevorwiebe.trackacow.data.remote.repository.CallRepositoryRemoteImpl
-import com.trevorwiebe.trackacow.data.remote.repository.LotRepositoryRemoteImpl
-import com.trevorwiebe.trackacow.data.remote.repository.PenRepositoryRemoteImpl
-import com.trevorwiebe.trackacow.data.remote.repository.RationRepositoryRemoteImpl
+import com.trevorwiebe.trackacow.data.remote.repository.*
 import com.trevorwiebe.trackacow.domain.repository.local.*
-import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -91,7 +85,18 @@ object TrackACowDataModule {
         db: AppDatabase
     ): DrugRepository {
         return DrugRepositoryImpl(
-            drugDao = db.drugDao()
+            drugDao = db.drugDao(),
+            cacheDrugDao = db.cacheDrugDao()
+        )
+    }
+    @Provides
+    @Singleton
+    fun provideDrugRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): DrugRepositoryRemote{
+        return DrugRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_PATH_DRUG
         )
     }
 

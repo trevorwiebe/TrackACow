@@ -17,7 +17,7 @@ public class InsertHoldingDrug extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).cacheDrugDao().insertHoldingDrug(cacheDrugEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cacheDrugDao().insertCacheDrug(cacheDrugEntity);
         return null;
     }
 

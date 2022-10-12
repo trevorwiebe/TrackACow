@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface DrugDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrug(drugEntity: DrugEntity)
+    suspend fun insertDrug(drugEntity: DrugEntity): Long
 
     @Query("SELECT * FROM Drug")
     fun getDrugList(): Flow<List<DrugEntity>>

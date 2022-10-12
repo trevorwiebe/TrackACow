@@ -2,10 +2,7 @@ package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.*
-import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
@@ -91,11 +88,13 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun provideDrugUseCases(
-        drugRepository: DrugRepository
+        drugRepository: DrugRepository,
+        drugRepositoryRemote: DrugRepositoryRemote,
+        context: Application
     ): DrugUseCases{
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(drugRepository),
-            createDrug = CreateDrug(drugRepository)
+            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, context)
         )
     }
 

@@ -5,8 +5,9 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity
 
 @Dao
 interface CacheDrugDao {
+
     @Insert
-    fun insertHoldingDrug(cacheDrugEntity: CacheDrugEntity)
+    fun insertCacheDrug(cacheDrugEntity: CacheDrugEntity)
 
     @Insert
     fun insertListHoldingDrug(holdingDrugEntities: List<CacheDrugEntity>)
