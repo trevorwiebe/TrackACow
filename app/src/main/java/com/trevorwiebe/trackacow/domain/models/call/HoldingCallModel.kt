@@ -5,6 +5,7 @@ data class HoldingCallModel (
     val callAmount: Int,
     val date: Long,
     val lotId: String,
+    val callRationId: Int?,
     val callCloudDatabaseId: String?,
     val whatHappened: Int
 )

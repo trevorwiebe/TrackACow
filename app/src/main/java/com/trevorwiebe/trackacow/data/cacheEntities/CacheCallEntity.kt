@@ -12,6 +12,7 @@ data class CacheCallEntity (
     var callAmount: Int,
     var date: Long,
     var lotId: String,
+    var callRationId: Int? = null,
     var callCloudDatabaseId: String?,
     var whatHappened: Int
 )

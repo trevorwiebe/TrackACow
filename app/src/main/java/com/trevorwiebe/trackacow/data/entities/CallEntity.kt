@@ -12,5 +12,6 @@ data class CallEntity (
     var callAmount: Int,
     var date: Long,
     var lotId: String,
+    val callRationId: Int? = null,
     var callCloudDatabaseId: String?
 )

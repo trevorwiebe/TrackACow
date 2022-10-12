@@ -5,5 +5,6 @@ data class CallModel(
     var callAmount: Int,
     val date: Long,
     val lotId: String,
+    val callRationId: Int?,
     var callCloudDatabaseId: String?,
 )

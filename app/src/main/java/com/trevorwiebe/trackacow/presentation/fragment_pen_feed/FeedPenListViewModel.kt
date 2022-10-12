@@ -96,7 +96,7 @@ class FeedPenListViewModel @AssistedInject constructor(
         val currentTime = System.currentTimeMillis()
 
         val initialCallModel = callList.find { it.date == dateStarted }
-            ?: CallModel(0, 0, 0,"", "")
+            ?: CallModel(0, 0, 0,"", 0,"")
 
         val initialFeedList: List<FeedModel> = feedList.filter { it.date == dateStarted }
 
@@ -112,7 +112,7 @@ class FeedPenListViewModel @AssistedInject constructor(
             dateStarted += oneDay
 
             val callModel = callList.find { it.date == dateStarted }
-                ?: CallModel(0, 0, 0,"", "")
+                ?: CallModel(0, 0, 0,"", 0,"")
 
             val feedPenListUiModel = FeedPenListUiModel(
                 date = dateStarted,

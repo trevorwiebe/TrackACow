@@ -11,6 +11,7 @@ fun CallModel.toCallEntity(): CallEntity {
         callAmount = callAmount,
         date = date,
         lotId = lotId,
+        callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId
     )
 }
@@ -21,6 +22,7 @@ fun CallEntity.toCallModel(): CallModel {
         callAmount = callAmount,
         date = date,
         lotId = lotId,
+        callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId
     )
 }
@@ -31,6 +33,7 @@ fun CacheCallEntity.toHoldingCallModel(): HoldingCallModel{
         callAmount = callAmount,
         date = date,
         lotId = lotId,
+        callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         whatHappened = whatHappened
     )
@@ -42,6 +45,7 @@ fun HoldingCallModel.toHoldingCallEntity(): CacheCallEntity {
         callAmount = callAmount,
         date = date,
         lotId = lotId,
+        callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         whatHappened = whatHappened
     )
@@ -53,6 +57,7 @@ fun CallModel.toHoldingCallModel(whatHappened: Int): HoldingCallModel{
         callAmount = callAmount,
         date = date,
         lotId = lotId,
+        callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         whatHappened = whatHappened
     )
