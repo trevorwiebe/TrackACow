@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.add_edit_drug.AddNewDrugActivity">
+    tools:context=".presentation.add_edit_drug.AddOrEditDrugActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:id="@+id/add_new_drug_cancel"
             style="?buttonBarButtonStyle"
             android:textColor="@color/colorAccent"
@@ -76,7 +76,6 @@
 
         <Button
             style="?buttonBarButtonStyle"
-            android:text="Save drug"
             android:id="@+id/save_drug"
             android:textColor="@android:color/white"
             android:background="@color/colorAccent"

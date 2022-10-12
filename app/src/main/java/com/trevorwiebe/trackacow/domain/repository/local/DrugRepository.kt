@@ -10,5 +10,7 @@ interface DrugRepository {
 
     suspend fun insertCacheDrug(drugCacheModel: CacheDrugModel)
 
+    suspend fun updateDrug(drugModel: DrugModel)
+
     fun getDrugList(): Flow<List<DrugModel>>
 }

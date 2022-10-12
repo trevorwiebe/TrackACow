@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity
 interface CacheDrugDao {
 
     @Insert
-    fun insertCacheDrug(cacheDrugEntity: CacheDrugEntity)
+    suspend fun insertCacheDrug(cacheDrugEntity: CacheDrugEntity)
 
     @Insert
     fun insertListHoldingDrug(holdingDrugEntities: List<CacheDrugEntity>)
@@ -29,4 +29,9 @@ interface CacheDrugDao {
 
     @Delete
     fun deleteDrug(cacheDrugEntity: CacheDrugEntity)
+
+    // Deprecated
+    @Deprecated("Use suspend function")
+    @Insert
+    fun insertCacheDrug2(cacheDrugEntity: CacheDrugEntity)
 }

@@ -8,23 +8,21 @@ import com.trevorwiebe.trackacow.domain.repository.remote.DrugRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 
-class CreateDrug(
+class UpdateDrug(
     private val drugRepository: DrugRepository,
     private val drugRepositoryRemote: DrugRepositoryRemote,
     private val context: Application
 ) {
-    suspend operator fun invoke(drugModel: DrugModel){
+   suspend operator fun invoke(drugModel: DrugModel){
 
-        val localDbId = drugRepository.insertDrug(drugModel)
+       drugRepository.updateDrug(drugModel)
 
-        drugModel.primaryKey = localDbId.toInt()
+       if(Utility.haveNetworkConnection(context)){
+            drugRepositoryRemote.updateDrug(drugModel)
+       }else{
+           Utility.setNewDataToUpload(context, true)
+           drugRepository.insertCacheDrug(drugModel.toCacheDrugModel(Constants.INSERT_UPDATE))
+       }
 
-        if(Utility.haveNetworkConnection(context)){
-            drugRepositoryRemote.insertDrug(drugModel)
-        }else{
-            Utility.setNewDataToUpload(context, true)
-            drugRepository.insertCacheDrug(drugModel.toCacheDrugModel(Constants.INSERT_UPDATE))
-        }
-
-    }
+   }
 }

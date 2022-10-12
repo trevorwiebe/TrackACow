@@ -7,6 +7,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
@@ -94,7 +95,8 @@ object ViewModelDomainModule {
     ): DrugUseCases{
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(drugRepository),
-            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, context)
+            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, context),
+            updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context)
         )
     }
 

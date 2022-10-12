@@ -13,8 +13,8 @@ interface DrugDao {
     @Query("SELECT * FROM Drug")
     fun getDrugList(): Flow<List<DrugEntity>>
 
-    @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugId = :drugId")
-    fun updateDrugById(defaultAmount: Int, drugName: String, drugId: String)
+    @Query("UPDATE Drug SET drugName = :drugName, defaultAmount = :defaultAmount WHERE primaryKey = :id")
+    suspend fun updateDrug(drugName: String, defaultAmount: Int, id: Int)
 
     @Query("DELETE FROM Drug")
     fun deleteDrugTable()
@@ -22,13 +22,19 @@ interface DrugDao {
     @Query("DELETE FROM Drug WHERE drugId = :drugId")
     fun deleteDrugById(drugId: String)
 
-    @Update
-    fun updateDrug(drugEntity: DrugEntity)
-
     @Delete
     fun deleteDrug(drugEntity: DrugEntity)
 
+
     // Deprecated
+    @Deprecated("Use suspend function")
+    @Update
+    fun updateDrug2(drugEntity: DrugEntity)
+
+    @Deprecated("Use suspend function")
+    @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugId = :drugId")
+    fun updateDrugById(defaultAmount: Int, drugName: String, drugId: String)
+
     @Deprecated("Use flow return type function")
     @Query("SELECT * FROM Drug WHERE drugId = :id")
     fun getDrugById2(id: String): DrugEntity?

@@ -17,4 +17,8 @@ class DrugRepositoryRemoteImpl(
         databaseReference.child(cloudDatabaseId?:"").setValue(drugModel)
     }
 
+    override fun updateDrug(drugModel: DrugModel) {
+        firebaseDatabase.getReference("$databasePath/${drugModel.drugId}").setValue(drugModel)
+    }
+
 }

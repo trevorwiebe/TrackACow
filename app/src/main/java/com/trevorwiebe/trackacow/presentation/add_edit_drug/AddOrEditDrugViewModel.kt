@@ -18,6 +18,9 @@ class AddOrEditDrugViewModel @Inject constructor(
             is AddOrEditDrugUiEvent.OnDrugAdded -> {
                 createDrug(event.drugModel)
             }
+            is AddOrEditDrugUiEvent.OnDrugUpdated -> {
+                updateDrug(event.drugModel)
+            }
         }
     }
 
@@ -27,8 +30,15 @@ class AddOrEditDrugViewModel @Inject constructor(
         }
     }
 
+    private fun updateDrug(drugModel: DrugModel){
+        viewModelScope.launch {
+            drugUseCases.updateDrug(drugModel)
+        }
+    }
+
 }
 
 sealed class AddOrEditDrugUiEvent{
     data class OnDrugAdded(val drugModel: DrugModel): AddOrEditDrugUiEvent()
+    data class OnDrugUpdated(val drugModel: DrugModel): AddOrEditDrugUiEvent()
 }

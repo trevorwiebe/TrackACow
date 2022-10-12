@@ -24,6 +24,10 @@ class DrugRepositoryImpl(
         cacheDrugDao.insertCacheDrug(drugCacheModel.toCacheDrugEntity())
     }
 
+    override suspend fun updateDrug(drugModel: DrugModel) {
+        drugDao.updateDrug(drugModel.drugName, drugModel.defaultAmount, drugModel.primaryKey)
+    }
+
     override fun getDrugList(): Flow<List<DrugModel>> {
         return drugDao.getDrugList().map { drugList->
             drugList.map { it.toDrugModel() }

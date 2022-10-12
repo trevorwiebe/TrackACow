@@ -12,7 +12,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.trevorwiebe.trackacow.presentation.add_edit_drug.AddNewDrugActivity
+import com.trevorwiebe.trackacow.presentation.add_edit_drug.AddOrEditDrugActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,7 +39,7 @@ class ManageDrugsActivity : AppCompatActivity() {
 
         val addNewDrugFab = findViewById<FloatingActionButton>(R.id.add_new_drug)
         addNewDrugFab.setOnClickListener {
-            val addNewDrugIntent = Intent(this@ManageDrugsActivity, AddNewDrugActivity::class.java)
+            val addNewDrugIntent = Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
             startActivity(addNewDrugIntent)
         }
 
@@ -53,8 +53,9 @@ class ManageDrugsActivity : AppCompatActivity() {
                 mManageDrugRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val editDrugIntent = Intent(this@ManageDrugsActivity, AddNewDrugActivity::class.java)
+                        val editDrugIntent = Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
                         editDrugIntent.putExtra("drugObject", mDrugList[position])
+                        startActivity(editDrugIntent)
                     }
                     override fun onLongItemClick(view: View, position: Int) {}
                 })
