@@ -91,7 +91,7 @@
             android:exported="false"
             android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
         <activity
-            android:name=".presentation.activities.ManageDrugsActivity"
+            android:name=".presentation.manage_drugs.ManageDrugsActivity"
             android:exported="false"
             android:label="Manage Drugs"
             android:parentActivityName=".presentation.activities.MainActivity" />
@@ -105,15 +105,10 @@
             android:exported="false"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.AddNewDrugActivity"
+            android:name=".presentation.add_edit_drug.AddNewDrugActivity"
             android:exported="false"
             android:label="Add new drug"
-            android:parentActivityName=".presentation.activities.ManageDrugsActivity" />
-        <activity
-            android:name=".presentation.activities.EditDrugActivity"
-            android:exported="false"
-            android:label="Edit drug"
-            android:parentActivityName=".presentation.activities.ManageDrugsActivity" />
+            android:parentActivityName=".presentation.manage_drugs.ManageDrugsActivity" />
         <activity
             android:name=".presentation.activities.MedicateACowActivity"
             android:exported="false"

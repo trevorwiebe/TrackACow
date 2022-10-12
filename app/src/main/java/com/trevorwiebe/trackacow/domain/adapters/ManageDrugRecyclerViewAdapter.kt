@@ -1,73 +1,41 @@
-package com.trevorwiebe.trackacow.domain.adapters;
+package com.trevorwiebe.trackacow.domain.adapters
 
-import android.content.Context;
+import android.content.Context
+import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.domain.adapters.ManageDrugRecyclerViewAdapter.ManageDrugViewHolder
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
+import com.trevorwiebe.trackacow.R
+import android.widget.TextView
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-
-import java.util.ArrayList;
-
-
-public class ManageDrugRecyclerViewAdapter extends RecyclerView.Adapter<ManageDrugRecyclerViewAdapter.ManageDrugViewHolder> {
-
-
-    private ArrayList<DrugEntity> mDrugList;
-    private Context mContext;
-
-    public ManageDrugRecyclerViewAdapter(ArrayList<DrugEntity> drugList, Context context){
-        this.mDrugList = drugList;
-        this.mContext = context;
+class ManageDrugRecyclerViewAdapter(
+    private var mDrugList: List<DrugModel>,
+    private val mContext: Context
+) : RecyclerView.Adapter<ManageDrugViewHolder>() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ManageDrugViewHolder {
+        val view = LayoutInflater.from(mContext).inflate(R.layout.list_drug_rv, viewGroup, false)
+        return ManageDrugViewHolder(view)
     }
 
-    @NonNull
-    @Override
-    public ManageDrugViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_drug_rv, viewGroup, false);
-        return new ManageDrugViewHolder(view);
+    override fun onBindViewHolder(manageDrugViewHolder: ManageDrugViewHolder, i: Int) {
+        val (_, defaultAmount, _, drugName) = mDrugList[i]
+        manageDrugViewHolder.mDrugName.text = drugName
+        manageDrugViewHolder.mDefaultAmount.text = defaultAmount.toString()
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ManageDrugViewHolder manageDrugViewHolder, int i) {
-        DrugEntity drugObject = mDrugList.get(i);
-
-        String drugName = drugObject.getDrugName();
-        String defaultGiven = Integer.toString(drugObject.getDefaultAmount());
-
-        manageDrugViewHolder.mDrugName.setText(drugName);
-        manageDrugViewHolder.mDefaultAmount.setText(defaultGiven);
+    override fun getItemCount(): Int {
+        return mDrugList.size
     }
 
-    @Override
-    public int getItemCount() {
-        if(mDrugList == null) return 0;
-        return mDrugList.size();
+    fun swapData(newDrugList: List<DrugModel>) {
+        mDrugList = newDrugList
+        notifyDataSetChanged()
     }
 
-    public void swapData(ArrayList<DrugEntity> newDrugList){
-        mDrugList = newDrugList;
-        if(mDrugList != null){
-            notifyDataSetChanged();
-        }
-    }
-
-    public class ManageDrugViewHolder extends RecyclerView.ViewHolder{
-
-        private TextView mDrugName;
-        private TextView mDefaultAmount;
-
-        public ManageDrugViewHolder(View view){
-            super(view);
-
-            mDrugName = view.findViewById(R.id.time_drug_report_name);
-            mDefaultAmount = view.findViewById(R.id.manage_default_given);
-        }
+    inner class ManageDrugViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val mDrugName: TextView = view.findViewById(R.id.time_drug_report_name)
+        val mDefaultAmount: TextView = view.findViewById(R.id.manage_default_given)
     }
 }

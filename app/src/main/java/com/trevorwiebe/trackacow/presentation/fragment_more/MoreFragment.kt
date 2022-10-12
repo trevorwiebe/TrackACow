@@ -9,7 +9,7 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
-import com.trevorwiebe.trackacow.presentation.activities.ManageDrugsActivity
+import com.trevorwiebe.trackacow.presentation.manage_drugs.ManageDrugsActivity
 import com.trevorwiebe.trackacow.presentation.manage_rations.ManageRationsActivity
 import com.trevorwiebe.trackacow.presentation.activities.ArchivesActivity
 import com.trevorwiebe.trackacow.presentation.activities.SettingsActivity

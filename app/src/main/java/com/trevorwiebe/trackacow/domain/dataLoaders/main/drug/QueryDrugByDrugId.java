@@ -23,7 +23,7 @@ public class QueryDrugByDrugId extends AsyncTask<Context, Void, DrugEntity> {
 
     @Override
     protected DrugEntity doInBackground(Context... contexts) {
-        return AppDatabase.getAppDatabase(contexts[0]).drugDao().getDrugById(drugId);
+        return AppDatabase.getAppDatabase(contexts[0]).drugDao().getDrugById2(drugId);
     }
 
     @Override

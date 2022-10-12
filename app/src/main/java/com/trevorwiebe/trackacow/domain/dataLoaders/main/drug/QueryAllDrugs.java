@@ -24,7 +24,7 @@ public class QueryAllDrugs extends AsyncTask<Context, Void, ArrayList<DrugEntity
 
     @Override
     protected ArrayList<DrugEntity> doInBackground(Context... contexts) {
-        List<DrugEntity> drugEntities = AppDatabase.getAppDatabase(contexts[0]).drugDao().getDrugList();
+        List<DrugEntity> drugEntities = AppDatabase.getAppDatabase(contexts[0]).drugDao().getDrugList2();
         return (ArrayList<DrugEntity>) drugEntities;
     }
 

@@ -1,15 +1,15 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
-import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
-import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
-import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
+import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
@@ -87,4 +87,16 @@ object ViewModelDomainModule {
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context)
         )
     }
+
+    @ViewModelScoped
+    @Provides
+    fun provideDrugUseCases(
+        drugRepository: DrugRepository
+    ): DrugUseCases{
+        return DrugUseCases(
+            readDrugsUC = ReadDrugsUC(drugRepository),
+            createDrug = CreateDrug(drugRepository)
+        )
+    }
+
 }
