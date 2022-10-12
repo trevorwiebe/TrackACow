@@ -17,7 +17,7 @@ public class InsertHoldingPen extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).cachePenDao().insertHoldingPen(cachePenEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cachePenDao().insertHoldingPen2(cachePenEntity);
         return null;
     }
 

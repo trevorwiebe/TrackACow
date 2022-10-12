@@ -5,8 +5,9 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity
 
 @Dao
 interface CachePenDao {
+
     @Insert
-    fun insertHoldingPen(cachePenEntity: CachePenEntity)
+    suspend fun insertCachePen(cachePenEntity: CachePenEntity)
 
     @Insert
     fun insertHoldingPenList(holdingPenEntities: List<CachePenEntity>)
@@ -25,4 +26,10 @@ interface CachePenDao {
 
     @Delete
     fun deleteHoldingPen(cachePenEntity: CachePenEntity)
+
+    // Deprecated
+    @Deprecated("use suspend function")
+    @Insert
+    fun insertHoldingPen2(cachePenEntity: CachePenEntity)
+
 }

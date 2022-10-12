@@ -23,7 +23,7 @@ class PenRepositoryImpl(
     }
 
     override suspend fun insertCachePen(cachePenModel: CachePenModel) {
-        cachePenDao.insertHoldingPen(cachePenModel.toCachePenEntity())
+        cachePenDao.insertCachePen(cachePenModel.toCachePenEntity())
     }
 
     override fun readPens(): Flow<List<PenModel>> {
