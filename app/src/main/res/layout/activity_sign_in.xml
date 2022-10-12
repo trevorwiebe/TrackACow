@@ -44,11 +44,13 @@
             android:inputType="textEmailAddress"
             android:theme="@style/TextLabel"
             android:textCursorDrawable="@null"
+            android:selectAllOnFocus="true"
             android:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:autofillHints="Email" />
 
         <TextView
             android:gravity="center"
@@ -66,11 +68,13 @@
             android:inputType="textPassword"
             android:theme="@style/TextLabel"
             android:textCursorDrawable="@null"
+            android:selectAllOnFocus="true"
             android:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:autofillHints="Password" />
 
         <LinearLayout
             android:orientation="vertical"
