@@ -19,7 +19,7 @@ class DeleteRationByIdUC(
             // TODO set up firebase
         }else{
             val rationModel = RationModel(rationId, "", "")
-            rationsRepository.insertHoldingRation(rationModel.toCacheRationModel(Constants.DELETE))
+            rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.DELETE))
             Utility.setNewDataToUpload(context, true)
         }
 

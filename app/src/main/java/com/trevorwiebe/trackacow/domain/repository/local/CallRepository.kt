@@ -19,5 +19,5 @@ interface CallRepository {
 
     suspend fun deleteCall(callModel: CallModel)
 
-    suspend fun insertHoldingCall(cacheCallModel: CacheCallModel)
+    suspend fun insertCacheCall(cacheCallModel: CacheCallModel)
 }

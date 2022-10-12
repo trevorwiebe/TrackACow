@@ -23,7 +23,7 @@ data class CreateCallUC(
         if(isConnected){
             callRepositoryRemote.insertCallRemote(callModel)
         }else{
-            callRepository.insertHoldingCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
+            callRepository.insertCacheCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
         }
     }

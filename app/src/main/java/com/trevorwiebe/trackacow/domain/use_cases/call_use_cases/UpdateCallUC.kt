@@ -22,7 +22,7 @@ data class UpdateCallUC(
             callRepositoryRemote.insertCallRemote(callModel)
         }else{
             Utility.setNewDataToUpload(context, true)
-            callRepository.insertHoldingCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
+            callRepository.insertCacheCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
         }
     }
 }

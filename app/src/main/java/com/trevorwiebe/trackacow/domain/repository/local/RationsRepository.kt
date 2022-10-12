@@ -14,5 +14,5 @@ interface RationsRepository {
 
     suspend fun deleteRationById(rationId: Int)
 
-    suspend fun insertHoldingRation(cacheRationModel: CacheRationModel)
+    suspend fun insertCacheRation(cacheRationModel: CacheRationModel)
 }

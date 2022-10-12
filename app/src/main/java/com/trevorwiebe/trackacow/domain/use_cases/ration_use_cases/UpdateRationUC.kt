@@ -19,7 +19,7 @@ class UpdateRationUC(
         if(isConnectionActive){
             rationsRepositoryRemote.insertRationRemote(rationModel)
         }else{
-            rationsRepository.insertHoldingRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
+            rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
         }
         rationsRepository.updateRations(rationModel)
