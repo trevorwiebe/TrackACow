@@ -14,12 +14,15 @@ import com.trevorwiebe.trackacow.R
 import android.text.Editable
 import android.text.InputType
 import android.util.Log
+import android.view.View
 import com.trevorwiebe.trackacow.data.entities.LotEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingFeed.InsertHoldingFeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.InsertFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesById
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import com.google.android.material.textfield.TextInputLayout
@@ -31,6 +34,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,12 +58,15 @@ class FeedLotActivity : AppCompatActivity(),
     private lateinit var mRationSpinner: Spinner
 
     private var mSelectedCall: CallModel? = null
+    private var mSelectedRation: RationModel? = null
+
     private var mFeedAgainNumber = 0
     private var isLoadingMore = false
     private var mShouldAddNewFeedEditText = false
     private lateinit var mFeedTextWatcher: TextWatcher
     private val numberFormatter = NumberFormat.getNumberInstance(Locale.getDefault())
     private var mFeedEntities = ArrayList<FeedEntity>()
+    private var mRationModelList: List<RationModel> = emptyList()
     private var mDate: Long = 0L
     private var mLotId: String = ""
 
@@ -80,6 +87,14 @@ class FeedLotActivity : AppCompatActivity(),
         mLotId = intent.getStringExtra("lot_id")?:""
 
         mRationSpinner = findViewById(R.id.select_ration)
+        mRationSpinner.onItemSelectedListener = object : OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                mSelectedRation = mRationModelList[position]
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
+
         mCallET = findViewById(R.id.feed_lot_call_et)
         mFeedAgainLayout = findViewById(R.id.feed_again_layout)
         mTotalFed = findViewById(R.id.pen_total_fed)
@@ -128,7 +143,7 @@ class FeedLotActivity : AppCompatActivity(),
                 val callModel: CallModel
                 if(mSelectedCall == null){
                     // create the call Model
-                    callModel = CallModel(0, callAmount, dateStarted, mLotId, 0,"")
+                    callModel = CallModel(0, callAmount, dateStarted, mLotId, mSelectedRation?.primaryKey,"")
                 }else{
                     // assign callModel to mSelectedCallModel
                     callModel = mSelectedCall as CallModel
@@ -164,7 +179,9 @@ class FeedLotActivity : AppCompatActivity(),
                     mCallET.setText(callStr)
                 }
 
-                val rationsList: List<String> = feedLotUiState.rationList.map { it.rationName }
+                mRationModelList = feedLotUiState.rationList
+
+                val rationsList: List<String> = mRationModelList.map { it.rationName }
 
                 mRationSpinner.adapter = ArrayAdapter(
                     applicationContext,
