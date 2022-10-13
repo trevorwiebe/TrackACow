@@ -54,27 +54,30 @@ class AddOrEditRation : AppCompatActivity() {
             addOrEditRationBtn.text = getString(R.string.add)
         }
         addOrEditRationBtn.setOnClickListener{
+
+            var shouldSave = true
+
             // sanitize the input
             val rationText = addRationTV.text
             if(rationText == null || addRationTV.text!!.isEmpty()){
                 addRationTV.requestFocus()
                 addRationTV.error = this.getString(R.string.please_fill_blank)
+                shouldSave = false
             }
 
-            if(mRation != null){
-                // update Ration
-                mRation?.rationName = rationText.toString()
-                addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationUpdated(mRation!!))
-                addRationTV.setText("")
-            }else {
-                // create ration object
-                val rationModel = RationModel(0, "", rationText.toString())
-                addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationAdded(rationModel))
-                addRationTV.setText("")
+            if(shouldSave) {
+                if (mRation != null) {
+                    // update Ration
+                    mRation?.rationName = rationText.toString()
+                    addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationUpdated(mRation!!))
+                    addRationTV.setText("")
+                } else {
+                    // create ration object
+                    val rationModel = RationModel(0, "", rationText.toString())
+                    addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationAdded(rationModel))
+                    addRationTV.setText("")
+                }
             }
-
-            Snackbar.make(it, getString(R.string.ration_saved), Snackbar.LENGTH_LONG).show()
-
         }
         cancelRationBtn.setOnClickListener{ finish() }
     }
