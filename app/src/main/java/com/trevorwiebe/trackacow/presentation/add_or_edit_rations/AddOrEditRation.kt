@@ -1,7 +1,9 @@
 package com.trevorwiebe.trackacow.presentation.add_or_edit_rations
 
+import android.os.Build.VERSION
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -21,8 +23,7 @@ class AddOrEditRation : AppCompatActivity() {
     private lateinit var cancelRationBtn: Button
     private lateinit var addRationTV: TextInputEditText
 
-    private var isEditOrDeleteActivity = false
-    private var idToEdit: Int = -1
+    private var mRation: RationModel? = null
 
     private val addOrEditViewModel: AddOrEditViewModel by viewModels()
 
@@ -30,7 +31,12 @@ class AddOrEditRation : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_or_edit_ration)
 
-        val addOrEdit = intent.getIntExtra("add_or_edit", Constants.ADD_RATION)
+        @Suppress("DEPRECATION")
+        mRation = if(VERSION.SDK_INT >= 33){
+            intent.getParcelableExtra("ration_model", RationModel::class.java)
+        }else{
+            intent.getParcelableExtra("ration_model")
+        }
 
         addOrEditRationBtn = findViewById(R.id.add_ration_add_btn)
         cancelRationBtn = findViewById(R.id.add_ration_cancel_btn)
@@ -39,16 +45,10 @@ class AddOrEditRation : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        isEditOrDeleteActivity = addOrEdit == Constants.EDIT_RATION
-
-        if(isEditOrDeleteActivity){
+        if(mRation != null){
             supportActionBar?.title = getString(R.string.edit_ration)
             addOrEditRationBtn.text = getString(R.string.update)
-
-            val rationName = intent.getStringExtra("ration_name")
-            idToEdit = intent.getIntExtra("ration_id", -1)
-            addRationTV.setText(rationName)
-
+            addRationTV.setText(mRation?.rationName)
         }else{
             supportActionBar?.title = getString(R.string.add_ration)
             addOrEditRationBtn.text = getString(R.string.add)
@@ -61,10 +61,10 @@ class AddOrEditRation : AppCompatActivity() {
                 addRationTV.error = this.getString(R.string.please_fill_blank)
             }
 
-            if(isEditOrDeleteActivity){
+            if(mRation != null){
                 // update Ration
-                val rationModel = RationModel(idToEdit, "", rationText.toString())
-                addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationUpdated(rationModel))
+                mRation?.rationName = rationText.toString()
+                addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationUpdated(mRation!!))
                 addRationTV.setText("")
             }else {
                 // create ration object
@@ -83,22 +83,15 @@ class AddOrEditRation : AppCompatActivity() {
 
         menuInflater.inflate(R.menu.add_or_edit_rations_menu, menu)
         val deleteBtn = menu?.findItem(R.id.action_delete_ration)
-        deleteBtn?.isVisible = isEditOrDeleteActivity
+        deleteBtn?.isVisible = mRation != null
 
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_delete_ration){
-            if(idToEdit != -1) {
-                addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationDeleted(idToEdit))
-                finish()
-            }else{
-                Toast.makeText(
-                    this@AddOrEditRation,
-                    getString(R.string.generic_error),
-                    Toast.LENGTH_SHORT).show()
-            }
+            addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationDeleted(mRation?.rationPrimaryKey?:-1))
+            finish()
         }
         return super.onOptionsItemSelected(item)
     }

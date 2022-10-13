@@ -47,9 +47,7 @@ class ManageRationsActivity : AppCompatActivity() {
                         val editRationIntent = Intent(
                             this@ManageRationsActivity,
                             AddOrEditRation::class.java)
-                        editRationIntent.putExtra("add_or_edit", Constants.EDIT_RATION)
-                        editRationIntent.putExtra("ration_name", selectedRation.rationName)
-                        editRationIntent.putExtra("ration_id", selectedRation.rationPrimaryKey)
+                        editRationIntent.putExtra("ration_model", selectedRation)
                         startActivity(editRationIntent)
                     }
                     override fun onLongItemClick(view: View, position: Int) {}

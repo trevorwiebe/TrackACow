@@ -20,4 +20,8 @@ class RationRepositoryRemoteImpl(
     override suspend fun insertRationListRemote(rationModelList: List<RationModel>) {
         firebaseDatabase.getReference(databasePath).setValue(rationModelList)
     }
+
+    override suspend fun updateRationRemote(rationModel: RationModel) {
+        firebaseDatabase.getReference("$databasePath/${rationModel.rationId}").setValue(rationModel)
+    }
 }
