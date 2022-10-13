@@ -84,20 +84,11 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
     }
 
     inner class FeedPenViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mDate: TextView
-        val mCall: TextView
-        val mRation: TextView
-        val mFed: TextView
-        val mLeftToFeed: TextView
-        val mTotalFed: TextView
-
-        init {
-            mDate = view.findViewById(R.id.feed_pen_date)
-            mCall = view.findViewById(R.id.feed_lot_call)
-            mRation = view.findViewById(R.id.feed_lot_ration)
-            mFed = view.findViewById(R.id.feed_lot_fed)
-            mLeftToFeed = view.findViewById(R.id.feed_lot_left_to_feed)
-            mTotalFed = view.findViewById(R.id.feed_lot_total_fed)
-        }
+        val mDate: TextView = view.findViewById(R.id.feed_pen_date)
+        val mCall: TextView = view.findViewById(R.id.feed_lot_call)
+        val mRation: TextView = view.findViewById(R.id.feed_lot_ration)
+        val mFed: TextView = view.findViewById(R.id.feed_lot_fed)
+        val mLeftToFeed: TextView = view.findViewById(R.id.feed_lot_left_to_feed)
+        val mTotalFed: TextView = view.findViewById(R.id.feed_lot_total_fed)
     }
 }
