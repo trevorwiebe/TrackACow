@@ -44,7 +44,12 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
         feedPenViewHolder.mCall.text = numberFormat.format(call)
 
         // set ration
-        feedPenViewHolder.mRation.text = feedPenListUiModel.callAndRationModel.rationName
+        val rationName = feedPenListUiModel.callAndRationModel.rationName
+        if(rationName.isEmpty()){
+            feedPenViewHolder.mRation.text = "-"
+        }else {
+            feedPenViewHolder.mRation.text = rationName
+        }
 
         // set feed entities
         val feedEntities = feedPenListUiModel.feedList
