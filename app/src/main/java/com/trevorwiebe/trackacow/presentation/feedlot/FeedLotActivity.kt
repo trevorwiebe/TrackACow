@@ -146,7 +146,15 @@ class FeedLotActivity : AppCompatActivity(),
                     callModel = CallModel(0, callAmount, dateStarted, mLotId, mSelectedRation?.rationPrimaryKey,"")
                 }else{
                     // assign callModel to mSelectedCallModel
-                    callModel = mSelectedAndRationCall as CallModel
+                    callModel = CallModel(
+                        mSelectedAndRationCall!!.callPrimaryKey,
+                        mSelectedAndRationCall!!.callAmount,
+                        mSelectedAndRationCall!!.date,
+                        mSelectedAndRationCall!!.lotId,
+                        mSelectedAndRationCall!!.callRationId,
+                        mSelectedAndRationCall!!.callCloudDatabaseId
+                    )
+
                     // update call amount
                     callModel.callAmount = callAmount
                 }
