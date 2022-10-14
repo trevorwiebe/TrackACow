@@ -34,6 +34,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntities
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotByLotId
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -57,7 +58,7 @@ class FeedLotActivity : AppCompatActivity(),
     private lateinit var mSave: Button
     private lateinit var mRationSpinner: Spinner
 
-    private var mSelectedCall: CallModel? = null
+    private var mSelectedAndRationCall: CallAndRationModel? = null
     private var mSelectedRation: RationModel? = null
 
     private var mFeedAgainNumber = 0
@@ -140,18 +141,18 @@ class FeedLotActivity : AppCompatActivity(),
                 val dateStarted = c.timeInMillis
 
                 val callModel: CallModel
-                if(mSelectedCall == null){
+                if(mSelectedAndRationCall == null){
                     // create the call Model
                     callModel = CallModel(0, callAmount, dateStarted, mLotId, mSelectedRation?.rationPrimaryKey,"")
                 }else{
                     // assign callModel to mSelectedCallModel
-                    callModel = mSelectedCall as CallModel
+                    callModel = mSelectedAndRationCall as CallModel
                     // update call amount
                     callModel.callAmount = callAmount
                 }
 
                 // send event to the view model
-                feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedCall != null))
+                feedLotViewModel.onEvent(FeedLotEvents.OnSave(callModel, mSelectedAndRationCall != null))
 
                 // first we delete the all the local old feed entities; See onFeedEntitiesByDateAndLotIdDeleted to view the adding of feed entities
                 DeleteFeedEntitiesByDateAndLotId(
@@ -164,7 +165,7 @@ class FeedLotActivity : AppCompatActivity(),
 
         lifecycleScope.launch {
             feedLotViewModel.uiState.collect{ feedLotUiState ->
-                mSelectedCall = feedLotUiState.callModel
+                mSelectedAndRationCall = feedLotUiState.callModel
 
                 mRationModelList = feedLotUiState.rationList
 
@@ -175,7 +176,7 @@ class FeedLotActivity : AppCompatActivity(),
                     android.R.layout.simple_spinner_dropdown_item,
                     rationsList)
 
-                if (mSelectedCall == null) {
+                if (mSelectedAndRationCall == null) {
                     mSave.text = getString(R.string.save)
                     val call = 0
                     val callStr = call.toString()
@@ -187,12 +188,12 @@ class FeedLotActivity : AppCompatActivity(),
 
                 } else {
                     mSave.text = getString(R.string.update)
-                    val call = mSelectedCall!!.callAmount
+                    val call = mSelectedAndRationCall!!.callAmount
                     val callStr = call.toString()
                     mCallET.setText(callStr)
 
                     mRationSpinner.setSelection(
-                        mRationModelList.indexOfFirst { it.rationPrimaryKey == feedLotUiState.lastUsedRationId }
+                        mRationModelList.indexOfFirst { it.rationPrimaryKey == mSelectedAndRationCall?.rationPrimaryKey }
                     )
 
                 }

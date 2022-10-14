@@ -30,15 +30,15 @@ class CallRepositoryImpl(
         }
     }
 
-    override fun getCallsByLotIdAndDate(lotId: String, date: Long): Flow<CallModel?> {
-        return callDao.getCallByDateAndLotId(date, lotId)
+    override fun getCallByLotIdAndDate(lotId: String, date: Long): Flow<CallAndRationModel?> {
+        return callDao.getCallAndRationByDateAndLotId(date, lotId)
             .map {
-                it?.toCallModel()
+                it?.toCallAndRationModel()
             }
     }
 
     override fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationModel>> {
-        return callDao.getCallAndRationByLotId(lotId)
+        return callDao.getCallsAndRationByLotId(lotId)
             .map { callAndRationList ->
                 callAndRationList.map { it.toCallAndRationModel() }
             }
