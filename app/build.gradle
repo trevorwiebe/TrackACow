@@ -56,10 +56,6 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.5.3"
 
     // Compose
-    implementation "androidx.compose.ui:ui:1.3.0-beta02"
-    implementation "androidx.compose.material:material:1.3.0-beta02"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.3.0-beta02"
-    implementation "androidx.navigation:navigation-compose:2.5.2"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // ViewPager2
@@ -104,6 +100,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-database-ktx'
+
     // Crashlytics
     releaseImplementation 'com.google.firebase:firebase-analytics'
     releaseImplementation 'com.google.firebase:firebase-crashlytics'
