@@ -91,7 +91,6 @@ class FeedLotActivity : AppCompatActivity(),
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mSelectedRation = mRationModelList[position]
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
@@ -167,18 +166,6 @@ class FeedLotActivity : AppCompatActivity(),
             feedLotViewModel.uiState.collect{ feedLotUiState ->
                 mSelectedCall = feedLotUiState.callModel
 
-                if (mSelectedCall == null) {
-                    mSave.text = getString(R.string.save)
-                    val call = 0
-                    val callStr = call.toString()
-                    mCallET.setText(callStr)
-                } else {
-                    mSave.text = getString(R.string.update)
-                    val call = mSelectedCall!!.callAmount
-                    val callStr = call.toString()
-                    mCallET.setText(callStr)
-                }
-
                 mRationModelList = feedLotUiState.rationList
 
                 val rationsList: List<String> = mRationModelList.map { it.rationName }
@@ -187,6 +174,29 @@ class FeedLotActivity : AppCompatActivity(),
                     applicationContext,
                     android.R.layout.simple_spinner_dropdown_item,
                     rationsList)
+
+                if (mSelectedCall == null) {
+                    mSave.text = getString(R.string.save)
+                    val call = 0
+                    val callStr = call.toString()
+                    mCallET.setText(callStr)
+
+                    mRationSpinner.setSelection(
+                        mRationModelList.indexOfFirst { it.rationPrimaryKey == feedLotUiState.lastUsedRationId }
+                    )
+
+                } else {
+                    mSave.text = getString(R.string.update)
+                    val call = mSelectedCall!!.callAmount
+                    val callStr = call.toString()
+                    mCallET.setText(callStr)
+
+                    mRationSpinner.setSelection(
+                        mRationModelList.indexOfFirst { it.rationPrimaryKey == feedLotUiState.lastUsedRationId }
+                    )
+
+                }
+
             }
         }
 

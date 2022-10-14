@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.assisted.Assisted
@@ -18,6 +20,7 @@ import java.util.*
 class FeedLotViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
     private val rationUseCases: RationUseCases,
+    private val appPreferences: AppPreferences,
     @Assisted defaultArgs: Bundle? = null
 ): ViewModel() {
 
@@ -63,17 +66,34 @@ class FeedLotViewModel @AssistedInject constructor(
         }
 
         readRations()
+
+        _uiState.update {
+            it.copy(lastUsedRationId = getLastUsedRationId())
+        }
     }
 
     fun onEvent(event: FeedLotEvents){
         when(event){
             is FeedLotEvents.OnSave -> {
+
+                saveLastUsedRation(event.callModel.callRationId ?: -1)
+
                 if(event.isUpdate){
                     updateCallModel(event.callModel)
                 }else{
                     createCallModel(event.callModel)
                 }
             }
+        }
+    }
+
+    private fun getLastUsedRationId(): Int {
+        return appPreferences.getLastUsedRation(AppPreferences.KEY_LAST_USED_RATION)
+    }
+
+    private fun saveLastUsedRation(rationId: Int){
+        viewModelScope.launch {
+            appPreferences.saveLastUsedRation(rationId)
         }
     }
 

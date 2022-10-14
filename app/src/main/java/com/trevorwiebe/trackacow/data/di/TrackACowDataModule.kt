@@ -1,13 +1,17 @@
 package com.trevorwiebe.trackacow.data.di
 
 import android.app.Application
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
+import com.trevorwiebe.trackacow.data.preferences.AppPreferencesImpl
 import com.trevorwiebe.trackacow.data.remote.repository.*
+import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -32,6 +36,20 @@ object TrackACowDataModule {
     @Singleton
     fun provideRemoteDatabase(): FirebaseDatabase{
         return Firebase.database
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        app: Application
+    ): SharedPreferences{
+        return app.getSharedPreferences("shared_pref", MODE_PRIVATE)
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferences(sharedPreferences: SharedPreferences): AppPreferences {
+        return AppPreferencesImpl(sharedPreferences)
     }
 
     // Ration
