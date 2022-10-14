@@ -151,7 +151,7 @@ class FeedLotActivity : AppCompatActivity(),
                         mSelectedAndRationCall!!.callAmount,
                         mSelectedAndRationCall!!.date,
                         mSelectedAndRationCall!!.lotId,
-                        mSelectedAndRationCall!!.callRationId,
+                        mSelectedRation!!.rationPrimaryKey,
                         mSelectedAndRationCall!!.callCloudDatabaseId
                     )
 

@@ -19,7 +19,8 @@ data class UpdateCallUC(
 
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
-            callRepositoryRemote.insertCallRemote(callModel)
+            // TODO fix issue where can't update without cloud ID
+            callRepositoryRemote.updateCallRemote(callModel)
         }else{
             Utility.setNewDataToUpload(context, true)
             callRepository.insertCacheCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))

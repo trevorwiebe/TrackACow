@@ -46,7 +46,7 @@ class CallRepositoryImpl(
 
 
     override suspend fun updateCall(callModel: CallModel) {
-        callDao.updateCallAmount(callModel.callAmount, callModel.callPrimaryKey)
+        callDao.updateCallAmount(callModel.callAmount, callModel.callRationId, callModel.callPrimaryKey)
     }
 
     override suspend fun deleteCall(callModel: CallModel) {

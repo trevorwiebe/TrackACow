@@ -21,4 +21,7 @@ class CallRepositoryRemoteImpl(
         firebaseDatabase.getReference(databasePath).setValue(callModelList)
     }
 
+    override fun updateCallRemote(callModel: CallModel) {
+        firebaseDatabase.getReference("$databasePath/${callModel.callCloudDatabaseId}").setValue(callModel)
+    }
 }

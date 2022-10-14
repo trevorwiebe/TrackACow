@@ -6,4 +6,6 @@ interface CallRepositoryRemote {
     suspend fun insertCallRemote(callModel: CallModel)
 
     suspend fun insertCallListRemote(callModelList: List<CallModel>)
+
+    fun updateCallRemote(callModel: CallModel)
 }
