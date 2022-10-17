@@ -14,6 +14,7 @@ import com.trevorwiebe.trackacow.data.remote.repository.*
 import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
+import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -50,6 +51,14 @@ object TrackACowDataModule {
     @Singleton
     fun providePreferences(sharedPreferences: SharedPreferences): AppPreferences {
         return AppPreferencesImpl(sharedPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudDatabaseId(
+        databaseReference: FirebaseDatabase
+    ): GetCloudDatabaseId{
+        return GetCloudDatabaseId(databaseReference)
     }
 
     // Ration

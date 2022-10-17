@@ -12,9 +12,7 @@ class PenRepositoryRemoteImpl(
 
     override suspend fun insertPenRemote(penModel: PenModel) {
         val databaseReference: DatabaseReference = firebaseDatabase.getReference(databasePath)
-        val cloudDatabaseId = databaseReference.push().key
-        penModel.penCloudDatabaseId = cloudDatabaseId
-        databaseReference.child(cloudDatabaseId?:"").setValue(penModel)
+        databaseReference.child(penModel.penCloudDatabaseId?:"").setValue(penModel)
     }
 
 }

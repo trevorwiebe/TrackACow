@@ -5,15 +5,19 @@ import com.trevorwiebe.trackacow.data.mapper.toCachePenModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
+import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 
 class CreatePenUC(
     private val penRepository: PenRepository,
     private val penRemoteRepository: PenRepositoryRemote,
+    private val getCloudDatabaseId: GetCloudDatabaseId,
     private val context: Application
 ) {
     suspend operator fun invoke(penModel: PenModel){
+
+        penModel.penCloudDatabaseId = getCloudDatabaseId.invoke("")
 
         val id: Long = penRepository.insertPen(penModel)
 

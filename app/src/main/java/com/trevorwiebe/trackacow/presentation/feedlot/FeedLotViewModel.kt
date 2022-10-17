@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases

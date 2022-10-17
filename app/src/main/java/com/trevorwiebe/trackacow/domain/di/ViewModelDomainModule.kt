@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.domain.di
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
+import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
@@ -62,13 +63,14 @@ object ViewModelDomainModule {
     fun providePenUseCases(
         penRepository: PenRepository,
         penRepositoryRemote: PenRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): PenUseCases {
         return PenUseCases(
             readPens = ReadPens(penRepository),
             readPenByPenId = ReadPenByPenId(penRepository),
             readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository),
-            createPenUC = CreatePenUC(penRepository, penRepositoryRemote, context),
+            createPenUC = CreatePenUC(penRepository, penRepositoryRemote, getCloudDatabaseId, context),
             deletePenUC = DeletePenUC(penRepository)
         )
     }
