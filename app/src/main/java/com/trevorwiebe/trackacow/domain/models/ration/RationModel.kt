@@ -6,6 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class RationModel(
     var rationPrimaryKey: Int,
-    var rationId: String,
+    var rationCloudDatabaseId: String,
     var rationName: String
 ): Parcelable

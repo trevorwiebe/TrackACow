@@ -8,7 +8,7 @@ import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 fun RationModel.toRationEntity(): RationEntity {
     return RationEntity(
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName
     )
 }
@@ -16,7 +16,7 @@ fun RationModel.toRationEntity(): RationEntity {
 fun RationEntity.toRationModel(): RationModel {
     return RationModel(
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName
     )
 }
@@ -24,7 +24,7 @@ fun RationEntity.toRationModel(): RationModel {
 fun RationModel.toCacheRationModel(whatHappened: Int): CacheRationModel {
     return CacheRationModel(
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName,
         whatHappened = whatHappened
     )
@@ -33,7 +33,7 @@ fun RationModel.toCacheRationModel(whatHappened: Int): CacheRationModel {
 fun CacheRationEntity.toCacheRationModel(): CacheRationModel {
     return CacheRationModel(
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName,
         whatHappened = whatHappened
     )
@@ -42,7 +42,7 @@ fun CacheRationEntity.toCacheRationModel(): CacheRationModel {
 fun CacheRationModel.toCacheRationEntity(): CacheRationEntity {
     return CacheRationEntity(
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName,
         whatHappened = whatHappened
     )

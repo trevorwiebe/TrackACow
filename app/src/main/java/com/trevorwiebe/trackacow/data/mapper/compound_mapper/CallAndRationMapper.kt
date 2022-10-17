@@ -12,7 +12,7 @@ fun CallAndRationEntity.toCallAndRationModel(): CallAndRationModel{
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName
     )
 }
@@ -26,7 +26,7 @@ fun CallAndRationModel.toCallAndRationEntity(): CallAndRationEntity{
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         rationPrimaryKey = rationPrimaryKey,
-        rationId = rationId,
+        rationCloudDatabaseId = rationCloudDatabaseId,
         rationName = rationName
     )
 }

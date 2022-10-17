@@ -13,7 +13,7 @@ class RationRepositoryRemoteImpl(
     override suspend fun insertRationRemote(rationModel: RationModel) {
         val databaseReference: DatabaseReference = firebaseDatabase.getReference(databasePath)
         val cloudDatabaseId = databaseReference.push().key
-        rationModel.rationId = cloudDatabaseId ?: ""
+        rationModel.rationCloudDatabaseId = cloudDatabaseId ?: ""
         databaseReference.child(cloudDatabaseId?:"").setValue(rationModel)
     }
 
@@ -22,6 +22,6 @@ class RationRepositoryRemoteImpl(
     }
 
     override suspend fun updateRationRemote(rationModel: RationModel) {
-        firebaseDatabase.getReference("$databasePath/${rationModel.rationId}").setValue(rationModel)
+        firebaseDatabase.getReference("$databasePath/${rationModel.rationCloudDatabaseId}").setValue(rationModel)
     }
 }

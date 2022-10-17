@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 data class CacheRationEntity(
     @PrimaryKey(autoGenerate = true)
     var rationPrimaryKey: Int = 0,
-    var rationId: String,
+    var rationCloudDatabaseId: String,
     var rationName: String,
     var whatHappened: Int
 )

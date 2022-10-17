@@ -8,6 +8,6 @@ data class CallAndRationModel(
     val callRationId: Int? = null,
     var callCloudDatabaseId: String?,
     var rationPrimaryKey: Int = 0,
-    var rationId: String,
+    var rationCloudDatabaseId: String,
     var rationName: String
 )
