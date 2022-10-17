@@ -19,7 +19,7 @@ interface DrugDao {
     @Query("DELETE FROM Drug")
     fun deleteDrugTable()
 
-    @Query("DELETE FROM Drug WHERE drugId = :drugId")
+    @Query("DELETE FROM Drug WHERE drugCloudDatabaseId = :drugId")
     fun deleteDrugById(drugId: String)
 
     @Delete
@@ -32,11 +32,11 @@ interface DrugDao {
     fun updateDrug2(drugEntity: DrugEntity)
 
     @Deprecated("Use suspend function")
-    @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugId = :drugId")
+    @Query("UPDATE Drug SET defaultAmount = :defaultAmount, drugName = :drugName WHERE drugCloudDatabaseId = :drugId")
     fun updateDrugById(defaultAmount: Int, drugName: String, drugId: String)
 
     @Deprecated("Use flow return type function")
-    @Query("SELECT * FROM Drug WHERE drugId = :id")
+    @Query("SELECT * FROM Drug WHERE drugCloudDatabaseId = :id")
     fun getDrugById2(id: String): DrugEntity?
 
     @Deprecated("Use suspend function")

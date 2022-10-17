@@ -434,7 +434,7 @@ public class LotReportActivity extends AppCompatActivity implements
     private DrugEntity findDrugEntity(String drugId) {
         for (int r = 0; r < mDrugList.size(); r++) {
             DrugEntity drugEntity = mDrugList.get(r);
-            if (drugEntity.getDrugId().equals(drugId)) {
+            if (drugEntity.getDrugCloudDatabaseId().equals(drugId)) {
                 return drugEntity;
             }
         }

@@ -63,14 +63,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             for (int a = 0; a < holdingDrugEntities.size(); a++) {
                 CacheDrugEntity cacheDrugEntity = holdingDrugEntities.get(a);
 
-                DrugEntity drugEntity = new DrugEntity(cacheDrugEntity.getPrimaryKey(), cacheDrugEntity.getDefaultAmount(), cacheDrugEntity.getDrugId(), cacheDrugEntity.getDrugName());
+                DrugEntity drugEntity = new DrugEntity(cacheDrugEntity.getPrimaryKey(), cacheDrugEntity.getDefaultAmount(), cacheDrugEntity.getDrugCloudDatabaseId(), cacheDrugEntity.getDrugName());
 
                 switch (cacheDrugEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(Constants.DRUG).child(drugEntity.getDrugId()).setValue(drugEntity);
+                        baseRef.child(Constants.DRUG).child(drugEntity.getDrugCloudDatabaseId()).setValue(drugEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(Constants.DRUG).child(drugEntity.getDrugId()).removeValue();
+                        baseRef.child(Constants.DRUG).child(drugEntity.getDrugCloudDatabaseId()).removeValue();
                         break;
                     default:
                         break;

@@ -190,7 +190,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
     private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity, boolean isLastCheckbox) {
 
         String drugName = drugEntity.getDrugName();
-        String drugId = drugEntity.getDrugId();
+        String drugId = drugEntity.getDrugCloudDatabaseId();
         int defaultAmount = drugEntity.getDefaultAmount();
         String defaultAmountStr = Integer.toString(defaultAmount);
 

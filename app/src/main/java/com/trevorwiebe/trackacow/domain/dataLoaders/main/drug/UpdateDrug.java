@@ -19,7 +19,7 @@ public class UpdateDrug extends AsyncTask<Context, Void, Void> {
     protected Void doInBackground(Context... contexts) {
         int defaultAmount = drugEntity.getDefaultAmount();
         String drugName = drugEntity.getDrugName();
-        String drugId = drugEntity.getDrugId();
+        String drugId = drugEntity.getDrugCloudDatabaseId();
         AppDatabase.getAppDatabase(contexts[0]).drugDao().updateDrugById(defaultAmount, drugName, drugId);
         return null;
     }

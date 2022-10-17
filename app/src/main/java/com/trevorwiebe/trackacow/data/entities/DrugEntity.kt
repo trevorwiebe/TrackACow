@@ -10,6 +10,6 @@ data class DrugEntity(
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,
     var defaultAmount: Int = 0,
-    var drugId: String = "",
+    var drugCloudDatabaseId: String = "",
     var drugName: String = ""
 )

@@ -133,7 +133,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
     private DrugEntity findDrugEntities(String drugId, ArrayList<DrugEntity> drugList) {
         for (int p = 0; p < drugList.size(); p++) {
             DrugEntity drugEntity = drugList.get(p);
-            if (drugEntity.getDrugId().equals(drugId)) {
+            if (drugEntity.getDrugCloudDatabaseId().equals(drugId)) {
                 return drugEntity;
             }
         }

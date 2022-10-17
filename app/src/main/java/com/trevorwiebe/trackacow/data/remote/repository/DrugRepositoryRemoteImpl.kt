@@ -13,12 +13,12 @@ class DrugRepositoryRemoteImpl(
     override fun insertDrug(drugModel: DrugModel) {
         val databaseReference: DatabaseReference = firebaseDatabase.getReference(databasePath)
         val cloudDatabaseId = databaseReference.push().key
-        drugModel.drugId = cloudDatabaseId ?: ""
+        drugModel.drugCloudDatabaseId = cloudDatabaseId ?: ""
         databaseReference.child(cloudDatabaseId?:"").setValue(drugModel)
     }
 
     override fun updateDrug(drugModel: DrugModel) {
-        firebaseDatabase.getReference("$databasePath/${drugModel.drugId}").setValue(drugModel)
+        firebaseDatabase.getReference("$databasePath/${drugModel.drugCloudDatabaseId}").setValue(drugModel)
     }
 
 }

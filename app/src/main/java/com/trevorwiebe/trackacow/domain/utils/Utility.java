@@ -200,7 +200,7 @@ public class Utility {
     public static DrugEntity findDrugEntity(String drugId, ArrayList<DrugEntity> drugEntities){
         for(int r=0; r<drugEntities.size(); r++){
             DrugEntity drugEntity = drugEntities.get(r);
-            if(drugEntity.getDrugId().equals(drugId)){
+            if(drugEntity.getDrugCloudDatabaseId().equals(drugId)){
                 return drugEntity;
             }
         }

@@ -206,7 +206,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
     private void addCheckBox(LinearLayout linearLayout, DrugEntity drugEntity) {
 
         String drugName = drugEntity.getDrugName();
-        String drugId = drugEntity.getDrugId();
+        String drugId = drugEntity.getDrugCloudDatabaseId();
         int defaultAmount = drugEntity.getDefaultAmount();
         String defaultAmountStr = Integer.toString(defaultAmount);
 

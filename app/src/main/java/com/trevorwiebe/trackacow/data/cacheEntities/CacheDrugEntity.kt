@@ -11,7 +11,7 @@ class CacheDrugEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int,
     var defaultAmount: Int,
-    var drugId: String,
+    var drugCloudDatabaseId: String,
     var drugName: String,
     var whatHappened: Int
 )

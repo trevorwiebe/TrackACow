@@ -264,7 +264,7 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
         for (int a = 0; a < drugEntities.size(); a++) {
             DrugEntity drugEntity = drugEntities.get(a);
-            String drugId = drugEntity.getDrugId();
+            String drugId = drugEntity.getDrugCloudDatabaseId();
             String drugName = drugEntity.getDrugName();
             mDrugKeyAndName.put(drugId, drugName);
         }
