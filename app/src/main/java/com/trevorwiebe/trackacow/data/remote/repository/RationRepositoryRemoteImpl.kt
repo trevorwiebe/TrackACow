@@ -11,10 +11,12 @@ class RationRepositoryRemoteImpl(
 ): RationRepositoryRemote {
 
     override suspend fun insertRationRemote(rationModel: RationModel) {
-        val databaseReference: DatabaseReference = firebaseDatabase.getReference(databasePath)
-        val cloudDatabaseId = databaseReference.push().key
-        rationModel.rationCloudDatabaseId = cloudDatabaseId ?: ""
-        databaseReference.child(cloudDatabaseId?:"").setValue(rationModel)
+        // make sure rationCloudDatabaseId in not null or empty
+        if(!rationModel.rationCloudDatabaseId.isNullOrEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath/${rationModel.rationCloudDatabaseId}"
+            ).setValue(rationModel)
+        }
     }
 
     override suspend fun insertRationListRemote(rationModelList: List<RationModel>) {
@@ -22,6 +24,11 @@ class RationRepositoryRemoteImpl(
     }
 
     override suspend fun updateRationRemote(rationModel: RationModel) {
-        firebaseDatabase.getReference("$databasePath/${rationModel.rationCloudDatabaseId}").setValue(rationModel)
+        // make sure rationCloudDatabaseId in not null or empty
+        if(rationModel.rationCloudDatabaseId.isNullOrEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath/${rationModel.rationCloudDatabaseId}"
+            ).setValue(rationModel)
+        }
     }
 }
