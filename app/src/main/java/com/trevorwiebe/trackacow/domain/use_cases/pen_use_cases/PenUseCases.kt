@@ -5,5 +5,6 @@ data class PenUseCases (
         val readPenByPenId: ReadPenByPenId,
         val readPenAndLotModelUC: ReadPenAndLotModelUC,
         val createPenUC: CreatePenUC,
-        val deletePenUC: DeletePenUC
+        val deletePenUC: DeletePenUC,
+        val updatePenUC: UpdatePenUC
 )

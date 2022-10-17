@@ -110,6 +110,7 @@ class ManagePensActivity : AppCompatActivity(){
 
                         editPen.setOnShowListener { dialog ->
 
+                            // Update PenModel
                             val posBtn = editPen.getButton(AlertDialog.BUTTON_POSITIVE)
                             posBtn.setOnClickListener {
                                 if (editPenEditText.length() == 0) {
@@ -120,7 +121,7 @@ class ManagePensActivity : AppCompatActivity(){
                                     if (isPenNameAvailable(updatedText, mPenAndLotList)) {
                                         selectedPenAndLotModel.penName = updatedText
 
-                                        managePensViewModel.onEvent(ManagePenEvents.OnPenSaved(selectedPenAndLotModel.toPenModel()))
+                                        managePensViewModel.onEvent(ManagePenEvents.OnPenUpdated(selectedPenAndLotModel.toPenModel()))
 
                                         editPen.dismiss()
                                     } else {
@@ -130,9 +131,11 @@ class ManagePensActivity : AppCompatActivity(){
                                 }
                             }
 
+                            // Dismiss dialog
                             val negButton = editPen.getButton(AlertDialog.BUTTON_NEGATIVE)
                             negButton.setOnClickListener { dialog.dismiss() }
 
+                            // Delete PenModel
                             val neuButton = editPen.getButton(AlertDialog.BUTTON_NEUTRAL)
                             neuButton.setOnClickListener {
 

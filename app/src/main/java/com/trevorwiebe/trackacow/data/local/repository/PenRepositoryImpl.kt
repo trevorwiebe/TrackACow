@@ -49,4 +49,8 @@ class PenRepositoryImpl(
     override suspend fun deletePen(penModel: PenModel) {
         penDao.deletePen(penModel.toPenEntity())
     }
+
+    override suspend fun updatePen(penModel: PenModel) {
+        penDao.updatePen(penModel.penName, penModel.penPrimaryKey)
+    }
 }

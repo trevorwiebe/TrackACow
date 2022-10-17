@@ -72,7 +72,8 @@ object ActivityDomainModule {
             readPenByPenId = ReadPenByPenId(penRepository),
             readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository),
             createPenUC = CreatePenUC(penRepository, penRepositoryRemote, getCloudDatabaseId, context),
-            deletePenUC = DeletePenUC(penRepository)
+            deletePenUC = DeletePenUC(penRepository, penRepositoryRemote, context),
+            updatePenUC = UpdatePenUC(penRepository, penRepositoryRemote, context)
         )
     }
 

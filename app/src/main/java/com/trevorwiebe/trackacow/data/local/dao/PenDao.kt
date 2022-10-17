@@ -26,17 +26,21 @@ interface PenDao {
     @Query("UPDATE Pen SET penName = :penName WHERE penCloudDatabaseId = :penId")
     fun updatePenNameById(penName: String, penId: String)
 
+    @Query("UPDATE Pen SET penName = :penName WHERE penPrimaryKey = :penPrimaryKey")
+    suspend fun updatePen(penName: String, penPrimaryKey: Int)
+
     @Query("DELETE FROM Pen")
     fun deletePenTable()
-
-    @Update
-    fun updatePen(penEntity: PenEntity)
 
     @Delete
     suspend fun deletePen(penEntity: PenEntity)
 
 
     // Deprecated
+
+    @Deprecated("Use suspend function")
+    @Update
+    fun updatePen2(penEntity: PenEntity)
 
     @Deprecated("Use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)

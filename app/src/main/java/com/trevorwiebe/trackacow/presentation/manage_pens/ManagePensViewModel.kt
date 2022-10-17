@@ -30,6 +30,9 @@ class ManagePensViewModel @Inject constructor(
             is ManagePenEvents.OnPenDeleted -> {
                 deletePen(events.penModel)
             }
+            is ManagePenEvents.OnPenUpdated -> {
+                updatePen(events.penModel)
+            }
         }
     }
 
@@ -42,6 +45,12 @@ class ManagePensViewModel @Inject constructor(
     private fun deletePen(penModel: PenModel){
         viewModelScope.launch {
             penUseCases.deletePenUC(penModel)
+        }
+    }
+
+    private fun updatePen(penModel: PenModel){
+        viewModelScope.launch {
+            penUseCases.updatePenUC(penModel)
         }
     }
 
@@ -61,6 +70,7 @@ class ManagePensViewModel @Inject constructor(
 sealed class ManagePenEvents{
     data class OnPenSaved(val penModel: PenModel): ManagePenEvents()
     data class OnPenDeleted(val penModel: PenModel): ManagePenEvents()
+    data class OnPenUpdated(val penModel: PenModel): ManagePenEvents()
 }
 
 data class ManagePensUiState(

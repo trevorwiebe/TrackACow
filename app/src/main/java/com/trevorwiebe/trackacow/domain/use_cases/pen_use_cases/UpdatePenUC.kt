@@ -8,19 +8,20 @@ import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 
-class DeletePenUC(
+class UpdatePenUC(
     private val penRepository: PenRepository,
     private val penRepositoryRemote: PenRepositoryRemote,
     private val context: Application
 ) {
     suspend operator fun invoke(penModel: PenModel){
 
-        penRepository.deletePen(penModel)
+        penRepository.updatePen(penModel)
 
         if(Utility.haveNetworkConnection(context)){
-            penRepositoryRemote.deletePenRemote(penModel)
+            // insertPenRemote is the same code as updatePenRemote would be
+            penRepositoryRemote.insertPenRemote(penModel)
         }else{
-            penRepository.insertCachePen(penModel.toCachePenModel(Constants.DELETE))
+            penRepository.insertCachePen(penModel.toCachePenModel(Constants.INSERT_UPDATE))
         }
 
     }
