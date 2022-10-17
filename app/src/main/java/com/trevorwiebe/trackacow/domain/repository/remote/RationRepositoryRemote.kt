@@ -8,4 +8,6 @@ interface RationRepositoryRemote {
     suspend fun insertRationListRemote(rationModelList: List<RationModel>)
 
     suspend fun updateRationRemote(rationModel: RationModel)
+
+    suspend fun deleteRationRemote(rationModel: RationModel)
 }

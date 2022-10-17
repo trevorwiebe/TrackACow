@@ -93,7 +93,7 @@ class AddOrEditRation : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_delete_ration){
-            addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationDeleted(mRation?.rationPrimaryKey?:-1))
+            addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationDeleted(mRation!!))
             finish()
         }
         return super.onOptionsItemSelected(item)

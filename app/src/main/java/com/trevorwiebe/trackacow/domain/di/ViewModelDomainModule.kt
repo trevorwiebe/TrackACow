@@ -40,7 +40,7 @@ object ViewModelDomainModule {
             createRationUC = CreateRationUC(rationsRepository, rationsRepositoryRemote, getCloudDatabaseId, context),
             readAllRationsUC = ReadAllRationsUC(rationsRepository),
             updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
-            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, context)
+            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, rationsRepositoryRemote, context)
         )
     }
 
