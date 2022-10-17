@@ -18,7 +18,8 @@ class UpdateDrug(
        drugRepository.updateDrug(drugModel)
 
        if(Utility.haveNetworkConnection(context)){
-            drugRepositoryRemote.updateDrug(drugModel)
+           // insertDrug uses the same code as updateDrug would
+           drugRepositoryRemote.insertDrug(drugModel)
        }else{
            Utility.setNewDataToUpload(context, true)
            drugRepository.insertCacheDrug(drugModel.toCacheDrugModel(Constants.INSERT_UPDATE))

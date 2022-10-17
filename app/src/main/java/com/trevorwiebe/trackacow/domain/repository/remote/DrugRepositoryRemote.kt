@@ -4,5 +4,4 @@ import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 
 interface DrugRepositoryRemote {
     fun insertDrug(drugModel: DrugModel)
-    fun updateDrug(drugModel: DrugModel)
 }

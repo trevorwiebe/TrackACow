@@ -94,11 +94,12 @@ object ViewModelDomainModule {
     fun provideDrugUseCases(
         drugRepository: DrugRepository,
         drugRepositoryRemote: DrugRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): DrugUseCases{
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(drugRepository),
-            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, context),
+            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, getCloudDatabaseId, context),
             updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context)
         )
     }
