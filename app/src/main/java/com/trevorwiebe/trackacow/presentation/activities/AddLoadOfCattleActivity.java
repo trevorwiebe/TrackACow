@@ -80,7 +80,7 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
                 if (mHeadCount.length() == 0 || mDate.length() == 0) {
                     Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show();
                 } else {
-                    DatabaseReference loadPushRef = Constants.BASE_REFERENCE.child(LoadEntity.LOAD).push();
+                    DatabaseReference loadPushRef = Constants.BASE_REFERENCE.child(Constants.LOAD).push();
 
                     int totalHead = Integer.parseInt(mHeadCount.getText().toString());
 
@@ -93,7 +93,7 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
                     String loadDescription = mMemo.getText().toString();
                     String loadId = loadPushRef.getKey();
 
-                    LoadEntity loadEntity = new LoadEntity(totalHead, longDate, loadDescription, mLotId, loadId);
+                    LoadEntity loadEntity = new LoadEntity(0, totalHead, longDate, loadDescription, mLotId, loadId);
 
                     if (Utility.haveNetworkConnection(AddLoadOfCattleActivity.this)) {
                         loadPushRef.setValue(loadEntity);
@@ -101,7 +101,15 @@ public class AddLoadOfCattleActivity extends AppCompatActivity {
 
                         Utility.setNewDataToUpload(AddLoadOfCattleActivity.this, true);
 
-                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(
+                                0,
+                                loadEntity.getNumberOfHead(),
+                                loadEntity.getDate(),
+                                loadEntity.getDescription(),
+                                loadEntity.getLotId(),
+                                loadEntity.getLoadId(),
+                                Constants.INSERT_UPDATE
+                        );
                         new InsertHoldingLoad(cacheLoadEntity).execute(AddLoadOfCattleActivity.this);
                     }
 

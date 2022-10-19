@@ -8,15 +8,27 @@ public class Constants {
 
     public static final DatabaseReference BASE_REFERENCE = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     public static final String BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/";
-    public static final String RATIONS = "/rations";
-    public static final String CALLS = "/calls";
-    public static final String DATABASE_PENS = "/pens";
-    public static final String DATABASE_STRING_LOT = "/cattleLot";
-    public static final String DATABASE_PATH_DRUG = "/drugs";
-    public static final String DRUG = "drugs";
+
+    public static final String DATABASE_STRING_RATIONS = "/rations";
+    public static final String RATIONS = "rations";
+
+    public static final String DATABASE_STRING_CALLS = "/calls";
+    public static final String CALLS = "calls";
+
+    public static final String DATABASE_STRING_PENS = "/pens";
     public static final String PENS = "pens";
+
+    public static final String DATABASE_STRING_LOT = "/cattleLot";
     public static final String LOTS = "cattleLot";
+
+    public static final String DATABASE_STRING_DRUGS = "/drugs";
+    public static final String DRUG = "drugs";
+
+    public static final String DATABASE_STRING_FEEDS = "/feed";
     public static final String FEEDS = "feed";
+
+    public static final String DATABASE_STRING_LOAD = "/loads";
+    public static final String LOAD = "loads";
 
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;

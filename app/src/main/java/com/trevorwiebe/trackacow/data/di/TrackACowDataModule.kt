@@ -79,7 +79,7 @@ object TrackACowDataModule {
     ): RationRepositoryRemote {
         return RationRepositoryRemoteImpl(
             firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.RATIONS
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
         )
     }
 
@@ -101,7 +101,7 @@ object TrackACowDataModule {
     ): CallRepositoryRemote{
         return CallRepositoryRemoteImpl(
             firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.CALLS
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS
         )
     }
 
@@ -123,7 +123,7 @@ object TrackACowDataModule {
     ): DrugRepositoryRemote{
         return DrugRepositoryRemoteImpl(
             firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_PATH_DRUG
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS
         )
     }
 
@@ -145,7 +145,7 @@ object TrackACowDataModule {
     ): PenRepositoryRemote{
         return PenRepositoryRemoteImpl(
             firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_PENS
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS
         )
     }
 

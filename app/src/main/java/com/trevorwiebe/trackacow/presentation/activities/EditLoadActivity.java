@@ -104,9 +104,16 @@ public class EditLoadActivity extends AppCompatActivity implements
                     mSelectedLoadEntity.setDescription(memo);
 
                     if (Utility.haveNetworkConnection(EditLoadActivity.this)) {
-                        Constants.BASE_REFERENCE.child(LoadEntity.LOAD).child(mSelectedLoadEntity.getLoadId()).setValue(mSelectedLoadEntity);
+                        Constants.BASE_REFERENCE.child(Constants.LOAD).child(mSelectedLoadEntity.getLoadId()).setValue(mSelectedLoadEntity);
                     } else {
-                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(mSelectedLoadEntity, Constants.INSERT_UPDATE);
+                        CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(
+                                0,
+                                mSelectedLoadEntity.getNumberOfHead(),
+                                mSelectedLoadEntity.getDate(),
+                                mSelectedLoadEntity.getDescription(),
+                                mSelectedLoadEntity.getLotId(),
+                                mSelectedLoadEntity.getLoadId(),
+                                Constants.INSERT_UPDATE);
                         new InsertHoldingLoad(cacheLoadEntity).execute(EditLoadActivity.this);
                     }
 
@@ -129,9 +136,16 @@ public class EditLoadActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Utility.haveNetworkConnection(EditLoadActivity.this)) {
-                            Constants.BASE_REFERENCE.child(LoadEntity.LOAD).child(mSelectedLoadEntity.getLoadId()).removeValue();
+                            Constants.BASE_REFERENCE.child(Constants.LOAD).child(mSelectedLoadEntity.getLoadId()).removeValue();
                         } else {
-                            CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(mSelectedLoadEntity, Constants.DELETE);
+                            CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(
+                                    0,
+                                    mSelectedLoadEntity.getNumberOfHead(),
+                                    mSelectedLoadEntity.getDate(),
+                                    mSelectedLoadEntity.getDescription(),
+                                    mSelectedLoadEntity.getLotId(),
+                                    mSelectedLoadEntity.getLoadId()
+                                    , Constants.DELETE);
                             new InsertHoldingLoad(cacheLoadEntity).execute(EditLoadActivity.this);
                         }
                         new DeleteLoadByLoadId(mSelectedLoadEntity.getLoadId()).execute(EditLoadActivity.this);

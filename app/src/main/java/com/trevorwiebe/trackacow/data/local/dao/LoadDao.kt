@@ -1,44 +1,44 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.LoadEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.LoadEntity
 
 @Dao
-public interface LoadDao {
+interface LoadDao {
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLoad(LoadEntity loadEntity);
+    fun insertLoad(loadEntity: LoadEntity?)
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLoadList(List<LoadEntity> loadEntities);
+    fun insertLoadList(loadEntities: List<LoadEntity?>?)
 
+    @Deprecated("use flow return type")
     @Query("SELECT * FROM load WHERE lotId = :lotId")
-    List<LoadEntity> getLoadsByLotId(String lotId);
+    fun getLoadsByLotId(lotId: String?): List<LoadEntity?>?
 
+    @Deprecated("use flow return type")
     @Query("SELECT * FROM load WHERE loadId = :loadId")
-    LoadEntity getLoadByLoadId(String loadId);
+    fun getLoadByLoadId(loadId: String?): LoadEntity?
 
+    @Deprecated("use suspend function")
     @Query("UPDATE load SET numberOfHead = :headCount, date = :date, description = :memo WHERE loadId = :loadId")
-    void updateLoadByFields(int headCount, long date, String memo, String loadId);
+    fun updateLoadByFields(headCount: Int, date: Long, memo: String?, loadId: String?)
 
+    @Deprecated("use suspend function")
     @Update
-    void updateLoad(LoadEntity loadEntity);
+    fun updateLoad(loadEntity: LoadEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteLoad(LoadEntity loadEntity);
+    fun deleteLoad(loadEntity: LoadEntity?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM load")
-    void deleteLoadTable();
+    fun deleteLoadTable()
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM load WHERE loadId = :loadId")
-    void deleteLoadByLoadId(String loadId);
-
+    fun deleteLoadByLoadId(loadId: String?)
 }

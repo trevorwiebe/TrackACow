@@ -1,31 +1,28 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
 
 @Dao
-public interface CacheLoadDao {
+interface CacheLoadDao {
 
+    @Deprecated("use flow return type")
     @Insert
-    void insertHoldingLoad(CacheLoadEntity cacheLoadEntity);
+    fun insertHoldingLoad(cacheLoadEntity: CacheLoadEntity?)
 
+    @Deprecated("use flow return type")
     @Query("SELECT * FROM holdingLoad")
-    List<CacheLoadEntity> getHoldingLoadList();
+    fun getHoldingLoadList(): List<CacheLoadEntity?>?
 
-    @Update()
-    void updateHoldingLoad(CacheLoadEntity cacheLoadEntity);
+    @Deprecated("use flow return type")
+    @Update
+    fun updateHoldingLoad(cacheLoadEntity: CacheLoadEntity?)
 
+    @Deprecated("use flow return type")
     @Delete
-    void deleteHoldingLoad(CacheLoadEntity cacheLoadEntity);
+    fun deleteHoldingLoad(cacheLoadEntity: CacheLoadEntity?)
 
+    @Deprecated("use flow return type")
     @Query("DELETE FROM holdingLoad")
-    void deleteHoldingLoadTable();
-
+    fun deleteHoldingLoadTable()
 }

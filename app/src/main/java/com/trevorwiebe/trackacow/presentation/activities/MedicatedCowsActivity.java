@@ -162,9 +162,9 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                 LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenCloudDatabaseId());
 
                 String loadDescription = mLoadMemo.getText().toString();
-                DatabaseReference loadPushRef = mBaseRef.child(LoadEntity.LOAD).push();
+                DatabaseReference loadPushRef = mBaseRef.child(Constants.LOAD).push();
                 String loadId = loadPushRef.getKey();
-                LoadEntity loadEntity = new LoadEntity(totalHead, date, loadDescription, id, loadId);
+                LoadEntity loadEntity = new LoadEntity(0, totalHead, date, loadDescription, id, loadId);
 
                 if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
                     lotPushRef.setValue(lotEntity);
@@ -185,7 +185,15 @@ public class MedicatedCowsActivity extends AppCompatActivity implements
                     );
                     new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
 
-                    CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(loadEntity, Constants.INSERT_UPDATE);
+                    CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(
+                            0,
+                            loadEntity.getNumberOfHead(),
+                            loadEntity.getDate(),
+                            loadEntity.getDescription(),
+                            loadEntity.getLotId(),
+                            loadEntity.getLoadId(),
+                            Constants.INSERT_UPDATE
+                    );
                     new InsertHoldingLoad(cacheLoadEntity).execute(MedicatedCowsActivity.this);
                 }
 

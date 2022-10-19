@@ -122,7 +122,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case LoadEntity.LOAD:
+                            case Constants.LOAD:
                                 for (DataSnapshot loadSnapShot : snapshot.getChildren()) {
                                     LoadEntity loadEntity = loadSnapShot.getValue(LoadEntity.class);
                                     if (loadEntity != null) {
