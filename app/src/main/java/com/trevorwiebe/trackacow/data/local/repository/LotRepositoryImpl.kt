@@ -23,6 +23,15 @@ class LotRepositoryImpl(
         }
     }
 
+    override fun readLots(): Flow<List<LotModel>> {
+        return lotDao.getLotEntities()
+            .map { lotList ->
+                lotList.map {
+                    it.toLotModel()
+                }
+            }
+    }
+
     override suspend fun updateLotByLotIdWithNewPenID(lotId: String, penId: String) {
         lotDao.updateLotWithNewPenId(lotId, penId)
     }

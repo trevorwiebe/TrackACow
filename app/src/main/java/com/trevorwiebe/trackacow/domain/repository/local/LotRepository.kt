@@ -8,6 +8,8 @@ interface LotRepository {
 
     fun readLotsByPenId(penId: String): Flow<List<LotModel>>
 
+    fun readLots(): Flow<List<LotModel>>
+
     suspend fun updateLotByLotIdWithNewPenID(lotId: String, penId: String)
 
     // cache function

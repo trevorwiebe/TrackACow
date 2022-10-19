@@ -11,6 +11,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLots
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
@@ -87,6 +88,7 @@ object ActivityDomainModule {
     ): LotUseCases{
         return LotUseCases(
             readLotsByPenId = ReadLotsByPenId(lotRepository),
+            readLots = ReadLots(lotRepository),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context)
         )
     }

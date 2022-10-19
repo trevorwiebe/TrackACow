@@ -12,6 +12,9 @@ interface LotDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLotEntityList(lotEntities: List<LotEntity>)
 
+    @Query("SELECT * FROM lot")
+    fun getLotEntities(): Flow<List<LotEntity>>
+
     @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 

@@ -1,61 +1,37 @@
-package com.trevorwiebe.trackacow.domain.adapters;
+package com.trevorwiebe.trackacow.domain.adapters
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.domain.adapters.ReportsRecyclerViewAdapter.ReportsViewHolder
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
+import com.trevorwiebe.trackacow.R
+import android.widget.TextView
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+class ReportsRecyclerViewAdapter : RecyclerView.Adapter<ReportsViewHolder>() {
 
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.entities.LotEntity;
+    private var mLotModel: List<LotModel> = emptyList()
 
-import java.util.ArrayList;
+    override fun getItemCount(): Int { return mLotModel.size }
 
-
-public class ReportsRecyclerViewAdapter extends RecyclerView.Adapter<ReportsRecyclerViewAdapter.ReportsViewHolder> {
-
-    private ArrayList<LotEntity> mLotEntities = new ArrayList<>();
-
-    private static final String TAG = "ReportsRecyclerViewAdap";
-
-    public ReportsRecyclerViewAdapter() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ReportsViewHolder {
+        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_reports, viewGroup, false)
+        return ReportsViewHolder(view)
     }
 
-    @Override
-    public int getItemCount() {
-        if (mLotEntities == null) return 0;
-        return mLotEntities.size();
+    override fun onBindViewHolder(reportsViewHolder: ReportsViewHolder, i: Int) {
+        val lotEntity: LotModel = mLotModel[i]
+        val lotName = lotEntity.lotName
+        reportsViewHolder.mLotName.text = lotName
     }
 
-    @NonNull
-    @Override
-    public ReportsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_reports, viewGroup, false);
-        return new ReportsViewHolder(view);
+    fun swapLotData(lotModels: List<LotModel>) {
+        mLotModel = lotModels
+        notifyDataSetChanged()
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ReportsViewHolder reportsViewHolder, int i) {
-        LotEntity lotEntity = mLotEntities.get(i);
-        String lotName = lotEntity.getLotName();
-
-        reportsViewHolder.mLotName.setText(lotName);
-    }
-
-    public void swapLotData(ArrayList<LotEntity> lotEntities) {
-        mLotEntities = lotEntities;
-        notifyDataSetChanged();
-    }
-
-    public class ReportsViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView mLotName;
-
-        public ReportsViewHolder(View view) {
-            super(view);
-            mLotName = view.findViewById(R.id.reports_lot_name);
-        }
+    inner class ReportsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val mLotName: TextView = view.findViewById(R.id.reports_lot_name)
     }
 }
