@@ -1,4 +1,4 @@
-package com.trevorwiebe.trackacow.presentation.fragments;
+package com.trevorwiebe.trackacow.presentation.fragment_settings;
 
 import android.app.AlertDialog;
 import android.content.Context;
