@@ -9,6 +9,6 @@ import androidx.room.PrimaryKey
 data class RationEntity(
     @PrimaryKey(autoGenerate = true)
     var rationPrimaryKey: Int = 0,
-    var rationCloudDatabaseId: String?,
-    var rationName: String
+    var rationCloudDatabaseId: String? = "",
+    var rationName: String = ""
 )

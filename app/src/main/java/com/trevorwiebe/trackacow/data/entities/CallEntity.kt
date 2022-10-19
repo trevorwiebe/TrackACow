@@ -9,9 +9,9 @@ import androidx.room.Entity
 data class CallEntity (
     @PrimaryKey(autoGenerate = true)
     var callPrimaryKey: Int = 0,
-    var callAmount: Int,
-    var date: Long,
-    var lotId: String,
-    val callRationId: Int? = null,
-    var callCloudDatabaseId: String?
+    var callAmount: Int = 0,
+    var date: Long = 0,
+    var lotId: String = "",
+    val callRationId: Int? = 0,
+    var callCloudDatabaseId: String? = ""
 )
