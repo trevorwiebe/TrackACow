@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
         String message = "You will need to subscribe to a plan to continue.  All you data is saved and waiting for you.";
 
         switch (userEntity.getAccountType()) {
-            case UserEntity.FREE_TRIAL:
+            case Constants.FREE_TRIAL:
 
                 title = "Your free trial has ended.";
 
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
                     Utility.setLastSync(this, System.currentTimeMillis());
                 }
                 break;
-            case UserEntity.MONTHLY_SUBSCRIPTION:
+            case Constants.MONTHLY_SUBSCRIPTION:
                 title = "Your monthly subscription has ended.";
 
                 if (daysLeft <= -3) {
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements
                     Utility.setLastSync(this, System.currentTimeMillis());
                 }
                 break;
-            case UserEntity.ANNUAL_SUBSCRIPTION:
+            case Constants.ANNUAL_SUBSCRIPTION:
                 title = "Your annual subscription has ended.";
 
                 if (daysLeft <= -3) {
@@ -288,12 +288,12 @@ public class MainActivity extends AppCompatActivity implements
                     Utility.setLastSync(this, System.currentTimeMillis());
                 }
                 break;
-            case UserEntity.CANCELED:
+            case Constants.CANCELED:
                 title = "Your account has been canceled.";
                 message = "You will need to re-subscribe to a plan to continue. Your data may be all saved yet.";
                 showNoPassDialog(title, message);
                 Utility.setLastSync(this, System.currentTimeMillis());
-            case UserEntity.FOREVER_FREE_USER:
+            case Constants.FOREVER_FREE_USER:
                 Utility.setLastSync(this, System.currentTimeMillis());
                 break;
             default:

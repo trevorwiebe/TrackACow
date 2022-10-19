@@ -1,35 +1,32 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity;
-
-import java.util.List;
-
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity
 
 @Dao
-public interface CacheUserDao {
+interface CacheUserDao {
 
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingUser(CacheUserEntity cacheUserEntity);
+    fun insertHoldingUser(cacheUserEntity: CacheUserEntity?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM holdingUser WHERE uid = :uid")
-    CacheUserEntity getHoldingUserByUid(String uid);
+    fun getHoldingUserByUid(uid: String?): CacheUserEntity?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM holdingUser")
-    List<CacheUserEntity> getHoldingUserList();
+    fun getHoldingUserList(): List<CacheUserEntity?>?
 
+    @Deprecated("use suspend function")
     @Update
-    void updateHoldingUser(CacheUserEntity cacheUserEntity);
+    fun updateHoldingUser(cacheUserEntity: CacheUserEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteHoldingUser(CacheUserEntity cacheUserEntity);
+    fun deleteHoldingUser(cacheUserEntity: CacheUserEntity?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM holdingUser")
-    void deleteHoldingUserTable();
-
+    fun deleteHoldingUserTable()
 }

@@ -129,13 +129,13 @@ public class QueryAllCloudData {
                                         mLoadList.add(loadEntity);
                                     }
                                 }
-                            case UserEntity.USER:
+                            case Constants.USER:
                                 UserEntity userEntity = snapshot.getValue(UserEntity.class);
                                 if (userEntity != null) {
                                     mUserEntity.add(userEntity);
                                 }
                                 break;
-                            case "call":
+                            case Constants.CALLS:
                                 for(DataSnapshot callSnapShot : snapshot.getChildren()){
                                     CallEntity callEntity = callSnapShot.getValue(CallEntity.class);
                                     if(callEntity != null){
@@ -143,14 +143,14 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-//                            case "rations":
-//                                for(DataSnapshot rationSnapShot : snapshot.getChildren()){
-//                                    RationEntity rationEntity = rationSnapShot.getValue(RationEntity.class);
-//                                    if(rationEntity != null){
-//                                        mRationList.add(rationEntity);
-//                                    }
-//                                }
-//                                break;
+                            case Constants.RATIONS:
+                                for(DataSnapshot rationSnapShot : snapshot.getChildren()){
+                                    RationEntity rationEntity = rationSnapShot.getValue(RationEntity.class);
+                                    if(rationEntity != null){
+                                        mRationList.add(rationEntity);
+                                    }
+                                }
+                                break;
                             case Constants.FEEDS:
                                 for(DataSnapshot feedSnapShot : snapshot.getChildren()){
                                     FeedEntity feedEntity = feedSnapShot.getValue(FeedEntity.class);

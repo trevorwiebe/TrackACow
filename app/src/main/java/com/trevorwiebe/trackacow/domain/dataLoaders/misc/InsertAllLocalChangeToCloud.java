@@ -253,13 +253,21 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 CacheUserEntity cacheUserEntity = holdingUserEntities.get(g);
 
-                UserEntity userEntity = new UserEntity(cacheUserEntity);
+                UserEntity userEntity = new UserEntity(
+                        0,
+                        cacheUserEntity.getAccountType(),
+                        cacheUserEntity.getDateCreated(),
+                        cacheUserEntity.getName(),
+                        cacheUserEntity.getEmail(),
+                        cacheUserEntity.getRenewalDate(),
+                        cacheUserEntity.getUid()
+                );
                 switch (cacheUserEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(UserEntity.USER).setValue(userEntity);
+                        baseRef.child(Constants.USER).setValue(userEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(UserEntity.USER).removeValue();
+                        baseRef.child(Constants.USER).removeValue();
                         break;
                 }
             }

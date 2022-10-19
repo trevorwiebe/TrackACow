@@ -1,123 +1,30 @@
-package com.trevorwiebe.trackacow.data.entities;
+package com.trevorwiebe.trackacow.data.entities
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import androidx.annotation.Keep;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity;
+import androidx.annotation.Keep
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity
 
 @Keep
 @Entity(tableName = "user")
-public class UserEntity {
-
-    public static final String USER = "user";
-
-    public static final int FREE_TRIAL = 0;
-    public static final int MONTHLY_SUBSCRIPTION = 1;
-    public static final int ANNUAL_SUBSCRIPTION = 2;
-    public static final int CANCELED = 6;
-    public static final int FOREVER_FREE_USER = 7;
-
-    @ColumnInfo(name = "primaryKey")
+data class UserEntity (
     @PrimaryKey(autoGenerate = true)
-    private int primaryKey;
+    var primaryKey: Int = 0,
+    var accountType: Int = 0,
+    var dateCreated: Long = 0,
+    var name: String? = null,
+    var email: String? = null,
+    var renewalDate: Long = 0,
+    var uid: String? = null
 
-    @ColumnInfo(name = "accountType")
-    private int accountType;
-
-    @ColumnInfo(name = "dateCreated")
-    private long dateCreated;
-
-    @ColumnInfo(name = "name")
-    private String name;
-
-    @ColumnInfo(name = "email")
-    private String email;
-
-    @ColumnInfo(name = "renewalDate")
-    private long renewalDate;
-
-    @ColumnInfo(name = "uid")
-    private String uid;
-
-    public UserEntity(long dateCreated, int accountType, String name, String email, long renewalDate, String uid) {
-        this.dateCreated = dateCreated;
-        this.accountType = accountType;
-        this.name = name;
-        this.email = email;
-        this.renewalDate = renewalDate;
-        this.uid = uid;
-    }
-
-    @Ignore
-    public UserEntity(CacheUserEntity cacheUserEntity) {
-        this.dateCreated = cacheUserEntity.getDateCreated();
-        this.accountType = cacheUserEntity.getAccountType();
-        this.name = cacheUserEntity.getName();
-        this.email = cacheUserEntity.getEmail();
-        this.renewalDate = cacheUserEntity.getRenewalDate();
-        this.uid = cacheUserEntity.getUid();
-    }
-
-    @Ignore
-    public UserEntity() {
-    }
-
-    public int getPrimaryKey() {
-        return primaryKey;
-    }
-
-    public void setPrimaryKey(int primaryKey) {
-        this.primaryKey = primaryKey;
-    }
-
-    public int getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(int accountType) {
-        this.accountType = accountType;
-    }
-
-    public long getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(long dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public long getRenewalDate() {
-        return renewalDate;
-    }
-
-    public void setRenewalDate(long renewalDate) {
-        this.renewalDate = renewalDate;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-}
+//    object UserEntityObject {
+//        const val USER = "user"
+//        const val FREE_TRIAL = 0
+//        const val MONTHLY_SUBSCRIPTION = 1
+//        const val ANNUAL_SUBSCRIPTION = 2
+//        const val CANCELED = 6
+//        const val FOREVER_FREE_USER = 7
+//    }
+)

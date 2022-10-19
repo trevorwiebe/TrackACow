@@ -1,35 +1,32 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.UserEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.UserEntity
 
 @Dao
-public interface UserDao {
+interface UserDao {
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertUser(UserEntity userEntity);
+    fun insertUser(userEntity: UserEntity?)
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertUserList(List<UserEntity> userEntities);
+    fun insertUserList(userEntities: List<UserEntity?>?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM user WHERE uid = :uid")
-    UserEntity getUserByUid(String uid);
+    fun getUserByUid(uid: String?): UserEntity?
 
+    @Deprecated("use suspend function")
     @Update
-    void updateUser(UserEntity userEntity);
+    fun updateUser(userEntity: UserEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteUser(UserEntity userEntity);
+    fun deleteUser(userEntity: UserEntity?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM user")
-    void deleteUserTable();
-
+    fun deleteUserTable()
 }

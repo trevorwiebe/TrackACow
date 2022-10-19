@@ -36,6 +36,15 @@ public class Constants {
     public static final String DATABASE_STRING_COW = "/cows";
     public static final String COW = "cows";
 
+    public static final String DATABASE_STRING_USER = "/user";
+    public static final String USER = "user";
+
+    public static final int FREE_TRIAL = 0;
+    public static final int MONTHLY_SUBSCRIPTION = 1;
+    public static final int ANNUAL_SUBSCRIPTION = 2;
+    public static final int CANCELED = 6;
+    public static final int FOREVER_FREE_USER = 7;
+
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;
     public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;
