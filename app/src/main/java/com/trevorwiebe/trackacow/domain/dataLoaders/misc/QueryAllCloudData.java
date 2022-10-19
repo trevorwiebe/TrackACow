@@ -74,7 +74,7 @@ public class QueryAllCloudData {
                     String key = snapshot.getKey();
                     if (key != null) {
                         switch (key) {
-                            case CowEntity.COW:
+                            case Constants.COW:
                                 for (DataSnapshot cowSnapshot : snapshot.getChildren()) {
                                     CowEntity cowEntity = cowSnapshot.getValue(CowEntity.class);
                                     if (cowEntity != null) {

@@ -1,46 +1,48 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.CowEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.CowEntity
 
 @Dao
-public interface CowDao {
+interface CowDao {
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCow(CowEntity cowEntity);
+    fun insertCow(cowEntity: CowEntity?)
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCowList(List<CowEntity> cowEntityList);
+    fun insertCowList(cowEntityList: List<CowEntity?>?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM Cow WHERE cowId = :id")
-    CowEntity getCowById(String id);
+    fun getCowById(id: String?): CowEntity?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM Cow WHERE lotId IN(:ids)")
-    List<CowEntity> getCowEntitiesByLotIds(List<String> ids);
+    fun getCowEntitiesByLotIds(ids: List<String?>?): List<CowEntity?>?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM Cow WHERE lotId IN(:ids) AND isAlive = 0")
-    List<CowEntity> getDeadCowEntitiesByLotIds(List<String> ids);
+    fun getDeadCowEntitiesByLotIds(ids: List<String?>?): List<CowEntity?>?
 
+    @Deprecated("use suspend function")
     @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
-    void updateCowById(String id, int tagNumber, long date, String notes);
+    fun updateCowById(id: String?, tagNumber: Int, date: Long, notes: String?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM Cow WHERE lotId = :lotId")
-    void deleteCowsByLotId(String lotId);
+    fun deleteCowsByLotId(lotId: String?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM cow")
-    void deleteCowTable();
+    fun deleteCowTable()
 
+    @Deprecated("use suspend function")
     @Update
-    void updateCow(CowEntity cowEntity);
+    fun updateCow(cowEntity: CowEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteCow(CowEntity cowEntity);
+    fun deleteCow(cowEntity: CowEntity?)
 }

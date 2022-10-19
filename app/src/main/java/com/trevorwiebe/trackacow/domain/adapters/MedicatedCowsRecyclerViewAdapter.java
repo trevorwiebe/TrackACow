@@ -68,7 +68,7 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
             trackCowViewHolder.mNotes.setText("Notes: " + notes);
         }
 
-        if (cowEntity.getIsAlive() == 1) {
+        if (cowEntity.isAlive() == 1) {
             trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
             String message = "";
             ArrayList<DrugsGivenEntity> drugsGivenEntities = Utility.findDrugsGivenEntityByCowId(cowId, mDrugsGivenEntities);

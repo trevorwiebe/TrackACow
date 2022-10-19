@@ -134,7 +134,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
                         for(int f=0; f<cowEntities.size(); f++){
                             CowEntity cowEntity = cowEntities.get(f);
                             cowIds.add(cowEntity.getCowId());
-                            if (cowEntity.getIsAlive() != 1) {
+                            if (cowEntity.isAlive() != 1) {
                                 mIsSearchForCowDead = true;
                             }
                         }
@@ -315,7 +315,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
         } else {
             DatabaseReference drugsGivenRef = Constants.BASE_REFERENCE.child(Constants.DRUGS_GIVEN);
 
-            DatabaseReference pushRef = Constants.BASE_REFERENCE.child(CowEntity.COW).push();
+            DatabaseReference pushRef = Constants.BASE_REFERENCE.child(Constants.COW).push();
             String cowId = pushRef.getKey();
 
             ArrayList<DrugsGivenEntity> drugList = new ArrayList<>();
@@ -369,7 +369,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
             int tagNumber = Integer.parseInt(mTagName.getText().toString());
             String notes = mNotes.getText().toString();
 
-            CowEntity cowEntity = new CowEntity(1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
+            CowEntity cowEntity = new CowEntity(0, 0, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
 
             mCowEntities.add(cowEntity);
 

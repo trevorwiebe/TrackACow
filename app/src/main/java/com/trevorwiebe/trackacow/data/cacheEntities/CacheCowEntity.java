@@ -41,7 +41,7 @@ public class CacheCowEntity {
 
     @Ignore
     public CacheCowEntity(CowEntity cowEntity, int whatHappened) {
-        this.isAlive = cowEntity.getIsAlive();
+        this.isAlive = cowEntity.isAlive();
         this.cowId = cowEntity.getCowId();
         this.tagNumber = cowEntity.getTagNumber();
         this.date = cowEntity.getDate();

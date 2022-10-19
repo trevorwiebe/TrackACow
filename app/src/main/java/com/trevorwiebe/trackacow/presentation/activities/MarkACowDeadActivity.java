@@ -159,9 +159,9 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
         int tagNumber = Integer.parseInt(mTagNumber.getText().toString());
         String notes = mNotes.getText().toString();
 
-        DatabaseReference pushRef = mBaseRef.child(CowEntity.COW).push();
+        DatabaseReference pushRef = mBaseRef.child(Constants.COW).push();
 
-        CowEntity cowEntity = new CowEntity(0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
+        CowEntity cowEntity = new CowEntity(0, 0, pushRef.getKey(), tagNumber, mCalendar.getTimeInMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
 
         if(Utility.haveNetworkConnection(this)){
             pushRef.setValue(cowEntity);

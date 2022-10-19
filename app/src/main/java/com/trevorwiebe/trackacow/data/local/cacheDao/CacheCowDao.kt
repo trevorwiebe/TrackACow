@@ -1,37 +1,35 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity
 
 @Dao
-public interface CacheCowDao {
-
+interface CacheCowDao {
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingCow(CacheCowEntity cacheCowEntity);
+    fun insertHoldingCow(cacheCowEntity: CacheCowEntity?)
 
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingCowList(List<CacheCowEntity> cacheCowEntityList);
+    fun insertHoldingCowList(cacheCowEntityList: List<CacheCowEntity?>?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM HoldingCow WHERE cowId = :id")
-    CacheCowEntity getHoldingCowById(String id);
+    fun getHoldingCowById(id: String?): CacheCowEntity?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM HoldingCow")
-    List<CacheCowEntity> getHoldingCowEntityList();
+    fun getHoldingCowEntityList(): List<CacheCowEntity?>?
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM HoldingCow")
-    void deleteHoldingCowTable();
+    fun deleteHoldingCowTable()
 
+    @Deprecated("use suspend function")
     @Update
-    void updateHoldingCow(CacheCowEntity cacheCowEntity);
+    fun updateHoldingCow(cacheCowEntity: CacheCowEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteCow(CacheCowEntity cacheCowEntity);
-
+    fun deleteCow(cacheCowEntity: CacheCowEntity?)
 }

@@ -132,7 +132,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 mCowEntity.setNotes(notes);
 
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
-                    Constants.BASE_REFERENCE.child(CowEntity.COW).child(mCowEntity.getCowId()).setValue(mCowEntity);
+                    Constants.BASE_REFERENCE.child(Constants.COW).child(mCowEntity.getCowId()).setValue(mCowEntity);
                 }else{
                     Utility.setNewDataToUpload(EditMedicatedCowActivity.this, true);
 
@@ -141,7 +141,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     cacheCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     cacheCowEntity.setLotId(mCowEntity.getLotId());
                     cacheCowEntity.setNotes(mCowEntity.getNotes());
-                    cacheCowEntity.setIsAlive(mCowEntity.getIsAlive());
+                    cacheCowEntity.setIsAlive(mCowEntity.isAlive());
                     cacheCowEntity.setDate(mCalendar.getTimeInMillis());
                     cacheCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -158,7 +158,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
                     String cowId = mCowEntity.getCowId();
-                    Constants.BASE_REFERENCE.child(CowEntity.COW).child(cowId).removeValue();
+                    Constants.BASE_REFERENCE.child(Constants.COW).child(cowId).removeValue();
                     Query deleteDrugsGivenQuery = Constants.BASE_REFERENCE.child(Constants.DRUGS_GIVEN).orderByChild("cowId").equalTo(cowId);
                     deleteDrugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -181,7 +181,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     cacheCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     cacheCowEntity.setLotId(mCowEntity.getLotId());
                     cacheCowEntity.setNotes(mCowEntity.getNotes());
-                    cacheCowEntity.setIsAlive(mCowEntity.getIsAlive());
+                    cacheCowEntity.setIsAlive(mCowEntity.isAlive());
                     cacheCowEntity.setDate(mCowEntity.getDate());
                     cacheCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -225,7 +225,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
     public void onCowByIdLoaded(CowEntity cowEntity) {
         mCowEntity = cowEntity;
 
-        isAlive = mCowEntity.getIsAlive();
+        isAlive = mCowEntity.isAlive();
 
         String strTagNumber = Integer.toString(mCowEntity.getTagNumber());
         setTitle("Cow " + strTagNumber);

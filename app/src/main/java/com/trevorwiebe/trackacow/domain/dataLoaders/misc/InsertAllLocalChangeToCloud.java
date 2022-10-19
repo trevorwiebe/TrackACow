@@ -104,14 +104,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 CacheCowEntity cacheCowEntity = holdingCowEntities.get(c);
 
-                CowEntity cowEntity = new CowEntity(cacheCowEntity.isAlive(), cacheCowEntity.getCowId(), cacheCowEntity.getTagNumber(), cacheCowEntity.getDate(), cacheCowEntity.getNotes(), cacheCowEntity.getLotId());
+                CowEntity cowEntity = new CowEntity(0, cacheCowEntity.isAlive(), cacheCowEntity.getCowId(), cacheCowEntity.getTagNumber(), cacheCowEntity.getDate(), cacheCowEntity.getNotes(), cacheCowEntity.getLotId());
 
                 switch (cacheCowEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).setValue(cowEntity);
+                        baseRef.child(Constants.COW).child(cowEntity.getCowId()).setValue(cowEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(CowEntity.COW).child(cowEntity.getCowId()).removeValue();
+                        baseRef.child(Constants.COW).child(cowEntity.getCowId()).removeValue();
                         break;
                     default:
                         break;
