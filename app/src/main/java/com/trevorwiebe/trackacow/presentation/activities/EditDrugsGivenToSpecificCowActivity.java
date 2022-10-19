@@ -87,7 +87,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                     mDrugsGivenEntity.setAmountGiven(amountGiven);
 
                     if (Utility.haveNetworkConnection(EditDrugsGivenToSpecificCowActivity.this)) {
-                        mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).setValue(mDrugsGivenEntity);
+                        mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).setValue(mDrugsGivenEntity);
                     } else {
                         Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 
@@ -121,7 +121,7 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
         int id = item.getItemId();
         if (id == R.id.action_delete_drug_given) {
             if (Utility.haveNetworkConnection(EditDrugsGivenToSpecificCowActivity.this)) {
-                mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).removeValue();
+                mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).removeValue();
             } else {
                 Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 

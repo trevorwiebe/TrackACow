@@ -30,6 +30,9 @@ public class Constants {
     public static final String DATABASE_STRING_LOAD = "/loads";
     public static final String LOAD = "loads";
 
+    public static final String DATABASE_STRING_DRUGS_GIVEN = "/drugsGiven";
+    public static final String DRUGS_GIVEN = "drugsGiven";
+
     public static final int SUCCESS = 1;
     public static final int NO_NETWORK_CONNECTION = 2;
     public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;

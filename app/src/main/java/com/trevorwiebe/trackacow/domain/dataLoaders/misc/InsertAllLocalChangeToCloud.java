@@ -125,14 +125,14 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 CacheDrugsGivenEntity cacheDrugsGivenEntity = holdingDrugsGivenEntities.get(d);
 
-                DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(cacheDrugsGivenEntity.getDrugGivenId(), cacheDrugsGivenEntity.getDrugId(), cacheDrugsGivenEntity.getAmountGiven(), cacheDrugsGivenEntity.getCowId(), cacheDrugsGivenEntity.getLotId(), cacheDrugsGivenEntity.getDate());
+                DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity(0, cacheDrugsGivenEntity.getDrugGivenId(), cacheDrugsGivenEntity.getDrugId(), cacheDrugsGivenEntity.getAmountGiven(), cacheDrugsGivenEntity.getCowId(), cacheDrugsGivenEntity.getLotId(), cacheDrugsGivenEntity.getDate());
 
                 switch (cacheDrugsGivenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(DrugsGivenEntity.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).removeValue();
+                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).removeValue();
                         break;
                 }
             }

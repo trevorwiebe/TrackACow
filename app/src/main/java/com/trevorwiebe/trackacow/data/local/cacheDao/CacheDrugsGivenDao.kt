@@ -1,37 +1,36 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 
 @Dao
-public interface CacheDrugsGivenDao {
+interface CacheDrugsGivenDao {
 
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingDrugsGiven(CacheDrugsGivenEntity cacheDrugsGivenEntity);
+    fun insertHoldingDrugsGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity?)
 
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingDrugsGivenList(List<CacheDrugsGivenEntity> holdingDrugsGivenEntities);
+    fun insertHoldingDrugsGivenList(holdingDrugsGivenEntities: List<CacheDrugsGivenEntity?>?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM HoldingDrugsGiven WHERE cowId = :cowId")
-    List<CacheDrugsGivenEntity> getHoldingDrugsGivenByCowId(String cowId);
+    fun getHoldingDrugsGivenByCowId(cowId: String?): List<CacheDrugsGivenEntity?>?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM HoldingDrugsGiven")
-    List<CacheDrugsGivenEntity> getHoldingDrugsGivenList();
+    fun getHoldingDrugsGivenList(): List<CacheDrugsGivenEntity?>?
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM HoldingDrugsGiven")
-    void deleteHoldingDrugsGivenTable();
+    fun deleteHoldingDrugsGivenTable()
 
+    @Deprecated("use suspend function")
     @Update
-    void updateHoldingDrugsGiven(CacheDrugsGivenEntity cacheDrugsGivenEntity);
+    fun updateHoldingDrugsGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteHoldingDrugsGiven(CacheDrugsGivenEntity cacheDrugsGivenEntity);
-
+    fun deleteHoldingDrugsGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity?)
 }

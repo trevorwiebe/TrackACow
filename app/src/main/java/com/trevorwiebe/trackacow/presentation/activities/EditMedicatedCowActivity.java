@@ -159,7 +159,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 if(Utility.haveNetworkConnection(EditMedicatedCowActivity.this)) {
                     String cowId = mCowEntity.getCowId();
                     Constants.BASE_REFERENCE.child(CowEntity.COW).child(cowId).removeValue();
-                    Query deleteDrugsGivenQuery = Constants.BASE_REFERENCE.child(DrugsGivenEntity.DRUGS_GIVEN).orderByChild(DrugsGivenEntity.COW_ID).equalTo(cowId);
+                    Query deleteDrugsGivenQuery = Constants.BASE_REFERENCE.child(Constants.DRUGS_GIVEN).orderByChild("cowId").equalTo(cowId);
                     deleteDrugsGivenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

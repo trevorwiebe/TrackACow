@@ -80,7 +80,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
             @Override
             public void onClick(View v) {
 
-                DatabaseReference drugsGivenRef = mBaseRef.child(DrugsGivenEntity.DRUGS_GIVEN);
+                DatabaseReference drugsGivenRef = mBaseRef.child(Constants.DRUGS_GIVEN);
 
                 ArrayList<DrugsGivenEntity> drugList = new ArrayList<>();
 

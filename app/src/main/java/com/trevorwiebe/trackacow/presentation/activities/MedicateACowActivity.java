@@ -313,7 +313,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
             mTagName.requestFocus();
             mTagName.setError("Please fill this blank.");
         } else {
-            DatabaseReference drugsGivenRef = Constants.BASE_REFERENCE.child(DrugsGivenEntity.DRUGS_GIVEN);
+            DatabaseReference drugsGivenRef = Constants.BASE_REFERENCE.child(Constants.DRUGS_GIVEN);
 
             DatabaseReference pushRef = Constants.BASE_REFERENCE.child(CowEntity.COW).push();
             String cowId = pushRef.getKey();
@@ -459,9 +459,9 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(r);
                 DrugEntity drugEntity = Utility.findDrugEntity(drugsGivenEntity.getDrugId(), mDrugList);
 
-                String amountGivenStr = Integer.toString(drugsGivenEntity.amountGiven);
+                String amountGivenStr = Integer.toString(drugsGivenEntity.getAmountGiven());
                 String drugName;
-                String date = Utility.convertMillisToDate(drugsGivenEntity.date);
+                String date = Utility.convertMillisToDate(drugsGivenEntity.getDate());
                 if (drugEntity == null) {
                     drugName = "[drug_unavailable]";
                 } else {
