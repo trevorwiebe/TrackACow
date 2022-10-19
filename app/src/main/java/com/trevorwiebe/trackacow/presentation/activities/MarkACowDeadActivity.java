@@ -167,7 +167,16 @@ public class MarkACowDeadActivity extends AppCompatActivity implements
             pushRef.setValue(cowEntity);
         }else{
             Utility.setNewDataToUpload(MarkACowDeadActivity.this, true);
-            CacheCowEntity cacheCowEntity = new CacheCowEntity(cowEntity, Constants.INSERT_UPDATE);
+            CacheCowEntity cacheCowEntity = new CacheCowEntity(
+                    0,
+                    cowEntity.isAlive(),
+                    cowEntity.getCowId(),
+                    cowEntity.getTagNumber(),
+                    cowEntity.getDate(),
+                    cowEntity.getNotes(),
+                    cowEntity.getLotId(),
+                    Constants.INSERT_UPDATE
+            );
             new InsertHoldingCow(cacheCowEntity).execute(MarkACowDeadActivity.this);
         }
 

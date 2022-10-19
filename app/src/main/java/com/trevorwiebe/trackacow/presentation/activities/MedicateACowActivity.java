@@ -384,7 +384,16 @@ public class MedicateACowActivity extends AppCompatActivity implements
             } else {
 
                 Utility.setNewDataToUpload(MedicateACowActivity.this, true);
-                CacheCowEntity cacheCowEntity = new CacheCowEntity(cowEntity, Constants.INSERT_UPDATE);
+                CacheCowEntity cacheCowEntity = new CacheCowEntity(
+                        0,
+                        cowEntity.isAlive(),
+                        cowEntity.getCowId(),
+                        cowEntity.getTagNumber(),
+                        cowEntity.getDate(),
+                        cowEntity.getNotes(),
+                        cowEntity.getLotId(),
+                        Constants.INSERT_UPDATE
+                );
                 new InsertHoldingCow(cacheCowEntity).execute(MedicateACowActivity.this);
 
                 // array list to hold the holdingDrugsGivenEntities so we can push them all at once to the local db
@@ -393,7 +402,16 @@ public class MedicateACowActivity extends AppCompatActivity implements
                 // iterate over the drugGivenEntityList
                 for (int q = 0; q < drugList.size(); q++) {
                     DrugsGivenEntity drugsGivenEntity = drugList.get(q);
-                    CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
+                    CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
+                            0,
+                            drugsGivenEntity.getDrugGivenId(),
+                            drugsGivenEntity.getDrugId(),
+                            drugsGivenEntity.getAmountGiven(),
+                            drugsGivenEntity.getCowId(),
+                            drugsGivenEntity.getLotId(),
+                            drugsGivenEntity.getDate(),
+                            Constants.INSERT_UPDATE
+                    );
                     holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
                 }
 

@@ -141,7 +141,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     cacheCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     cacheCowEntity.setLotId(mCowEntity.getLotId());
                     cacheCowEntity.setNotes(mCowEntity.getNotes());
-                    cacheCowEntity.setIsAlive(mCowEntity.isAlive());
+//                    cacheCowEntity.isAlive(mCowEntity.isAlive());
                     cacheCowEntity.setDate(mCalendar.getTimeInMillis());
                     cacheCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -181,7 +181,7 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     cacheCowEntity.setTagNumber(mCowEntity.getTagNumber());
                     cacheCowEntity.setLotId(mCowEntity.getLotId());
                     cacheCowEntity.setNotes(mCowEntity.getNotes());
-                    cacheCowEntity.setIsAlive(mCowEntity.isAlive());
+//                    cacheCowEntity.setIsAlive(mCowEntity.isAlive());
                     cacheCowEntity.setDate(mCowEntity.getDate());
                     cacheCowEntity.setCowId(mCowEntity.getCowId());
 
@@ -191,7 +191,16 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                     ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
                     while (iterator.hasNext()) {
                         DrugsGivenEntity drugsGivenEntity = (DrugsGivenEntity) iterator.next();
-                        CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(drugsGivenEntity, Constants.DELETE);
+                        CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
+                                0,
+                                drugsGivenEntity.getDrugGivenId(),
+                                drugsGivenEntity.getDrugId(),
+                                drugsGivenEntity.getAmountGiven(),
+                                drugsGivenEntity.getCowId(),
+                                drugsGivenEntity.getLotId(),
+                                drugsGivenEntity.getDate(),
+                                Constants.DELETE
+                        );
                         holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
                     }
                     new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(EditMedicatedCowActivity.this);
@@ -267,7 +276,16 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(x);
                 drugsGivenEntity.setDate(mNewDate);
 
-                CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(drugsGivenEntity, Constants.INSERT_UPDATE);
+                CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
+                        0,
+                        drugsGivenEntity.getDrugGivenId(),
+                        drugsGivenEntity.getDrugId(),
+                        drugsGivenEntity.getAmountGiven(),
+                        drugsGivenEntity.getCowId(),
+                        drugsGivenEntity.getLotId(),
+                        drugsGivenEntity.getDate(),
+                        Constants.INSERT_UPDATE
+                );
                 holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
             }
             new InsertHoldingDrugsGivenList(holdingDrugsGivenEntities).execute(EditMedicatedCowActivity.this);

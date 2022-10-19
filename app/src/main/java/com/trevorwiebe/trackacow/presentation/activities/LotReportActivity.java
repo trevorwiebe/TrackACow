@@ -418,7 +418,16 @@ public class LotReportActivity extends AppCompatActivity implements
                         );
                         new InsertHoldingLot(cacheLotEntity).execute(LotReportActivity.this);
 
-                        CacheArchivedLotEntity cacheArchivedLotEntity = new CacheArchivedLotEntity(archivedLotEntity, Constants.INSERT_UPDATE);
+                        CacheArchivedLotEntity cacheArchivedLotEntity = new CacheArchivedLotEntity(
+                                0,
+                                archivedLotEntity.getLotName(),
+                                archivedLotEntity.getLotId(),
+                                archivedLotEntity.getCustomerName(),
+                                archivedLotEntity.getNotes(),
+                                archivedLotEntity.getDateStarted(),
+                                archivedLotEntity.getDateEnded(),
+                                Constants.INSERT_UPDATE
+                        );
                         new InsertHoldingArchivedLot(cacheArchivedLotEntity).execute(LotReportActivity.this);
 
                     }
