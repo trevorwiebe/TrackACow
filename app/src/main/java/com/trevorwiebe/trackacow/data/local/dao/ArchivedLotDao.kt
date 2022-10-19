@@ -1,38 +1,36 @@
-package com.trevorwiebe.trackacow.data.local.dao;
+package com.trevorwiebe.trackacow.data.local.dao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
 
 @Dao
-public interface ArchivedLotDao {
+interface ArchivedLotDao {
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertArchivedLotEntity(ArchivedLotEntity archivedLotEntity);
+    fun insertArchivedLotEntity(archivedLotEntity: ArchivedLotEntity?)
 
+    @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertArchivedLotEntityList(List<ArchivedLotEntity> archivedLotEntities);
+    fun insertArchivedLotEntityList(archivedLotEntities: List<ArchivedLotEntity?>?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM archivedLot")
-    List<ArchivedLotEntity> getArchiveLots();
+    fun getArchiveLots(): List<ArchivedLotEntity?>?
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM archivedLot WHERE lotId = :lotId")
-    ArchivedLotEntity getArchivedLotById(String lotId);
+    fun getArchivedLotById(lotId: String?): ArchivedLotEntity?
 
+    @Deprecated("use suspend function")
     @Update
-    void updateArchivedLot(ArchivedLotEntity archivedLotEntity);
+    fun updateArchivedLot(archivedLotEntity: ArchivedLotEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteArchivedLot(ArchivedLotEntity archivedLotEntity);
+    fun deleteArchivedLot(archivedLotEntity: ArchivedLotEntity?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM archivedLot")
-    void deleteArchivedLotTable();
-
+    fun deleteArchivedLotTable()
 }

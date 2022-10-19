@@ -9,6 +9,9 @@ public class Constants {
     public static final DatabaseReference BASE_REFERENCE = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     public static final String BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/";
 
+    public static final String DATABASE_STRING_ARCHIVED_LOT = "/archives";
+    public static final String ARCHIVE_LOT = "archives";
+
     public static final String DATABASE_STRING_RATIONS = "/rations";
     public static final String RATIONS = "rations";
 

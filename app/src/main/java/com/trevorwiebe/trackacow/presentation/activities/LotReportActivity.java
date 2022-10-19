@@ -385,7 +385,15 @@ public class LotReportActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(mSelectedLotEntity, System.currentTimeMillis());
+                    ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(
+                            0,
+                            mSelectedLotEntity.getLotName(),
+                            mSelectedLotEntity.getLotCloudDatabaseId(),
+                            mSelectedLotEntity.getCustomerName(),
+                            mSelectedLotEntity.getNotes(),
+                            mSelectedLotEntity.getDate(),
+                            System.currentTimeMillis()
+                    );
 
                     if (Utility.haveNetworkConnection(LotReportActivity.this)) {
                         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -394,7 +402,7 @@ public class LotReportActivity extends AppCompatActivity implements
                         baseRef.child(Constants.LOTS).child(mSelectedLotEntity.getLotCloudDatabaseId()).removeValue();
 
                         // push archived lot to the cloud;
-                        baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
+                        baseRef.child(Constants.ARCHIVE_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
 
                     } else {
 

@@ -14,17 +14,8 @@ data class UserEntity (
     var primaryKey: Int = 0,
     var accountType: Int = 0,
     var dateCreated: Long = 0,
-    var name: String? = null,
-    var email: String? = null,
+    var name: String? = "",
+    var email: String? = "",
     var renewalDate: Long = 0,
-    var uid: String? = null
-
-//    object UserEntityObject {
-//        const val USER = "user"
-//        const val FREE_TRIAL = 0
-//        const val MONTHLY_SUBSCRIPTION = 1
-//        const val ANNUAL_SUBSCRIPTION = 2
-//        const val CANCELED = 6
-//        const val FOREVER_FREE_USER = 7
-//    }
+    var uid: String? = ""
 )

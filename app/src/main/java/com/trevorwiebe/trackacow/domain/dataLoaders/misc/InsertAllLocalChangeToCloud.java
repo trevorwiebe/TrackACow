@@ -170,13 +170,21 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 CacheArchivedLotEntity cacheArchivedLotEntity = holdingArchivedLotEntities.get(f);
 
-                ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(cacheArchivedLotEntity);
+                ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(
+                        0,
+                        cacheArchivedLotEntity.getLotName(),
+                        cacheArchivedLotEntity.getLotId(),
+                        cacheArchivedLotEntity.getCustomerName(),
+                        cacheArchivedLotEntity.getNotes(),
+                        cacheArchivedLotEntity.getDateStarted(),
+                        cacheArchivedLotEntity.getDateEnded()
+                );
                 switch (cacheArchivedLotEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
+                        baseRef.child(Constants.ARCHIVE_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(ArchivedLotEntity.ARCHIVED_LOT).child(archivedLotEntity.getLotId()).removeValue();
+                        baseRef.child(Constants.ARCHIVE_LOT).child(archivedLotEntity.getLotId()).removeValue();
                         break;
                 }
             }

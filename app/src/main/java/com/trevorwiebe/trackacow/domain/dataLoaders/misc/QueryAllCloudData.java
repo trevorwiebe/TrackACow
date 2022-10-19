@@ -114,7 +114,7 @@ public class QueryAllCloudData {
                                     }
                                 }
                                 break;
-                            case ArchivedLotEntity.ARCHIVED_LOT:
+                            case Constants.ARCHIVE_LOT:
                                 for (DataSnapshot archiveLotSnapShot : snapshot.getChildren()) {
                                     ArchivedLotEntity archivedLotEntity = archiveLotSnapShot.getValue(ArchivedLotEntity.class);
                                     if (archivedLotEntity != null) {

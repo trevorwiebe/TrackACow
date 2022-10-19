@@ -1,31 +1,28 @@
-package com.trevorwiebe.trackacow.data.local.cacheDao;
+package com.trevorwiebe.trackacow.data.local.cacheDao
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity;
-
-import java.util.List;
+import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity
 
 @Dao
-public interface CacheArchivedLotDao {
+interface CacheArchivedLotDao {
 
+    @Deprecated("use suspend function")
     @Insert
-    void insertHoldingArchivedLot(CacheArchivedLotEntity cacheArchivedLotEntity);
+    fun insertHoldingArchivedLot(cacheArchivedLotEntity: CacheArchivedLotEntity?)
 
+    @Deprecated("use flow function")
     @Query("SELECT * FROM holdingArchivedLot")
-    List<CacheArchivedLotEntity> getHoldingArchivedLotList();
+    fun getHoldingArchivedLotList(): List<CacheArchivedLotEntity?>?
 
+    @Deprecated("use suspend function")
     @Update
-    void updateHoldingArchivedLot(CacheArchivedLotEntity cacheArchivedLotEntity);
+    fun updateHoldingArchivedLot(cacheArchivedLotEntity: CacheArchivedLotEntity?)
 
+    @Deprecated("use suspend function")
     @Delete
-    void deleteHoldingArchivedLot(CacheArchivedLotEntity cacheArchivedLotEntity);
+    fun deleteHoldingArchivedLot(cacheArchivedLotEntity: CacheArchivedLotEntity?)
 
+    @Deprecated("use suspend function")
     @Query("DELETE FROM holdingArchivedLot")
-    void deleteHoldingArchivedLotTable();
-
+    fun deleteHoldingArchivedLotTable()
 }
