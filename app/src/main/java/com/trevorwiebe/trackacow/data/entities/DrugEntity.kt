@@ -8,7 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "Drug")
 data class DrugEntity(
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
+    var drugPrimaryKey: Int = 0,
     var defaultAmount: Int = 0,
     var drugCloudDatabaseId: String = "",
     var drugName: String = ""

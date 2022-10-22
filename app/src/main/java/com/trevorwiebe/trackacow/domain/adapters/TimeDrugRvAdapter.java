@@ -35,8 +35,8 @@ public class TimeDrugRvAdapter extends RecyclerView.Adapter<TimeDrugRvAdapter.Da
 
         DrugsGivenEntity drugs = mDrugReportsList.get(position);
 
-        String drugId = drugs.getDrugId();
-        int amountGiven = drugs.getAmountGiven();
+        String drugId = drugs.getDrugsGivenDrugId();
+        int amountGiven = drugs.getDrugsGivenAmountGiven();
 
         if (drugId == null || drugId == "") {
             drugId = "[drug_unavailable]";

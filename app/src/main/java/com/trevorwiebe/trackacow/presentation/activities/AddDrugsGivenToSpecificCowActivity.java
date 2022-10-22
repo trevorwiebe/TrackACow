@@ -86,7 +86,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                 for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
                     DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                    drugsGivenEntity.setCowId(mCowEntity.getCowId());
+                    drugsGivenEntity.setDrugsGivenCowId(mCowEntity.getCowId());
 
                     View cardView = mDrugLayout.getChildAt(r);
 
@@ -103,7 +103,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                                 CheckBox checkBox = (CheckBox) checkBoxView;
                                 String drugId = checkBox.getTag().toString().split("#")[0];
-                                drugsGivenEntity.setDrugId(drugId);
+                                drugsGivenEntity.setDrugsGivenDrugId(drugId);
 
                                 if (checkBox.isChecked()) {
 
@@ -113,13 +113,13 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                                         EditText textViewAmountGiven = (EditText) editText;
                                         int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                        drugsGivenEntity.setAmountGiven(amountGiven);
+                                        drugsGivenEntity.setDrugsGivenAmountGiven(amountGiven);
 
                                         DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                         String drugsGivenKey = drugsGivenPushRef.getKey();
-                                        drugsGivenEntity.setLotId(mCowEntity.getLotId());
-                                        drugsGivenEntity.setDrugGivenId(drugsGivenKey);
-                                        drugsGivenEntity.setDate(mCowEntity.getDate());
+                                        drugsGivenEntity.setDrugsGivenLotId(mCowEntity.getLotId());
+                                        drugsGivenEntity.setDrugsGivenId(drugsGivenKey);
+                                        drugsGivenEntity.setDrugsGivenDate(mCowEntity.getDate());
 
                                         drugList.add(drugsGivenEntity);
 
@@ -139,7 +139,7 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
 
                     for (int k = 0; k < drugList.size(); k++) {
                         DrugsGivenEntity drugsGivenEntity = drugList.get(k);
-                        drugsGivenRef.child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                        drugsGivenRef.child(drugsGivenEntity.getDrugsGivenId()).setValue(drugsGivenEntity);
                     }
 
                 } else {
@@ -154,12 +154,12 @@ public class AddDrugsGivenToSpecificCowActivity extends AppCompatActivity implem
                         DrugsGivenEntity drugsGivenEntity = drugList.get(q);
 
                         CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity();
-                        cacheDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getAmountGiven());
-                        cacheDrugsGivenEntity.setCowId(drugsGivenEntity.getCowId());
-                        cacheDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugId());
-                        cacheDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugGivenId());
+                        cacheDrugsGivenEntity.setAmountGiven(drugsGivenEntity.getDrugsGivenAmountGiven());
+                        cacheDrugsGivenEntity.setCowId(drugsGivenEntity.getDrugsGivenCowId());
+                        cacheDrugsGivenEntity.setDrugId(drugsGivenEntity.getDrugsGivenDrugId());
+                        cacheDrugsGivenEntity.setDrugGivenId(drugsGivenEntity.getDrugsGivenId());
                         cacheDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                        cacheDrugsGivenEntity.setLotId(drugsGivenEntity.getLotId());
+                        cacheDrugsGivenEntity.setLotId(drugsGivenEntity.getDrugsGivenLotId());
 
                         holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
                     }

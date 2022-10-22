@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DrugModel (
-    var primaryKey: Int = 0,
+    var drugPrimaryKey: Int = 0,
     var defaultAmount: Int = 0,
     var drugCloudDatabaseId: String = "",
     var drugName: String = ""

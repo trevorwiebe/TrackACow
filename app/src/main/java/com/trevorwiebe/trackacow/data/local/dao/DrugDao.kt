@@ -13,7 +13,7 @@ interface DrugDao {
     @Query("SELECT * FROM Drug")
     fun getDrugList(): Flow<List<DrugEntity>>
 
-    @Query("UPDATE Drug SET drugName = :drugName, defaultAmount = :defaultAmount WHERE primaryKey = :id")
+    @Query("UPDATE Drug SET drugName = :drugName, defaultAmount = :defaultAmount WHERE drugPrimaryKey = :id")
     suspend fun updateDrug(drugName: String, defaultAmount: Int, id: Int)
 
     @Query("DELETE FROM Drug")

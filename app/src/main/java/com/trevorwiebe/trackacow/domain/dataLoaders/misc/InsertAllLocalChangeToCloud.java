@@ -63,7 +63,7 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
             for (int a = 0; a < holdingDrugEntities.size(); a++) {
                 CacheDrugEntity cacheDrugEntity = holdingDrugEntities.get(a);
 
-                DrugEntity drugEntity = new DrugEntity(cacheDrugEntity.getPrimaryKey(), cacheDrugEntity.getDefaultAmount(), cacheDrugEntity.getDrugCloudDatabaseId(), cacheDrugEntity.getDrugName());
+                DrugEntity drugEntity = new DrugEntity(cacheDrugEntity.getDrugPrimaryKey(), cacheDrugEntity.getDefaultAmount(), cacheDrugEntity.getDrugCloudDatabaseId(), cacheDrugEntity.getDrugName());
 
                 switch (cacheDrugEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
@@ -129,10 +129,10 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
 
                 switch (cacheDrugsGivenEntity.getWhatHappened()) {
                     case Constants.INSERT_UPDATE:
-                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugsGivenId()).setValue(drugsGivenEntity);
                         break;
                     case Constants.DELETE:
-                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugGivenId()).removeValue();
+                        baseRef.child(Constants.DRUGS_GIVEN).child(drugsGivenEntity.getDrugsGivenId()).removeValue();
                         break;
                 }
             }

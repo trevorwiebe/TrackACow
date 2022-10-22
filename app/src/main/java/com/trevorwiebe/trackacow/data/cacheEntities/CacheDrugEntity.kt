@@ -9,7 +9,7 @@ import androidx.room.Entity
 @Entity(tableName = "HoldingDrug")
 class CacheDrugEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int,
+    var drugPrimaryKey: Int,
     var defaultAmount: Int,
     var drugCloudDatabaseId: String,
     var drugName: String,

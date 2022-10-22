@@ -84,25 +84,25 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
                 } else {
 
                     int amountGiven = Integer.parseInt(mAmountGiven.getText().toString());
-                    mDrugsGivenEntity.setAmountGiven(amountGiven);
+                    mDrugsGivenEntity.setDrugsGivenAmountGiven(amountGiven);
 
                     if (Utility.haveNetworkConnection(EditDrugsGivenToSpecificCowActivity.this)) {
-                        mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).setValue(mDrugsGivenEntity);
+                        mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugsGivenId()).setValue(mDrugsGivenEntity);
                     } else {
                         Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 
                         CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity();
-                        cacheDrugsGivenEntity.setLotId(mDrugsGivenEntity.getLotId());
-                        cacheDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
-                        cacheDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
-                        cacheDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
+                        cacheDrugsGivenEntity.setLotId(mDrugsGivenEntity.getDrugsGivenLotId());
+                        cacheDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugsGivenDrugId());
+                        cacheDrugsGivenEntity.setCowId(mDrugsGivenEntity.getDrugsGivenCowId());
+                        cacheDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getDrugsGivenAmountGiven());
                         cacheDrugsGivenEntity.setWhatHappened(Constants.INSERT_UPDATE);
-                        cacheDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugGivenId());
+                        cacheDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugsGivenId());
 
                         new InsertHoldingDrugGiven(cacheDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);
                     }
 
-                    new UpdateDrugGivenAmountGiven(mDrugsGivenEntity.getDrugGivenId(), amountGiven, EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
+                    new UpdateDrugGivenAmountGiven(mDrugsGivenEntity.getDrugsGivenId(), amountGiven, EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
 
                 }
             }
@@ -121,22 +121,22 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
         int id = item.getItemId();
         if (id == R.id.action_delete_drug_given) {
             if (Utility.haveNetworkConnection(EditDrugsGivenToSpecificCowActivity.this)) {
-                mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugGivenId()).removeValue();
+                mBaseRef.child(Constants.DRUGS_GIVEN).child(mDrugsGivenEntity.getDrugsGivenId()).removeValue();
             } else {
                 Utility.setNewDataToUpload(EditDrugsGivenToSpecificCowActivity.this, true);
 
                 CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity();
-                cacheDrugsGivenEntity.setLotId(mDrugsGivenEntity.getLotId());
-                cacheDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugId());
-                cacheDrugsGivenEntity.setCowId(mDrugsGivenEntity.getCowId());
-                cacheDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getAmountGiven());
+                cacheDrugsGivenEntity.setLotId(mDrugsGivenEntity.getDrugsGivenLotId());
+                cacheDrugsGivenEntity.setDrugId(mDrugsGivenEntity.getDrugsGivenDrugId());
+                cacheDrugsGivenEntity.setCowId(mDrugsGivenEntity.getDrugsGivenCowId());
+                cacheDrugsGivenEntity.setAmountGiven(mDrugsGivenEntity.getDrugsGivenAmountGiven());
                 cacheDrugsGivenEntity.setWhatHappened(Constants.DELETE);
-                cacheDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugGivenId());
+                cacheDrugsGivenEntity.setDrugGivenId(mDrugsGivenEntity.getDrugsGivenId());
 
                 new InsertHoldingDrugGiven(cacheDrugsGivenEntity).execute(EditDrugsGivenToSpecificCowActivity.this);
             }
 
-            new DeleteDrugsGivenByDrugsGivenId(mDrugsGivenEntity.getDrugGivenId()).execute(EditDrugsGivenToSpecificCowActivity.this);
+            new DeleteDrugsGivenByDrugsGivenId(mDrugsGivenEntity.getDrugsGivenId()).execute(EditDrugsGivenToSpecificCowActivity.this);
 
             setResult(RESULT_OK);
             finish();
@@ -177,9 +177,9 @@ public class EditDrugsGivenToSpecificCowActivity extends AppCompatActivity imple
     @Override
     public void onDrugsGivenByDrugsGivenIdLoaded(DrugsGivenEntity drugsGivenEntity) {
         mDrugsGivenEntity = drugsGivenEntity;
-        new QueryDrugByDrugId(mDrugsGivenEntity.getDrugId(), EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
+        new QueryDrugByDrugId(mDrugsGivenEntity.getDrugsGivenDrugId(), EditDrugsGivenToSpecificCowActivity.this).execute(EditDrugsGivenToSpecificCowActivity.this);
 
-        int amountGiven = drugsGivenEntity.getAmountGiven();
+        int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
         String amountGivenStr = Integer.toString(amountGiven);
         int length = amountGivenStr.length();
 

@@ -80,8 +80,8 @@ public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<Medic
                 for (int q = 0; q < drugsGivenEntities.size(); q++) {
                     DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
 
-                    String drugId = drugsGivenEntity.getDrugId();
-                    int amountGiven = drugsGivenEntity.getAmountGiven();
+                    String drugId = drugsGivenEntity.getDrugsGivenDrugId();
+                    int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
 
                     DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
                     String drugName = "";

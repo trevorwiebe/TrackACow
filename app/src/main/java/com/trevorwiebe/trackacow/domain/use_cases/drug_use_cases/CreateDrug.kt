@@ -21,7 +21,7 @@ class CreateDrug(
 
         val localDbId = drugRepository.insertDrug(drugModel)
 
-        drugModel.primaryKey = localDbId.toInt()
+        drugModel.drugPrimaryKey = localDbId.toInt()
 
         if(Utility.haveNetworkConnection(context)){
             drugRepositoryRemote.insertDrug(drugModel)

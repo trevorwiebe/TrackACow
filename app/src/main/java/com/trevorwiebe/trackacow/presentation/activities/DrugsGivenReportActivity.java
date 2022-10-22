@@ -288,8 +288,8 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
         for (int e = 0; e < drugsGivenEntities.size(); e++) {
             DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(e);
-            String drugId = drugsGivenEntity.getDrugId();
-            int amountGiven = drugsGivenEntity.getAmountGiven();
+            String drugId = drugsGivenEntity.getDrugsGivenDrugId();
+            int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
             if (findAndUpdateDrugReports(drugId, amountGiven, drugsGivenListCondensed) == 0) {
                 drugsGivenListCondensed.add(drugsGivenEntity);
             }
@@ -297,9 +297,9 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
 
         for (int f = 0; f < drugsGivenListCondensed.size(); f++) {
             DrugsGivenEntity drugGivenList = drugsGivenListCondensed.get(f);
-            String drugId = drugGivenList.getDrugId();
+            String drugId = drugGivenList.getDrugsGivenDrugId();
             String drugName = mDrugKeyAndName.get(drugId);
-            drugGivenList.setDrugId(drugName);
+            drugGivenList.setDrugsGivenDrugId(drugName);
             drugsGivenListCondensed.remove(f);
             drugsGivenListCondensed.add(f, drugGivenList);
         }
@@ -317,10 +317,10 @@ public class DrugsGivenReportActivity extends AppCompatActivity implements
     private int findAndUpdateDrugReports(String drugId, int amountGiven, ArrayList<DrugsGivenEntity> drugReportsObjects) {
         for (int r = 0; r < drugReportsObjects.size(); r++) {
             DrugsGivenEntity drugReportsObject = drugReportsObjects.get(r);
-            if (drugReportsObject.getDrugId().endsWith(drugId)) {
-                int currentAmount = drugReportsObject.getAmountGiven();
+            if (drugReportsObject.getDrugsGivenDrugId().endsWith(drugId)) {
+                int currentAmount = drugReportsObject.getDrugsGivenAmountGiven();
                 int amountToUpdateTo = currentAmount + amountGiven;
-                drugReportsObject.setAmountGiven(amountToUpdateTo);
+                drugReportsObject.setDrugsGivenAmountGiven(amountToUpdateTo);
                 drugReportsObjects.remove(r);
                 drugReportsObjects.add(r, drugReportsObject);
                 return 1;

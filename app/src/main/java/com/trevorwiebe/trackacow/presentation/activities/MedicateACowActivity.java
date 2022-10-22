@@ -322,7 +322,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
             for (int r = 0; r < mDrugLayout.getChildCount(); r++) {
                 DrugsGivenEntity drugsGivenEntity = new DrugsGivenEntity();
-                drugsGivenEntity.setCowId(cowId);
+                drugsGivenEntity.setDrugsGivenCowId(cowId);
 
                 View cardView = mDrugLayout.getChildAt(r);
 
@@ -339,7 +339,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
                             CheckBox checkBox = (CheckBox) checkBoxView;
                             String drugId = checkBox.getTag().toString().split("&")[0];
-                            drugsGivenEntity.setDrugId(drugId);
+                            drugsGivenEntity.setDrugsGivenDrugId(drugId);
 
                             if (checkBox.isChecked()) {
 
@@ -349,13 +349,13 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
                                     EditText textViewAmountGiven = (EditText) editText;
                                     int amountGiven = Integer.parseInt(textViewAmountGiven.getText().toString());
-                                    drugsGivenEntity.setAmountGiven(amountGiven);
+                                    drugsGivenEntity.setDrugsGivenAmountGiven(amountGiven);
 
                                     DatabaseReference drugsGivenPushRef = drugsGivenRef.push();
                                     String drugsGivenKey = drugsGivenPushRef.getKey();
-                                    drugsGivenEntity.setLotId(mSelectedLot.getLotCloudDatabaseId());
-                                    drugsGivenEntity.setDrugGivenId(drugsGivenKey);
-                                    drugsGivenEntity.setDate(System.currentTimeMillis());
+                                    drugsGivenEntity.setDrugsGivenLotId(mSelectedLot.getLotCloudDatabaseId());
+                                    drugsGivenEntity.setDrugsGivenId(drugsGivenKey);
+                                    drugsGivenEntity.setDrugsGivenDate(System.currentTimeMillis());
 
                                     drugList.add(drugsGivenEntity);
 
@@ -378,7 +378,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
 
                 for (int k = 0; k < drugList.size(); k++) {
                     DrugsGivenEntity drugsGivenEntity = drugList.get(k);
-                    drugsGivenRef.child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                    drugsGivenRef.child(drugsGivenEntity.getDrugsGivenId()).setValue(drugsGivenEntity);
                 }
 
             } else {
@@ -404,12 +404,12 @@ public class MedicateACowActivity extends AppCompatActivity implements
                     DrugsGivenEntity drugsGivenEntity = drugList.get(q);
                     CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
                             0,
-                            drugsGivenEntity.getDrugGivenId(),
-                            drugsGivenEntity.getDrugId(),
-                            drugsGivenEntity.getAmountGiven(),
-                            drugsGivenEntity.getCowId(),
-                            drugsGivenEntity.getLotId(),
-                            drugsGivenEntity.getDate(),
+                            drugsGivenEntity.getDrugsGivenId(),
+                            drugsGivenEntity.getDrugsGivenDrugId(),
+                            drugsGivenEntity.getDrugsGivenAmountGiven(),
+                            drugsGivenEntity.getDrugsGivenCowId(),
+                            drugsGivenEntity.getDrugsGivenLotId(),
+                            drugsGivenEntity.getDrugsGivenDate(),
                             Constants.INSERT_UPDATE
                     );
                     holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
@@ -475,11 +475,11 @@ public class MedicateACowActivity extends AppCompatActivity implements
             int pixels4 = (int) (4 * scale + 0.5f);
             for (int r = 0; r < drugsGivenEntities.size(); r++) {
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(r);
-                DrugEntity drugEntity = Utility.findDrugEntity(drugsGivenEntity.getDrugId(), mDrugList);
+                DrugEntity drugEntity = Utility.findDrugEntity(drugsGivenEntity.getDrugsGivenDrugId(), mDrugList);
 
-                String amountGivenStr = Integer.toString(drugsGivenEntity.getAmountGiven());
+                String amountGivenStr = Integer.toString(drugsGivenEntity.getDrugsGivenAmountGiven());
                 String drugName;
-                String date = Utility.convertMillisToDate(drugsGivenEntity.getDate());
+                String date = Utility.convertMillisToDate(drugsGivenEntity.getDrugsGivenDate());
                 if (drugEntity == null) {
                     drugName = "[drug_unavailable]";
                 } else {

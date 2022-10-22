@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 
 fun DrugEntity.toDrugModel(): DrugModel {
     return DrugModel(
-        primaryKey = primaryKey,
+        drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
         drugCloudDatabaseId = drugCloudDatabaseId,
         drugName = drugName
@@ -16,7 +16,7 @@ fun DrugEntity.toDrugModel(): DrugModel {
 
 fun DrugModel.toDrugEntity(): DrugEntity{
     return DrugEntity(
-        primaryKey = primaryKey,
+        drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
         drugCloudDatabaseId = drugCloudDatabaseId,
         drugName = drugName
@@ -25,7 +25,7 @@ fun DrugModel.toDrugEntity(): DrugEntity{
 
 fun CacheDrugModel.toCacheDrugEntity(): CacheDrugEntity{
     return CacheDrugEntity(
-        primaryKey = primaryKey,
+        drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
         drugCloudDatabaseId = drugCloudDatabaseId,
         drugName = drugName,
@@ -35,7 +35,7 @@ fun CacheDrugModel.toCacheDrugEntity(): CacheDrugEntity{
 
 fun CacheDrugEntity.toCacheDrugModel(): CacheDrugModel{
     return CacheDrugModel(
-        primaryKey = primaryKey,
+        drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
         drugCloudDatabaseId = drugCloudDatabaseId,
         drugName = drugName,
@@ -45,7 +45,7 @@ fun CacheDrugEntity.toCacheDrugModel(): CacheDrugModel{
 
 fun DrugModel.toCacheDrugModel(whatHappened: Int): CacheDrugModel{
     return CacheDrugModel(
-        primaryKey = primaryKey,
+        drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
         drugCloudDatabaseId = drugCloudDatabaseId,
         drugName = drugName,

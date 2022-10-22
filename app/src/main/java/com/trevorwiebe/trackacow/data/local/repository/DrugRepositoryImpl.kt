@@ -25,7 +25,7 @@ class DrugRepositoryImpl(
     }
 
     override suspend fun updateDrug(drugModel: DrugModel) {
-        drugDao.updateDrug(drugModel.drugName, drugModel.defaultAmount, drugModel.primaryKey)
+        drugDao.updateDrug(drugModel.drugName, drugModel.defaultAmount, drugModel.drugPrimaryKey)
     }
 
     override fun getDrugList(): Flow<List<DrugModel>> {

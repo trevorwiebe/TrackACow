@@ -67,7 +67,7 @@ public class EditDrugsGivenActivity extends AppCompatActivity implements
                 DrugsGivenEntity drugsGivenEntity = mDrugsGivenEntities.get(position);
                 Intent editDrugIntent = new Intent(EditDrugsGivenActivity.this, EditDrugsGivenToSpecificCowActivity.class);
                 editDrugIntent.putExtra("cowId", cowId);
-                editDrugIntent.putExtra("drugGivenId", drugsGivenEntity.getDrugGivenId());
+                editDrugIntent.putExtra("drugGivenId", drugsGivenEntity.getDrugsGivenId());
                 startActivityForResult(editDrugIntent, EDIT_NEW_DRUG_GIVEN);
             }
 

@@ -8,11 +8,11 @@ import androidx.room.Entity
 @Entity(tableName = "DrugsGiven")
 data class DrugsGivenEntity (
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Int = 0,
-    var drugGivenId: String? = "",
-    var drugId: String? = "",
-    var amountGiven: Int = 0,
-    var cowId: String? = "",
-    var lotId: String? = "",
-    var date: Long = 0
+    var drugsGivenPrimaryKey: Int = 0,
+    var drugsGivenId: String? = "",
+    var drugsGivenDrugId: String? = "",
+    var drugsGivenAmountGiven: Int = 0,
+    var drugsGivenCowId: String? = "",
+    var drugsGivenLotId: String? = "",
+    var drugsGivenDate: Long = 0
 )

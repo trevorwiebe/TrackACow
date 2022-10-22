@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.domain.models.drug
 
 data class CacheDrugModel (
-    var primaryKey: Int = 0,
+    var drugPrimaryKey: Int = 0,
     var defaultAmount: Int = 0,
     var drugCloudDatabaseId: String = "",
     var drugName: String = "",

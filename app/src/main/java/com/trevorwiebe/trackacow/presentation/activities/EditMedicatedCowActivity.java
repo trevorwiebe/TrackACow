@@ -193,12 +193,12 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                         DrugsGivenEntity drugsGivenEntity = (DrugsGivenEntity) iterator.next();
                         CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
                                 0,
-                                drugsGivenEntity.getDrugGivenId(),
-                                drugsGivenEntity.getDrugId(),
-                                drugsGivenEntity.getAmountGiven(),
-                                drugsGivenEntity.getCowId(),
-                                drugsGivenEntity.getLotId(),
-                                drugsGivenEntity.getDate(),
+                                drugsGivenEntity.getDrugsGivenId(),
+                                drugsGivenEntity.getDrugsGivenDrugId(),
+                                drugsGivenEntity.getDrugsGivenAmountGiven(),
+                                drugsGivenEntity.getDrugsGivenCowId(),
+                                drugsGivenEntity.getDrugsGivenLotId(),
+                                drugsGivenEntity.getDrugsGivenDate(),
                                 Constants.DELETE
                         );
                         holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
@@ -274,16 +274,16 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
             ArrayList<CacheDrugsGivenEntity> holdingDrugsGivenEntities = new ArrayList<>();
             for (int x = 0; x < drugsGivenEntities.size(); x++) {
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(x);
-                drugsGivenEntity.setDate(mNewDate);
+                drugsGivenEntity.setDrugsGivenDate(mNewDate);
 
                 CacheDrugsGivenEntity cacheDrugsGivenEntity = new CacheDrugsGivenEntity(
                         0,
-                        drugsGivenEntity.getDrugGivenId(),
-                        drugsGivenEntity.getDrugId(),
-                        drugsGivenEntity.getAmountGiven(),
-                        drugsGivenEntity.getCowId(),
-                        drugsGivenEntity.getLotId(),
-                        drugsGivenEntity.getDate(),
+                        drugsGivenEntity.getDrugsGivenId(),
+                        drugsGivenEntity.getDrugsGivenDrugId(),
+                        drugsGivenEntity.getDrugsGivenAmountGiven(),
+                        drugsGivenEntity.getDrugsGivenCowId(),
+                        drugsGivenEntity.getDrugsGivenLotId(),
+                        drugsGivenEntity.getDrugsGivenDate(),
                         Constants.INSERT_UPDATE
                 );
                 holdingDrugsGivenEntities.add(cacheDrugsGivenEntity);
@@ -314,8 +314,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
         }else {
             for (int t = 0; t < drugsGivenEntities.size(); t++) {
                 DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(t);
-                int amountGiven = drugsGivenEntity.getAmountGiven();
-                String drugId = drugsGivenEntity.getDrugId();
+                int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
+                String drugId = drugsGivenEntity.getDrugsGivenDrugId();
 
                 DrugEntity drugEntity = Utility.findDrugEntity(drugId, mDrugList);
                 String drugName;
@@ -361,8 +361,8 @@ public class EditMedicatedCowActivity extends AppCompatActivity implements
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             DrugsGivenEntity drugsGivenEntity = snapshot.getValue(DrugsGivenEntity.class);
                             if (drugsGivenEntity != null) {
-                                drugsGivenEntity.setDate(mNewDate);
-                                Constants.BASE_REFERENCE.child("drugsGiven").child(drugsGivenEntity.getDrugGivenId()).setValue(drugsGivenEntity);
+                                drugsGivenEntity.setDrugsGivenDate(mNewDate);
+                                Constants.BASE_REFERENCE.child("drugsGiven").child(drugsGivenEntity.getDrugsGivenId()).setValue(drugsGivenEntity);
                             }
                         }
                     }

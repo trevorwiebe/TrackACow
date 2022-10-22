@@ -190,7 +190,7 @@ public class Utility {
         ArrayList<DrugsGivenEntity> drugsGivenToCow = new ArrayList<>();
         for(int r=0; r<drugsGivenEntities.size(); r++){
             DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(r);
-            if(drugsGivenEntity.getCowId().equals(cowId)){
+            if(drugsGivenEntity.getDrugsGivenCowId().equals(cowId)){
                 drugsGivenToCow.add(drugsGivenEntity);
             }
         }

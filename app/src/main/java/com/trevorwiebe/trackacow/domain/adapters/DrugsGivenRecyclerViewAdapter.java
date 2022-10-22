@@ -49,8 +49,8 @@ public class DrugsGivenRecyclerViewAdapter extends RecyclerView.Adapter<DrugsGiv
     @Override
     public void onBindViewHolder(@NonNull DrugsGivenViewHolder drugsGivenViewHolder, int i) {
         DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(i);
-        String drugId = drugsGivenEntity.getDrugId();
-        int amountGiven = drugsGivenEntity.getAmountGiven();
+        String drugId = drugsGivenEntity.getDrugsGivenDrugId();
+        int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
 
         DrugEntity drugEntity = Utility.findDrugEntity(drugId, drugEntities);
         String amountGivenStr = format.format(amountGiven);
