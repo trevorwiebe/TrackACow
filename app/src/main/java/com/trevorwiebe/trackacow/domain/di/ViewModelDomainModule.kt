@@ -9,10 +9,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLots
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
@@ -88,6 +85,7 @@ object ViewModelDomainModule {
         return LotUseCases(
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(lotRepository),
+            readLotsByLotId = ReadLotsByLotId(lotRepository),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context)
         )
     }

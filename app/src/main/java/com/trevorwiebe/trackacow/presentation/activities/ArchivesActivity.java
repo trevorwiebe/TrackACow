@@ -16,6 +16,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchiv
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Constants;
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
+import com.trevorwiebe.trackacow.presentation.lot_reports.LotReportActivity;
 
 import java.util.ArrayList;
 

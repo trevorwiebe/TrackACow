@@ -32,6 +32,11 @@ class LotRepositoryImpl(
             }
     }
 
+    override fun readLotByLotId(lotPrimaryKey: Int): Flow<LotModel?> {
+        return lotDao.getLotByLotId(lotPrimaryKey)
+            .map { it?.toLotModel() }
+    }
+
     override suspend fun updateLotByLotIdWithNewPenID(lotId: String, penId: String) {
         lotDao.updateLotWithNewPenId(lotId, penId)
     }

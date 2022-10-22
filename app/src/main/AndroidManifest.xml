@@ -28,12 +28,12 @@
             android:name=".presentation.activities.DrugsGivenReportActivity"
             android:exported="false"
             android:label="Drug Reports"
-            android:parentActivityName=".presentation.activities.LotReportActivity" />
+            android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
             android:name=".presentation.activities.EditLoadActivity"
             android:exported="false"
             android:label="Edit cattle added"
-            android:parentActivityName=".presentation.activities.LotReportActivity" />
+            android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
             android:name=".presentation.activities.AddLoadOfCattleActivity"
             android:exported="false"
@@ -49,7 +49,7 @@
             android:label="Archives"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.LotReportActivity"
+            android:name=".presentation.lot_reports.LotReportActivity"
             android:exported="false"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity

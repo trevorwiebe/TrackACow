@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,7 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
-import com.trevorwiebe.trackacow.presentation.activities.LotReportActivity
+import com.trevorwiebe.trackacow.presentation.lot_reports.LotReportActivity
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,7 +52,8 @@ class ReportsFragment : Fragment() {
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         val reportsIntent = Intent(context, LotReportActivity::class.java)
-                        val lotId = mLotList[position].lotCloudDatabaseId
+                        val lotId = mLotList[position].lotPrimaryKey
+                        Log.d("TAG", "onItemClick: $lotId")
                         reportsIntent.putExtra("lotId", lotId)
                         reportsIntent.putExtra("reportType", Constants.LOT)
                         startActivity(reportsIntent)

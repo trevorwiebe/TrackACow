@@ -15,6 +15,9 @@ interface LotDao {
     @Query("SELECT * FROM lot")
     fun getLotEntities(): Flow<List<LotEntity>>
 
+    @Query("SELECT * FROM lot WHERE lotPrimaryKey = :lotPrimaryKey")
+    fun getLotByLotId(lotPrimaryKey: Int): Flow<LotEntity?>
+
     @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 

@@ -2,18 +2,16 @@ package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.*
-import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
-import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLots
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.ReadLotsByPenId
-import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.UpdateLotWithNewPenIdUC
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
@@ -89,6 +87,7 @@ object ActivityDomainModule {
         return LotUseCases(
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(lotRepository),
+            readLotsByLotId = ReadLotsByLotId(lotRepository),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context)
         )
     }
@@ -100,6 +99,21 @@ object ActivityDomainModule {
     ): FeedUseCases {
         return FeedUseCases(
             readFeedsByLotId = ReadFeedsByLotId(feedRepository)
+        )
+    }
+
+    @ActivityScoped
+    @Provides
+    fun provideDrugUseCases(
+        drugRepository: DrugRepository,
+        drugRepositoryRemote: DrugRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
+        context: Application
+    ): DrugUseCases {
+        return DrugUseCases(
+            readDrugsUC = ReadDrugsUC(drugRepository),
+            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, getCloudDatabaseId, context),
+            updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context)
         )
     }
 }

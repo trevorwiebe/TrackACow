@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.activities.LotReportActivity">
+    tools:context=".presentation.lot_reports.LotReportActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -336,19 +336,19 @@
                         android:textColor="@android:color/black"
                         android:textSize="16sp"/>
 
-<!--                    <Button-->
-<!--                        android:padding="10dp"-->
-<!--                        android:textColor="@color/colorAccent"-->
-<!--                        android:layout_marginTop="12dp"-->
-<!--                        android:layout_marginBottom="8dp"-->
-<!--                        android:layout_marginLeft="16dp"-->
-<!--                        android:layout_marginRight="16dp"-->
-<!--                        android:background="@drawable/white_sign_in_btn"-->
-<!--                        android:text="Feed Report"-->
-<!--                        android:id="@+id/feed_reports_btn"-->
-<!--                        android:layout_gravity="center_horizontal"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content" />-->
+                    <Button
+                        android:padding="10dp"
+                        android:textColor="@color/colorAccent"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/white_sign_in_btn"
+                        android:text="Feed Report"
+                        android:id="@+id/feed_reports_btn"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
