@@ -2,9 +2,16 @@ package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
+import com.trevorwiebe.trackacow.data.entities.compound_entities.DrugsGivenAndDrugEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DrugsGivenDao {
+
+    @Query("SELECT * FROM DrugsGiven " +
+            "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
+            "WHERE drugsGivenLotId = :lotId")
+    fun getDrugsGivenAndDrugByLotId(lotId: String): Flow<List<DrugsGivenAndDrugEntity>>
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)

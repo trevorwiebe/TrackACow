@@ -53,9 +53,10 @@ class ReportsFragment : Fragment() {
                     override fun onItemClick(view: View, position: Int) {
                         val reportsIntent = Intent(context, LotReportActivity::class.java)
                         val lotId = mLotList[position].lotPrimaryKey
-                        Log.d("TAG", "onItemClick: $lotId")
+                        val lotCloudDatabaseId = mLotList[position].lotCloudDatabaseId
                         reportsIntent.putExtra("lotId", lotId)
                         reportsIntent.putExtra("reportType", Constants.LOT)
+                        reportsIntent.putExtra("lotCloudDatabaseId", lotCloudDatabaseId)
                         startActivity(reportsIntent)
                     }
 

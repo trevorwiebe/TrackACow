@@ -1,11 +1,12 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
-import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.assisted.Assisted
@@ -15,16 +16,18 @@ import kotlinx.coroutines.flow.*
 
 class LotReportViewModel @AssistedInject constructor(
     private val lotUseCases: LotUseCases,
-    private val drugUseCases: DrugUseCases,
+    private val drugsGivenUseCases: DrugsGivenUseCases,
     @Assisted("reportType") private val reportType: Int,
-    @Assisted("lotId") private val lotId: Int
+    @Assisted("lotId") private val lotId: Int,
+    @Assisted("lotCloudDatabaseId") private val lotCloudDatabaseId: String
 ): ViewModel() {
 
     @AssistedFactory
     interface LotReportViewModelFactory{
         fun create(
             @Assisted("reportType") reportType: Int,
-            @Assisted("lotId") lotId: Int
+            @Assisted("lotId") lotId: Int,
+            @Assisted("lotCloudDatabaseId") lotCloudDatabaseId: String
         ): LotReportViewModel
     }
 
@@ -33,10 +36,11 @@ class LotReportViewModel @AssistedInject constructor(
         fun providesFactory(
             assistedFactory: LotReportViewModelFactory,
             reportType: Int,
-            lotId: Int
+            lotId: Int,
+            lotCloudDatabaseId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory{
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(reportType, lotId) as T
+                return assistedFactory.create(reportType, lotId, lotCloudDatabaseId) as T
             }
         }
     }
@@ -51,7 +55,8 @@ class LotReportViewModel @AssistedInject constructor(
             readArchiveLotByLotId(lotId)
         }
 
-        readDrugs()
+        readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId)
+
     }
 
     private fun readLotByLotId(lotId: Int){
@@ -64,23 +69,30 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun readDrugs(){
-        drugUseCases.readDrugsUC()
-            .map { thisDrugList ->
-                _uiState.update {
-                    it.copy(drugList = thisDrugList)
-                }
-            }
-            .launchIn(viewModelScope)
-    }
 
     private fun readArchiveLotByLotId(lotId: Int){
 
+    }
+
+    private fun readDrugsGivenAndDrugsByLotId(lotId: Int){
+
+    }
+
+    private fun readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId: String){
+        Log.d("TAG", "readDrugsGivenAndDrugsByLotCloudDatabaseId: $lotCloudDatabaseId")
+        drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId)
+            .map { drugsGivenAndDrugList ->
+//                Log.d("TAG", "readDrugsGivenAndDrugsByLotCloudDatabaseId: $drugsGivenAndDrugList")
+                _uiState.update {
+                    it.copy(drugsGivenAndDrugList = drugsGivenAndDrugList)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
 }
 
 data class LotReportUiState(
     val lotModel: LotModel? = null,
-    val drugList: List<DrugModel> = emptyList()
+    val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList()
 )

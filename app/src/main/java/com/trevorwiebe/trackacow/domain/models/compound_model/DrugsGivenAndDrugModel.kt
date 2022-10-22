@@ -1,6 +1,6 @@
-package com.trevorwiebe.trackacow.data.entities.compound_entities
+package com.trevorwiebe.trackacow.domain.models.compound_model
 
-data class DrugsGivenAndDrug(
+data class DrugsGivenAndDrugModel (
     var drugsGivenPrimaryKey: Int = 0,
     var drugsGivenId: String? = "",
     var drugsGivenDrugId: String? = "",

@@ -9,6 +9,8 @@ import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
@@ -114,6 +116,16 @@ object ActivityDomainModule {
             readDrugsUC = ReadDrugsUC(drugRepository),
             createDrug = CreateDrug(drugRepository, drugRepositoryRemote, getCloudDatabaseId, context),
             updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context)
+        )
+    }
+
+    @ActivityScoped
+    @Provides
+    fun provideDrugsGivenUseCases(
+        drugsGivenRepository: DrugsGivenRepository
+    ): DrugsGivenUseCases{
+        return DrugsGivenUseCases(
+            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository)
         )
     }
 }

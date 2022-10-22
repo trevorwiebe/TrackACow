@@ -129,6 +129,16 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
+    fun provideDrugsGivenRepository(
+        db: AppDatabase
+    ): DrugsGivenRepository {
+        return DrugsGivenRepositoryImpl(
+            drugsGivenDao = db.drugsGivenDao()
+        )
+    }
+
+    @Provides
+    @Singleton
     fun providePenRepository(
         db: AppDatabase
     ): PenRepository{

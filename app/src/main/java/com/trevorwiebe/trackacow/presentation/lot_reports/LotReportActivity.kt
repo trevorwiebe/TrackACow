@@ -31,6 +31,7 @@ import android.view.*
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLotId
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -55,11 +57,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
+class LotReportActivity : AppCompatActivity(),
     OnDeadCowsLoaded, OnArchivedLotLoaded, OnFeedsByLotIdReturned,
     OnLoadsByLotIdLoaded {
 
-    private var mDrugList: List<DrugModel> = emptyList()
     private var mTotalHeadInt = 0
     private var mLotId: String? = null
     private var mSelectedLotModel: LotModel? = null
@@ -79,7 +80,6 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
     private lateinit var mDeathLossPercentage: TextView
     private lateinit var mFeedReports: TextView
     private lateinit var mDrugsUsedLayout: LinearLayout
-    private lateinit var mLoadingReports: ProgressBar
     private lateinit var mNoDrugReports: TextView
     private lateinit var mDrugReports: Button
     private lateinit var mHeadDays: TextView
@@ -91,7 +91,8 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
         LotReportViewModel.providesFactory(
             assistedFactory = lotReportViewModelFactory,
             reportType = intent.getIntExtra("reportType", 0),
-            lotId = intent.getIntExtra("lotId", -1)
+            lotId = intent.getIntExtra("lotId", -1),
+            lotCloudDatabaseId = intent.getStringExtra("lotCloudDatabaseId") ?: ""
         )
     }
 
@@ -106,7 +107,6 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
             mReportType = Constants.ARCHIVE
         }
 
-        mLoadingReports = findViewById(R.id.loading_reports)
         mNoDrugReports = findViewById(R.id.no_drug_reports)
         val resetLotBtn = findViewById<Button>(R.id.archive_this_lot)
         resetLotBtn.setOnClickListener(archiveLotListener)
@@ -146,24 +146,59 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
                 })
         )
 
-        mDrugReports.setOnClickListener(View.OnClickListener {
+        mDrugReports.setOnClickListener {
             val drugReports = Intent(this@LotReportActivity, DrugsGivenReportActivity::class.java)
             drugReports.putExtra("lotId", mLotId)
             drugReports.putExtra("reportType", mReportType)
             startActivity(drugReports)
-        })
+        }
 
         lifecycleScope.launch{
-            lotReportViewModel.uiState.collect{
+            lotReportViewModel.uiState.collect{ lotReportUiState ->
 
-                mSelectedLotModel = it.lotModel
+                mSelectedLotModel = lotReportUiState.lotModel
                 lotEntityLoaded(mSelectedLotModel)
 
-                mDrugList = it.drugList
-                if(mDrugList.isNotEmpty()) {
-                    val lotIds = ArrayList<String?>()
-                    lotIds.add(mSelectedLotModel!!.lotCloudDatabaseId)
-                    QueryDrugsGivenByLotIds(this@LotReportActivity, lotIds).execute(this@LotReportActivity)
+                if(lotReportUiState.drugsGivenAndDrugList.isNotEmpty()){
+
+                    // Prepare drugs used layout to add drugs given reporting
+                    mDrugsUsedLayout.removeAllViews()
+                    mNoDrugReports.visibility = View.GONE
+
+                    val drugsGivenAndDrugsList = lotReportUiState
+                        .drugsGivenAndDrugList.distinctBy {
+                            it.drugCloudDatabaseId to it.drugCloudDatabaseId
+                        }
+
+                    for(i in drugsGivenAndDrugsList.indices) {
+                        val scale = resources.displayMetrics.density
+                        val pixels16 = (16 * scale + 0.5f).toInt()
+                        val pixels8 = (8 * scale + 0.5f).toInt()
+                        val pixels4 = (4 * scale + 0.5f).toInt()
+
+                        val drugsGivenAndDrugModel = drugsGivenAndDrugsList[i]
+                        val drugName: String = drugsGivenAndDrugModel.drugName
+                        val amountGiven: Int = drugsGivenAndDrugModel.drugsGivenAmountGiven
+                        val textToSet = "$amountGiven units of $drugName"
+                        val textView = TextView(this@LotReportActivity)
+                        val textViewParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        textViewParams.setMargins(pixels16, pixels4, pixels16, pixels4)
+                        textView.textSize = 16f
+                        textView.setTextColor(
+                            ContextCompat.getColor(
+                                baseContext,
+                                android.R.color.black
+                            )
+                        )
+                        textView.layoutParams = textViewParams
+                        textView.text = textToSet
+                        mDrugsUsedLayout.addView(textView)
+                    }
+                }else{
+                    mNoDrugReports.visibility = View.VISIBLE
                 }
 
             }
@@ -204,44 +239,6 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
         )
         lotEntityLoaded(mSelectedLotModel)
     }
-
-    override fun onDrugsGivenByLotIdLoaded(drugsGivenEntities: ArrayList<DrugsGivenEntity>) {
-        mDrugsUsedLayout.removeAllViews()
-        val drugReports = ArrayList<DrugReportsObject>()
-        mLoadingReports.visibility = View.GONE
-        for (i in drugsGivenEntities.indices) {
-            val (_, _, id, amountGiven) = drugsGivenEntities[i]
-            if (findAndUpdateDrugReports(id, amountGiven, drugReports) == 0) {
-                val drugReportsObject = DrugReportsObject(id, amountGiven)
-                drugReports.add(drugReportsObject)
-            }
-        }
-        if (drugReports.size == 0) {
-            mNoDrugReports.visibility = View.VISIBLE
-        }
-        for (p in drugReports.indices) {
-            val scale = resources.displayMetrics.density
-            val pixels16 = (16 * scale + 0.5f).toInt()
-            val pixels8 = (8 * scale + 0.5f).toInt()
-            val pixels4 = (4 * scale + 0.5f).toInt()
-            val drugReportsObject = drugReports[p]
-            val drugEntity = findDrugModel(drugReportsObject.drugId)
-            val drugName: String = drugEntity?.drugName ?: "[drug_unavailable]"
-            val textToSet = drugReportsObject.drugAmount.toString() + " units of " + drugName
-            val textView = TextView(this@LotReportActivity)
-            val textViewParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            textViewParams.setMargins(pixels16, pixels4, pixels16, pixels4)
-            textView.textSize = 16f
-            textView.setTextColor(resources.getColor(android.R.color.black))
-            textView.layoutParams = textViewParams
-            textView.text = textToSet
-            mDrugsUsedLayout.addView(textView)
-        }
-    }
-
 
     override fun onFeedsByLotIdReturned(feedEntities: ArrayList<FeedEntity>) {
         var totalAmountFed = 0
@@ -367,15 +364,6 @@ class LotReportActivity : AppCompatActivity(), OnDrugsGivenByLotIdLoaded,
         lotArchived.show()
     }
 
-    private fun findDrugModel(drugId: String): DrugModel? {
-        for (r in mDrugList.indices) {
-            val drugModel = mDrugList[r]
-            if (drugModel.drugCloudDatabaseId == drugId) {
-                return drugModel
-            }
-        }
-        return null
-    }
 
     private fun findAndUpdateDrugReports(
         drugId: String?,

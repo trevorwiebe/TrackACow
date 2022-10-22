@@ -263,15 +263,6 @@
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
-                    <ProgressBar
-                        android:id="@+id/loading_reports"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp" />
-
                     <TextView
                         android:id="@+id/no_drug_reports"
                         android:layout_width="match_parent"
