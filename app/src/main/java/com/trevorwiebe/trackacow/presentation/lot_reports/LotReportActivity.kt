@@ -214,6 +214,8 @@ class LotReportActivity : AppCompatActivity(),
                     val lotIds = ArrayList<String?>()
                     lotIds.add(mLotId)
                     QueryDeadCowsByLotIds(this@LotReportActivity, lotIds).execute(this@LotReportActivity)
+                }else{
+                    mNoCattleReceived.visibility = View.VISIBLE
                 }
 
             }
