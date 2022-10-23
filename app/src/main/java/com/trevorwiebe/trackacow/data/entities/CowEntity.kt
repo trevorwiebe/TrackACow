@@ -12,7 +12,7 @@ data class CowEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,
     var isAlive: Int = 0,
-    var cowId: String? = "",
+    var cowId: String = "",
     var tagNumber: Int = 0,
     var date: Long = 0,
     var notes: String? = "",
