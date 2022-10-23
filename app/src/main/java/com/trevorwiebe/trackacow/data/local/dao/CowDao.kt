@@ -2,9 +2,15 @@ package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
 import com.trevorwiebe.trackacow.data.entities.CowEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CowDao {
+
+    @Query("SELECT * FROM Cow WHERE lotId = :lotId AND isAlive = 0")
+    fun getDeadCowsByLotId(lotId: String): Flow<List<CowEntity>>
+
+    // Deprecated
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)

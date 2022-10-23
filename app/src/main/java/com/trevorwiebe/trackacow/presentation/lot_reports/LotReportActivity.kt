@@ -36,6 +36,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingArchivedLot.Ins
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
+import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -49,8 +50,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LotReportActivity : AppCompatActivity(),
-    OnDeadCowsLoaded, OnArchivedLotLoaded, OnFeedsByLotIdReturned {
+class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLotIdReturned {
 
     private var mTotalHeadInt = 0
     private var mLotId: String? = null
@@ -213,9 +213,38 @@ class LotReportActivity : AppCompatActivity(),
                     mTotalHead.text = totalHeadStr
                     val lotIds = ArrayList<String?>()
                     lotIds.add(mLotId)
-                    QueryDeadCowsByLotIds(this@LotReportActivity, lotIds).execute(this@LotReportActivity)
                 }else{
                     mNoCattleReceived.visibility = View.VISIBLE
+                }
+
+                if(lotReportUiState.deadCowList.isNotEmpty()){
+
+                    val cowEntities: List<CowModel> = lotReportUiState.deadCowList
+                    var numberOfHeadDaysToSubtract = 0
+                    for (r in cowEntities.indices) {
+                        val (_, _, _, _, date) = cowEntities[r]
+                        val daysSinceDied = getDaysSinceFromMillis(date)
+                        numberOfHeadDaysToSubtract += daysSinceDied
+                    }
+                    var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
+                    if (currentHeadDays < 0) {
+                        currentHeadDays = 0
+                    }
+                    val headDaysStr = numberFormat.format(currentHeadDays.toLong())
+                    mHeadDays.text = headDaysStr
+                    val numberDead = cowEntities.size
+                    val decimalFormat = DecimalFormat("#.##")
+                    val percent = numberDead * 100f / mTotalHeadInt
+                    val deadText = numberFormat.format(numberDead.toLong()) + " dead"
+                    val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
+                    mTotalDeathLoss.text = deadText
+                    mDeathLossPercentage.text = percentDeadText
+                    var currentHead = mTotalHeadInt - numberDead
+                    if (currentHead < 0) {
+                        currentHead = 0
+                    }
+                    val currentHeadStr = numberFormat.format(currentHead.toLong())
+                    mCurrentHead.text = currentHeadStr
                 }
 
             }
@@ -267,34 +296,6 @@ class LotReportActivity : AppCompatActivity(),
         val amountFedStr = numberFormat.format(totalAmountFed.toLong())
         val amountFedText = "$amountFedStr lbs"
         mFeedReports.text = amountFedText
-    }
-
-    override fun onDeadCowsLoaded(cowEntities: ArrayList<CowEntity>) {
-        var numberOfHeadDaysToSubtract = 0
-        for (r in cowEntities.indices) {
-            val (_, _, _, _, date) = cowEntities[r]
-            val daysSinceDied = getDaysSinceFromMillis(date)
-            numberOfHeadDaysToSubtract += daysSinceDied
-        }
-        var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
-        if (currentHeadDays < 0) {
-            currentHeadDays = 0
-        }
-        val headDaysStr = numberFormat.format(currentHeadDays.toLong())
-        mHeadDays.text = headDaysStr
-        val numberDead = cowEntities.size
-        val decimalFormat = DecimalFormat("#.##")
-        val percent = numberDead * 100f / mTotalHeadInt
-        val deadText = numberFormat.format(numberDead.toLong()) + " dead"
-        val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
-        mTotalDeathLoss.text = deadText
-        mDeathLossPercentage.text = percentDeadText
-        var currentHead = mTotalHeadInt - numberDead
-        if (currentHead < 0) {
-            currentHead = 0
-        }
-        val currentHeadStr = numberFormat.format(currentHead.toLong())
-        mCurrentHead.text = currentHeadStr
     }
 
     private val archiveLotListener = View.OnClickListener {

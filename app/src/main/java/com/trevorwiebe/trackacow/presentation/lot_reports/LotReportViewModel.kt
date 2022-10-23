@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
@@ -20,6 +22,7 @@ class LotReportViewModel @AssistedInject constructor(
     private val lotUseCases: LotUseCases,
     private val drugsGivenUseCases: DrugsGivenUseCases,
     private val loadUseCases: LoadUseCases,
+    private val cowUseCases: CowUseCases,
     @Assisted("reportType") private val reportType: Int,
     @Assisted("lotId") private val lotId: Int,
     @Assisted("lotCloudDatabaseId") private val lotCloudDatabaseId: String
@@ -63,8 +66,8 @@ class LotReportViewModel @AssistedInject constructor(
         }
 
         readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId)
-
         readLoadsByLotId(lotCloudDatabaseId)
+        readDeadCowsByLotId(lotCloudDatabaseId)
 
     }
 
@@ -111,10 +114,21 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun readDeadCowsByLotId(lotId: String){
+        cowUseCases.readDeadCowsByLotId(lotId)
+            .map { thisDeadCowList ->
+                _uiState.update {
+                    it.copy(deadCowList = thisDeadCowList)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
 }
 
 data class LotReportUiState(
     val lotModel: LotModel? = null,
     val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList(),
-    val loadList: List<LoadModel> = emptyList()
+    val loadList: List<LoadModel> = emptyList(),
+    val deadCowList: List<CowModel> = emptyList()
 )

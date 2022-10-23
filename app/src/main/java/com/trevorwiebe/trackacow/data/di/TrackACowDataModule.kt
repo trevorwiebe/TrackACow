@@ -105,6 +105,17 @@ object TrackACowDataModule {
         )
     }
 
+    // Cow
+    @Provides
+    @Singleton
+    fun provideCowRepository(
+        db: AppDatabase
+    ): CowRepository{
+        return CowRepositoryImpl(
+            cowDao = db.cowDao()
+        )
+    }
+
     // Drug
     @Provides
     @Singleton
