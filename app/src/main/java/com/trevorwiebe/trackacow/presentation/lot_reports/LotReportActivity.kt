@@ -19,7 +19,6 @@ import com.trevorwiebe.trackacow.presentation.activities.EditLoadActivity
 import com.trevorwiebe.trackacow.presentation.activities.DrugsGivenReportActivity
 import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
-import com.trevorwiebe.trackacow.domain.objects.DrugReportsObject
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds
 import com.trevorwiebe.trackacow.data.entities.CowEntity
@@ -358,25 +357,6 @@ class LotReportActivity : AppCompatActivity(),
         lotArchived.show()
     }
 
-
-    private fun findAndUpdateDrugReports(
-        drugId: String?,
-        amountGiven: Int,
-        drugReportsObjects: ArrayList<DrugReportsObject>
-    ): Int {
-        for (r in drugReportsObjects.indices) {
-            val drugReportsObject = drugReportsObjects[r]
-            if (drugReportsObject.drugId.endsWith(drugId!!)) {
-                val currentAmount = drugReportsObject.drugAmount
-                val amountToUpdateTo = currentAmount + amountGiven
-                drugReportsObject.drugAmount = amountToUpdateTo
-                drugReportsObjects.removeAt(r)
-                drugReportsObjects.add(r, drugReportsObject)
-                return 1
-            }
-        }
-        return 0
-    }
 
     private fun lotEntityLoaded(lotModel: LotModel?) {
         if (lotModel != null) {
