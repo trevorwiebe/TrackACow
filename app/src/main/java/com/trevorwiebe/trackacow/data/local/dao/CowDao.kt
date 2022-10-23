@@ -10,6 +10,9 @@ interface CowDao {
     @Query("SELECT * FROM Cow WHERE lotId = :lotId AND isAlive = 0")
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowEntity>>
 
+    @Query("SELECT * FROM Cow WHERE lotId = :lotId")
+    fun getCowsByLotId(lotId: String): Flow<List<CowEntity>>
+
     // Deprecated
 
     @Deprecated("use suspend function")

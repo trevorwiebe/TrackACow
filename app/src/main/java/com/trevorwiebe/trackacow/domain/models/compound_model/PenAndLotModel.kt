@@ -1,5 +1,9 @@
 package com.trevorwiebe.trackacow.domain.models.compound_model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class PenAndLotModel(
     var penPrimaryKey: Int = 0,
     var penCloudDatabaseId: String? = "",
@@ -10,4 +14,4 @@ data class PenAndLotModel(
     var customerName: String? = null,
     var notes: String? = null,
     var date: Long? = 0,
-)
+): Parcelable

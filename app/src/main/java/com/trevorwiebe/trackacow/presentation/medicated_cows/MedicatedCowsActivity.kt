@@ -1,499 +1,381 @@
-package com.trevorwiebe.trackacow.presentation.activities;
+package com.trevorwiebe.trackacow.presentation.medicated_cows
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
+import android.app.DatePickerDialog.OnDateSetListener
+import androidx.recyclerview.widget.RecyclerView
+import androidx.cardview.widget.CardView
+import com.getbase.floatingactionbutton.FloatingActionsMenu
+import com.google.android.material.textfield.TextInputEditText
+import android.os.Bundle
+import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.data.entities.LotEntity
+import com.trevorwiebe.trackacow.data.entities.LoadEntity
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.InsertLotEntity
+import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.InsertLoadEntity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
+import android.content.Intent
+import android.app.DatePickerDialog
+import android.text.InputType
+import android.view.Menu
+import android.view.View
+import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
+import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.activities.AddLoadOfCattleActivity
+import com.trevorwiebe.trackacow.presentation.activities.EditMedicatedCowActivity
+import com.trevorwiebe.trackacow.presentation.activities.MarkACowDeadActivity
+import com.trevorwiebe.trackacow.presentation.activities.MedicateACowActivity
+import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.*
+import javax.inject.Inject
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+@AndroidEntryPoint
+class MedicatedCowsActivity : AppCompatActivity() {
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
+    var mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(
+        FirebaseAuth.getInstance().currentUser!!.uid)
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
-import android.text.InputType;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
+    private var mMedicatedCowsRecyclerViewAdapter: MedicatedCowsRecyclerViewAdapter? = null
+    private var mPenAndLotModel: PenAndLotModel? = null
+    private var mIsActive = false
+    private var shouldShowCouldntFindTag = false
+    private val mCalendar = Calendar.getInstance()
+    private val mLoadCalender = Calendar.getInstance()
+    private lateinit var mCowUiModelList: List<CowUiModel>
 
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
-import com.trevorwiebe.trackacow.domain.adapters.MedicatedCowsRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad;
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.InsertLoadEntity;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.InsertLotEntity;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByLotIds;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.QueryLotsByPenId;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryMedicatedCowsByLotIds;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.pen.QueryPenById;
-import com.trevorwiebe.trackacow.data.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.data.entities.LoadEntity;
-import com.trevorwiebe.trackacow.data.entities.LotEntity;
-import com.trevorwiebe.trackacow.data.entities.PenEntity;
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
-import com.trevorwiebe.trackacow.domain.utils.Constants;
-import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
-import com.trevorwiebe.trackacow.domain.utils.SyncDatabase;
-import com.trevorwiebe.trackacow.domain.utils.Utility;
+    private lateinit var mDatePicker: OnDateSetListener
+    private lateinit var mLoadDatePicker: OnDateSetListener
+    private lateinit var mNoMedicatedCows: TextView
+    private lateinit var mSearchView: SearchView
+    private lateinit var mMedicatedCows: RecyclerView
+    private lateinit var mResultsNotFound: CardView
+    private lateinit var mMedicateACowFabMenu: FloatingActionsMenu
+    private lateinit var mMarkAsActive: Button
+    private lateinit var mPenIdleLayout: ScrollView
+    private lateinit var mLotName: TextInputEditText
+    private lateinit var mCustomerName: TextInputEditText
+    private lateinit var mDate: TextInputEditText
+    private lateinit var mNotes: TextInputEditText
+    private lateinit var mTotalCount: TextInputEditText
+    private lateinit var mLoadDate: TextInputEditText
+    private lateinit var mLoadMemo: TextInputEditText
 
-import java.util.ArrayList;
-import java.util.Calendar;
+    @Inject lateinit var medicatedCowsViewModelFactory: MedicatedCowsViewModel.MedicatedCowsViewModelFactory
 
-public class MedicatedCowsActivity extends AppCompatActivity implements
-        QueryPenById.OnPenByIdReturned,
-        QueryAllDrugs.OnAllDrugsLoaded,
-        QueryLotsByPenId.OnLotsByPenIdLoaded,
-        QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded,
-        QueryMedicatedCowsByLotIds.OnCowsByLotIdLoaded,
-        SyncDatabase.OnDatabaseSynced {
-
-    private static final String TAG = "MedicatedCowsActivity";
-
-    DatabaseReference mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private ArrayList<CowEntity> mSelectedCows = new ArrayList<>();
-    private ArrayList<CowEntity> mTreatedCows = new ArrayList<>();
-    private ArrayList<DrugEntity> mDrugList = new ArrayList<>();
-    private ArrayList<DrugsGivenEntity> mDrugsGivenList = new ArrayList<>();
-    private ArrayList<String> mLotIds = new ArrayList<>();
-    private MedicatedCowsRecyclerViewAdapter mMedicatedCowsRecyclerViewAdapter;
-    private PenEntity mSelectedPen;
-    private boolean mIsActive = false;
-    private boolean shouldShowCouldntFindTag;
-    private Calendar mCalendar = Calendar.getInstance();
-    private Calendar mLoadCalender = Calendar.getInstance();
-    private DatePickerDialog.OnDateSetListener mDatePicker;
-    private DatePickerDialog.OnDateSetListener mLoadDatePicker;
-
-    private TextView mNoMedicatedCows;
-    private SearchView mSearchView;
-    private SwipeRefreshLayout mMedicatedCowSwipeToRefresh;
-    private RecyclerView mMedicatedCows;
-    private CardView mResultsNotFound;
-    private FloatingActionsMenu mMedicateACowFabMenu;
-    private Button mMarkAsActive;
-    private ScrollView mPenIdleLayout;
-
-    private TextInputEditText mLotName;
-    private TextInputEditText mCustomerName;
-    private TextInputEditText mDate;
-    private TextInputEditText mNotes;
-
-    private TextInputEditText mTotalCount;
-    private TextInputEditText mLoadDate;
-    private TextInputEditText mLoadMemo;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_medicated_cows);
-
-        mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu);
-        mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv);
-        mResultsNotFound = findViewById(R.id.result_not_found);
-        mMarkAsActive = findViewById(R.id.mark_as_active);
-        mPenIdleLayout = findViewById(R.id.pen_idle);
-
-        mLotName = findViewById(R.id.lot_name);
-        mCustomerName = findViewById(R.id.customer_name);
-        mDate = findViewById(R.id.lot_date);
-        mNotes = findViewById(R.id.lot_memo);
-
-        mTotalCount = findViewById(R.id.first_load_head_count);
-        mLoadDate = findViewById(R.id.first_load_date);
-        mLoadMemo = findViewById(R.id.first_load_memo);
-
-        String todayDate = Utility.convertMillisToDate(System.currentTimeMillis());
-        mDate.setText(todayDate);
-        mLoadDate.setText(todayDate);
-
-        mMarkAsActive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                boolean shouldSave = true;
-                if (mLotName.length() == 0){
-                    mLotName.setError("Please fill this blank");
-                    shouldSave = false;
-                }
-
-                if (mCustomerName.length() == 0){
-                    mCustomerName.setError("Please fill this blank");
-                    shouldSave = false;
-                }
-
-                if (mTotalCount.length() == 0) {
-                    mTotalCount.setError("Please fill this blank");
-                    shouldSave = false;
-                }
-
-                if(!shouldSave) return;
-
-                String lotName = mLotName.getText().toString();
-                String customerName = mCustomerName.getText().toString();
-                int totalHead = Integer.parseInt(mTotalCount.getText().toString());
-                String notes = mNotes.getText().toString();
-                long date = mCalendar.getTimeInMillis();
-
-                DatabaseReference lotPushRef = mBaseRef.child(Constants.LOTS).push();
-                String id = lotPushRef.getKey();
-                LotEntity lotEntity = new LotEntity(0, lotName, id, customerName, notes, date, mSelectedPen.getPenCloudDatabaseId());
-
-                String loadDescription = mLoadMemo.getText().toString();
-                DatabaseReference loadPushRef = mBaseRef.child(Constants.LOAD).push();
-                String loadId = loadPushRef.getKey();
-                LoadEntity loadEntity = new LoadEntity(0, totalHead, date, loadDescription, id, loadId);
-
-                if (Utility.haveNetworkConnection(MedicatedCowsActivity.this)) {
-                    lotPushRef.setValue(lotEntity);
-                    loadPushRef.setValue(loadEntity);
-                } else {
-
-                    Utility.setNewDataToUpload(MedicatedCowsActivity.this, true);
-
-                    CacheLotEntity cacheLotEntity = new CacheLotEntity(
-                            lotEntity.getLotPrimaryKey(),
-                            lotEntity.getLotName(),
-                            lotEntity.getLotCloudDatabaseId(),
-                            lotEntity.getCustomerName(),
-                            lotEntity.getNotes(),
-                            lotEntity.getDate(),
-                            lotEntity.getLotPenCloudDatabaseId(),
-                            Constants.INSERT_UPDATE
-                    );
-                    new InsertHoldingLot(cacheLotEntity).execute(MedicatedCowsActivity.this);
-
-                    CacheLoadEntity cacheLoadEntity = new CacheLoadEntity(
-                            0,
-                            loadEntity.getNumberOfHead(),
-                            loadEntity.getDate(),
-                            loadEntity.getDescription(),
-                            loadEntity.getLotId(),
-                            loadEntity.getLoadId(),
-                            Constants.INSERT_UPDATE
-                    );
-                    new InsertHoldingLoad(cacheLoadEntity).execute(MedicatedCowsActivity.this);
-                }
-
-                new InsertLotEntity(lotEntity).execute(MedicatedCowsActivity.this);
-                new InsertLoadEntity(loadEntity).execute(MedicatedCowsActivity.this);
-
-                mNoMedicatedCows.setVisibility(View.VISIBLE);
-                setActive();
-
-                androidx.appcompat.app.ActionBar ab = getSupportActionBar();
-                if (ab != null) {
-                    ab.setSubtitle(lotName);
-                }
-
-                mLotName.setText("");
-                mCustomerName.setText("");
-                mTotalCount.setText("");
-                mNotes.setText("");
-
-            }
-        });
-
-        mMedicatedCowSwipeToRefresh = findViewById(R.id.medicated_cow_swipe_to_refresh);
-        mMedicatedCows = findViewById(R.id.track_cow_rv);
-        mMedicatedCows.setLayoutManager(new LinearLayoutManager(this));
-        mMedicatedCowsRecyclerViewAdapter = new MedicatedCowsRecyclerViewAdapter(mTreatedCows, mDrugList, mDrugsGivenList, this);
-        mMedicatedCows.setAdapter(mMedicatedCowsRecyclerViewAdapter);
-
-        mMedicatedCows.addOnItemTouchListener(new ItemClickListener(this, mMedicatedCows, new ItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                String cowEntityId = mSelectedCows.get(position).getCowId();
-                Utility.setCowId(MedicatedCowsActivity.this, cowEntityId);
-                Intent editCowIntent = new Intent(MedicatedCowsActivity.this, EditMedicatedCowActivity.class);
-                editCowIntent.putExtra("cowEntityId", cowEntityId);
-                startActivity(editCowIntent);
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-
-        mDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(MedicatedCowsActivity.this,
-                        mDatePicker,
-                        mCalendar.get(Calendar.YEAR),
-                        mCalendar.get(Calendar.MONTH),
-                        mCalendar.get(Calendar.DAY_OF_MONTH))
-                        .show();
-            }
-        });
-        mLoadDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(MedicatedCowsActivity.this,
-                        mLoadDatePicker,
-                        mLoadCalender.get(Calendar.YEAR),
-                        mLoadCalender.get(Calendar.MONTH),
-                        mLoadCalender.get(Calendar.DAY_OF_MONTH))
-                        .show();
-            }
-        });
-
-        mDatePicker = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, month);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mDate.setText(Utility.convertMillisToDate(mCalendar.getTimeInMillis()));
-            }
-        };
-        mLoadDatePicker = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                mLoadCalender.set(Calendar.YEAR, year);
-                mLoadCalender.set(Calendar.MONTH, month);
-                mLoadCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mLoadDate.setText(Utility.convertMillisToDate(mLoadCalender.getTimeInMillis()));
-            }
-        };
-
-        mMedicatedCowSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new SyncDatabase(MedicatedCowsActivity.this, MedicatedCowsActivity.this).beginSync();
-            }
-        });
+    private val medicatedCowsViewModel: MedicatedCowsViewModel by viewModels{
+        MedicatedCowsViewModel.providesFactory(
+            assistedFactory = medicatedCowsViewModelFactory,
+            penAndLotModel = intent.getParcelableExtra("penAndLotModel")
+        )
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mSearchView.setQuery("", false);
-        mSearchView.setIconified(true);
-        mResultsNotFound.setVisibility(View.INVISIBLE);
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_medicated_cows)
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        String penId;
+        mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu)
+        mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv)
+        mResultsNotFound = findViewById(R.id.result_not_found)
+        mMarkAsActive = findViewById(R.id.mark_as_active)
+        mPenIdleLayout = findViewById(R.id.pen_idle)
+        mLotName = findViewById(R.id.lot_name)
+        mCustomerName = findViewById(R.id.customer_name)
+        mDate = findViewById(R.id.lot_date)
+        mNotes = findViewById(R.id.lot_memo)
+        mTotalCount = findViewById(R.id.first_load_head_count)
+        mLoadDate = findViewById(R.id.first_load_date)
+        mLoadMemo = findViewById(R.id.first_load_memo)
 
-        if (getIntent().getStringExtra("penEntityId") == null) {
-            penId = Utility.getPenId(MedicatedCowsActivity.this);
-        } else {
-            penId = getIntent().getStringExtra("penEntityId");
-        }
+        val todayDate = Utility.convertMillisToDate(System.currentTimeMillis())
+        mDate.setText(todayDate)
+        mLoadDate.setText(todayDate)
 
-        new QueryPenById(penId, this).execute(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.track_cow_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.search);
-        mSearchView = (SearchView) searchItem.getActionView();
-        mSearchView.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-        if (mIsActive) {
-            searchItem.setVisible(true);
-        } else {
-            searchItem.setVisible(false);
-        }
-
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+        mMarkAsActive.setOnClickListener(View.OnClickListener {
+            var shouldSave = true
+            if (mLotName.length() == 0) {
+                mLotName.error = getString(R.string.please_fill_blank)
+                shouldSave = false
             }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (s.length() >= 1) {
-                    mSelectedCows = findTags(s);
-                    if (mSelectedCows.size() == 0 && shouldShowCouldntFindTag) {
-                        mResultsNotFound.setVisibility(View.VISIBLE);
-                        mMedicateACowFabMenu.setVisibility(View.INVISIBLE);
-                    } else {
-                        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-                        mResultsNotFound.setVisibility(View.INVISIBLE);
+            if (mCustomerName.length() == 0) {
+                mCustomerName.error = getString(R.string.please_fill_blank)
+                shouldSave = false
+            }
+            if (mTotalCount.length() == 0) {
+                mTotalCount.error = getString(R.string.please_fill_blank)
+                shouldSave = false
+            }
+            if (!shouldSave) return@OnClickListener
+            val lotName = mLotName.text.toString()
+            val customerName = mCustomerName.text.toString()
+            val totalHead = mTotalCount.text.toString().toInt()
+            val notes = mNotes.getText().toString()
+            val date = mCalendar.timeInMillis
+            val lotPushRef = mBaseRef.child(Constants.LOTS).push()
+            val id = lotPushRef.key
+            val lotEntity = LotEntity(
+                0,
+                lotName,
+                id!!,
+                customerName,
+                notes,
+                date,
+                mPenAndLotModel!!.penCloudDatabaseId!!
+            )
+            val loadDescription = mLoadMemo.text.toString()
+            val loadPushRef = mBaseRef.child(Constants.LOAD).push()
+            val loadId = loadPushRef.key
+            val loadEntity = LoadEntity(0, totalHead, date, loadDescription, id, loadId)
+            if (Utility.haveNetworkConnection(this@MedicatedCowsActivity)) {
+                lotPushRef.setValue(lotEntity)
+                loadPushRef.setValue(loadEntity)
+            } else {
+                Utility.setNewDataToUpload(this@MedicatedCowsActivity, true)
+                val cacheLotEntity = CacheLotEntity(
+                    lotEntity.lotPrimaryKey,
+                    lotEntity.lotName,
+                    lotEntity.lotCloudDatabaseId,
+                    lotEntity.customerName,
+                    lotEntity.notes,
+                    lotEntity.date,
+                    lotEntity.lotPenCloudDatabaseId,
+                    Constants.INSERT_UPDATE
+                )
+                InsertHoldingLot(cacheLotEntity).execute(this@MedicatedCowsActivity)
+                val cacheLoadEntity = CacheLoadEntity(
+                    0,
+                    loadEntity.numberOfHead,
+                    loadEntity.date,
+                    loadEntity.description,
+                    loadEntity.lotId,
+                    loadEntity.loadId,
+                    Constants.INSERT_UPDATE
+                )
+                InsertHoldingLoad(cacheLoadEntity).execute(this@MedicatedCowsActivity)
+            }
+            InsertLotEntity(lotEntity).execute(this@MedicatedCowsActivity)
+            InsertLoadEntity(loadEntity).execute(this@MedicatedCowsActivity)
+            mNoMedicatedCows.visibility = View.VISIBLE
+            setActive()
+            val ab = supportActionBar
+            ab?.subtitle = lotName
+            mLotName.setText("")
+            mCustomerName.setText("")
+            mTotalCount.setText("")
+            mNotes.setText("")
+        })
+        mMedicatedCows = findViewById(R.id.track_cow_rv)
+        mMedicatedCows.layoutManager = LinearLayoutManager(this)
+        mMedicatedCowsRecyclerViewAdapter = MedicatedCowsRecyclerViewAdapter(emptyList(), this)
+        mMedicatedCows.adapter = mMedicatedCowsRecyclerViewAdapter
+        mMedicatedCows.addOnItemTouchListener(
+            ItemClickListener(
+                this,
+                mMedicatedCows,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val cowEntityId = mCowUiModelList[position].cowModel.cowId
+                        Utility.setCowId(this@MedicatedCowsActivity, cowEntityId)
+                        val editCowIntent =
+                            Intent(this@MedicatedCowsActivity, EditMedicatedCowActivity::class.java)
+                        editCowIntent.putExtra("cowEntityId", cowEntityId)
+                        startActivity(editCowIntent)
                     }
-                    shouldShowCouldntFindTag = true;
-                    mMedicatedCowsRecyclerViewAdapter.swapData(mSelectedCows, mDrugList, mDrugsGivenList);
+
+                    override fun onLongItemClick(view: View, position: Int) {}
+                })
+        )
+        mDate.setOnClickListener {
+            DatePickerDialog(
+                this@MedicatedCowsActivity,
+                mDatePicker,
+                mCalendar[Calendar.YEAR],
+                mCalendar[Calendar.MONTH],
+                mCalendar[Calendar.DAY_OF_MONTH]
+            )
+                .show()
+        }
+        mLoadDate.setOnClickListener {
+            DatePickerDialog(
+                this@MedicatedCowsActivity,
+                mLoadDatePicker,
+                mLoadCalender[Calendar.YEAR],
+                mLoadCalender[Calendar.MONTH],
+                mLoadCalender[Calendar.DAY_OF_MONTH]
+            )
+                .show()
+        }
+        mDatePicker = OnDateSetListener { view, year, month, dayOfMonth ->
+            mCalendar[Calendar.YEAR] = year
+            mCalendar[Calendar.MONTH] = month
+            mCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
+            mDate.setText(Utility.convertMillisToDate(mCalendar.timeInMillis))
+        }
+        mLoadDatePicker = OnDateSetListener { view, year, month, dayOfMonth ->
+            mLoadCalender[Calendar.YEAR] = year
+            mLoadCalender[Calendar.MONTH] = month
+            mLoadCalender[Calendar.DAY_OF_MONTH] = dayOfMonth
+            mLoadDate.setText(Utility.convertMillisToDate(mLoadCalender.timeInMillis))
+        }
+
+        lifecycleScope.launch{
+            medicatedCowsViewModel.uiState.collect{
+
+                mPenAndLotModel = it.statePenAndLotModel
+
+                if(mPenAndLotModel != null) {
+                    title = "Pen: " + mPenAndLotModel!!.penName
+
+                    if(mPenAndLotModel!!.lotName != null){
+
+                        supportActionBar!!.subtitle = mPenAndLotModel!!.lotName
+                        setActive()
+
+                    }else{
+                        setInActive()
+                    }
+
+                    mCowUiModelList = it.cowUiModelList
+                    if (mCowUiModelList.isEmpty() && mIsActive) {
+                        mNoMedicatedCows.visibility = View.VISIBLE
+                    } else {
+                        mNoMedicatedCows.visibility = View.INVISIBLE
+                    }
+
+                    mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
+
+                }
+
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mSearchView.setQuery("", false)
+        mSearchView.isIconified = true
+        mResultsNotFound.visibility = View.INVISIBLE
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.track_cow_menu, menu)
+        val searchItem = menu.findItem(R.id.search)
+        mSearchView = (searchItem.actionView as SearchView?)!!
+        mSearchView.inputType = InputType.TYPE_CLASS_NUMBER
+        searchItem.isVisible = mIsActive
+
+        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(s: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(s: String): Boolean {
+                if (s.isNotEmpty()) {
+                    val cowUiModelList = findTags(s)
+                    if (cowUiModelList.isEmpty() && shouldShowCouldntFindTag) {
+                        mResultsNotFound.visibility = View.VISIBLE
+                        mMedicateACowFabMenu.visibility = View.INVISIBLE
+                    } else {
+                        mMedicateACowFabMenu.visibility = View.VISIBLE
+                        mResultsNotFound.visibility = View.INVISIBLE
+                    }
+                    shouldShowCouldntFindTag = true
+                    mMedicatedCowsRecyclerViewAdapter!!.swapData(cowUiModelList)
                 } else {
                     if (shouldShowCouldntFindTag) {
-                        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
+                        mMedicateACowFabMenu.visibility = View.VISIBLE
                     }
-                    mResultsNotFound.setVisibility(View.INVISIBLE);
-                    mSelectedCows = mTreatedCows;
-                    mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
+                    mResultsNotFound.visibility = View.INVISIBLE
+                    mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
                 }
-                return false;
+                return false
             }
-        });
-        return true;
+        })
+        return true
     }
 
-    ActivityResultLauncher<Intent> addCattleResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK) {
-                        Snackbar.make(mMedicatedCows, "Cattle added successfully", Snackbar.LENGTH_LONG).show();
-                    }else{
-                        Snackbar.make(mMedicatedCows, "An error occurred", Snackbar.LENGTH_LONG).show();
-                    }
-                }
-            }
-    );
-
-    private void openAddCattleActivityForResult(){
-        mMedicateACowFabMenu.collapse();
-        Intent addLoadOfCattle = new Intent(MedicatedCowsActivity.this, AddLoadOfCattleActivity.class);
-        addLoadOfCattle.putExtra("lotId", mLotIds.get(0));
-        addCattleResultLauncher.launch(addLoadOfCattle);
-    }
-
-    /*
-    Database return callbacks
-    */
-    @Override
-    public void onPenByIdReturned(PenEntity penEntity) {
-        mSelectedPen = penEntity;
-        String activityTitle = "Pen: " + mSelectedPen.getPenName();
-        setTitle(activityTitle);
-
-        new QueryLotsByPenId(mSelectedPen.getPenCloudDatabaseId(), MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
-    }
-
-    @Override
-    public void onLotsByPenIdLoaded(ArrayList<LotEntity> lotEntities) {
-        androidx.appcompat.app.ActionBar ab = getSupportActionBar();
-        if (lotEntities.size() == 0) {
-            setInActive();
-        } else {
-            LotEntity lotEntity = lotEntities.get(0);
-            mLotIds = new ArrayList<>();
-            mLotIds.add(lotEntity.getLotCloudDatabaseId());
-            String lotNameTitle = lotEntity.getLotName();
-            ab.setSubtitle(lotNameTitle);
-            setActive();
+    private var addCattleResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            Snackbar.make(mMedicatedCows, "Cattle added successfully", Snackbar.LENGTH_LONG)
+                .show()
         }
-
-        new QueryAllDrugs(MedicatedCowsActivity.this).execute(MedicatedCowsActivity.this);
     }
-
-    @Override
-    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
-        mDrugList = drugEntities;
-        new QueryDrugsGivenByLotIds(MedicatedCowsActivity.this, mLotIds).execute(MedicatedCowsActivity.this);
-    }
-
-    @Override
-    public void onDrugsGivenByLotIdLoaded(ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mDrugsGivenList = drugsGivenEntities;
-
-        new QueryMedicatedCowsByLotIds(MedicatedCowsActivity.this, mLotIds).execute(MedicatedCowsActivity.this);
-    }
-
-    @Override
-    public void onCowsByLotIdLoaded(ArrayList<CowEntity> cowObjectList) {
-        mTreatedCows = cowObjectList;
-        mSelectedCows = cowObjectList;
-
-        if (cowObjectList.size() == 0 && mIsActive) {
-            mNoMedicatedCows.setVisibility(View.VISIBLE);
-        } else {
-            mNoMedicatedCows.setVisibility(View.INVISIBLE);
-        }
-
-        mMedicatedCowsRecyclerViewAdapter.swapData(mTreatedCows, mDrugList, mDrugsGivenList);
-
-    }
-
 
     /*
     private methods
      */
-    public void medicateCow(View view) {
-        mMedicateACowFabMenu.collapse();
-        Intent medicateCowIntent = new Intent(MedicatedCowsActivity.this, MedicateACowActivity.class);
-        medicateCowIntent.putExtra("penId", mSelectedPen.getPenCloudDatabaseId());
-        startActivity(medicateCowIntent);
+    fun medicateCow(view: View?) {
+        mMedicateACowFabMenu.collapse()
+        val medicateCowIntent = Intent(this@MedicatedCowsActivity, MedicateACowActivity::class.java)
+        medicateCowIntent.putExtra("penId", mPenAndLotModel!!.penCloudDatabaseId)
+        startActivity(medicateCowIntent)
     }
 
-    public void markACowDead(View view) {
-        mMedicateACowFabMenu.collapse();
-        Intent markCowDeadIntent = new Intent(MedicatedCowsActivity.this, MarkACowDeadActivity.class);
-        markCowDeadIntent.putExtra("penId", mSelectedPen.getPenCloudDatabaseId());
-        startActivity(markCowDeadIntent);
+    fun markACowDead(view: View?) {
+        mMedicateACowFabMenu.collapse()
+        val markCowDeadIntent = Intent(this@MedicatedCowsActivity, MarkACowDeadActivity::class.java)
+        markCowDeadIntent.putExtra("penId", mPenAndLotModel!!.penCloudDatabaseId)
+        startActivity(markCowDeadIntent)
     }
 
-    public void addCattle(View view) {
-        openAddCattleActivityForResult();
+    fun addCattle(view: View?) {
+        mMedicateACowFabMenu.collapse()
+        val addLoadOfCattle =
+            Intent(this@MedicatedCowsActivity, AddLoadOfCattleActivity::class.java)
+        addLoadOfCattle.putExtra("lotId", mPenAndLotModel!!.lotCloudDatabaseId)
+        addCattleResultLauncher.launch(addLoadOfCattle)
     }
 
-
-    private ArrayList<CowEntity> findTags(String inputString) {
-        ArrayList<CowEntity> listToReturn = new ArrayList<>();
-        for (int e = 0; e < mTreatedCows.size(); e++) {
-            CowEntity cowEntity = mTreatedCows.get(e);
-            String tag = Integer.toString(cowEntity.getTagNumber());
+    private fun findTags(inputString: String): List<CowUiModel> {
+        val listToReturn: MutableList<CowUiModel> = mutableListOf()
+        for (e in mCowUiModelList.indices) {
+            val cowUiModel = mCowUiModelList[e]
+            val tag = cowUiModel.cowModel.tagNumber.toString()
             if (tag.startsWith(inputString)) {
-                listToReturn.add(cowEntity);
+                listToReturn.add(cowUiModel)
             }
         }
-        return listToReturn;
+        return listToReturn
     }
 
-    private void setActive() {
-        mMedicateACowFabMenu.setVisibility(View.VISIBLE);
-        mPenIdleLayout.setVisibility(View.GONE);
-        mMedicatedCows.setVisibility(View.VISIBLE);
-        shouldShowCouldntFindTag = true;
-        mIsActive = true;
-        invalidateOptionsMenu();
+    private fun setActive() {
+        mMedicateACowFabMenu.visibility = View.VISIBLE
+        mPenIdleLayout.visibility = View.GONE
+        mMedicatedCows.visibility = View.VISIBLE
+        shouldShowCouldntFindTag = true
+        mIsActive = true
+        invalidateOptionsMenu()
     }
 
-    private void setInActive() {
-        mIsActive = false;
-        mNoMedicatedCows.setVisibility(View.GONE);
-        mMedicateACowFabMenu.setVisibility(View.GONE);
-        shouldShowCouldntFindTag = false;
-        mMedicatedCows.setVisibility(View.GONE);
-        mPenIdleLayout.setVisibility(View.VISIBLE);
-        invalidateOptionsMenu();
+    private fun setInActive() {
+        mIsActive = false
+        mNoMedicatedCows.visibility = View.GONE
+        mMedicateACowFabMenu.visibility = View.GONE
+        shouldShowCouldntFindTag = false
+        mMedicatedCows.visibility = View.GONE
+        mPenIdleLayout.visibility = View.VISIBLE
+        invalidateOptionsMenu()
     }
 
-    @Override
-    public void onDatabaseSynced(int resultCode) {
-        if (resultCode != Constants.SUCCESS) {
-            Toast.makeText(this, "Failed to sync database", Toast.LENGTH_SHORT).show();
-        }
-        mMedicatedCowSwipeToRefresh.setRefreshing(false);
+    companion object {
+        private const val TAG = "MedicatedCowsActivity"
     }
 }

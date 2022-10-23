@@ -17,4 +17,9 @@ data class CowRepositoryImpl(
         }
     }
 
+    override fun getCowsByLotId(lotId: String): Flow<List<CowModel>> {
+        return cowDao.getCowsByLotId(lotId).map { cowList->
+            cowList.map { it.toCowModel() }
+        }
+    }
 }

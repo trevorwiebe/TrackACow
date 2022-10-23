@@ -1,143 +1,88 @@
-package com.trevorwiebe.trackacow.domain.adapters;
+package com.trevorwiebe.trackacow.presentation.medicated_cows
 
-import android.content.Context;
-import android.graphics.Typeface;
+import android.content.Context
+import android.graphics.Typeface
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.presentation.medicated_cows.MedicatedCowsRecyclerViewAdapter.TrackCowViewHolder
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
+import com.trevorwiebe.trackacow.R
+import android.widget.TextView
+import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class MedicatedCowsRecyclerViewAdapter(
+    private var cowUiModelList: List<CowUiModel> = emptyList(),
+    private val mContext: Context
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+) : RecyclerView.Adapter<TrackCowViewHolder>() {
 
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.entities.CowEntity;
-import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.domain.utils.Utility;
-
-import java.util.ArrayList;
-
-
-public class MedicatedCowsRecyclerViewAdapter extends RecyclerView.Adapter<MedicatedCowsRecyclerViewAdapter.TrackCowViewHolder> {
-
-    private static final String TAG = "MedicatedCowsRecyclerVi";
-
-    private ArrayList<CowEntity> mCowList;
-    private ArrayList<DrugEntity> mDrugList;
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntities;
-    private Context mContext;
-
-    public MedicatedCowsRecyclerViewAdapter(ArrayList<CowEntity> cowObjects, ArrayList<DrugEntity> drugList, ArrayList<DrugsGivenEntity> drugsGivenObjects, Context context) {
-        this.mCowList = cowObjects;
-        this.mDrugList = drugList;
-        this.mDrugsGivenEntities = drugsGivenObjects;
-        this.mContext = context;
+    override fun getItemCount(): Int {
+        return cowUiModelList.size
     }
 
-    @Override
-    public int getItemCount() {
-        if (mCowList == null || mDrugList == null || mDrugsGivenEntities == null) return 0;
-        return mCowList.size();
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): TrackCowViewHolder {
+        val view =
+            LayoutInflater.from(mContext).inflate(R.layout.list_medicated_cows, viewGroup, false)
+        return TrackCowViewHolder(view)
     }
 
-    @NonNull
-    @Override
-    public TrackCowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_medicated_cows, viewGroup, false);
-        return new TrackCowViewHolder(view);
-    }
+    override fun onBindViewHolder(trackCowViewHolder: TrackCowViewHolder, position: Int) {
 
-    @Override
-    public void onBindViewHolder(@NonNull final TrackCowViewHolder trackCowViewHolder, final int position) {
+        val cowUiModel = cowUiModelList[position]
 
-        CowEntity cowEntity = mCowList.get(position);
-        String tagNumber = Integer.toString(cowEntity.getTagNumber());
-        String notes = cowEntity.getNotes();
-        String cowId = cowEntity.getCowId();
-        long date = cowEntity.getDate();
+        val tagNumber = cowUiModel.cowModel.tagNumber.toString()
+        trackCowViewHolder.mDate.text = Utility.convertMillisToFriendlyDate(cowUiModel.cowModel.date)
+        trackCowViewHolder.mTagNumber.text = tagNumber
 
-        trackCowViewHolder.mDate.setText(Utility.convertMillisToFriendlyDate(date));
-
-        trackCowViewHolder.mTagNumber.setText(tagNumber);
-        if (notes == null || notes.length() == 0) {
-            trackCowViewHolder.mNotes.setVisibility(View.GONE);
+        if (cowUiModel.cowModel.notes.isNullOrEmpty()) {
+            trackCowViewHolder.mNotes.visibility = View.GONE
         } else {
-            trackCowViewHolder.mNotes.setVisibility(View.VISIBLE);
-            trackCowViewHolder.mNotes.setText("Notes: " + notes);
+            trackCowViewHolder.mNotes.visibility = View.VISIBLE
+            trackCowViewHolder.mNotes.text = "Notes: ${cowUiModel.cowModel.notes}"
         }
+        if (cowUiModel.cowModel.isAlive == 1) {
 
-        if (cowEntity.isAlive() == 1) {
-            trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(android.R.color.black));
-            String message = "";
-            ArrayList<DrugsGivenEntity> drugsGivenEntities = Utility.findDrugsGivenEntityByCowId(cowId, mDrugsGivenEntities);
-            if(drugsGivenEntities.size() == 0){
-                trackCowViewHolder.mDrugsGiven.setText("No drugs given");
-                trackCowViewHolder.mDrugsGiven.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
-            }else{
-                trackCowViewHolder.mDrugsGiven.setTypeface(Typeface.DEFAULT);
-                for (int q = 0; q < drugsGivenEntities.size(); q++) {
-                    DrugsGivenEntity drugsGivenEntity = drugsGivenEntities.get(q);
+            trackCowViewHolder.mTagNumber.setTextColor(mContext.resources.getColor(android.R.color.black))
+            var message = ""
 
-                    String drugId = drugsGivenEntity.getDrugsGivenDrugId();
-                    int amountGiven = drugsGivenEntity.getDrugsGivenAmountGiven();
-
-                    DrugEntity drugEntity = findDrugEntities(drugId, mDrugList);
-                    String drugName = "";
-                    if (drugEntity != null) {
-                        drugName = drugEntity.getDrugName();
-                    }else{
-                        drugName = "[drug_unavailable]";
+            if (cowUiModel.drugsGivenAndDrugModelList.isEmpty()) {
+                trackCowViewHolder.mDrugsGiven.text = "No drugs given"
+                trackCowViewHolder.mDrugsGiven.typeface =
+                    Typeface.defaultFromStyle(Typeface.ITALIC)
+            } else {
+                trackCowViewHolder.mDrugsGiven.typeface = Typeface.DEFAULT
+                for (q in cowUiModel.drugsGivenAndDrugModelList.indices) {
+                    val drugsGivenAndDrugModel = cowUiModel.drugsGivenAndDrugModelList[q]
+                    var drugName = ""
+                    drugName = drugsGivenAndDrugModel.drugName
+                    val amountGivenStr = drugsGivenAndDrugModel.drugsGivenAmountGiven.toString()
+                    message = "$message$amountGivenStr units of $drugName"
+                    if (cowUiModel.drugsGivenAndDrugModelList.size != q + 1) {
+                        message = """
+                            $message
+                            """.trimIndent()
                     }
-                    String amountGivenStr = Integer.toString(amountGiven);
-
-                    message = message + amountGivenStr + " units of " + drugName;
-                    if (drugsGivenEntities.size() != q + 1) {
-                        message = message + "\n";
-                    }
-                    trackCowViewHolder.mDrugsGiven.setText(message);
+                    trackCowViewHolder.mDrugsGiven.text = message
                 }
             }
         } else {
-            trackCowViewHolder.mTagNumber.setTextColor(mContext.getResources().getColor(R.color.redText));
-            trackCowViewHolder.mDrugsGiven.setText("This cow is dead");
+            trackCowViewHolder.mTagNumber.setTextColor(mContext.resources.getColor(R.color.redText))
+            trackCowViewHolder.mDrugsGiven.text = "This cow is dead"
         }
     }
 
-    public void swapData(ArrayList<CowEntity> cowObjectsList, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities) {
-        mCowList = new ArrayList<>(cowObjectsList);
-        mDrugList = new ArrayList<>(drugEntities);
-        mDrugsGivenEntities = new ArrayList<>(drugsGivenEntities);
-        notifyDataSetChanged();
+    fun swapData(newCowUiModelList: List<CowUiModel>) {
+        cowUiModelList = newCowUiModelList
+        notifyDataSetChanged()
     }
 
-    public class TrackCowViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView mTagNumber;
-        private TextView mDate;
-        private TextView mDrugsGiven;
-        private TextView mNotes;
-
-        public TrackCowViewHolder(View view) {
-            super(view);
-
-            mTagNumber = view.findViewById(R.id.medicated_cow_tag_number);
-            mDate = view.findViewById(R.id.date_treated_on);
-            mDrugsGiven = view.findViewById(R.id.medication_given);
-            mNotes = view.findViewById(R.id.notes);
-
-        }
-    }
-
-    private DrugEntity findDrugEntities(String drugId, ArrayList<DrugEntity> drugList) {
-        for (int p = 0; p < drugList.size(); p++) {
-            DrugEntity drugEntity = drugList.get(p);
-            if (drugEntity.getDrugCloudDatabaseId().equals(drugId)) {
-                return drugEntity;
-            }
-        }
-        return null;
+    inner class TrackCowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val mTagNumber: TextView = view.findViewById(R.id.medicated_cow_tag_number)
+        val mDate: TextView = view.findViewById(R.id.date_treated_on)
+        val mDrugsGiven: TextView = view.findViewById(R.id.medication_given)
+        val mNotes: TextView = view.findViewById(R.id.notes)
     }
 
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.activities.MedicatedCowsActivity">
+    tools:context=".presentation.medicated_cows.MedicatedCowsActivity">
 
     <TextView
         android:id="@+id/no_medicated_cows_tv"
@@ -16,17 +16,11 @@
         android:textSize="16sp"
         android:visibility="invisible" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/medicated_cow_swipe_to_refresh"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_cow_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/track_cow_rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent" />
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/floating_action_btn_menu"

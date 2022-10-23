@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.ReadCowsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.ReadDeadCowsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
@@ -42,7 +43,8 @@ object ActivityDomainModule {
         cowRepository: CowRepository
     ): CowUseCases {
         return CowUseCases(
-            readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository)
+            readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
+            readCowsByLotId = ReadCowsByLotId(cowRepository)
         )
     }
 

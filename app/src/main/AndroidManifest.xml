@@ -89,7 +89,7 @@
         <activity
             android:name=".presentation.activities.EditMedicatedCowActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
             android:name=".presentation.manage_drugs.ManageDrugsActivity"
             android:exported="false"
@@ -101,7 +101,7 @@
             android:label="Manage Pens"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.MedicatedCowsActivity"
+            android:name=".presentation.medicated_cows.MedicatedCowsActivity"
             android:exported="false"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
@@ -113,17 +113,17 @@
             android:name=".presentation.activities.MedicateACowActivity"
             android:exported="false"
             android:label="Medicate a cow"
-            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
             android:name=".presentation.activities.MarkACowDeadActivity"
             android:exported="false"
             android:label="Mark a cow dead"
-            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
             android:name=".presentation.edit_lot.EditLotActivity"
             android:exported="false"
             android:label="Edit lot information"
-            android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
+            android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
     </application>
 
 </manifest>

@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.fragment_medicate
 
 import android.content.Context
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -19,7 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.trevorwiebe.trackacow.presentation.activities.MedicatedCowsActivity
+import com.trevorwiebe.trackacow.presentation.medicated_cows.MedicatedCowsActivity
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
@@ -65,9 +63,7 @@ class MedicateFragment : Fragment() {
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         val trackCowIntent = Intent(mContext, MedicatedCowsActivity::class.java)
-                        val penId = mPenAndLotModelList[position].penCloudDatabaseId
-                        Utility.setPenId(mContext, penId)
-                        trackCowIntent.putExtra("penEntityId", penId)
+                        trackCowIntent.putExtra("penAndLotModel", mPenAndLotModelList[position])
                         startActivity(trackCowIntent)
                     }
 

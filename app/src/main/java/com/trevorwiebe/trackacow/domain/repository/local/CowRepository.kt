@@ -7,4 +7,5 @@ interface CowRepository {
 
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowModel>>
 
+    fun getCowsByLotId(lotId: String): Flow<List<CowModel>>
 }
