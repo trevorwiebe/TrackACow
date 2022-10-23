@@ -5,7 +5,6 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotI
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId.OnArchivedLotLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.OnFeedsByLotIdReturned
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLotId.OnLoadsByLotIdLoaded
-import com.trevorwiebe.trackacow.domain.adapters.ViewCattleListAdapter
 import com.trevorwiebe.trackacow.data.entities.LoadEntity
 import android.widget.TextView
 import android.widget.LinearLayout
@@ -37,7 +36,7 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingArchivedLot.Ins
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLotId
+import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -51,8 +50,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LotReportActivity : AppCompatActivity(),
-    OnDeadCowsLoaded, OnArchivedLotLoaded, OnFeedsByLotIdReturned,
-    OnLoadsByLotIdLoaded {
+    OnDeadCowsLoaded, OnArchivedLotLoaded, OnFeedsByLotIdReturned {
 
     private var mTotalHeadInt = 0
     private var mLotId: String? = null
@@ -61,8 +59,8 @@ class LotReportActivity : AppCompatActivity(),
     private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
     private val cattleListAdapter = ViewCattleListAdapter()
     private var mCurrentHeadDays = 0
-    private var mLoadEntities = ArrayList<LoadEntity>()
     private var mReportType: Int? = null
+    private var mLoadModelList: List<LoadModel> = emptyList()
 
     private lateinit var mCustomerName: TextView
     private lateinit var mTotalHead: TextView
@@ -130,7 +128,7 @@ class LotReportActivity : AppCompatActivity(),
                     override fun onItemClick(view: View, position: Int) {
                         if (reportType == Constants.LOT) {
                             val editLoadIntent = Intent(this@LotReportActivity, EditLoadActivity::class.java)
-                            editLoadIntent.putExtra("loadId", mLoadEntities[position].loadId)
+                            editLoadIntent.putExtra("loadId", mLoadModelList[position].loadId)
                             startActivityForResult(editLoadIntent, EDIT_LOAD_CODE)
                         }
                     }
@@ -194,6 +192,30 @@ class LotReportActivity : AppCompatActivity(),
                     mNoDrugReports.visibility = View.VISIBLE
                 }
 
+                mLoadModelList = lotReportUiState.loadList
+                if(mLoadModelList.isNotEmpty()){
+
+                    mNoCattleReceived.visibility = View.GONE
+
+                    cattleListAdapter.setData(mLoadModelList)
+
+                    mTotalHeadInt = 0
+                    mCurrentHeadDays = 0
+                    for (a in mLoadModelList.indices) {
+                        val (_, numberOfHead, date) = mLoadModelList[a]
+                        mTotalHeadInt += numberOfHead
+                        val daysHadLoad = getDaysSinceFromMillis(date)
+                        val thisLoadsHeadDays = daysHadLoad * numberOfHead
+                        mCurrentHeadDays += thisLoadsHeadDays
+                    }
+
+                    val totalHeadStr = numberFormat.format(mTotalHeadInt.toLong())
+                    mTotalHead.text = totalHeadStr
+                    val lotIds = ArrayList<String?>()
+                    lotIds.add(mLotId)
+                    QueryDeadCowsByLotIds(this@LotReportActivity, lotIds).execute(this@LotReportActivity)
+                }
+
             }
         }
 
@@ -245,30 +267,6 @@ class LotReportActivity : AppCompatActivity(),
         mFeedReports.text = amountFedText
     }
 
-    override fun onLoadsByLotIdLoaded(loadEntities: ArrayList<LoadEntity>) {
-        if (loadEntities.size == 0) {
-            mNoCattleReceived.visibility = View.VISIBLE
-        } else {
-            mNoCattleReceived.visibility = View.GONE
-        }
-        mLoadEntities = loadEntities
-        cattleListAdapter.setData(mLoadEntities)
-        mTotalHeadInt = 0
-        mCurrentHeadDays = 0
-        for (a in mLoadEntities.indices) {
-            val (_, numberOfHead, date) = mLoadEntities[a]
-            mTotalHeadInt += numberOfHead
-            val daysHadLoad = getDaysSinceFromMillis(date)
-            val thisLoadsHeadDays = daysHadLoad * numberOfHead
-            mCurrentHeadDays += thisLoadsHeadDays
-        }
-        val totalHeadStr = numberFormat.format(mTotalHeadInt.toLong())
-        mTotalHead.text = totalHeadStr
-        val lotIds = ArrayList<String?>()
-        lotIds.add(mLotId)
-        QueryDeadCowsByLotIds(this, lotIds).execute(this)
-    }
-
     override fun onDeadCowsLoaded(cowEntities: ArrayList<CowEntity>) {
         var numberOfHeadDaysToSubtract = 0
         for (r in cowEntities.indices) {
@@ -318,7 +316,7 @@ class LotReportActivity : AppCompatActivity(),
 
                 // delete the lot entity
                 baseRef.child(Constants.LOTS).child(
-                    mSelectedLotModel!!.lotCloudDatabaseId!!
+                    mSelectedLotModel!!.lotCloudDatabaseId
                 ).removeValue()
 
                 // push archived lot to the cloud;
@@ -368,7 +366,6 @@ class LotReportActivity : AppCompatActivity(),
         if(lotModel != null) {
             mLotId = lotModel.lotCloudDatabaseId
             QueryFeedsByLotId(mLotId, this).execute(this)
-            QueryLoadsByLotId(mLotId, this).execute(this)
         }
     }
 

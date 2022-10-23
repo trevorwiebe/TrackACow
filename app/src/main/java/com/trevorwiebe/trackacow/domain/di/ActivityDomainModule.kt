@@ -13,6 +13,8 @@ import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGiv
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.ReadLoadsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
@@ -92,6 +94,16 @@ object ActivityDomainModule {
             readLotsByLotId = ReadLotsByLotId(lotRepository),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context),
             updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context)
+        )
+    }
+
+    @ActivityScoped
+    @Provides
+    fun provideLoadUseCases(
+        loadRepository: LoadRepository
+    ): LoadUseCases{
+        return LoadUseCases(
+            readLoadsByLotId = ReadLoadsByLotId(loadRepository)
         )
     }
 
