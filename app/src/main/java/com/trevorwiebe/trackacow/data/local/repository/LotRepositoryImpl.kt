@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLotDao
 import com.trevorwiebe.trackacow.data.local.dao.LotDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheLotEntity
+import com.trevorwiebe.trackacow.data.mapper.toLotEntity
 import com.trevorwiebe.trackacow.data.mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.CacheLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
@@ -41,7 +42,17 @@ class LotRepositoryImpl(
         lotDao.updateLotWithNewPenId(lotId, penId)
     }
 
+    override suspend fun updateLot(lotModel: LotModel) {
+        lotDao.updateLot(
+            lotModel.lotPrimaryKey,
+            lotModel.lotName,
+            lotModel.customerName,
+            lotModel.notes,
+            lotModel.date
+        )
+    }
+
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {
-        cacheLotDao.insertHoldingLot(cacheLotModel.toCacheLotEntity())
+        cacheLotDao.insertCacheLot(cacheLotModel.toCacheLotEntity())
     }
 }

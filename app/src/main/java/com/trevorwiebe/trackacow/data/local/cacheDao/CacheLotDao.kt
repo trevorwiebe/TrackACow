@@ -5,18 +5,28 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
 
 @Dao
 interface CacheLotDao {
-    @Insert
-    fun insertHoldingLot(cacheLotEntity: CacheLotEntity)
 
-    @get:Query("SELECT * FROM holdingLot")
-    val holdingLotList: List<CacheLotEntity>
+    @Insert
+    suspend fun insertCacheLot(cacheLotEntity: CacheLotEntity)
+
 
     @Update
     fun updateHoldingLot(cacheLotEntity: CacheLotEntity)
 
+    // Deprecated
+    @Deprecated("use flow return function")
+    @Query("SELECT * FROM holdingLot")
+    fun getHoldingLotList(): List<CacheLotEntity>
+
+    @Deprecated("use suspend function")
+    @Insert
+    fun insertHoldingLot(cacheLotEntity: CacheLotEntity)
+
+    @Deprecated("use suspend function")
     @Delete
     fun deleteHoldingLot(cacheLotEntity: CacheLotEntity)
 
+    @Deprecated("use flow return function")
     @Query("DELETE FROM holdingLot")
     fun deleteHoldingLotTable()
 }

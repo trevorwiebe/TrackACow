@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
 import androidx.appcompat.app.AppCompatActivity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByLotIds.OnDrugsGivenByLotIdLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds.OnDeadCowsLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId.OnArchivedLotLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.OnFeedsByLotIdReturned
@@ -10,7 +9,6 @@ import com.trevorwiebe.trackacow.domain.adapters.ViewCattleListAdapter
 import com.trevorwiebe.trackacow.data.entities.LoadEntity
 import android.widget.TextView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.os.Bundle
 import com.trevorwiebe.trackacow.R
 import android.content.Intent
@@ -19,10 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.activities.EditLoadActivity
 import com.trevorwiebe.trackacow.presentation.activities.DrugsGivenReportActivity
-import com.trevorwiebe.trackacow.presentation.activities.EditLotActivity
+import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByLotIds
-import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
 import com.trevorwiebe.trackacow.domain.objects.DrugReportsObject
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds
@@ -43,8 +39,6 @@ import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLotId
-import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
-import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -220,7 +214,7 @@ class LotReportActivity : AppCompatActivity(),
         val id = item.itemId
         if (id == R.id.reports_action_edit) {
             val editLotIntent = Intent(this@LotReportActivity, EditLotActivity::class.java)
-            editLotIntent.putExtra("lotId", mSelectedLotModel!!.lotCloudDatabaseId)
+            editLotIntent.putExtra("lotModel", mSelectedLotModel)
             startActivityForResult(editLotIntent, EDIT_PEN_CODE)
         }
         return super.onOptionsItemSelected(item)
@@ -231,7 +225,7 @@ class LotReportActivity : AppCompatActivity(),
         mSelectedLotModel = LotModel(
             archivedLotEntity.primaryKey,
             archivedLotEntity.lotName!!,
-            archivedLotEntity.lotId,
+            archivedLotEntity.lotId ?: "",
             archivedLotEntity.customerName,
             archivedLotEntity.notes,
             archivedLotEntity.dateEnded,

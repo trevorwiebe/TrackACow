@@ -9,11 +9,11 @@ import androidx.room.Entity
 class CacheLotEntity (
     @PrimaryKey(autoGenerate = true)
     var lotPrimaryKey: Int = 0,
-    var lotName: String? = null,
-    var lotCloudDatabaseId: String? = null,
-    var customerName: String? = null,
-    var notes: String? = null,
+    var lotName: String? = "",
+    var lotCloudDatabaseId: String = "",
+    var customerName: String? = "",
+    var notes: String? = "",
     var date: Long = 0,
-    var lotPenCloudDatabaseId: String? = null,
+    var lotPenCloudDatabaseId: String? = "",
     var whatHappened: Int = 0
 )

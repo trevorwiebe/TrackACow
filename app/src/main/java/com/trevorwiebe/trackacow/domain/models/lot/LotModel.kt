@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class LotModel(
     var lotPrimaryKey: Int = 0,
     var lotName: String = "",
-    var lotCloudDatabaseId: String? = "",
+    var lotCloudDatabaseId: String = "",
     var customerName: String? = null,
     var notes: String? = null,
     var date: Long = 0,

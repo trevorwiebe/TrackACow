@@ -120,7 +120,7 @@
             android:label="Mark a cow dead"
             android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
         <activity
-            android:name=".presentation.activities.EditLotActivity"
+            android:name=".presentation.edit_lot.EditLotActivity"
             android:exported="false"
             android:label="Edit lot information"
             android:parentActivityName=".presentation.activities.MedicatedCowsActivity" />
