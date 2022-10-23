@@ -12,7 +12,7 @@ import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import com.trevorwiebe.trackacow.presentation.manage_drugs.ManageDrugsActivity
 import com.trevorwiebe.trackacow.presentation.manage_rations.ManageRationsActivity
 import com.trevorwiebe.trackacow.presentation.activities.ArchivesActivity
-import com.trevorwiebe.trackacow.presentation.activities.SettingsActivity
+import com.trevorwiebe.trackacow.presentation.settings.SettingsActivity
 
 class MoreFragment : Fragment() {
     override fun onCreateView(

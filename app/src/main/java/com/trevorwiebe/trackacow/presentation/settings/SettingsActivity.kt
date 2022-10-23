@@ -1,15 +1,13 @@
-package com.trevorwiebe.trackacow.presentation.activities;
+package com.trevorwiebe.trackacow.presentation.settings
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.trevorwiebe.trackacow.R
 
-import com.trevorwiebe.trackacow.R;
+class SettingsActivity : AppCompatActivity() {
 
-public class SettingsActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
     }
 }

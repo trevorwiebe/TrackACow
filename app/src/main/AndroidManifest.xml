@@ -65,7 +65,7 @@
         <activity android:name=".presentation.activities.AddDrugsGivenToSpecificCowActivity" />
         <activity android:name=".presentation.activities.EditDrugsGivenToSpecificCowActivity" />
         <activity
-            android:name=".presentation.activities.SettingsActivity"
+            android:name=".presentation.settings.SettingsActivity"
             android:exported="false"
             android:label="Settings"
             android:parentActivityName=".presentation.activities.MainActivity" />
