@@ -30,7 +30,7 @@
             android:label="Drug Reports"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
-            android:name=".presentation.activities.EditLoadActivity"
+            android:name=".presentation.edit_load.EditLoadActivity"
             android:exported="false"
             android:label="Edit cattle added"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />

@@ -9,6 +9,10 @@ import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.DeleteLoad
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.ReadLoadsByLotId
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.UpdateLoad
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
@@ -20,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -54,6 +59,18 @@ object ViewModelDomainModule {
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
             createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
             updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+        )
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun provideLoadUseCases(
+        loadRepository: LoadRepository
+    ): LoadUseCases {
+        return LoadUseCases(
+            readLoadsByLotId = ReadLoadsByLotId(loadRepository),
+            updateLoad = UpdateLoad(loadRepository),
+            deleteLoad = DeleteLoad(loadRepository)
         )
     }
 

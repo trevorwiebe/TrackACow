@@ -1,11 +1,8 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
 import androidx.appcompat.app.AppCompatActivity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds.OnDeadCowsLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId.OnArchivedLotLoaded
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.OnFeedsByLotIdReturned
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.QueryLoadsByLotId.OnLoadsByLotIdLoaded
-import com.trevorwiebe.trackacow.data.entities.LoadEntity
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.os.Bundle
@@ -14,13 +11,11 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
-import com.trevorwiebe.trackacow.presentation.activities.EditLoadActivity
+import com.trevorwiebe.trackacow.presentation.edit_load.EditLoadActivity
 import com.trevorwiebe.trackacow.presentation.activities.DrugsGivenReportActivity
 import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.cow.QueryDeadCowsByLotIds
-import com.trevorwiebe.trackacow.data.entities.CowEntity
 import android.view.*
 import android.widget.Button
 import androidx.activity.viewModels
@@ -128,7 +123,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                     override fun onItemClick(view: View, position: Int) {
                         if (reportType == Constants.LOT) {
                             val editLoadIntent = Intent(this@LotReportActivity, EditLoadActivity::class.java)
-                            editLoadIntent.putExtra("loadId", mLoadModelList[position].loadId)
+                            editLoadIntent.putExtra("loadModel", mLoadModelList[position])
                             startActivity(editLoadIntent)
                         }
                     }
