@@ -369,7 +369,7 @@ public class MedicateACowActivity extends AppCompatActivity implements
             int tagNumber = Integer.parseInt(mTagName.getText().toString());
             String notes = mNotes.getText().toString();
 
-            CowEntity cowEntity = new CowEntity(0, 0, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
+            CowEntity cowEntity = new CowEntity(0, 1, cowId, tagNumber, System.currentTimeMillis(), notes, mSelectedLot.getLotCloudDatabaseId());
 
             mCowEntities.add(cowEntity);
 
