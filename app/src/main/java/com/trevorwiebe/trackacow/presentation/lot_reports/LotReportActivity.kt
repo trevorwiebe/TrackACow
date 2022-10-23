@@ -129,7 +129,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                         if (reportType == Constants.LOT) {
                             val editLoadIntent = Intent(this@LotReportActivity, EditLoadActivity::class.java)
                             editLoadIntent.putExtra("loadId", mLoadModelList[position].loadId)
-                            startActivityForResult(editLoadIntent, EDIT_LOAD_CODE)
+                            startActivity(editLoadIntent)
                         }
                     }
 
@@ -267,7 +267,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
         if (id == R.id.reports_action_edit) {
             val editLotIntent = Intent(this@LotReportActivity, EditLotActivity::class.java)
             editLotIntent.putExtra("lotModel", mSelectedLotModel)
-            startActivityForResult(editLotIntent, EDIT_PEN_CODE)
+            startActivity(editLotIntent)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -388,7 +388,5 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
 
     companion object {
         private const val TAG = "LotReportActivity"
-        private const val EDIT_PEN_CODE = 747
-        private const val EDIT_LOAD_CODE = 472
     }
 }
