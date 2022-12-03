@@ -30,7 +30,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -123,7 +125,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
             val lotName = mLotName.text.toString()
             val customerName = mCustomerName.text.toString()
             val totalHead = mTotalCount.text.toString().toInt()
-            val notes = mNotes.getText().toString()
+            val notes = mNotes.text.toString()
             val date = mCalendar.timeInMillis
             val lotPushRef = mBaseRef.child(Constants.LOTS).push()
             val id = lotPushRef.key
@@ -233,23 +235,24 @@ class MedicatedCowsActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch{
-            medicatedCowsViewModel.uiState.collect{
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                medicatedCowsViewModel.uiState.collect {
 
-                mPenAndLotModel = it.statePenAndLotModel
+                    mPenAndLotModel = it.statePenAndLotModel
 
-                if(mPenAndLotModel != null) {
-                    title = "Pen: " + mPenAndLotModel!!.penName
+                    if (mPenAndLotModel != null) {
+                        title = "Pen: " + mPenAndLotModel!!.penName
 
-                    if(mPenAndLotModel!!.lotName != null){
+                        if (mPenAndLotModel!!.lotName != null) {
+                            supportActionBar!!.subtitle = mPenAndLotModel!!.lotName
+                            setActive()
+                        } else {
+                            setInActive()
+                        }
 
-                        supportActionBar!!.subtitle = mPenAndLotModel!!.lotName
-                        setActive()
-
-                    }else{
-                        setInActive()
                     }
 
-                    mCowUiModelList = it.cowUiModelList
+                    mCowUiModelList = if(it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
                     if (mCowUiModelList.isEmpty() && mIsActive) {
                         mNoMedicatedCows.visibility = View.VISIBLE
                     } else {
@@ -259,7 +262,6 @@ class MedicatedCowsActivity : AppCompatActivity() {
                     mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
 
                 }
-
             }
         }
     }
@@ -319,9 +321,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private methods
-     */
+    /* private methods */
     fun medicateCow(view: View?) {
         mMedicateACowFabMenu.collapse()
         val medicateCowIntent = Intent(this@MedicatedCowsActivity, MedicateACowActivity::class.java)

@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.medicated_cows
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -45,6 +46,7 @@ class MedicatedCowsViewModel @AssistedInject constructor(
     private var drugsJob: Job? = null
 
     private var drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel> = mutableListOf()
+    private var cowList: List<CowModel> = mutableListOf()
 
     private val _uiState = MutableStateFlow(MedicatedCowsUiState())
     val uiState: StateFlow<MedicatedCowsUiState> = _uiState.asStateFlow()
@@ -57,6 +59,7 @@ class MedicatedCowsViewModel @AssistedInject constructor(
 
         if(penAndLotModel?.lotCloudDatabaseId != null){
             readDrugsAndDrugsGivenByLotId(penAndLotModel.lotCloudDatabaseId!!)
+            readCowsByLotId(penAndLotModel.lotCloudDatabaseId!!)
         }
 
     }
@@ -64,9 +67,13 @@ class MedicatedCowsViewModel @AssistedInject constructor(
     private fun readDrugsAndDrugsGivenByLotId(lotId: String){
         drugsJob?.cancel()
         drugsJob = drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotId)
-            .map {
-                drugsGivenAndDrugModelList = it
-                readCowsByLotId(penAndLotModel?.lotCloudDatabaseId!!)
+            .map { thisDrugsGivenAndDrugModelList ->
+                drugsGivenAndDrugModelList = thisDrugsGivenAndDrugModelList
+                _uiState.update {
+                    it.copy(
+                        cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, cowList)
+                    )
+                }
             }
             .launchIn(viewModelScope)
     }
@@ -75,9 +82,10 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         cowJob?.cancel()
         cowJob = cowUseCases.readCowsByLotId(lotId)
             .map { thisCowList ->
+                cowList = thisCowList
                 _uiState.update {
                     it.copy(
-                        cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, thisCowList)
+                        cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, cowList)
                     )
                 }
             }
@@ -87,7 +95,9 @@ class MedicatedCowsViewModel @AssistedInject constructor(
     private fun buildCowUiModelList(
         privateDrugsGivenAndDrugList: List<DrugsGivenAndDrugModel>,
         cowList: List<CowModel>
-    ): List<CowUiModel> {
+    ): List<CowUiModel>? {
+
+        if(cowList.isEmpty() || privateDrugsGivenAndDrugList.isEmpty()) return null
         val cowUiModelList: MutableList<CowUiModel> = mutableListOf()
         for(i in cowList.indices){
             val cowUiModel = CowUiModel(
@@ -99,8 +109,3 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         return cowUiModelList
     }
 }
-
-data class MedicatedCowsUiState(
-    val statePenAndLotModel: PenAndLotModel? = null,
-    val cowUiModelList: List<CowUiModel> = emptyList()
-)
