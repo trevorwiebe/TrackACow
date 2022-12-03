@@ -4,7 +4,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugM
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
 import kotlinx.coroutines.flow.Flow
 
-data class ReadDrugsGivenAndDrugsByLotId (
+class ReadDrugsGivenAndDrugsByLotId (
     private val drugsGivenRepository: DrugsGivenRepository
 ){
     operator fun invoke(lotId: String): Flow<List<DrugsGivenAndDrugModel>> {
