@@ -24,7 +24,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -50,15 +49,16 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun provideCallUseCases(
-        callRepository: CallRepository,
-        callRepositoryRemote: CallRepositoryRemote,
-        context: Application
+            callRepository: CallRepository,
+            callRepositoryRemote: CallRepositoryRemote,
+            getCloudDatabaseId: GetCloudDatabaseId,
+            context: Application
     ): CallUseCases {
         return CallUseCases(
-            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
-            readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
-            createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
-            updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+                readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+                readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
+                createCallUC = CreateCallUC(callRepository, callRepositoryRemote, getCloudDatabaseId, context),
+                updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
         )
     }
 

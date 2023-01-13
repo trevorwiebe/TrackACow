@@ -67,15 +67,16 @@ object ActivityDomainModule {
     @ActivityScoped
     @Provides
     fun provideCallUseCases(
-        callRepository: CallRepository,
-        callRepositoryRemote: CallRepositoryRemote,
-        context: Application
+            callRepository: CallRepository,
+            callRepositoryRemote: CallRepositoryRemote,
+            getCloudDatabaseId: GetCloudDatabaseId,
+            context: Application
     ): CallUseCases {
         return CallUseCases(
-            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
-            readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
-            createCallUC = CreateCallUC(callRepository, callRepositoryRemote, context),
-            updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+                readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+                readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
+                createCallUC = CreateCallUC(callRepository, callRepositoryRemote, getCloudDatabaseId, context),
+                updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
         )
     }
 
