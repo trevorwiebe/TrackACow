@@ -15,6 +15,8 @@ class DeleteRationByIdUC(
 ) {
     suspend operator fun invoke(rationModel: RationModel){
 
+        // TODO: fix the ordering of this code
+
         val isConnectionActive = Utility.haveNetworkConnection(context)
 
         if(isConnectionActive){

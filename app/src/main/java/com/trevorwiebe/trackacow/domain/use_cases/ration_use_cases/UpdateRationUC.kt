@@ -15,6 +15,8 @@ class UpdateRationUC(
 ) {
     suspend operator fun invoke(rationModel: RationModel){
 
+        // TODO: add code to update to remote database
+
         rationsRepository.updateRations(rationModel)
 
         if(Utility.haveNetworkConnection(context)){

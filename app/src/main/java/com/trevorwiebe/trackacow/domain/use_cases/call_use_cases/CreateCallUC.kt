@@ -15,6 +15,8 @@ data class CreateCallUC(
 ){
     suspend operator fun invoke(callModel: CallModel){
 
+        // TODO: add code to update to remote database
+
         val id: Long = callRepository.insertCall(callModel)
 
         callModel.callPrimaryKey = id.toInt()

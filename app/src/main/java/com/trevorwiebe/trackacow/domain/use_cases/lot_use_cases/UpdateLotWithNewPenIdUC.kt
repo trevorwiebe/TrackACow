@@ -15,6 +15,8 @@ data class UpdateLotWithNewPenIdUC(
 ){
     suspend operator fun invoke(lotModel: LotModel){
 
+        // TODO: confirm that this function works as it should
+
         val lotId = lotModel.lotCloudDatabaseId ?: ""
         val penId = lotModel.lotPenCloudDatabaseId
 

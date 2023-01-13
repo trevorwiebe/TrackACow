@@ -17,6 +17,8 @@ data class UpdateCallUC(
 
         callRepository.updateCall(callModel)
 
+        // TODO: add code to update remote cloud id
+
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
             // TODO fix issue where can't update without cloud ID
