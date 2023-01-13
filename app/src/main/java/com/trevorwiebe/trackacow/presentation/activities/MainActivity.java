@@ -20,6 +20,7 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mMainProgressBar;
     private Toolbar mToolBar;
     private FrameLayout mMainLayout;
+    private boolean mIsActivityPaused = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +112,13 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         invalidateOptionsMenu();
         mFirebaseAuth.addAuthStateListener(mAuthListener);
+        mIsActivityPaused = false;
     }
 
     @Override
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
+        mIsActivityPaused = true;
         super.onPause();
     }
 
@@ -365,8 +369,8 @@ public class MainActivity extends AppCompatActivity implements
         // save the fragment id
         Utility.saveLastUsedScreen(this, fragmentId);
 
-        // check if the activity has been destroyed
-        if(this.isDestroyed()) return;
+        // check if the activity has been paused
+        if(mIsActivityPaused) return;
 
         // open the correct fragment
         switch (fragmentId) {
