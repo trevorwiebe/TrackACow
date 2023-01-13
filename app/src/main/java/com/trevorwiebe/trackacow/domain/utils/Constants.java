@@ -15,7 +15,7 @@ public class Constants {
     public static final String DATABASE_STRING_RATIONS = "/rations";
     public static final String RATIONS = "rations";
 
-    public static final String DATABASE_STRING_CALLS = "/calls";
+    public static final String DATABASE_STRING_CALLS = "calls";
     public static final String CALLS = "calls";
 
     public static final String DATABASE_STRING_PENS = "/pens";
