@@ -79,28 +79,22 @@ public class MainActivity extends AppCompatActivity implements
         mMainProgressBar = findViewById(R.id.main_progress_bar);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setVisibility(View.INVISIBLE);
-        mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                mBottomNavigationView.getMenu().setGroupCheckable(0, true, true);
-                int id = menuItem.getItemId();
-                setSelectedFragment(Utility.getFragmentIdFromResourceID(id));
-                return true;
-            }
+        mBottomNavigationView.setOnItemSelectedListener((BottomNavigationView.OnNavigationItemSelectedListener) menuItem -> {
+            mBottomNavigationView.getMenu().setGroupCheckable(0, true, true);
+            int id = menuItem.getItemId();
+            setSelectedFragment(Utility.getFragmentIdFromResourceID(id));
+            return true;
         });
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                mFirebaseAuth = firebaseAuth;
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    onSignedOutCleanUp();
-                    Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
-                    startActivity(signInIntent);
-                } else {
-                    onSignedInInitialized();
-                }
+        mAuthListener = firebaseAuth -> {
+            mFirebaseAuth = firebaseAuth;
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) {
+                onSignedOutCleanUp();
+                Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(signInIntent);
+            } else {
+                onSignedInInitialized();
             }
         };
 
@@ -145,19 +139,13 @@ public class MainActivity extends AppCompatActivity implements
 
             data_to_upload_dialog.setTitle("Local changes made");
             data_to_upload_dialog.setMessage("You have made local changes that are not synced to the cloud.");
-            data_to_upload_dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
+            data_to_upload_dialog.setNegativeButton("Cancel", (dialog, which) -> {
             });
-            data_to_upload_dialog.setPositiveButton("Sync", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mMainProgressBar.setVisibility(View.VISIBLE);
+            data_to_upload_dialog.setPositiveButton("Sync", (dialog, which) -> {
+                mMainProgressBar.setVisibility(View.VISIBLE);
 
-                    mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
-                    mSyncDatabase.beginSync();
-                }
+                mSyncDatabase = new SyncDatabase(MainActivity.this, MainActivity.this);
+                mSyncDatabase.beginSync();
             });
             data_to_upload_dialog.show();
         }
@@ -318,24 +306,11 @@ public class MainActivity extends AppCompatActivity implements
         AlertDialog.Builder accountEnding = new AlertDialog.Builder(MainActivity.this);
         accountEnding.setTitle(title);
         accountEnding.setMessage(message);
-        accountEnding.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Utility.setShouldShowTrialEndsSoon(MainActivity.this, true);
-            }
-        });
-        accountEnding.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        accountEnding.setNegativeButton("Cancel", (dialog, which) -> Utility.setShouldShowTrialEndsSoon(MainActivity.this, true));
+        accountEnding.setPositiveButton("Renew", (dialog, which) -> {
 
-            }
         });
-        accountEnding.setNeutralButton("Don't show again", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Utility.setShouldShowTrialEndsSoon(MainActivity.this, false);
-            }
-        });
+        accountEnding.setNeutralButton("Don't show again", (dialog, which) -> Utility.setShouldShowTrialEndsSoon(MainActivity.this, false));
         if (Utility.shouldShowTrialEndsSoon(MainActivity.this)) {
             accountEnding.show();
         }
@@ -349,19 +324,11 @@ public class MainActivity extends AppCompatActivity implements
         accountEnded.setTitle(title);
         accountEnded.setMessage(message);
         accountEnded.setCancelable(false);
-        accountEnded.setPositiveButton("Renew", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.manage_sub_url)));
-                startActivity(browserIntent);
-            }
+        accountEnded.setPositiveButton("Renew", (dialog, which) -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.manage_sub_url)));
+            startActivity(browserIntent);
         });
-        accountEnded.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+        accountEnded.setNegativeButton("Cancel", (dialog, which) -> finish());
         accountEnded.show();
     }
 
