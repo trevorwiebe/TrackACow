@@ -15,6 +15,8 @@ class UpdatePenUC(
 ) {
     suspend operator fun invoke(penModel: PenModel){
 
+        // TODO: add code to update to remote database
+
         penRepository.updatePen(penModel)
 
         if(Utility.haveNetworkConnection(context)){
