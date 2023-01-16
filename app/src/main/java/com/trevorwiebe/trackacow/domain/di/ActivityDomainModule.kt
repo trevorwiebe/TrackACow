@@ -147,7 +147,12 @@ object ActivityDomainModule {
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(drugRepository),
             createDrug = CreateDrug(drugRepository, drugRepositoryRemote, getCloudDatabaseId, context),
-            updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context)
+            updateDrug = UpdateDrug(
+                drugRepository,
+                drugRepositoryRemote,
+                getCloudDatabaseId,
+                context
+            )
         )
     }
 
