@@ -185,9 +185,21 @@ object TrackACowDataModule {
     @Singleton
     fun provideLoadRepository(
         db: AppDatabase
-    ): LoadRepository{
+    ): LoadRepository {
         return LoadRepositoryImpl(
-            loadDao = db.loadDao()
+            loadDao = db.loadDao(),
+            cacheLoadDao = db.cacheLoadDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providesLoadRemoteRepository(
+        remoteDb: FirebaseDatabase,
+    ): LoadRemoteRepository {
+        return LoadRemoteRepositoryImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOAD
         )
     }
 

@@ -117,12 +117,20 @@ object ActivityDomainModule {
     @ActivityScoped
     @Provides
     fun provideLoadUseCases(
-        loadRepository: LoadRepository
+        loadRepository: LoadRepository,
+        loadRemoteRepository: LoadRemoteRepository,
+        getCloudDatabaseId: GetCloudDatabaseId,
+        context: Application
     ): LoadUseCases{
         return LoadUseCases(
             readLoadsByLotId = ReadLoadsByLotId(loadRepository),
             updateLoad = UpdateLoad(loadRepository),
-            deleteLoad = DeleteLoad(loadRepository)
+            deleteLoad = DeleteLoad(
+                loadRepository,
+                loadRemoteRepository,
+                getCloudDatabaseId,
+                context
+            )
         )
     }
 
