@@ -21,8 +21,6 @@ class UpdateDrug(
 
        drugRepository.updateDrug(drugModel)
 
-       // TODO: add code to update to remote database
-
        if (Utility.haveNetworkConnection(context)) {
            // insertDrug uses the same code as updateDrug would
            drugRepositoryRemote.insertDrug(drugModel)
