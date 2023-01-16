@@ -43,9 +43,9 @@ class EditLoadActivity : AppCompatActivity() {
         val deleteBtn = findViewById<Button>(R.id.delete_load_of_cattle)
 
         @Suppress("DEPRECATION")
-        mSelectedLoad = if(VERSION.SDK_INT <= 33){
+        mSelectedLoad = if (VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("loadModel", LoadModel::class.java)
-        }else{
+        } else {
             intent.getParcelableExtra("loadModel")
         }
 
