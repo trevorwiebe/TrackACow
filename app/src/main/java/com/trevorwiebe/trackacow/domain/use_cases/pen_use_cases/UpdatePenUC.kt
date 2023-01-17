@@ -14,15 +14,14 @@ class UpdatePenUC(
     private val context: Application
 ) {
     suspend operator fun invoke(penModel: PenModel){
-
-        // TODO: add code to update to remote database
-
+        
         penRepository.updatePen(penModel)
 
         if(Utility.haveNetworkConnection(context)){
             // insertPenRemote is the same code as updatePenRemote would be
-            penRepositoryRemote.insertPenRemote(penModel)
+            penRepositoryRemote.insertAndUpdatePenRemote(penModel)
         }else{
+            Utility.setNewDataToUpload(context, true)
             penRepository.insertCachePen(penModel.toCachePenModel(Constants.INSERT_UPDATE))
         }
 

@@ -24,7 +24,7 @@ class CreatePenUC(
         penModel.penPrimaryKey = id.toInt()
 
         if(Utility.haveNetworkConnection(context)){
-            penRemoteRepository.insertPenRemote(penModel)
+            penRemoteRepository.insertAndUpdatePenRemote(penModel)
         }else{
             penRepository.insertCachePen(penModel.toCachePenModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)

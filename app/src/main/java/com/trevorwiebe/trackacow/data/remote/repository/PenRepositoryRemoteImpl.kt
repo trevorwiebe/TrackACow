@@ -10,9 +10,9 @@ class PenRepositoryRemoteImpl(
 ): PenRepositoryRemote {
 
     // Use this for insert and update
-    override suspend fun insertPenRemote(penModel: PenModel) {
+    override suspend fun insertAndUpdatePenRemote(penModel: PenModel) {
         // make sure is not null or empty
-        if(!penModel.penCloudDatabaseId.isNullOrEmpty()) {
+        if (!penModel.penCloudDatabaseId.isNullOrEmpty()) {
             firebaseDatabase.getReference(
                 "$databasePath/${penModel.penCloudDatabaseId}"
             ).setValue(penModel)
