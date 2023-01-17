@@ -6,6 +6,6 @@ interface LotRepositoryRemote {
 
     fun updateLotWithNewPenIdRemote(lotId: String, penId: String)
 
-    fun insertLotRemote(lotModel: LotModel)
+    fun insertAndUpdateLotRemote(lotModel: LotModel)
 
 }

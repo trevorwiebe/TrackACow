@@ -32,9 +32,9 @@ class EditLotActivity : AppCompatActivity() {
         this.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         @Suppress("DEPRECATION")
-        val lotModel: LotModel? = if(VERSION.SDK_INT <= 33 ){
+        val lotModel: LotModel? = if (VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("lotModel", LotModel::class.java)
-        }else{
+        } else {
             intent.getParcelableExtra("lotModel")
         }
 

@@ -17,11 +17,10 @@ data class UpdateLotWithLotId(
         
         lotRepository.updateLot(lotModel)
 
-        // TODO: add code to update to remote database
-
         if(Utility.haveNetworkConnection(context)){
-            lotRepositoryRemote.insertLotRemote(lotModel)
+            lotRepositoryRemote.insertAndUpdateLotRemote(lotModel)
         }else{
+            Utility.setNewDataToUpload(context, true)
             lotRepository.createCacheLot(lotModel.toCacheLotModel(Constants.INSERT_UPDATE))
         }
 
