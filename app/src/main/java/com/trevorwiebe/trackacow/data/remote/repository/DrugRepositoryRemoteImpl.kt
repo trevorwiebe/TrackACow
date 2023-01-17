@@ -12,7 +12,7 @@ class DrugRepositoryRemoteImpl(
     override fun insertDrug(drugModel: DrugModel) {
         if(drugModel.drugCloudDatabaseId.isNotEmpty()) {
             firebaseDatabase.getReference(
-                "$databasePath/${drugModel.drugCloudDatabaseId}"
+                "$databasePath${drugModel.drugCloudDatabaseId}"
             ).setValue(drugModel)
         }
     }

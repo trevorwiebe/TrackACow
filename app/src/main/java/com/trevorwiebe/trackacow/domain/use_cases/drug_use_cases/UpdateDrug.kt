@@ -12,12 +12,9 @@ import com.trevorwiebe.trackacow.domain.utils.Utility
 class UpdateDrug(
     private val drugRepository: DrugRepository,
     private val drugRepositoryRemote: DrugRepositoryRemote,
-    private val getCloudDatabaseId: GetCloudDatabaseId,
     private val context: Application
 ) {
    suspend operator fun invoke(drugModel: DrugModel) {
-
-       drugModel.drugCloudDatabaseId = getCloudDatabaseId.invoke("")
 
        drugRepository.updateDrug(drugModel)
 
