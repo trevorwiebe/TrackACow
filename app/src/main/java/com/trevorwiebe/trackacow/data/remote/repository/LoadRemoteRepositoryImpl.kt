@@ -9,6 +9,14 @@ class LoadRemoteRepositoryImpl(
     private val databasePath: String
 ) : LoadRemoteRepository {
 
+    override fun insertOrUpdateRemoteLoad(loadModel: LoadModel) {
+        if (!loadModel.loadId.isNullOrEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath/${loadModel.loadId}"
+            ).setValue(loadModel)
+        }
+    }
+
 
     override fun deleteRemoteLoad(loadModel: LoadModel) {
         if (!loadModel.loadId.isNullOrEmpty()) {

@@ -124,7 +124,7 @@ object ActivityDomainModule {
     ): LoadUseCases{
         return LoadUseCases(
             readLoadsByLotId = ReadLoadsByLotId(loadRepository),
-            updateLoad = UpdateLoad(loadRepository),
+            updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(
                 loadRepository,
                 loadRemoteRepository,
