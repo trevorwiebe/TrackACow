@@ -4,6 +4,8 @@ import android.os.Build.VERSION
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import androidx.activity.viewModels
 import com.trevorwiebe.trackacow.R
@@ -19,8 +21,6 @@ class AddOrEditDrugActivity : AppCompatActivity() {
     private lateinit var mDefaultAmount: TextInputEditText
 
     private var mDrugModel: DrugModel? = null
-
-    // TODO: fix issue where delete button is not shown when editing a drug
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +79,24 @@ class AddOrEditDrugActivity : AppCompatActivity() {
             }
         }
         cancel.setOnClickListener { finish() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.edit_drug_menu, menu)
+        val deleteBtn = menu?.findItem(R.id.action_delete_drug)
+        deleteBtn?.isVisible = mDrugModel != null
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.action_delete_drug) {
+            mAddOrEditDrugViewModel.onEvent(AddOrEditDrugUiEvent.OnDrugDeleted(mDrugModel!!))
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {

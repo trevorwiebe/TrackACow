@@ -5,10 +5,7 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
-import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.CreateDrug
-import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.ReadDrugsUC
-import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.UpdateDrug
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.DeleteLoad
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.ReadLoadsByLotId
@@ -126,12 +123,14 @@ object ViewModelDomainModule {
     ): DrugUseCases{
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(drugRepository),
-            createDrug = CreateDrug(drugRepository, drugRepositoryRemote, getCloudDatabaseId, context),
-            updateDrug = UpdateDrug(
+            createDrug = CreateDrug(
                 drugRepository,
                 drugRepositoryRemote,
+                getCloudDatabaseId,
                 context
-            )
+            ),
+            updateDrug = UpdateDrug(drugRepository, drugRepositoryRemote, context),
+            deleteDrug = DeleteDrug(drugRepository, drugRepositoryRemote, context)
         )
     }
 

@@ -12,8 +12,8 @@ Confirm that CRUD works on all entities
         Remote  C-x R- U-x D-x
         Cache   C- R- U- D-
     Drug
-        Main    C-x R-x U-x D-
-        Remote  C-x R- U-x D-
+        Main    C-x R-x U-x D-x
+        Remote  C-x R- U-x D-x
         Cache   C- R- U- D-
     DrugsGiven
         Main    C-x R- U- D-

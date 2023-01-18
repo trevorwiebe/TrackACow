@@ -10,11 +10,20 @@ class DrugRepositoryRemoteImpl(
 ): DrugRepositoryRemote {
 
     override fun insertDrug(drugModel: DrugModel) {
-        if(drugModel.drugCloudDatabaseId.isNotEmpty()) {
+        if (drugModel.drugCloudDatabaseId.isNotEmpty()) {
             firebaseDatabase.getReference(
                 "$databasePath${drugModel.drugCloudDatabaseId}"
             ).setValue(drugModel)
         }
     }
+
+    override fun deleteDrug(drugModel: DrugModel) {
+        if (drugModel.drugCloudDatabaseId.isNotEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath${drugModel.drugCloudDatabaseId}"
+            ).removeValue()
+        }
+    }
+
 
 }

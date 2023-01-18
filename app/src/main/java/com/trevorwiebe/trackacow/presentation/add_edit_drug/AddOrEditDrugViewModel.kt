@@ -14,12 +14,15 @@ class AddOrEditDrugViewModel @Inject constructor(
 ): ViewModel() {
 
     fun onEvent(event: AddOrEditDrugUiEvent){
-        when(event){
+        when (event) {
             is AddOrEditDrugUiEvent.OnDrugAdded -> {
                 createDrug(event.drugModel)
             }
             is AddOrEditDrugUiEvent.OnDrugUpdated -> {
                 updateDrug(event.drugModel)
+            }
+            is AddOrEditDrugUiEvent.OnDrugDeleted -> {
+                deleteDrug(event.drugModel)
             }
         }
     }
@@ -30,9 +33,15 @@ class AddOrEditDrugViewModel @Inject constructor(
         }
     }
 
-    private fun updateDrug(drugModel: DrugModel){
+    private fun updateDrug(drugModel: DrugModel) {
         viewModelScope.launch {
             drugUseCases.updateDrug(drugModel)
+        }
+    }
+
+    private fun deleteDrug(drugModel: DrugModel) {
+        viewModelScope.launch {
+            drugUseCases.deleteDrug(drugModel)
         }
     }
 
@@ -40,5 +49,6 @@ class AddOrEditDrugViewModel @Inject constructor(
 
 sealed class AddOrEditDrugUiEvent{
     data class OnDrugAdded(val drugModel: DrugModel): AddOrEditDrugUiEvent()
-    data class OnDrugUpdated(val drugModel: DrugModel): AddOrEditDrugUiEvent()
+    data class OnDrugUpdated(val drugModel: DrugModel) : AddOrEditDrugUiEvent()
+    data class OnDrugDeleted(val drugModel: DrugModel) : AddOrEditDrugUiEvent()
 }

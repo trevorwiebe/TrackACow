@@ -23,7 +23,7 @@ interface DrugDao {
     fun deleteDrugById(drugId: String)
 
     @Delete
-    fun deleteDrug(drugEntity: DrugEntity)
+    suspend fun deleteDrug(drugEntity: DrugEntity)
 
 
     // Deprecated
