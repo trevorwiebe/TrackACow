@@ -158,7 +158,6 @@ object ActivityDomainModule {
             updateDrug = UpdateDrug(
                 drugRepository,
                 drugRepositoryRemote,
-                getCloudDatabaseId,
                 context
             )
         )

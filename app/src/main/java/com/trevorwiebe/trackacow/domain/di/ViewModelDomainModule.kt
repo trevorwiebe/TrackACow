@@ -130,7 +130,6 @@ object ViewModelDomainModule {
             updateDrug = UpdateDrug(
                 drugRepository,
                 drugRepositoryRemote,
-                getCloudDatabaseId,
                 context
             )
         )
