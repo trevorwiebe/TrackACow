@@ -27,10 +27,11 @@ Thumbs.db
 .idea
 #.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 .gradle
+.idea/
 build/
 .navigation
 captures/
-output.json
+app/release/
 
 #NDK
 obj/
