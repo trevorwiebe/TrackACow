@@ -15,7 +15,7 @@ class DeleteRationByIdUC(
 ) {
     suspend operator fun invoke(rationModel: RationModel){
 
-        // TODO: fix the ordering of this code
+        rationsRepository.deleteRationById(rationModel)
 
         val isConnectionActive = Utility.haveNetworkConnection(context)
 
@@ -25,7 +25,5 @@ class DeleteRationByIdUC(
             rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.DELETE))
             Utility.setNewDataToUpload(context, true)
         }
-
-        rationsRepository.deleteRationById(rationModel)
     }
 }

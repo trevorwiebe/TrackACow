@@ -20,6 +20,8 @@ class AddOrEditDrugActivity : AppCompatActivity() {
 
     private var mDrugModel: DrugModel? = null
 
+    // TODO: fix issue where delete button is not shown when editing a drug
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_drug)
@@ -28,7 +30,7 @@ class AddOrEditDrugActivity : AppCompatActivity() {
         this.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         @Suppress("DEPRECATION")
-        mDrugModel = if(VERSION.SDK_INT >= 33 ){
+        mDrugModel = if (VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("drugObject", DrugModel::class.java)
         }else {
             intent.getParcelableExtra("drugObject")
