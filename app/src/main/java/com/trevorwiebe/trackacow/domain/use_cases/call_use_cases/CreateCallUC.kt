@@ -25,7 +25,7 @@ data class CreateCallUC(
 
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
-            callRepositoryRemote.insertCallRemote(callModel)
+            callRepositoryRemote.insertOrUpdateCallRemote(callModel)
         }else{
             callRepository.insertCacheCall(callModel.toHoldingCallModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)
