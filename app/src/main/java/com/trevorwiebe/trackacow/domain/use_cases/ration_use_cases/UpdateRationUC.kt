@@ -21,7 +21,7 @@ class UpdateRationUC(
 
         if(Utility.haveNetworkConnection(context)){
             // TODO fix issue where can't update because don't have cloud database id
-            rationsRepositoryRemote.updateRationRemote(rationModel)
+            rationsRepositoryRemote.insertOrUpdateRationRemote(rationModel)
         }else{
             rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)

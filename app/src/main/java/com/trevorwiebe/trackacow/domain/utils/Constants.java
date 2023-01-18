@@ -12,7 +12,7 @@ public class Constants {
     public static final String DATABASE_STRING_ARCHIVED_LOT = "/archives";
     public static final String ARCHIVE_LOT = "archives";
 
-    public static final String DATABASE_STRING_RATIONS = "/rations";
+    public static final String DATABASE_STRING_RATIONS = "rations";
     public static final String RATIONS = "rations";
 
     public static final String DATABASE_STRING_CALLS = "calls";

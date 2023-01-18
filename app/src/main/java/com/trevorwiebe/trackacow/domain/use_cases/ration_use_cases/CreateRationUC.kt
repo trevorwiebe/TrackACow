@@ -24,7 +24,8 @@ class CreateRationUC(
         rationModel.rationPrimaryKey = localDbId.toInt()
 
         if(Utility.haveNetworkConnection(context)){
-            rationRepositoryRemote.insertRationRemote(rationModel)
+            // insert and update share the same code
+            rationRepositoryRemote.insertOrUpdateRationRemote(rationModel)
         }else{
             rationsRepository.insertCacheRation(rationModel.toCacheRationModel(Constants.INSERT_UPDATE))
             Utility.setNewDataToUpload(context, true)

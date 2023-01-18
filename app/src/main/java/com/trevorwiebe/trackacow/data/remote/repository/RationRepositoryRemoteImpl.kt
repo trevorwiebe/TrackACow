@@ -9,7 +9,7 @@ class RationRepositoryRemoteImpl(
     private val databasePath: String
 ): RationRepositoryRemote {
 
-    override suspend fun insertRationRemote(rationModel: RationModel) {
+    override suspend fun insertOrUpdateRationRemote(rationModel: RationModel) {
         // make sure rationCloudDatabaseId in not null or empty
         if(!rationModel.rationCloudDatabaseId.isNullOrEmpty()) {
             firebaseDatabase.getReference(
@@ -20,15 +20,6 @@ class RationRepositoryRemoteImpl(
 
     override suspend fun insertRationListRemote(rationModelList: List<RationModel>) {
         firebaseDatabase.getReference(databasePath).setValue(rationModelList)
-    }
-
-    override suspend fun updateRationRemote(rationModel: RationModel) {
-        // make sure rationCloudDatabaseId in not null or empty
-        if(rationModel.rationCloudDatabaseId.isNullOrEmpty()) {
-            firebaseDatabase.getReference(
-                "$databasePath/${rationModel.rationCloudDatabaseId}"
-            ).setValue(rationModel)
-        }
     }
 
     override suspend fun deleteRationRemote(rationModel: RationModel) {
