@@ -90,6 +90,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medicated_cows)
 
+        // TODO: fix issue where when adding, editing or deleting a cow, screen does not refresh
+
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu)
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv)
         mResultsNotFound = findViewById(R.id.result_not_found)

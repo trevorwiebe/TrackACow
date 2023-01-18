@@ -139,6 +139,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
             startActivity(drugReports)
         }
 
+        // TODO: fix issue where current head, head days and death loss is not shown
         lifecycleScope.launch{
             lotReportViewModel.uiState.collect{ lotReportUiState ->
 

@@ -19,6 +19,7 @@ data class UpdateCallUC(
 
         val isConnected = Utility.haveNetworkConnection(context)
         if(isConnected){
+            // TODO: fix issue where updating remote call creates another one
             callRepositoryRemote.updateCallRemote(callModel)
         }else{
             Utility.setNewDataToUpload(context, true)

@@ -161,6 +161,7 @@ class ManagePensActivity : AppCompatActivity(){
                 })
         )
 
+        // TODO: fix issue where pen list does not update when pen is edited
         lifecycleScope.launch{
             managePensViewModel.uiState.collect{
                 mPenAndLotList = it.penList
