@@ -110,9 +110,21 @@ object TrackACowDataModule {
     @Singleton
     fun provideCowRepository(
         db: AppDatabase
-    ): CowRepository{
+    ): CowRepository {
         return CowRepositoryImpl(
-            cowDao = db.cowDao()
+            cowDao = db.cowDao(),
+            cacheCowDao = db.cacheCowDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideCowRemoteRepository(
+        remoteDb: FirebaseDatabase
+    ): CowRepositoryRemote {
+        return CowRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
         )
     }
 
@@ -138,6 +150,7 @@ object TrackACowDataModule {
         )
     }
 
+    // DrugsGiven
     @Provides
     @Singleton
     fun provideDrugsGivenRepository(
@@ -150,9 +163,21 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
+    fun provideDrugsGivenRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): DrugsGivenRepositoryRemote {
+        return DrugsGivenRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+        )
+    }
+
+    // Pen
+    @Provides
+    @Singleton
     fun providePenRepository(
         db: AppDatabase
-    ): PenRepository{
+    ): PenRepository {
         return PenRepositoryImpl(
             penDao = db.penDao(),
             cachePenDao = db.cachePenDao()

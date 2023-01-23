@@ -8,10 +8,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DrugsGivenDao {
 
-    @Query("SELECT * FROM DrugsGiven " +
-            "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
-            "WHERE drugsGivenLotId = :lotId")
+    @Query(
+        "SELECT * FROM DrugsGiven " +
+                "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
+                "WHERE drugsGivenLotId = :lotId"
+    )
     fun getDrugsGivenAndDrugByLotId(lotId: String): Flow<List<DrugsGivenAndDrugEntity>>
+
+    @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
+    suspend fun deleteDrugsGivenByCowId(cowId: String)
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -59,7 +64,7 @@ interface DrugsGivenDao {
 
     @Deprecated("use suspend function")
     @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
-    fun deleteDrugsGivenByCowId(cowId: String?)
+    fun deleteDrugsGivenByCowId2(cowId: String?)
 
     @Deprecated("use suspend function")
     @Query("DELETE FROM DrugsGiven WHERE drugsGivenId = :drugId")

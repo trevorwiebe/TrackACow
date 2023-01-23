@@ -5,7 +5,11 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DeleteDrugsGivenByCowId
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.DeleteLoad
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.ReadLoadsByLotId
@@ -26,6 +30,21 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object ViewModelDomainModule {
+
+    @ViewModelScoped
+    @Provides
+    fun provideCowUseCases(
+        cowRepository: CowRepository,
+        cowRepositoryRemote: CowRepositoryRemote,
+        context: Application
+    ): CowUseCases {
+        return CowUseCases(
+            readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
+            readCowsByLotId = ReadCowsByLotId(cowRepository),
+            updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
+            deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context)
+        )
+    }
 
     @ViewModelScoped
     @Provides
@@ -134,4 +153,20 @@ object ViewModelDomainModule {
         )
     }
 
+    @ViewModelScoped
+    @Provides
+    fun provideDrugsGivenUseCases(
+        drugsGivenRepository: DrugsGivenRepository,
+        drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
+        context: Application
+    ): DrugsGivenUseCases {
+        return DrugsGivenUseCases(
+            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository),
+            deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
+                drugsGivenRepository,
+                drugsGivenRemoteRepository,
+                context
+            )
+        )
+    }
 }

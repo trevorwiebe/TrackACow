@@ -5,10 +5,9 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
-import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.ReadCowsByLotId
-import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.ReadDeadCowsByLotId
+import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DeleteDrugsGivenByCowId
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
@@ -37,11 +36,15 @@ object ActivityDomainModule {
     @ActivityScoped
     @Provides
     fun provideCowUseCases(
-        cowRepository: CowRepository
+        cowRepository: CowRepository,
+        cowRepositoryRemote: CowRepositoryRemote,
+        context: Application
     ): CowUseCases {
         return CowUseCases(
             readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
-            readCowsByLotId = ReadCowsByLotId(cowRepository)
+            readCowsByLotId = ReadCowsByLotId(cowRepository),
+            updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
+            deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context)
         )
     }
 
@@ -165,10 +168,17 @@ object ActivityDomainModule {
     @ActivityScoped
     @Provides
     fun provideDrugsGivenUseCases(
-        drugsGivenRepository: DrugsGivenRepository
+        drugsGivenRepository: DrugsGivenRepository,
+        drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
+        context: Application
     ): DrugsGivenUseCases{
         return DrugsGivenUseCases(
-            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository)
+            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository),
+            deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
+                drugsGivenRepository,
+                drugsGivenRemoteRepository,
+                context
+            )
         )
     }
 }

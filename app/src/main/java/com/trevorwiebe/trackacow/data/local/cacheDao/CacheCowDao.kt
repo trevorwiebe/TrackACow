@@ -5,6 +5,11 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity
 
 @Dao
 interface CacheCowDao {
+
+    @Insert
+    suspend fun insertCacheCow(cacheCowEntity: CacheCowEntity)
+
+    // Deprecated functions
     @Deprecated("use suspend function")
     @Insert
     fun insertHoldingCow(cacheCowEntity: CacheCowEntity?)

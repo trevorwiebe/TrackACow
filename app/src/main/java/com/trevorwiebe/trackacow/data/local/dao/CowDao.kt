@@ -13,6 +13,15 @@ interface CowDao {
     @Query("SELECT * FROM Cow WHERE lotId = :lotId")
     fun getCowsByLotId(lotId: String): Flow<List<CowEntity>>
 
+    @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
+    suspend fun updateCowById(id: String?, tagNumber: Int, date: Long, notes: String?)
+
+    @Update
+    suspend fun updateCow(cowEntity: CowEntity)
+
+    @Delete()
+    suspend fun deleteCow(cowEntity: CowEntity)
+
     // Deprecated
 
     @Deprecated("use suspend function")
@@ -37,7 +46,7 @@ interface CowDao {
 
     @Deprecated("use suspend function")
     @Query("UPDATE Cow SET tagNumber = :tagNumber, date = :date, notes =:notes WHERE cowId = :id")
-    fun updateCowById(id: String?, tagNumber: Int, date: Long, notes: String?)
+    fun updateCowById2(id: String?, tagNumber: Int, date: Long, notes: String?)
 
     @Deprecated("use suspend function")
     @Query("DELETE FROM Cow WHERE lotId = :lotId")

@@ -33,10 +33,10 @@ public class Constants {
     public static final String DATABASE_STRING_LOAD = "/loads";
     public static final String LOAD = "loads";
 
-    public static final String DATABASE_STRING_DRUGS_GIVEN = "/drugsGiven";
+    public static final String DATABASE_STRING_DRUGS_GIVEN = "drugsGiven";
     public static final String DRUGS_GIVEN = "drugsGiven";
 
-    public static final String DATABASE_STRING_COW = "/cows";
+    public static final String DATABASE_STRING_COW = "cows";
     public static final String COW = "cows";
 
     public static final String DATABASE_STRING_USER = "/user";

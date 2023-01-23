@@ -17,4 +17,8 @@ class DrugsGivenRepositoryImpl(
                 drugsGivenAndDrugList.map { it.toDrugsGivenAndDrugModel() }
             }
     }
+
+    override suspend fun deleteDrugsGivenByCowId(cowId: String) {
+        drugsGivenDao.deleteDrugsGivenByCowId(cowId)
+    }
 }

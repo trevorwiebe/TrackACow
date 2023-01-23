@@ -1,6 +1,10 @@
 package com.trevorwiebe.trackacow.domain.models.compound_model
 
-data class DrugsGivenAndDrugModel (
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class DrugsGivenAndDrugModel(
     var drugsGivenPrimaryKey: Int = 0,
     var drugsGivenId: String? = "",
     var drugsGivenDrugId: String? = "",
@@ -12,4 +16,4 @@ data class DrugsGivenAndDrugModel (
     var defaultAmount: Int = 0,
     var drugCloudDatabaseId: String = "",
     var drugName: String = ""
-)
+) : Parcelable

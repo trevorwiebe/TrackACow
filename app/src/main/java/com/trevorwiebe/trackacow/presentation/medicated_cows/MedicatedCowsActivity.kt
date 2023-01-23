@@ -37,7 +37,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.activities.AddLoadOfCattleActivity
-import com.trevorwiebe.trackacow.presentation.activities.EditMedicatedCowActivity
+import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
 import com.trevorwiebe.trackacow.presentation.activities.MarkACowDeadActivity
 import com.trevorwiebe.trackacow.presentation.activities.MedicateACowActivity
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
@@ -192,11 +192,14 @@ class MedicatedCowsActivity : AppCompatActivity() {
                 mMedicatedCows,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val cowEntityId = mCowUiModelList[position].cowModel.cowId
-                        Utility.setCowId(this@MedicatedCowsActivity, cowEntityId)
-                        val editCowIntent =
-                            Intent(this@MedicatedCowsActivity, EditMedicatedCowActivity::class.java)
-                        editCowIntent.putExtra("cowEntityId", cowEntityId)
+                        val cowUiModel = mCowUiModelList[position]
+//                        not sure why we need this line
+//                        Utility.setCowId(this@MedicatedCowsActivity, cowModel)
+                        val editCowIntent = Intent(
+                            this@MedicatedCowsActivity,
+                            EditMedicatedCowActivity::class.java
+                        )
+                        editCowIntent.putExtra("cowUiModel", cowUiModel)
                         startActivity(editCowIntent)
                     }
 

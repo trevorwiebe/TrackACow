@@ -73,7 +73,7 @@
             android:name=".presentation.activities.EditDrugsGivenActivity"
             android:exported="false"
             android:label="Edit drugs given"
-            android:parentActivityName=".presentation.activities.EditMedicatedCowActivity" />
+            android:parentActivityName=".presentation.edit_medicated_cow.EditMedicatedCowActivity" />
         <activity
             android:name=".presentation.activities.CreateAccountActivity"
             android:exported="false"
@@ -87,7 +87,7 @@
             android:parentActivityName=".presentation.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".presentation.activities.EditMedicatedCowActivity"
+            android:name=".presentation.edit_medicated_cow.EditMedicatedCowActivity"
             android:exported="false"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity

@@ -28,7 +28,7 @@ public class UpdateCow extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).cowDao().updateCowById(cowEntityId, tagNumber, date, notes);
+        AppDatabase.getAppDatabase(contexts[0]).cowDao().updateCowById2(cowEntityId, tagNumber, date, notes);
         return null;
     }
 
