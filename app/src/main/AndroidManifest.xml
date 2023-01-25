@@ -29,7 +29,7 @@
             android:label="@string/more_manage_rations"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.DrugsGivenReportActivity"
+            android:name=".presentation.drugs_given_reports.DrugsGivenReportActivity"
             android:exported="false"
             android:label="Drug Reports"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />

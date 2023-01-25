@@ -15,8 +15,19 @@ interface DrugsGivenDao {
     )
     fun getDrugsGivenAndDrugByLotId(lotId: String): Flow<List<DrugsGivenAndDrugEntity>>
 
+    @Query(
+        "SELECT * FROM DrugsGiven " +
+                "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
+                "WHERE drugsGivenLotId = :lotId AND drugsGivenDate BETWEEN :startDate AND :endDate"
+    )
+    fun getDrugsGivenAndDrugByLotIdAndDate(lotId: String, startDate: Long, endDate: Long):
+            Flow<List<DrugsGivenAndDrugEntity>>
+
     @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
     suspend fun deleteDrugsGivenByCowId(cowId: String)
+
+
+    // Deprecated
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)

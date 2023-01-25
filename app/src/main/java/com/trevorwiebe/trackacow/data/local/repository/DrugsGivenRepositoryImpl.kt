@@ -18,6 +18,17 @@ class DrugsGivenRepositoryImpl(
             }
     }
 
+    override fun getDrugsGivenAndDrugsByLotIdAndDate(
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<DrugsGivenAndDrugModel>> {
+        return drugsGivenDao.getDrugsGivenAndDrugByLotIdAndDate(lotId, startDate, endDate)
+            .map { drugsGivenAndDrugsList ->
+                drugsGivenAndDrugsList.map { it.toDrugsGivenAndDrugModel() }
+            }
+    }
+
     override suspend fun deleteDrugsGivenByCowId(cowId: String) {
         drugsGivenDao.deleteDrugsGivenByCowId(cowId)
     }

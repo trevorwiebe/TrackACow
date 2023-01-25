@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.edit_load.EditLoadActivity
-import com.trevorwiebe.trackacow.presentation.activities.DrugsGivenReportActivity
+import com.trevorwiebe.trackacow.presentation.drugs_given_reports.DrugsGivenReportActivity
 import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
@@ -139,7 +139,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
 
         mDrugReports.setOnClickListener {
             val drugReports = Intent(this@LotReportActivity, DrugsGivenReportActivity::class.java)
-            drugReports.putExtra("lotId", mLotId)
+            drugReports.putExtra("lotModel", mSelectedLotModel)
             drugReports.putExtra("reportType", mReportType)
             startActivity(drugReports)
         }
