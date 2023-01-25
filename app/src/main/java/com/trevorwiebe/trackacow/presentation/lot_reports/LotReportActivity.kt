@@ -21,7 +21,9 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
@@ -148,110 +150,110 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
             startActivity(feedReports)
         }
 
-        // TODO: fix issue where current head, head days and death loss is not shown
         lifecycleScope.launch {
-            lotReportViewModel.uiState.collect { lotReportUiState ->
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                lotReportViewModel.uiState.collect { lotReportUiState ->
 
-                mSelectedLotModel = lotReportUiState.lotModel
-                lotEntityLoaded(mSelectedLotModel)
+                    mSelectedLotModel = lotReportUiState.lotModel
+                    lotEntityLoaded(mSelectedLotModel)
 
-                if (lotReportUiState.drugsGivenAndDrugList.isNotEmpty()) {
+                    if (lotReportUiState.drugsGivenAndDrugList.isNotEmpty()) {
 
-                    // Prepare drugs used layout to add drugs given reporting
-                    mDrugsUsedLayout.removeAllViews()
-                    mNoDrugReports.visibility = View.GONE
+                        // Prepare drugs used layout to add drugs given reporting
+                        mDrugsUsedLayout.removeAllViews()
+                        mNoDrugReports.visibility = View.GONE
 
-                    val drugsGivenAndDrugsList = lotReportUiState
-                        .drugsGivenAndDrugList.distinctBy {
-                            it.drugCloudDatabaseId to it.drugCloudDatabaseId
+                        val drugsGivenAndDrugsList = lotReportUiState
+                            .drugsGivenAndDrugList.distinctBy {
+                                it.drugCloudDatabaseId to it.drugCloudDatabaseId
+                            }
+
+                        for (i in drugsGivenAndDrugsList.indices) {
+                            val scale = resources.displayMetrics.density
+                            val pixels16 = (16 * scale + 0.5f).toInt()
+                            val pixels8 = (8 * scale + 0.5f).toInt()
+                            val pixels4 = (4 * scale + 0.5f).toInt()
+
+                            val drugsGivenAndDrugModel = drugsGivenAndDrugsList[i]
+                            val drugName: String = drugsGivenAndDrugModel.drugName
+                            val amountGiven: Int = drugsGivenAndDrugModel.drugsGivenAmountGiven
+                            val textToSet = "$amountGiven units of $drugName"
+                            val textView = TextView(this@LotReportActivity)
+                            val textViewParams = LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                            textViewParams.setMargins(pixels16, pixels4, pixels16, pixels4)
+                            textView.textSize = 16f
+                            textView.setTextColor(
+                                ContextCompat.getColor(
+                                    baseContext,
+                                    android.R.color.black
+                                )
+                            )
+                            textView.layoutParams = textViewParams
+                            textView.text = textToSet
+                            mDrugsUsedLayout.addView(textView)
+                        }
+                    } else {
+                        mNoDrugReports.visibility = View.VISIBLE
+                    }
+
+                    mLoadModelList = lotReportUiState.loadList
+                    if (mLoadModelList.isNotEmpty()) {
+
+                        mNoCattleReceived.visibility = View.GONE
+
+                        cattleListAdapter.setData(mLoadModelList)
+
+                        mTotalHeadInt = 0
+                        mCurrentHeadDays = 0
+                        for (a in mLoadModelList.indices) {
+                            val (_, numberOfHead, date) = mLoadModelList[a]
+                            mTotalHeadInt += numberOfHead
+                            val daysHadLoad = getDaysSinceFromMillis(date)
+                            val thisLoadsHeadDays = daysHadLoad * numberOfHead
+                            mCurrentHeadDays += thisLoadsHeadDays
                         }
 
-                    for(i in drugsGivenAndDrugsList.indices) {
-                        val scale = resources.displayMetrics.density
-                        val pixels16 = (16 * scale + 0.5f).toInt()
-                        val pixels8 = (8 * scale + 0.5f).toInt()
-                        val pixels4 = (4 * scale + 0.5f).toInt()
-
-                        val drugsGivenAndDrugModel = drugsGivenAndDrugsList[i]
-                        val drugName: String = drugsGivenAndDrugModel.drugName
-                        val amountGiven: Int = drugsGivenAndDrugModel.drugsGivenAmountGiven
-                        val textToSet = "$amountGiven units of $drugName"
-                        val textView = TextView(this@LotReportActivity)
-                        val textViewParams = LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                        textViewParams.setMargins(pixels16, pixels4, pixels16, pixels4)
-                        textView.textSize = 16f
-                        textView.setTextColor(
-                            ContextCompat.getColor(
-                                baseContext,
-                                android.R.color.black
-                            )
-                        )
-                        textView.layoutParams = textViewParams
-                        textView.text = textToSet
-                        mDrugsUsedLayout.addView(textView)
+                        val totalHeadStr = numberFormat.format(mTotalHeadInt.toLong())
+                        mTotalHead.text = totalHeadStr
+                        val lotIds = ArrayList<String?>()
+                        lotIds.add(mLotId)
+                    } else {
+                        mNoCattleReceived.visibility = View.VISIBLE
                     }
-                }else{
-                    mNoDrugReports.visibility = View.VISIBLE
+
+                    if (lotReportUiState.deadCowList.isNotEmpty()) {
+
+                        val cowEntities: List<CowModel> = lotReportUiState.deadCowList
+                        var numberOfHeadDaysToSubtract = 0
+                        for (r in cowEntities.indices) {
+                            val (_, _, _, _, date) = cowEntities[r]
+                            val daysSinceDied = getDaysSinceFromMillis(date)
+                            numberOfHeadDaysToSubtract += daysSinceDied
+                        }
+                        var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
+                        if (currentHeadDays < 0) {
+                            currentHeadDays = 0
+                        }
+                        val headDaysStr = numberFormat.format(currentHeadDays.toLong())
+                        mHeadDays.text = headDaysStr
+                        val numberDead = cowEntities.size
+                        val decimalFormat = DecimalFormat("#.##")
+                        val percent = numberDead * 100f / mTotalHeadInt
+                        val deadText = numberFormat.format(numberDead.toLong()) + " dead"
+                        val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
+                        mTotalDeathLoss.text = deadText
+                        mDeathLossPercentage.text = percentDeadText
+                        var currentHead = mTotalHeadInt - numberDead
+                        if (currentHead < 0) {
+                            currentHead = 0
+                        }
+                        val currentHeadStr = numberFormat.format(currentHead.toLong())
+                        mCurrentHead.text = currentHeadStr
+                    }
                 }
-
-                mLoadModelList = lotReportUiState.loadList
-                if(mLoadModelList.isNotEmpty()){
-
-                    mNoCattleReceived.visibility = View.GONE
-
-                    cattleListAdapter.setData(mLoadModelList)
-
-                    mTotalHeadInt = 0
-                    mCurrentHeadDays = 0
-                    for (a in mLoadModelList.indices) {
-                        val (_, numberOfHead, date) = mLoadModelList[a]
-                        mTotalHeadInt += numberOfHead
-                        val daysHadLoad = getDaysSinceFromMillis(date)
-                        val thisLoadsHeadDays = daysHadLoad * numberOfHead
-                        mCurrentHeadDays += thisLoadsHeadDays
-                    }
-
-                    val totalHeadStr = numberFormat.format(mTotalHeadInt.toLong())
-                    mTotalHead.text = totalHeadStr
-                    val lotIds = ArrayList<String?>()
-                    lotIds.add(mLotId)
-                }else{
-                    mNoCattleReceived.visibility = View.VISIBLE
-                }
-
-                if(lotReportUiState.deadCowList.isNotEmpty()){
-
-                    val cowEntities: List<CowModel> = lotReportUiState.deadCowList
-                    var numberOfHeadDaysToSubtract = 0
-                    for (r in cowEntities.indices) {
-                        val (_, _, _, _, date) = cowEntities[r]
-                        val daysSinceDied = getDaysSinceFromMillis(date)
-                        numberOfHeadDaysToSubtract += daysSinceDied
-                    }
-                    var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
-                    if (currentHeadDays < 0) {
-                        currentHeadDays = 0
-                    }
-                    val headDaysStr = numberFormat.format(currentHeadDays.toLong())
-                    mHeadDays.text = headDaysStr
-                    val numberDead = cowEntities.size
-                    val decimalFormat = DecimalFormat("#.##")
-                    val percent = numberDead * 100f / mTotalHeadInt
-                    val deadText = numberFormat.format(numberDead.toLong()) + " dead"
-                    val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
-                    mTotalDeathLoss.text = deadText
-                    mDeathLossPercentage.text = percentDeadText
-                    var currentHead = mTotalHeadInt - numberDead
-                    if (currentHead < 0) {
-                        currentHead = 0
-                    }
-                    val currentHeadStr = numberFormat.format(currentHead.toLong())
-                    mCurrentHead.text = currentHeadStr
-                }
-
             }
         }
 
