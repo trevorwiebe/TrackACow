@@ -7,6 +7,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugM
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
@@ -23,6 +24,7 @@ class LotReportViewModel @AssistedInject constructor(
     private val drugsGivenUseCases: DrugsGivenUseCases,
     private val loadUseCases: LoadUseCases,
     private val cowUseCases: CowUseCases,
+    private val calculateDrugsGiven: CalculateDrugsGiven,
     @Assisted("reportType") private val reportType: Int,
     @Assisted("lotId") private val lotId: Int,
     @Assisted("lotCloudDatabaseId") private val lotCloudDatabaseId: String
@@ -97,7 +99,7 @@ class LotReportViewModel @AssistedInject constructor(
             .readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId)
             .map { drugsGivenAndDrugList ->
                 _uiState.update {
-                    it.copy(drugsGivenAndDrugList = drugsGivenAndDrugList)
+                    it.copy(drugsGivenAndDrugList = calculateDrugsGiven.invoke(drugsGivenAndDrugList))
                 }
             }
             .launchIn(viewModelScope)

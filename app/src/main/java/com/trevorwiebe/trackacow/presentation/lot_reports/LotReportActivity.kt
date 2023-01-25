@@ -163,10 +163,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                         mDrugsUsedLayout.removeAllViews()
                         mNoDrugReports.visibility = View.GONE
 
-                        val drugsGivenAndDrugsList = lotReportUiState
-                            .drugsGivenAndDrugList.distinctBy {
-                                it.drugCloudDatabaseId to it.drugCloudDatabaseId
-                            }
+                        val drugsGivenAndDrugsList = lotReportUiState.drugsGivenAndDrugList
 
                         for (i in drugsGivenAndDrugsList.indices) {
                             val scale = resources.displayMetrics.density

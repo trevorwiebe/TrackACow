@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.presentation.drugs_given_reports
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -12,6 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DrugsGivenViewModel @Inject constructor(
     private val drugsGivenUseCases: DrugsGivenUseCases,
+    private val calculateDrugsGiven: CalculateDrugsGiven
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DrugsGivenUiState())
@@ -36,7 +38,11 @@ class DrugsGivenViewModel @Inject constructor(
             drugsGivenUseCases.readDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
                 .map { thisDrugsAndDrugsModelList ->
                     _uiState.update {
-                        it.copy(drugsGivenAndDrugList = thisDrugsAndDrugsModelList)
+                        it.copy(
+                            drugsGivenAndDrugList = calculateDrugsGiven.invoke(
+                                thisDrugsAndDrugsModelList
+                            )
+                        )
                     }
                 }
                 .launchIn(viewModelScope)
