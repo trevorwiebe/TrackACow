@@ -164,4 +164,9 @@ class EditMedicatedCowActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return false
+    }
 }
