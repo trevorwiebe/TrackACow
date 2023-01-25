@@ -13,6 +13,9 @@ interface FeedDao {
     @Query("SELECT * FROM feed WHERE lotId = :lotId")
     fun getFeedsByLotId(lotId: String): Flow<List<FeedEntity>>
 
+    @Query("SELECT * FROM feed WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate")
+    fun getFeedsByDate(lotId: String, startDate: Long, endDate: Long): Flow<List<FeedEntity>>
+
     @Update
     suspend fun updateFeedEntity(feedEntity: FeedEntity)
 

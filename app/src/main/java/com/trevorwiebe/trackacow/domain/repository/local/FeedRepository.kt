@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FeedRepository {
     fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>>
+
+    fun readFeedsByDate(lotId: String, startDate: Long, endDate: Long): Flow<List<FeedModel>>
 }

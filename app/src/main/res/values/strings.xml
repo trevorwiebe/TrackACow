@@ -20,6 +20,9 @@
     <string name="feed">Feed</string>
     <string name="no_pens_create_one">No pens saved. You must add one to continue</string>
 
+    Feed Reports
+    <string name="feed_reports">Feed Reports</string>
+
     Report Strings
     <string name="reports">Reports</string>
     <string name="empty_reports_list">This is where the reports for each of your lots will be.</string>

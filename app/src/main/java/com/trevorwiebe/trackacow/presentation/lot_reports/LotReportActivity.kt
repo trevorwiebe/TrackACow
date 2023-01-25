@@ -36,6 +36,7 @@ import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.feed_reports.FeedReportsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -65,6 +66,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
     private lateinit var mTotalDeathLoss: TextView
     private lateinit var mDeathLossPercentage: TextView
     private lateinit var mFeedReports: TextView
+    private lateinit var mFeedReportsBtn: Button
     private lateinit var mDrugsUsedLayout: LinearLayout
     private lateinit var mNoDrugReports: TextView
     private lateinit var mDrugReports: Button
@@ -110,6 +112,7 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
         mNotes = findViewById(R.id.reports_notes)
         mHeadDays = findViewById(R.id.reports_head_days)
         mDrugReports = findViewById(R.id.drug_reports_button)
+        mFeedReportsBtn = findViewById(R.id.feed_reports_btn)
 
         val viewLoadsOfCattle = findViewById<RecyclerView>(R.id.view_loads_of_cattle)
         mNoCattleReceived = findViewById(R.id.no_cattle_received_tv)
@@ -139,14 +142,20 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
             startActivity(drugReports)
         }
 
+        mFeedReportsBtn.setOnClickListener {
+            val feedReports = Intent(this@LotReportActivity, FeedReportsActivity::class.java)
+            feedReports.putExtra("lotId", mLotId)
+            startActivity(feedReports)
+        }
+
         // TODO: fix issue where current head, head days and death loss is not shown
-        lifecycleScope.launch{
-            lotReportViewModel.uiState.collect{ lotReportUiState ->
+        lifecycleScope.launch {
+            lotReportViewModel.uiState.collect { lotReportUiState ->
 
                 mSelectedLotModel = lotReportUiState.lotModel
                 lotEntityLoaded(mSelectedLotModel)
 
-                if(lotReportUiState.drugsGivenAndDrugList.isNotEmpty()){
+                if (lotReportUiState.drugsGivenAndDrugList.isNotEmpty()) {
 
                     // Prepare drugs used layout to add drugs given reporting
                     mDrugsUsedLayout.removeAllViews()
@@ -380,9 +389,5 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
             val daysElapsed = timeElapsed / millisInOnDay
             daysElapsed.toInt() + 1
         }
-    }
-
-    companion object {
-        private const val TAG = "LotReportActivity"
     }
 }

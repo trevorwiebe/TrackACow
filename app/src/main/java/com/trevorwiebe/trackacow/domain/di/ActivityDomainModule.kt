@@ -11,6 +11,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DeleteDr
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByDate
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.DeleteLoad
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
@@ -140,7 +141,8 @@ object ActivityDomainModule {
         feedRepository: FeedRepository
     ): FeedUseCases {
         return FeedUseCases(
-            readFeedsByLotId = ReadFeedsByLotId(feedRepository)
+            readFeedsByLotId = ReadFeedsByLotId(feedRepository),
+            readFeedsByDate = ReadFeedsByDate(feedRepository)
         )
     }
 

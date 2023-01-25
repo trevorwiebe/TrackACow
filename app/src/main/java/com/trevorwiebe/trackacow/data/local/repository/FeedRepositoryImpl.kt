@@ -16,4 +16,15 @@ class FeedRepositoryImpl(
                 feedList.map { it.toFeedModel() }
             }
     }
+
+    override fun readFeedsByDate(
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<FeedModel>> {
+        return feedDao.getFeedsByDate(lotId, startDate, endDate)
+            .map { feedList ->
+                feedList.map { it.toFeedModel() }
+            }
+    }
 }
