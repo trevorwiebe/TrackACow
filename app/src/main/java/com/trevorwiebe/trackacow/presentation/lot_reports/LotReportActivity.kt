@@ -1,8 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
 import androidx.appcompat.app.AppCompatActivity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.QueryArchivedLotsByLotId.OnArchivedLotLoaded
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId.OnFeedsByLotIdReturned
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.os.Bundle
@@ -14,8 +12,6 @@ import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.edit_load.EditLoadActivity
 import com.trevorwiebe.trackacow.presentation.drugs_given_reports.DrugsGivenReportActivity
 import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
-import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import android.view.*
 import android.widget.Button
 import androidx.activity.viewModels
@@ -24,15 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.auth.FirebaseAuth
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingArchivedLot.InsertHoldingArchivedLot
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.DeleteLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.archivedLot.InsertArchivedLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedsByLotId
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
@@ -48,7 +35,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLotIdReturned {
+class LotReportActivity : AppCompatActivity() {
 
     private var mTotalHeadInt = 0
     private var mLotId: String? = null
@@ -155,7 +142,11 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                 lotReportViewModel.uiState.collect { lotReportUiState ->
 
                     mSelectedLotModel = lotReportUiState.lotModel
-                    lotEntityLoaded(mSelectedLotModel)
+
+                    title = mSelectedLotModel?.lotName ?: ""
+                    mCustomerName.text = mSelectedLotModel?.customerName ?: ""
+                    mDate.text = Utility.convertMillisToDate(mSelectedLotModel?.date ?: 0)
+                    mNotes.text = mSelectedLotModel?.notes ?: ""
 
                     if (lotReportUiState.drugsGivenAndDrugList.isNotEmpty()) {
 
@@ -168,7 +159,6 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                         for (i in drugsGivenAndDrugsList.indices) {
                             val scale = resources.displayMetrics.density
                             val pixels16 = (16 * scale + 0.5f).toInt()
-                            val pixels8 = (8 * scale + 0.5f).toInt()
                             val pixels4 = (4 * scale + 0.5f).toInt()
 
                             val drugsGivenAndDrugModel = drugsGivenAndDrugsList[i]
@@ -221,35 +211,34 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
                         mNoCattleReceived.visibility = View.VISIBLE
                     }
 
-                    if (lotReportUiState.deadCowList.isNotEmpty()) {
-
-                        val cowEntities: List<CowModel> = lotReportUiState.deadCowList
-                        var numberOfHeadDaysToSubtract = 0
-                        for (r in cowEntities.indices) {
-                            val (_, _, _, _, date) = cowEntities[r]
-                            val daysSinceDied = getDaysSinceFromMillis(date)
-                            numberOfHeadDaysToSubtract += daysSinceDied
-                        }
-                        var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
-                        if (currentHeadDays < 0) {
-                            currentHeadDays = 0
-                        }
-                        val headDaysStr = numberFormat.format(currentHeadDays.toLong())
-                        mHeadDays.text = headDaysStr
-                        val numberDead = cowEntities.size
-                        val decimalFormat = DecimalFormat("#.##")
-                        val percent = numberDead * 100f / mTotalHeadInt
-                        val deadText = numberFormat.format(numberDead.toLong()) + " dead"
-                        val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
-                        mTotalDeathLoss.text = deadText
-                        mDeathLossPercentage.text = percentDeadText
-                        var currentHead = mTotalHeadInt - numberDead
-                        if (currentHead < 0) {
-                            currentHead = 0
-                        }
-                        val currentHeadStr = numberFormat.format(currentHead.toLong())
-                        mCurrentHead.text = currentHeadStr
+                    val cowEntities: List<CowModel> = lotReportUiState.deadCowList
+                    var numberOfHeadDaysToSubtract = 0
+                    for (r in cowEntities.indices) {
+                        val (_, _, _, _, date) = cowEntities[r]
+                        val daysSinceDied = getDaysSinceFromMillis(date)
+                        numberOfHeadDaysToSubtract += daysSinceDied
                     }
+                    var currentHeadDays = mCurrentHeadDays - numberOfHeadDaysToSubtract
+                    if (currentHeadDays < 0) {
+                        currentHeadDays = 0
+                    }
+                    val headDaysStr = numberFormat.format(currentHeadDays.toLong())
+                    mHeadDays.text = headDaysStr
+                    val numberDead = cowEntities.size
+                    val decimalFormat = DecimalFormat("#.##")
+                    val percent = numberDead * 100f / mTotalHeadInt
+                    val deadText = numberFormat.format(numberDead.toLong()) + " dead"
+                    val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
+                    mTotalDeathLoss.text = deadText
+                    mDeathLossPercentage.text = percentDeadText
+                    var currentHead = mTotalHeadInt - numberDead
+                    if (currentHead < 0) {
+                        currentHead = 0
+                    }
+                    val currentHeadStr = numberFormat.format(currentHead.toLong())
+                    mCurrentHead.text = currentHeadStr
+
+                    mFeedReports.text = lotReportUiState.feedAmount
                 }
             }
         }
@@ -276,105 +265,18 @@ class LotReportActivity : AppCompatActivity(), OnArchivedLotLoaded, OnFeedsByLot
         return super.onOptionsItemSelected(item)
     }
 
-
-    override fun onArchivedLotLoaded(archivedLotEntity: ArchivedLotEntity) {
-        mSelectedLotModel = LotModel(
-            archivedLotEntity.primaryKey,
-            archivedLotEntity.lotName!!,
-            archivedLotEntity.lotId ?: "",
-            archivedLotEntity.customerName,
-            archivedLotEntity.notes,
-            archivedLotEntity.dateEnded,
-            ""
-        )
-        lotEntityLoaded(mSelectedLotModel)
-    }
-
-    override fun onFeedsByLotIdReturned(feedEntities: ArrayList<FeedEntity>) {
-        var totalAmountFed = 0
-        for (y in feedEntities.indices) {
-            val feedEntity = feedEntities[y]
-            val amountFed = feedEntity.feed
-            totalAmountFed += amountFed
-        }
-        val amountFedStr = numberFormat.format(totalAmountFed.toLong())
-        val amountFedText = "$amountFedStr lbs"
-        mFeedReports.text = amountFedText
-    }
-
     private val archiveLotListener = View.OnClickListener {
         val lotArchived = AlertDialog.Builder(this@LotReportActivity)
         lotArchived.setTitle("Are you sure you want to archive lot?")
         lotArchived.setMessage("This action cannot be undone.  You will not be able to edit these reports after they are archived.  You will be able to view this lot's reports under Archives.")
-        lotArchived.setPositiveButton("Yes") { dialog, which ->
-            val archivedLotEntity = ArchivedLotEntity(
-                0,
-                mSelectedLotModel!!.lotName,
-                mSelectedLotModel!!.lotCloudDatabaseId,
-                mSelectedLotModel!!.customerName,
-                mSelectedLotModel!!.notes,
-                mSelectedLotModel!!.date,
-                System.currentTimeMillis()
-            )
-            if (Utility.haveNetworkConnection(this@LotReportActivity)) {
-                val baseRef = FirebaseDatabase.getInstance().getReference("users").child(
-                    FirebaseAuth.getInstance().currentUser!!.uid
-                )
-
-                // delete the lot entity
-                baseRef.child(Constants.LOTS).child(
-                    mSelectedLotModel!!.lotCloudDatabaseId
-                ).removeValue()
-
-                // push archived lot to the cloud;
-                baseRef.child(Constants.ARCHIVE_LOT).child(
-                    archivedLotEntity.lotId!!
-                ).setValue(archivedLotEntity)
-            } else {
-                val cacheLotEntity = CacheLotEntity(
-                    mSelectedLotModel!!.lotPrimaryKey,
-                    mSelectedLotModel!!.lotName,
-                    mSelectedLotModel!!.lotCloudDatabaseId,
-                    mSelectedLotModel!!.customerName,
-                    mSelectedLotModel!!.notes,
-                    mSelectedLotModel!!.date,
-                    mSelectedLotModel!!.lotPenCloudDatabaseId,
-                    Constants.DELETE
-                )
-                InsertHoldingLot(cacheLotEntity).execute(this@LotReportActivity)
-                val cacheArchivedLotEntity = CacheArchivedLotEntity(
-                    0,
-                    archivedLotEntity.lotName,
-                    archivedLotEntity.lotId,
-                    archivedLotEntity.customerName,
-                    archivedLotEntity.notes,
-                    archivedLotEntity.dateStarted,
-                    archivedLotEntity.dateEnded,
-                    Constants.INSERT_UPDATE
-                )
-                InsertHoldingArchivedLot(cacheArchivedLotEntity).execute(this@LotReportActivity)
-            }
-            DeleteLotEntity(mSelectedLotModel!!.lotCloudDatabaseId).execute(this@LotReportActivity)
-            InsertArchivedLotEntity(archivedLotEntity).execute(this@LotReportActivity)
+        lotArchived.setPositiveButton("Yes") { _, _ ->
+            lotReportViewModel.onEvent(LotReportEvents.OnArchiveLot(mSelectedLotModel))
             finish()
         }
         lotArchived.setNegativeButton("Cancel") { _, _ -> }
         lotArchived.show()
     }
 
-
-    private fun lotEntityLoaded(lotModel: LotModel?) {
-        if (lotModel != null) {
-            title = lotModel.lotName
-            mCustomerName.text = lotModel.customerName
-            mDate.text = Utility.convertMillisToDate(lotModel.date)
-            mNotes.text = lotModel.notes
-        }
-        if(lotModel != null) {
-            mLotId = lotModel.lotCloudDatabaseId
-            QueryFeedsByLotId(mLotId, this).execute(this)
-        }
-    }
 
     private fun getDaysSinceFromMillis(startDate: Long): Int {
         val millisInOnDay = TimeUnit.DAYS.toMillis(1)

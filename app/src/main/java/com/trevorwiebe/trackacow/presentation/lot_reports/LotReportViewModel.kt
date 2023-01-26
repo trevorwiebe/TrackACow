@@ -8,8 +8,10 @@ import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
+import com.trevorwiebe.trackacow.domain.use_cases.archive_lot_use_cases.ArchiveLotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -18,20 +20,27 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.*
 
 class LotReportViewModel @AssistedInject constructor(
     private val lotUseCases: LotUseCases,
     private val drugsGivenUseCases: DrugsGivenUseCases,
     private val loadUseCases: LoadUseCases,
     private val cowUseCases: CowUseCases,
+    private val feedUseCases: FeedUseCases,
+    private val archiveLotUseCases: ArchiveLotUseCases,
     private val calculateDrugsGiven: CalculateDrugsGiven,
     @Assisted("reportType") private val reportType: Int,
     @Assisted("lotId") private val lotId: Int,
     @Assisted("lotCloudDatabaseId") private val lotCloudDatabaseId: String
 ): ViewModel() {
 
+    private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+
     @AssistedFactory
-    interface LotReportViewModelFactory{
+    interface LotReportViewModelFactory {
         fun create(
             @Assisted("reportType") reportType: Int,
             @Assisted("lotId") lotId: Int,
@@ -46,7 +55,7 @@ class LotReportViewModel @AssistedInject constructor(
             reportType: Int,
             lotId: Int,
             lotCloudDatabaseId: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory{
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(reportType, lotId, lotCloudDatabaseId) as T
             }
@@ -56,24 +65,33 @@ class LotReportViewModel @AssistedInject constructor(
     private var lotJob: Job? = null
     private var drugsGivenJob: Job? = null
     private var loadJob: Job? = null
+    private var cowJob: Job? = null
+    private var feedJob: Job? = null
 
     private val _uiState = MutableStateFlow(LotReportUiState())
     val uiState: StateFlow<LotReportUiState> = _uiState.asStateFlow()
 
     init {
-        if(reportType == Constants.LOT){
+        if (reportType == Constants.LOT) {
             readLotByLotId(lotId)
-        }else if(reportType == Constants.ARCHIVE){
-            readArchiveLotByLotId(lotId)
         }
 
         readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId)
         readLoadsByLotId(lotCloudDatabaseId)
         readDeadCowsByLotId(lotCloudDatabaseId)
+        readFeedsByLotId(lotCloudDatabaseId)
 
     }
 
-    private fun readLotByLotId(lotId: Int){
+    fun onEvent(event: LotReportEvents) {
+        when (event) {
+            is LotReportEvents.OnArchiveLot -> {
+                archiveLot(event.lotModel)
+            }
+        }
+    }
+
+    private fun readLotByLotId(lotId: Int) {
         lotJob?.cancel()
         lotJob = lotUseCases.readLotsByLotId(lotId)
             .map { thisLotModel ->
@@ -82,15 +100,6 @@ class LotReportViewModel @AssistedInject constructor(
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-
-    private fun readArchiveLotByLotId(lotId: Int){
-
-    }
-
-    private fun readDrugsGivenAndDrugsByLotId(lotId: Int){
-
     }
 
     private fun readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId: String){
@@ -116,8 +125,9 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun readDeadCowsByLotId(lotId: String){
-        cowUseCases.readDeadCowsByLotId(lotId)
+    private fun readDeadCowsByLotId(lotId: String) {
+        cowJob?.cancel()
+        cowJob = cowUseCases.readDeadCowsByLotId(lotId)
             .map { thisDeadCowList ->
                 _uiState.update {
                     it.copy(deadCowList = thisDeadCowList)
@@ -126,11 +136,35 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun readFeedsByLotId(lotId: String) {
+        feedJob?.cancel()
+        feedJob = feedUseCases.readFeedsByLotId(lotId)
+            .map { thisFeedList ->
+                val amount = numberFormat.format(thisFeedList.sumOf { it.feed })
+                _uiState.update {
+                    it.copy(feedAmount = amount)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun archiveLot(lotModel: LotModel?) {
+        if (lotModel == null) return
+        viewModelScope.launch {
+            archiveLotUseCases.createArchiveLot(lotModel)
+        }
+    }
+
 }
 
 data class LotReportUiState(
     val lotModel: LotModel? = null,
     val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList(),
     val loadList: List<LoadModel> = emptyList(),
-    val deadCowList: List<CowModel> = emptyList()
+    val deadCowList: List<CowModel> = emptyList(),
+    val feedAmount: String = ""
 )
+
+sealed class LotReportEvents {
+    data class OnArchiveLot(val lotModel: LotModel?) : LotReportEvents()
+}
