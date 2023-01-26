@@ -4,6 +4,8 @@ import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
+import com.trevorwiebe.trackacow.domain.use_cases.archive_lot_use_cases.ArchiveLotUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.archive_lot_use_cases.CreateArchiveLot
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
@@ -34,6 +36,24 @@ import dagger.hilt.android.scopes.ActivityScoped
 @Module
 @InstallIn(ActivityComponent::class)
 object ActivityDomainModule {
+
+    @ActivityScoped
+    @Provides
+    fun provideArchiveLotUseCases(
+        archiveLotRepository: ArchiveLotRepository,
+        archiveLotRepositoryRemote: ArchiveLotRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
+        context: Application
+    ): ArchiveLotUseCases {
+        return ArchiveLotUseCases(
+            createArchiveLot = CreateArchiveLot(
+                archiveLotRepository,
+                archiveLotRepositoryRemote,
+                getCloudDatabaseId,
+                context
+            )
+        )
+    }
 
     @ActivityScoped
     @Provides

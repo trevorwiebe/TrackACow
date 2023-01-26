@@ -6,6 +6,9 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity
 @Dao
 interface CacheArchivedLotDao {
 
+    @Insert
+    suspend fun insertCacheArchiveLot(cacheArchivedLotEntity: CacheArchivedLotEntity)
+
     @Deprecated("use suspend function")
     @Insert
     fun insertHoldingArchivedLot(cacheArchivedLotEntity: CacheArchivedLotEntity?)

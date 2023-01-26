@@ -68,6 +68,29 @@ object TrackACowDataModule {
         return CalculateDrugsGiven()
     }
 
+    // ArchiveLots
+    @Provides
+    @Singleton
+    fun provideArchiveLotRepository(
+        db: AppDatabase
+    ): ArchiveLotRepository {
+        return ArchiveLotRepositoryImpl(
+            archivedLotDao = db.archivedLotDao(),
+            cacheArchivedLotDao = db.cacheArchivedLotDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideArchiveLotRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): ArchiveLotRepositoryRemote {
+        return ArchiveLotRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.ARCHIVE_LOT
+        )
+    }
+
     // Ration
     @Provides
     @Singleton

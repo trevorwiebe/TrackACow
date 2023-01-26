@@ -6,6 +6,10 @@ import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
 @Dao
 interface ArchivedLotDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertArchiveLot(archivedLotEntity: ArchivedLotEntity): Long
+
+    // Deprecated Functions
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertArchivedLotEntity(archivedLotEntity: ArchivedLotEntity?)
