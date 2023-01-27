@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Track-A-Cow</string>
+    <string name="app_name">Feedlot Management</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -13,7 +13,7 @@
     <string name="generic_error">An unknown error occurred</string>
 
     Work Fragment Strings
-    <string name="work">Work</string>
+    <string name="work">Treat</string>
     <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
 
     Feed Fragment Strings
