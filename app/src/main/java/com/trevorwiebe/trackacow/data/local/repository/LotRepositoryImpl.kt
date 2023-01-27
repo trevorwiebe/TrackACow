@@ -52,6 +52,10 @@ class LotRepositoryImpl(
         )
     }
 
+    override suspend fun deleteLot(lotModel: LotModel) {
+        lotDao.deleteLot(lotModel.toLotEntity())
+    }
+
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {
         cacheLotDao.insertCacheLot(cacheLotModel.toCacheLotEntity())
     }

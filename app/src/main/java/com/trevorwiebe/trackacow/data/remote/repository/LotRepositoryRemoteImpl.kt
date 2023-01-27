@@ -21,4 +21,12 @@ class LotRepositoryRemoteImpl(
         }
     }
 
+    override fun deleteLotRemote(lotModel: LotModel) {
+        if (lotModel.lotCloudDatabaseId.isNotEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath/${lotModel.lotCloudDatabaseId}"
+            ).removeValue()
+        }
+    }
+
 }

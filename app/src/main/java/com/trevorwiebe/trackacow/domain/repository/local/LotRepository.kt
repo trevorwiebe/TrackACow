@@ -16,6 +16,8 @@ interface LotRepository {
 
     suspend fun updateLot(lotModel: LotModel)
 
+    suspend fun deleteLot(lotModel: LotModel)
+
     // cache function
     suspend fun createCacheLot(cacheLotModel: CacheLotModel)
 }

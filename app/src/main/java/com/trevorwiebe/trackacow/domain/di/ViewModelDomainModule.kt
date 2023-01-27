@@ -131,8 +131,13 @@ object ViewModelDomainModule {
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(lotRepository),
             readLotsByLotId = ReadLotsByLotId(lotRepository),
-            updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(lotRepository, lotRepositoryRemote, context),
-            updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context)
+            updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
+                lotRepository,
+                lotRepositoryRemote,
+                context
+            ),
+            updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context),
+            deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context)
         )
     }
 

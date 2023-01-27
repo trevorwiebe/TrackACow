@@ -8,4 +8,6 @@ interface LotRepositoryRemote {
 
     fun insertAndUpdateLotRemote(lotModel: LotModel)
 
+    fun deleteLotRemote(lotModel: LotModel)
+
 }
