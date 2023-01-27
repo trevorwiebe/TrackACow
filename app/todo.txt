@@ -1,11 +1,11 @@
 Confirm that CRUD works on all entities
     ArchivedLot
-        Main    C- R- U- D-
-        Remote  C- R- U- D-
+        Main    C-x R-x U- D-
+        Remote  C-x R- U- D-
         Cache   C- R- U- D-
     Call
         Main    C-x R-x U-x D-
-        Remote  C-x R- U- D-
+        Remote  C-x R- U-x D-
         Cache   C- R- U- D-
     Cow
         Main    C-x R- U-x D-x
