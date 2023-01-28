@@ -74,7 +74,7 @@
             android:label="Settings"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.EditDrugsGivenActivity"
+            android:name=".presentation.edit_drugs_given.EditDrugsGivenListActivity"
             android:exported="false"
             android:label="Edit drugs given"
             android:parentActivityName=".presentation.edit_medicated_cow.EditMedicatedCowActivity" />

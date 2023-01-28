@@ -13,11 +13,12 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
-import com.trevorwiebe.trackacow.presentation.activities.EditDrugsGivenActivity
+import com.trevorwiebe.trackacow.presentation.edit_drugs_given.EditDrugsGivenListActivity
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -71,7 +72,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         }
         mEditDrugsGiven.setOnClickListener {
             val editDrugsIntent =
-                Intent(this@EditMedicatedCowActivity, EditDrugsGivenActivity::class.java)
+                Intent(this@EditMedicatedCowActivity, EditDrugsGivenListActivity::class.java)
             editDrugsIntent.putExtra("cowId", mCowUiModel!!.cowModel.cowId)
             startActivity(editDrugsIntent)
         }
@@ -140,7 +141,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             textViewParams.setMargins(pixels16, pixels8, pixels16, 0)
-            textView.setTextColor(resources.getColor(android.R.color.black))
+            textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
             textView.layoutParams = textViewParams
             // TODO: put this string in resources
             textView.text = "No drugs given"
@@ -157,7 +158,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
                 textViewParams.setMargins(pixels16, pixels8, pixels16, 0)
-                textView.setTextColor(resources.getColor(android.R.color.black))
+                textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
                 textView.layoutParams = textViewParams
                 textView.text = textToSet
                 mDrugsGiven.addView(textView)

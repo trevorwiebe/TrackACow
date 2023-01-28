@@ -1,131 +1,109 @@
-package com.trevorwiebe.trackacow.presentation.activities;
+package com.trevorwiebe.trackacow.presentation.edit_drugs_given
 
-import android.content.Intent;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
+import com.trevorwiebe.trackacow.presentation.activities.AddDrugsGivenToSpecificCowActivity
+import com.trevorwiebe.trackacow.presentation.activities.EditDrugsGivenToSpecificCowActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-import androidx.annotation.Nullable;
+@AndroidEntryPoint
+class EditDrugsGivenListActivity : AppCompatActivity() {
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+    private lateinit var mDrugsGivenRv: RecyclerView
+    private lateinit var mNoDrugsGiven: TextView
+    private lateinit var mAddNewDrugGiven: FloatingActionButton
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
+    private lateinit var drugsGivenRecyclerViewAdapter: DrugsGivenRecyclerViewAdapter
+    private var mDrugsAndDrugsGivenList: List<DrugsGivenAndDrugModel> = emptyList()
+    private var cowId: String? = null
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
+    @Inject
+    lateinit var drugsGivenListViewModelFactory: EditDrugsGivenListViewModel.EditDrugsGivenViewModelFactory
 
-import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.domain.adapters.DrugsGivenRecyclerViewAdapter;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.DeleteDrugGivenById;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.UpdateDrugGivenAmountGiven;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drug.QueryAllDrugs;
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.drugsGiven.QueryDrugsGivenByCowId;
-import com.trevorwiebe.trackacow.data.entities.DrugEntity;
-import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
-import com.trevorwiebe.trackacow.domain.utils.ItemClickListener;
-
-import java.util.ArrayList;
-
-public class EditDrugsGivenActivity extends AppCompatActivity implements
-        QueryDrugsGivenByCowId.OnDrugsGivenByCowIdLoaded,
-        QueryAllDrugs.OnAllDrugsLoaded,
-        DeleteDrugGivenById.OnDrugDelete,
-        UpdateDrugGivenAmountGiven.OnDrugGivenInserted {
-
-    private RecyclerView mDrugsGivenRv;
-    private DrugsGivenRecyclerViewAdapter drugsGivenRecyclerViewAdapter;
-    private TextView mNoDrugsGiven;
-    private FloatingActionButton mAddNewDrugGiven;
-
-    private ArrayList<DrugsGivenEntity> mDrugsGivenEntities = new ArrayList<>();
-    private ArrayList<DrugEntity> mDrugEntities = new ArrayList<>();
-    private String cowId;
-    private static final int ADD_NEW_DRUG_GIVEN = 737;
-    private static final int EDIT_NEW_DRUG_GIVEN = 298;
-
-    private static final String TAG = "EditDrugsGivenActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_drugs_given);
-
-        new QueryAllDrugs(this).execute(this);
-
-        cowId = getIntent().getStringExtra("cowId");
-
-        mNoDrugsGiven = findViewById(R.id.edit_drugs_no_drugs_given);
-        mAddNewDrugGiven = findViewById(R.id.edit_drugs_add_new_drug);
-        mDrugsGivenRv = findViewById(R.id.drugs_given_rv);
-        mDrugsGivenRv.setLayoutManager(new LinearLayoutManager(this));
-        drugsGivenRecyclerViewAdapter = new DrugsGivenRecyclerViewAdapter(this, mDrugsGivenEntities, mDrugEntities);
-        mDrugsGivenRv.setAdapter(drugsGivenRecyclerViewAdapter);
-
-        mDrugsGivenRv.addOnItemTouchListener(new ItemClickListener(this, mDrugsGivenRv, new ItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                DrugsGivenEntity drugsGivenEntity = mDrugsGivenEntities.get(position);
-                Intent editDrugIntent = new Intent(EditDrugsGivenActivity.this, EditDrugsGivenToSpecificCowActivity.class);
-                editDrugIntent.putExtra("cowId", cowId);
-                editDrugIntent.putExtra("drugGivenId", drugsGivenEntity.getDrugsGivenId());
-                startActivityForResult(editDrugIntent, EDIT_NEW_DRUG_GIVEN);
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-
-        mAddNewDrugGiven.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent addNewDrugIntent = new Intent(EditDrugsGivenActivity.this, AddDrugsGivenToSpecificCowActivity.class);
-                addNewDrugIntent.putExtra("cowId", cowId);
-                startActivityForResult(addNewDrugIntent, ADD_NEW_DRUG_GIVEN);
-            }
-        });
+    private val editDrugsGivenViewModel: EditDrugsGivenListViewModel by viewModels {
+        EditDrugsGivenListViewModel.providesFactory(
+            assistedFactory = drugsGivenListViewModelFactory,
+            cowId = intent.getStringExtra("cowId") ?: ""
+        )
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == ADD_NEW_DRUG_GIVEN || requestCode == EDIT_NEW_DRUG_GIVEN) && resultCode == RESULT_OK) {
-            new QueryAllDrugs(this).execute(this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_edit_drugs_given)
+
+        cowId = intent.getStringExtra("cowId")
+        mNoDrugsGiven = findViewById(R.id.edit_drugs_no_drugs_given)
+        mAddNewDrugGiven = findViewById(R.id.edit_drugs_add_new_drug)
+
+        mDrugsGivenRv = findViewById(R.id.drugs_given_rv)
+        mDrugsGivenRv.layoutManager = LinearLayoutManager(this)
+        drugsGivenRecyclerViewAdapter = DrugsGivenRecyclerViewAdapter()
+        mDrugsGivenRv.adapter = drugsGivenRecyclerViewAdapter
+        mDrugsGivenRv.addOnItemTouchListener(
+            ItemClickListener(
+                this,
+                mDrugsGivenRv,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val drugsGivenId = mDrugsAndDrugsGivenList[position].drugsGivenId
+                        val editDrugIntent = Intent(
+                            this@EditDrugsGivenListActivity,
+                            EditDrugsGivenToSpecificCowActivity::class.java
+                        )
+                        editDrugIntent.putExtra("cowId", cowId)
+                        editDrugIntent.putExtra("drugGivenId", drugsGivenId)
+                        startActivity(editDrugIntent)
+                    }
+
+                    override fun onLongItemClick(view: View, position: Int) {}
+                })
+        )
+        mAddNewDrugGiven.setOnClickListener {
+            val addNewDrugIntent =
+                Intent(
+                    this@EditDrugsGivenListActivity,
+                    AddDrugsGivenToSpecificCowActivity::class.java
+                )
+            addNewDrugIntent.putExtra("cowId", cowId)
+            startActivity(addNewDrugIntent)
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                editDrugsGivenViewModel.uiState.collect { uiState ->
+
+                    mDrugsAndDrugsGivenList = uiState.drugsGivenAndDrugsList
+
+                    if (mDrugsAndDrugsGivenList.isEmpty()) {
+                        mNoDrugsGiven.visibility = View.VISIBLE
+                        mDrugsGivenRv.visibility = View.INVISIBLE
+                    } else {
+                        mNoDrugsGiven.visibility = View.INVISIBLE
+                        mDrugsGivenRv.visibility = View.VISIBLE
+                        drugsGivenRecyclerViewAdapter.swapData(mDrugsAndDrugsGivenList)
+                    }
+                }
+            }
         }
     }
 
-    @Override
-    public void onAllDrugsLoaded(ArrayList<DrugEntity> drugEntities) {
-        mDrugEntities = drugEntities;
-        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return false
     }
-
-    @Override
-    public void onDrugsLoadedByCowId(ArrayList<DrugsGivenEntity> drugsGivenEntities, int id) {
-        mDrugsGivenEntities = drugsGivenEntities;
-        instantiateRv(mDrugsGivenEntities, mDrugEntities);
-    }
-
-    @Override
-    public void onDrugDeleted() {
-        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
-    }
-
-    @Override
-    public void onDrugGivenInsert() {
-        new QueryDrugsGivenByCowId(this, 1, cowId).execute(this);
-    }
-
-    private void instantiateRv(ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<DrugEntity> drugEntities){
-        if(drugsGivenEntities.size() == 0){
-            mNoDrugsGiven.setVisibility(View.VISIBLE);
-            mDrugsGivenRv.setVisibility(View.INVISIBLE);
-        }else{
-            mNoDrugsGiven.setVisibility(View.INVISIBLE);
-            mDrugsGivenRv.setVisibility(View.VISIBLE);
-            drugsGivenRecyclerViewAdapter.swapData(drugsGivenEntities, drugEntities);
-        }
-    }
-
 }

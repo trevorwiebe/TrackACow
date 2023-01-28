@@ -10,6 +10,8 @@ interface DrugsGivenRepository {
     fun getDrugsGivenAndDrugsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long):
             Flow<List<DrugsGivenAndDrugModel>>
 
+    fun getDrugsGivenAndDrugsByCowId(cowId: String): Flow<List<DrugsGivenAndDrugModel>>
+
     suspend fun deleteDrugsGivenByCowId(cowId: String)
 
 }

@@ -9,10 +9,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.archive_lot_use_cases.CreateAr
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
-import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DeleteDrugsGivenByCowId
-import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotId
-import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.ReadDrugsGivenAndDrugsByLotIdAndDate
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByDate
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
@@ -209,7 +206,8 @@ object ActivityDomainModule {
                 drugsGivenRepository,
                 drugsGivenRemoteRepository,
                 context
-            )
+            ),
+            readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(drugsGivenRepository)
         )
     }
 }
