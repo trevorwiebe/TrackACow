@@ -182,7 +182,6 @@
     <string name="contact_developer_uri" translatable="false">mailto:app@trackacow.net</string>
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
     <string name="manage_sub_url" translatable="false">https://trackacow.net/subscription.html</string>
-    <string name="git_hub_url" translatable="false">https://github.com/trevorwiebe/track-a-cow</string>
     <string name="could_not_find_this_tag">Could not find this tag</string>
 
 </resources>

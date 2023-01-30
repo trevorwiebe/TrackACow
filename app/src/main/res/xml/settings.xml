@@ -48,15 +48,6 @@
         </Preference>
 
         <Preference
-            android:title="This app is open source"
-            android:icon="@drawable/ic_baseline_people_24"
-            android:summary="Contribute to this apps growth and development on GitHub">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/git_hub_url" />
-        </Preference>
-
-        <Preference
             android:key="version"
             android:icon="@drawable/ic_baseline_app_version_alt_24"
             android:title="Version" />
