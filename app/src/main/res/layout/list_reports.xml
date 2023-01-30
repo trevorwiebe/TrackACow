@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,7 +9,6 @@
     android:focusable="true">
 
     <TextView
-        android:drawableStart="@drawable/ic_report_accent_24dp"
         android:id="@+id/reports_lot_name"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
@@ -18,7 +18,8 @@
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:drawableStartCompat="@drawable/ic_report_accent_24dp" />
 
     <View
         android:background="@android:color/darker_gray"

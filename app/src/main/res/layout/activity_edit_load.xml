@@ -19,7 +19,7 @@
                 android:inputType="number"
                 android:ems="8"
                 android:id="@+id/edit_load_head_count"
-                android:hint="Head count"
+                android:hint="@string/head_count"
                 android:textSize="16sp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -37,7 +37,7 @@
                 android:inputType="number"
                 android:ems="8"
                 android:id="@+id/edit_load_date"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:textSize="16sp"
@@ -61,7 +61,7 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="top"
                 android:id="@+id/edit_load_memo"
-                android:hint="Memo"
+                android:hint="@string/memo"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textSize="16sp" />
 
@@ -72,7 +72,7 @@
             android:background="@drawable/accent_sign_in_btn"
             android:layout_margin="24dp"
             android:padding="24dp"
-            android:text="Update"
+            android:text="@string/update"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -83,7 +83,7 @@
             android:padding="24dp"
             android:textColor="@color/redText"
             android:background="@drawable/white_sign_in_btn"
-            android:text="Delete"
+            android:text="@string/delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

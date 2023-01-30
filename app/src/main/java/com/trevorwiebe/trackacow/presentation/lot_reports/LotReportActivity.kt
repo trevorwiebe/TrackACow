@@ -227,7 +227,8 @@ class LotReportActivity : AppCompatActivity() {
                     val numberDead = cowEntities.size
                     val decimalFormat = DecimalFormat("#.##")
                     val percent = numberDead * 100f / mTotalHeadInt
-                    val deadText = numberFormat.format(numberDead.toLong()) + " dead"
+                    val deadText =
+                        numberFormat.format(numberDead.toLong()) + resources.getString(R.string.dead)
                     val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
                     mTotalDeathLoss.text = deadText
                     mDeathLossPercentage.text = percentDeadText
@@ -267,13 +268,13 @@ class LotReportActivity : AppCompatActivity() {
 
     private val archiveLotListener = View.OnClickListener {
         val lotArchived = AlertDialog.Builder(this@LotReportActivity)
-        lotArchived.setTitle("Are you sure you want to archive lot?")
-        lotArchived.setMessage("This action cannot be undone.  You will not be able to edit these reports after they are archived.  You will be able to view this lot's reports under Archives.")
-        lotArchived.setPositiveButton("Yes") { _, _ ->
+        lotArchived.setTitle(resources.getString(R.string.confirm_archive_title))
+        lotArchived.setMessage(resources.getString(R.string.confirm_archive_body))
+        lotArchived.setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
             lotReportViewModel.onEvent(LotReportEvents.OnArchiveLot(mSelectedLotModel))
             finish()
         }
-        lotArchived.setNegativeButton("Cancel") { _, _ -> }
+        lotArchived.setNegativeButton(resources.getString(R.string.cancel)) { _, _ -> }
         lotArchived.show()
     }
 

@@ -29,6 +29,7 @@ import com.google.android.material.textfield.TextInputLayout
 import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.activity.viewModels
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.lifecycleScope
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.DeleteFeedEntitiesByDateAndLotId
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.feed.QueryFeedByLotIdAndDate
@@ -126,7 +127,7 @@ class FeedLotActivity : AppCompatActivity(),
         mSave.setOnClickListener {
             if (mCallET.length() == 0) {
                 mCallET.requestFocus()
-                mCallET.error = "Please fill this blank"
+                mCallET.error = resources.getString(R.string.please_fill_blank)
             } else {
 
                 // code for updating the call entity
@@ -353,7 +354,7 @@ class FeedLotActivity : AppCompatActivity(),
         textInputEditText.addTextChangedListener(mFeedTextWatcher)
         textInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
         textInputEditText.textSize = 16f
-        textInputEditText.hint = "Feed"
+        textInputEditText.hint = getString(R.string.feed)
         textInputLayout.addView(textInputEditText)
         val deleteButton = ImageButton(this@FeedLotActivity)
         val deleteBtnParams = LinearLayout.LayoutParams(
@@ -362,7 +363,8 @@ class FeedLotActivity : AppCompatActivity(),
         )
         deleteButton.setPadding(pixels8, pixels8, pixels8, pixels8)
         deleteBtnParams.setMargins(0, pixels24, pixels16, pixels8)
-        deleteButton.background = resources.getDrawable(R.drawable.ic_delete_black_24dp)
+        deleteButton.background =
+            AppCompatResources.getDrawable(this, R.drawable.ic_delete_black_24dp)
         deleteButton.id = mFeedAgainNumber
         deleteButton.setOnClickListener { view ->
             val viewToDelete = view.id
@@ -371,7 +373,7 @@ class FeedLotActivity : AppCompatActivity(),
                 val v = mFeedAgainLayout.getChildAt(i)
                 val tagToCompare = v.id
                 if (tagToCompare == viewToDelete) {
-                    i = i - 1
+                    i -= 1
                     mFeedAgainNumber -= 1
                     mFeedAgainLayout.removeView(v)
                 }
@@ -399,7 +401,7 @@ class FeedLotActivity : AppCompatActivity(),
     }
 
     private val feedsFromLayout: ArrayList<Int>
-        private get() {
+        get() {
             val feedIntList = ArrayList<Int>()
             for (i in 0 until mFeedAgainLayout.childCount) {
                 val v = mFeedAgainLayout.getChildAt(i)
@@ -409,7 +411,7 @@ class FeedLotActivity : AppCompatActivity(),
                 val text = textInputLayout.editText!!.text.toString()
                 if (text.isNotEmpty()) {
                     try {
-                        val amountFed = numberFormatter.parse(text).toInt()
+                        val amountFed = numberFormatter.parse(text)?.toInt() ?: 0
                         feedIntList.add(amountFed)
                     } catch (e: ParseException) {
                         Log.e(TAG, "getFeedsFromLayout: ", e)
@@ -425,15 +427,13 @@ class FeedLotActivity : AppCompatActivity(),
         for (i in feedList) sum += i
         val totalFedStr = numberFormatter.format(sum.toLong())
         mTotalFed.text = totalFedStr
-        val callStr: String
-        callStr = if (mCallET.length() == 0) {
+        val callStr: String = if (mCallET.length() == 0) {
             "0"
         } else {
             mCallET.text.toString()
         }
-        val call: Int
-        call = try {
-            numberFormatter.parse(callStr).toInt()
+        val call: Int = try {
+            numberFormatter.parse(callStr)?.toInt() ?: 0
         } catch (e: ParseException) {
             Log.e(TAG, "updateReports: ", e)
             0

@@ -32,7 +32,7 @@
             android:layout_marginTop="36dp"
             android:gravity="center"
             android:labelFor="@id/create_account_name"
-            android:text="Name"
+            android:text="@string/name"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:labelFor="@id/create_account_email"
-            android:text="Email"
+            android:text="@string/email"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:labelFor="@id/create_account_password"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -106,7 +106,7 @@
                 android:background="@drawable/white_sign_in_btn"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="Create Account"
+                android:text="@string/create_account"
                 android:textColor="@color/colorAccent" />
 
             <ProgressBar
@@ -132,7 +132,7 @@
                 android:background="@drawable/accent_sign_in_btn"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="Create account with Google"
+                android:text="@string/create_account_with_google"
                 android:textColor="@android:color/white" />
 
             <ProgressBar

@@ -75,7 +75,7 @@ class MoveFragment : Fragment() {
 
                     val mergeShuffleObject = ShuffleObject(
                         ShufflePenAndLotsAdapter.MERGE_AND_SPLIT,
-                        "Drag here to merge or split a lot",
+                        resources.getString(R.string.drag_here_to_split),
                         "id"
                     )
 

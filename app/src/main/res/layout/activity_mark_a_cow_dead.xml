@@ -28,7 +28,7 @@
                 android:layout_marginRight="16dp"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-                android:text="This cow is marked dead already"
+                android:text="@string/this_cow_is_marked_dead_already"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -45,7 +45,7 @@
                 android:inputType="number"
                 android:ems="7"
                 android:id="@+id/deads_tag_number"
-                android:hint="Tag number"
+                android:hint="@string/tag_number"
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -65,7 +65,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:id="@+id/deads_date"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top"
-                android:hint="Memo"
+                android:hint="@string/memo"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textSize="16sp" />
 
@@ -97,14 +97,14 @@
             android:id="@+id/dead_add_notes_btn"
             android:padding="24dp"
             style="?buttonBarButtonStyle"
-            android:text="Add memo"
+            android:text="@string/add_memo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:textColor="@android:color/white"
             android:background="@drawable/accent_sign_in_btn"
-            android:text="Mark as dead"
+            android:text="@string/mark_as_dead"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:layout_margin="24dp"

@@ -11,17 +11,51 @@
     <string name="delete">Delete</string>
     <string name="please_fill_blank">Please fill this blank</string>
     <string name="generic_error">An unknown error occurred</string>
+    <string name="date">Date</string>
+    <string name="memo">Memo</string>
+    <string name="name_already_used">Name already used</string>
+    <string name="ok">OK</string>
+    <string name="notes_more">Notes: %1$s</string>
 
     Work Fragment Strings
     <string name="work">Treat</string>
     <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
+    <string name="this_cow_is_dead">This cow is dead</string>
+    <string name="tag_number">Tag number</string>
+    <string name="drugs_given">Drugs Given</string>
+    <string name="edit_drugs_given">Edit drugs given</string>
+    <string name="this_cow_is_marked_dead_already">This cow is marked dead already</string>
+    <string name="add_memo">Add Memo</string>
+    <string name="mark_as_dead">Mark as dead</string>
+    <string name="you_have_medicated_this_cow">You have medicated this cow</string>
+    <string name="you_need_to_add_drugs_first">You need to add some drugs first. To do so, go back to the main screen, select \'More\' in the bottom right corner, then select Manage Drugs.</string>
+    <string name="no_medicated_cows_add_one">There are no medicated cows in this lot. Tap the + button to add one.</string>
+    <string name="treat">Treat</string>
+    <string name="this_pen_is_empty">This pen is empty</string>
+    <string name="fill_out_the_blanks_below_to_continue">Fill out the blanks below to continue.</string>
+    <string name="pen_info">Pen Info</string>
+    <string name="pen_description">Pen description</string>
+    <string name="cattle_info">Cattle Info</string>
+    <string name="add_to_pen">Add to pen</string>
+    <plurals name="drug_unit">
+        <item quantity="one">%1$d unit of %2$s</item>
+        <item quantity="other">%1$d units of %2$s</item>
+    </plurals>
 
     Feed Fragment Strings
     <string name="feed">Feed</string>
     <string name="no_pens_create_one">No pens saved. You must add one to continue</string>
+    <string name="call">Call</string>
+    <string name="total_fed">Total Fed</string>
+    <string name="left_to_feed">Left To Feed</string>
+    <string name="today">Today</string>
+    <string name="_0">0</string>
+    <string name="amount_fed">Amount Fed</string>
 
     Feed Reports
     <string name="feed_reports">Feed Reports</string>
+    <string name="ration">RATION</string>
+    <string name="no_feed_in_this_date_range">No feed in this date range</string>
 
     Report Strings
     <string name="reports">Reports</string>
@@ -29,6 +63,31 @@
 
     Move Strings
     <string name="move">Move</string>
+    <string name="empty_move">This is where you will be able to move your lots from one pen to another</string>
+    <string name="merge">MERGE</string>
+    <string name="only_one_lot_per_pen">You can only have one lot in each pen. Reports will not be accurate</string>
+    <string name="reorder_lots">Reorder lots</string>
+    <string name="drag_here_to_split">"Drag here to merge or split a lot"</string>
+
+    Lots
+    <string name="lot_description">Lot description</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="lot_reports">LOT REPORTS</string>
+    <string name="current_head">Current head</string>
+    <string name="total_head">Total head</string>
+    <string name="head_days">Head days</string>
+    <string name="death_loss">Death loss</string>
+    <string name="drugs_used">Drugs used</string>
+    <string name="no_drugs_used">No drugs used</string>
+    <string name="drug_report">Drug Report</string>
+    <string name="feed_report">Feed Report</string>
+    <string name="cattle_received">Cattle received</string>
+    <string name="no_cattle_have_been_received">No cattle have been received.</string>
+    <string name="archive_this_lot">Archive this lot</string>
+    <string name="yes">Yes</string>
+    <string name="dead"> dead</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="are_you_sure_body">You are about to delete a group of cattle.  You can not undo this action.</string>
 
     More Fragment Strings
     <string name="more">More</string>
@@ -39,12 +98,39 @@
     <string name="more_archives">Archives</string>
     <string name="more_settings">Settings</string>
 
+    Cows
+    <string name="head_count">Head count</string>
+
+    Drugs Given Reports
+    <string name="start_date">START DATE</string>
+    <string name="end_date">END DATE</string>
+    <string name="last_24_hrs">Last 24 Hrs</string>
+    <string name="this_month">This month</string>
+    <string name="all">All</string>
+    <string name="no_drugs_given_in_this_date_range">No drugs given in this date range</string>
+    <string name="drug_report_title">Drug Reports: %1$s</string>
+
     Manage Pens
     <string name="empty_pen_list">No saved pens.  Please add one to use full functionality.</string>
+    <string name="pen_name">Pen Name</string>
+    <string name="pen">Pen:</string>
+    <string name="still_cows_title">There are cows in this pen</string>
+    <string name="still_cows_body">You can\'t delete this pen when there are still cows in it.  Move or archive the lot of cows to continue with deletion.</string>
 
     Manage Drugs
     <string name="add_drug">Add drug</string>
     <string name="empty_drug_list">No saved drugs.  Please add one to use full functionality.</string>
+    <string name="drugs">Drugs</string>
+    <string name="add_drugs_first">You need to add some drugs first. Go to the navigation drawer and select Drugs</string>
+    <string name="drug_name">Drug name</string>
+    <string name="default_amount_given">Default amount given</string>
+    <string name="update_drug">Update Drug</string>
+    <string name="no_drugs_given">No drugs given</string>
+    <string name="amount_given">Amount Given</string>
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="default_given">Default given:</string>
+    <string name="edit_cow_title">Edit drug given to cow %1$s</string>
 
     Manage Rations
     <string name="add_ration">Add Ration</string>
@@ -56,6 +142,21 @@
 
     Archives
     <string name="empty_archive_list">No lots have been archived.</string>
+    <string name="archived_reports">Archived reports</string>
+    <string name="confirm_archive_title">Are you sure you want to archive lot?</string>
+    <string name="confirm_archive_body">This action cannot be undone.  You will not be able to edit these reports after they are archived.  You will be able to view this lot\'s reports under Archives.</string>
+
+    Account
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="create_account_with_google">Create account with Google</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_google">Sign In with Google</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="backing_up_data">Backing up data…</string>
 
     Utility Strings
     <string name="save_pen_id_key" translatable="false">save_pen_id</string>
@@ -77,4 +178,6 @@
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
     <string name="manage_sub_url" translatable="false">https://trackacow.net/subscription.html</string>
     <string name="git_hub_url" translatable="false">https://github.com/trevorwiebe/track-a-cow</string>
+    <string name="could_not_find_this_tag">Could not find this tag</string>
+
 </resources>

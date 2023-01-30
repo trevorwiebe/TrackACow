@@ -28,7 +28,7 @@
         <TextView
             android:id="@+id/too_many_lots_tv"
             android:textColor="@color/orangeText"
-            android:text="You can only have one lot in each pen.  Reports will not be accurate"
+            android:text="@string/only_one_lot_per_pen"
             android:layout_marginTop="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
@@ -49,6 +49,7 @@
         android:layout_marginBottom="8dp"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/reorder_lots" />
 
 </RelativeLayout>

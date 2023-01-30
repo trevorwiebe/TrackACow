@@ -24,10 +24,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="START DATE"
+                    android:text="@string/start_date"
                     android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
                     android:textColor="@color/colorAccentDark"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
@@ -60,10 +60,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="END DATE"
+                    android:text="@string/end_date"
                     android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
                     android:textColor="@color/colorAccentDark"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
 
             <Button
                 android:id="@+id/quick_feed_yesterday"
-                android:text="Yesterday"
+                android:text="@string/last_24_hrs"
                 android:layout_weight="1"
                 android:background="@drawable/white_sign_in_btn_accent_border"
                 android:textColor="@color/colorAccent"
@@ -109,7 +109,7 @@
 
             <Button
                 android:id="@+id/quick_feed_month"
-                android:text="This month"
+                android:text="@string/this_month"
                 android:layout_weight="1"
                 android:background="@drawable/white_sign_in_btn_accent_border"
                 android:textColor="@color/colorAccent"
@@ -121,7 +121,7 @@
 
             <Button
                 android:id="@+id/quick_feed_all"
-                android:text="All"
+                android:text="@string/all"
                 android:layout_weight="1"
                 android:background="@drawable/white_sign_in_btn_accent_border"
                 android:textColor="@color/colorAccent"
@@ -134,9 +134,9 @@
         </LinearLayout>
 
         <TextView
-            android:text="RATION"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="8dp"
+            android:text="@string/ration"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:textColor="@color/colorAccentDark"
             android:textStyle="bold"
@@ -162,7 +162,7 @@
 
     <TextView
         android:id="@+id/no_feed_given_report_tv"
-        android:text="No feed in this date range"
+        android:text="@string/no_feed_in_this_date_range"
         android:layout_margin="16dp"
         android:textSize="16sp"
         android:gravity="center_horizontal"

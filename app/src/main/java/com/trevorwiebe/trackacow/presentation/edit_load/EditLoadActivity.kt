@@ -76,7 +76,12 @@ class EditLoadActivity : AppCompatActivity() {
 
         updateBtn.setOnClickListener { v ->
             if (headCountTv.length() == 0 || dateTv.length() == 0) {
-                Snackbar.make(v, "Please fill the blanks", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    v,
+                    resources.getString(R.string.please_fill_blank),
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
             } else {
                 var headCount = 0
                 try {
@@ -101,18 +106,26 @@ class EditLoadActivity : AppCompatActivity() {
 
         deleteBtn.setOnClickListener {
             val deleteCattle = AlertDialog.Builder(this@EditLoadActivity)
-            deleteCattle.setTitle("Are you sure?")
-            deleteCattle.setMessage("You are about to delete a group of cattle.  You can not undo this action.")
-            deleteCattle.setPositiveButton("Delete") { dialog, which ->
+            deleteCattle.setTitle(
+                resources.getString(R.string.are_you_sure)
+            )
+            deleteCattle.setMessage(
+                resources.getString(R.string.are_you_sure_body)
+            )
+            deleteCattle.setPositiveButton(
+                resources.getString(R.string.delete)
+            ) { dialog, which ->
 
-                if(mSelectedLoad != null) {
+                if (mSelectedLoad != null) {
                     editLoadViewModel.onEvent(EditLoadUiEvent.OnLoadDeleted(mSelectedLoad!!))
                 }
 
                 setResult(RESULT_OK)
                 finish()
             }
-            deleteCattle.setNegativeButton("Cancel") { dialog, which -> }
+            deleteCattle.setNegativeButton(
+                resources.getString(R.string.cancel)
+            ) { dialog, which -> }
             deleteCattle.show()
         }
     }

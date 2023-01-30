@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.trevorwiebe.trackacow.R
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 
@@ -40,36 +41,49 @@ class MedicatedCowsRecyclerViewAdapter(
             trackCowViewHolder.mNotes.visibility = View.GONE
         } else {
             trackCowViewHolder.mNotes.visibility = View.VISIBLE
-            trackCowViewHolder.mNotes.text = "Notes: ${cowUiModel.cowModel.notes}"
+            trackCowViewHolder.mNotes.text =
+                mContext.resources.getString(R.string.notes_more, cowUiModel.cowModel.notes)
         }
         if (cowUiModel.cowModel.isAlive == 1) {
 
-            trackCowViewHolder.mTagNumber.setTextColor(mContext.resources.getColor(android.R.color.black))
+            trackCowViewHolder.mTagNumber.setTextColor(
+                ContextCompat.getColor(
+                    mContext,
+                    android.R.color.black
+                )
+            )
             var message = ""
 
             if (cowUiModel.drugsGivenAndDrugModelList.isEmpty()) {
-                trackCowViewHolder.mDrugsGiven.text = "No drugs given"
+                trackCowViewHolder.mDrugsGiven.text =
+                    mContext.resources.getString(R.string.no_drugs_given)
                 trackCowViewHolder.mDrugsGiven.typeface =
                     Typeface.defaultFromStyle(Typeface.ITALIC)
             } else {
                 trackCowViewHolder.mDrugsGiven.typeface = Typeface.DEFAULT
                 for (q in cowUiModel.drugsGivenAndDrugModelList.indices) {
                     val drugsGivenAndDrugModel = cowUiModel.drugsGivenAndDrugModelList[q]
-                    var drugName = ""
-                    drugName = drugsGivenAndDrugModel.drugName
-                    val amountGivenStr = drugsGivenAndDrugModel.drugsGivenAmountGiven.toString()
-                    message = "$message$amountGivenStr units of $drugName"
-                    if (cowUiModel.drugsGivenAndDrugModelList.size != q + 1) {
-                        message = """
-                            $message
-                            """.trimIndent()
-                    }
-                    trackCowViewHolder.mDrugsGiven.text = message
+                    val drugName = drugsGivenAndDrugModel.drugName
+                    val amountGiven = drugsGivenAndDrugModel.drugsGivenAmountGiven
+                    message += mContext.resources.getQuantityString(
+                        R.plurals.drug_unit,
+                        amountGiven,
+                        amountGiven,
+                        drugName
+                    ) + "\n"
                 }
+                message = message.trimIndent()
+                trackCowViewHolder.mDrugsGiven.text = message
             }
         } else {
-            trackCowViewHolder.mTagNumber.setTextColor(mContext.resources.getColor(R.color.redText))
-            trackCowViewHolder.mDrugsGiven.text = "This cow is dead"
+            trackCowViewHolder.mTagNumber.setTextColor(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.redText
+                )
+            )
+            trackCowViewHolder.mDrugsGiven.text =
+                mContext.resources.getString(R.string.this_cow_is_dead)
         }
     }
 

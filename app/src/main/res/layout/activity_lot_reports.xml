@@ -32,7 +32,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="4dp"
                     android:textStyle="bold"
-                    android:text="Customer Name"
+                    android:text="@string/customer_name"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
@@ -63,7 +63,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
                     android:textStyle="bold"
-                    android:text="Date"
+                    android:text="@string/date"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
@@ -90,7 +90,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="4dp"
             android:textStyle="bold"
-            android:text="Memo"
+            android:text="@string/memo"
             android:textColor="@color/colorAccent"
             android:textSize="14sp" />
 
@@ -121,7 +121,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="LOT REPORTS"
+                android:text="@string/lot_reports"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -148,7 +148,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold"
-                        android:text="Current head"
+                        android:text="@string/current_head"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
@@ -171,7 +171,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold"
-                        android:text="Total head"
+                        android:text="@string/total_head"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
@@ -194,7 +194,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold"
-                        android:text="Head days"
+                        android:text="@string/head_days"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
@@ -217,7 +217,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold"
-                        android:text="Death loss"
+                        android:text="@string/death_loss"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
@@ -258,7 +258,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
-                        android:text="Drugs used"
+                        android:text="@string/drugs_used"
                         android:textStyle="bold"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
@@ -269,7 +269,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="No drugs used"
+                        android:text="@string/no_drugs_used"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:visibility="gone" />
@@ -290,7 +290,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:background="@drawable/white_sign_in_btn"
-                        android:text="Drug Report"
+                        android:text="@string/drug_report"
                         android:id="@+id/drug_reports_button"
                         android:layout_gravity="center_horizontal"
                         android:layout_width="match_parent"
@@ -313,7 +313,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="4dp"
                         android:textStyle="bold"
-                        android:text="Feed"
+                        android:text="@string/feed"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"/>
 
@@ -335,7 +335,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:background="@drawable/white_sign_in_btn"
-                        android:text="Feed Report"
+                        android:text="@string/feed_report"
                         android:id="@+id/feed_reports_btn"
                         android:layout_gravity="center_horizontal"
                         android:layout_width="match_parent"
@@ -352,7 +352,7 @@
                     android:layout_margin="16dp"
                     android:layout_gravity="center_horizontal"
                     android:textStyle="bold"
-                    android:text="Cattle received"
+                    android:text="@string/cattle_received"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp" />
 
@@ -376,7 +376,7 @@
                 android:textColor="@android:color/darker_gray"
                 android:layout_margin="16dp"
                 android:gravity="center"
-                android:text="No cattle have been received."
+                android:text="@string/no_cattle_have_been_received"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -392,7 +392,7 @@
             android:background="@drawable/white_sign_in_btn"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:text="Archive this lot"
+            android:text="@string/archive_this_lot"
             android:textColor="@color/redText" />
 
     </LinearLayout>

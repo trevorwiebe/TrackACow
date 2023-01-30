@@ -69,7 +69,11 @@ class FeedReportsActivity : AppCompatActivity() {
                 feedReportViewModel.uiState.collect {
 
                     // rations
-                    val allRation = RationModel(0, "", "All")
+                    val allRation = RationModel(
+                        0,
+                        "",
+                        getString(R.string.all)
+                    )
                     val allRationList = it.rationList.toMutableList()
                     allRationList.add(0, allRation)
                     feedRationRvAdapter.setRationsList(allRationList.toList())

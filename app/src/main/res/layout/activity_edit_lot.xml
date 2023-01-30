@@ -28,7 +28,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="11"
-                    android:hint="Lot description"
+                    android:hint="@string/lot_description"
                     android:inputType="textCapWords"
                     android:textSize="16sp" />
 
@@ -46,7 +46,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="11"
-                    android:hint="Customer Name"
+                    android:hint="@string/customer_name"
                     android:inputType="textCapWords"
                     android:textSize="16sp" />
 
@@ -64,7 +64,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="11"
-                    android:hint="Date"
+                    android:hint="@string/date"
                     android:focusableInTouchMode="false"
                     android:focusable="false"
                     android:inputType="textCapWords"
@@ -85,7 +85,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="top"
-                    android:hint="Memo"
+                    android:hint="@string/memo"
                     android:inputType="textCapSentences|textMultiLine"
                     android:textSize="16sp" />
 
@@ -109,7 +109,7 @@
             android:layout_weight="1"
             android:background="@android:color/white"
             android:textColor="@color/colorAccent"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
@@ -120,7 +120,7 @@
             android:layout_weight="1"
             android:background="@color/colorAccent"
             android:textColor="@android:color/white"
-            android:text="Update"
+            android:text="@string/update"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 

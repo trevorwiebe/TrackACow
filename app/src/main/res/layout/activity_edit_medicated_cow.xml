@@ -29,7 +29,7 @@
                     android:padding="16dp"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:text="This cow is dead"
+                    android:text="@string/this_cow_is_dead"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -49,7 +49,7 @@
                 android:inputType="number"
                 android:ems="7"
                 android:id="@+id/edit_tag_number"
-                android:hint="Tag number"
+                android:hint="@string/tag_number"
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -68,7 +68,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="textCapSentences"
                 android:id="@+id/edit_date"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:textSize="16sp"
                 android:ems="7"
                 android:focusableInTouchMode="false"
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top"
-                android:hint="Memo"
+                android:hint="@string/memo"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textSize="16sp" />
 
@@ -111,7 +111,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Drugs Given"
+                android:text="@string/drugs_given"
                 android:textColor="@color/colorAccent"
                 style="@style/Base.TextAppearance.AppCompat.Button"/>
 
@@ -125,7 +125,7 @@
 
             <Button
                 android:id="@+id/edit_drugs_given"
-                android:text="Edit drugs given"
+                android:text="@string/edit_drugs_given"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
                 android:layout_margin="24dp"
@@ -141,7 +141,7 @@
             android:id="@+id/update_medicated_cow"
             android:background="@drawable/accent_sign_in_btn"
             android:textColor="@android:color/white"
-            android:text="Update"
+            android:text="@string/update"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:layout_marginTop="48dp"
@@ -155,7 +155,7 @@
             android:id="@+id/delete_medicated_cow"
             android:background="@drawable/white_sign_in_btn"
             android:textColor="@color/redText"
-            android:text="Delete"
+            android:text="@string/delete"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:layout_marginTop="16dp"

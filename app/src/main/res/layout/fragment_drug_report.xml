@@ -18,7 +18,8 @@
             android:layout_gravity="center_vertical"
             android:background="@android:color/white"
             android:padding="36dp"
-            android:src="@drawable/ic_chevron_left_black_24dp" />
+            android:src="@drawable/ic_chevron_left_black_24dp"
+            android:contentDescription="@string/back" />
 
         <View
             android:layout_width="0dp"
@@ -52,7 +53,8 @@
             android:layout_gravity="center_vertical"
             android:background="@android:color/white"
             android:padding="36dp"
-            android:src="@drawable/ic_chevron_right_black_24dp" />
+            android:src="@drawable/ic_chevron_right_black_24dp"
+            android:contentDescription="@string/forward" />
 
     </LinearLayout>
 
@@ -68,7 +70,7 @@
 
     <TextView
         android:id="@+id/no_drugs_given_report_tv"
-        android:text="No drugs given in this date range"
+        android:text="@string/no_drugs_given_in_this_date_range"
         android:layout_margin="16dp"
         android:textSize="16sp"
         android:gravity="center_horizontal"

@@ -52,10 +52,10 @@ class AddOrEditDrugActivity : AppCompatActivity() {
 
         saveDrug.setOnClickListener {
             if (mDrugName.length() == 0) {
-                mDrugName.error = "Please fill the blank"
+                mDrugName.error = getString(R.string.please_fill_blank)
                 mDrugName.requestFocus()
             } else if (mDefaultAmount.length() == 0) {
-                mDefaultAmount.error = "Please fill the blank"
+                mDefaultAmount.error = getString(R.string.please_fill_blank)
                 mDefaultAmount.requestFocus()
             } else {
 

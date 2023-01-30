@@ -144,14 +144,19 @@ class EditMedicatedCowActivity : AppCompatActivity() {
             textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
             textView.layoutParams = textViewParams
             // TODO: put this string in resources
-            textView.text = "No drugs given"
+            textView.text = getString(R.string.no_drugs_given)
             mDrugsGiven.addView(textView)
         } else {
             for (t in drugsGivenAndDrugModelList.indices) {
                 val drugAndDrugsGivenModel = drugsGivenAndDrugModelList[t]
                 val drugName = drugAndDrugsGivenModel.drugName
                 val amountGiven = drugAndDrugsGivenModel.drugsGivenAmountGiven
-                val textToSet = "$amountGiven units of $drugName"
+                val textToSet = resources.getQuantityString(
+                    R.plurals.drug_unit,
+                    amountGiven,
+                    amountGiven,
+                    drugName
+                )
                 val textView = TextView(this@EditMedicatedCowActivity)
                 val textViewParams = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,

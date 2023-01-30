@@ -60,7 +60,11 @@ class EditDrugsGivenToSpecificCowActivity : AppCompatActivity() {
 
         mSaveButton.setOnClickListener { v ->
             if (mAmountGiven.length() == 0) {
-                Snackbar.make(v, "Please fill the blank", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    v,
+                    resources.getString(R.string.please_fill_blank),
+                    Snackbar.LENGTH_LONG
+                ).show()
             } else {
                 val amountGiven = mAmountGiven.text.toString().toInt()
                 mDrugGivenAndDrug?.drugsGivenAmountGiven = amountGiven
@@ -76,7 +80,7 @@ class EditDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         }
 
         val tagNumber = cowModel?.tagNumber.toString()
-        title = "Edit drug given to cow $tagNumber"
+        title = resources.getString(R.string.edit_cow_title, tagNumber)
 
         val amountGiven = mDrugGivenAndDrug?.drugsGivenAmountGiven
         val amountGivenStr = amountGiven.toString()
@@ -98,7 +102,8 @@ class EditDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         if (id == R.id.action_delete_drug_given) {
 
             editDrugsGivenToSpecificCowViewModel.onEvent(
-                EditDrugsGivenToSpecificCowEvents.OnDrugGivenDelete(mDrugGivenAndDrug?.toDrugGivenModel())
+                EditDrugsGivenToSpecificCowEvents
+                    .OnDrugGivenDelete(mDrugGivenAndDrug?.toDrugGivenModel())
             )
 
             setResult(RESULT_OK)

@@ -23,7 +23,7 @@
     <Button
         android:id="@+id/merge_or_split_btn"
         android:padding="2dp"
-        android:text="MERGE"
+        android:text="@string/merge"
         android:visibility="invisible"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"

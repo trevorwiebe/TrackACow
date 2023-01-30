@@ -52,7 +52,7 @@ class ManagePensActivity : AppCompatActivity(){
             val penName =
                 editTextView.findViewById<TextInputEditText>(R.id.dialog_add_new_pen_edit_text)
             val addNewPenDialog = AlertDialog.Builder(this@ManagePensActivity)
-                .setTitle("Add new pen")
+                .setTitle(resources.getString(R.string.add_pen))
                 .setView(editTextView)
                 .setPositiveButton(getString(R.string.save), null)
                 .create()
@@ -71,11 +71,11 @@ class ManagePensActivity : AppCompatActivity(){
                             addNewPenDialog.dismiss()
                         } else {
                             penName.requestFocus()
-                            penName.error = "Name used already"
+                            penName.error = resources.getString(R.string.name_already_used)
                         }
                     } else {
                         penName.requestFocus()
-                        penName.error = "Please fill the blank"
+                        penName.error = resources.getString(R.string.please_fill_blank)
                     }
                 }
             }
@@ -103,9 +103,9 @@ class ManagePensActivity : AppCompatActivity(){
                         val editPen = AlertDialog.Builder(this@ManagePensActivity)
                             .setTitle("Edit pen")
                             .setView(dialogView)
-                            .setPositiveButton("Update", null)
-                            .setNegativeButton("Cancel", null)
-                            .setNeutralButton("Delete", null)
+                            .setPositiveButton(resources.getString(R.string.update), null)
+                            .setNegativeButton(resources.getString(R.string.cancel), null)
+                            .setNeutralButton(resources.getString(R.string.delete), null)
                             .create()
 
                         editPen.setOnShowListener { dialog ->
@@ -115,7 +115,8 @@ class ManagePensActivity : AppCompatActivity(){
                             posBtn.setOnClickListener {
                                 if (editPenEditText.length() == 0) {
                                     editPenEditText.requestFocus()
-                                    editPenEditText.error = "Please fill the blank"
+                                    editPenEditText.error =
+                                        resources.getString(R.string.please_fill_blank)
                                 } else {
                                     val updatedText = editPenEditText.text.toString()
                                     if (isPenNameAvailable(updatedText, mPenAndLotList)) {
@@ -126,7 +127,8 @@ class ManagePensActivity : AppCompatActivity(){
                                         editPen.dismiss()
                                     } else {
                                         editPenEditText.requestFocus()
-                                        editPenEditText.error = "Name already taken"
+                                        editPenEditText.error =
+                                            resources.getString(R.string.name_already_used)
                                     }
                                 }
                             }
@@ -146,9 +148,13 @@ class ManagePensActivity : AppCompatActivity(){
 
                                     val lotOfCowsInThisPen =
                                         AlertDialog.Builder(this@ManagePensActivity)
-                                    lotOfCowsInThisPen.setTitle("There are cows in this pen")
-                                    lotOfCowsInThisPen.setMessage("You can't delete this pen when there are still cows in it.  Move or archive the lot of cows to continue with deletion.")
-                                    lotOfCowsInThisPen.setPositiveButton("Ok") { dialog, which -> editPen.dismiss() }
+                                    lotOfCowsInThisPen.setTitle(
+                                        resources.getString(R.string.still_cows_title)
+                                    )
+                                    lotOfCowsInThisPen.setMessage(
+                                        resources.getString(R.string.still_cows_body)
+                                    )
+                                    lotOfCowsInThisPen.setPositiveButton(resources.getString(R.string.ok)) { dialog, which -> editPen.dismiss() }
                                     lotOfCowsInThisPen.show()
 
                                 }

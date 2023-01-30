@@ -29,7 +29,7 @@
 
         <TextView
             android:gravity="center"
-            android:text="Email"
+            android:text="@string/email"
             android:textSize="16sp"
             android:labelFor="@id/sign_in_email"
             android:layout_marginTop="36dp"
@@ -54,7 +54,7 @@
 
         <TextView
             android:gravity="center"
-            android:text="Password"
+            android:text="@string/password"
             android:labelFor="@id/sign_in_password"
             android:textSize="16sp"
             android:textColor="@android:color/white"
@@ -90,7 +90,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@android:color/white"
-                android:text="Forgot your password?"
+                android:text="@string/forgot_your_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -106,7 +106,7 @@
                 android:paddingBottom="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:text="Sign In"
+                android:text="@string/sign_in"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/white_sign_in_btn"
                 android:layout_width="match_parent"
@@ -132,7 +132,7 @@
                 android:paddingBottom="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:text="Sign In with Google"
+                android:text="@string/sign_in_with_google"
                 android:textColor="@android:color/white"
                 android:background="@drawable/dark_accent_sign_in_btn"
                 android:layout_width="match_parent"
@@ -155,7 +155,7 @@
             android:paddingBottom="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp"
-            android:text="Create an account"
+            android:text="@string/create_an_account"
             android:textColor="@android:color/white"
             android:background="@drawable/accent_sign_in_btn"
             android:layout_width="match_parent"

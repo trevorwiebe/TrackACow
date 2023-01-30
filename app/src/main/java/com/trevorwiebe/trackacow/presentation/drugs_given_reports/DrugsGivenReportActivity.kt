@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Build.VERSION
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -66,7 +65,7 @@ class DrugsGivenReportActivity : AppCompatActivity() {
             intent.getParcelableExtra("lotModel")
         }
 
-        title = "Drug Reports: ${mLotModel?.lotName ?: ""}"
+        title = resources.getString(R.string.drug_report_title, mLotModel?.lotName)
 
         if (savedInstanceState != null) {
             val startDate = savedInstanceState.getLong("startLong")
@@ -222,8 +221,6 @@ class DrugsGivenReportActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 drugsGivenViewModel.uiState.collect { drugsGivenUiState ->
-
-                    Log.d("TAG", "onCreate: ${drugsGivenUiState.drugsGivenAndDrugList}")
 
                     if (drugsGivenUiState.drugsGivenAndDrugList.isEmpty()) {
                         mNoDrugsGivenTv.visibility = View.VISIBLE

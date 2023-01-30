@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:gravity="center"
-        android:text="There are no medicated cows in this lot. Tap the + button to add one."
+        android:text="@string/no_medicated_cows_add_one"
         android:textSize="16sp"
         android:visibility="invisible" />
 
@@ -62,7 +62,7 @@
             app:fab_colorPressed="@color/mini_fab1"
             app:fab_icon="@drawable/ic_drugs_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Medicate a cow" />
+            app:fab_title="Treat a cow" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Could not find this tag"
+                android:text="@string/could_not_find_this_tag"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/white_sign_in_btn"
                     android:onClick="markACowDead"
-                    android:text="Mark as dead"
+                    android:text="@string/mark_as_dead"
                     android:layout_margin="16dp"
                     android:padding="16dp"
                     android:textColor="@color/colorAccentDark" />
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/accent_sign_in_btn"
                     android:onClick="medicateCow"
-                    android:text="Medicate"
+                    android:text="@string/treat"
                     android:layout_margin="16dp"
                     android:padding="16dp"
                     android:textColor="@android:color/white" />
@@ -148,7 +148,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="This pen is empty"
+                        android:text="@string/this_pen_is_empty"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
@@ -159,7 +159,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="16dp"
                         android:layout_marginTop="8dp"
-                        android:text="Fill out the blanks below to continue." />
+                        android:text="@string/fill_out_the_blanks_below_to_continue" />
 
                 </LinearLayout>
 
@@ -174,7 +174,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Pen Info"
+                android:text="@string/pen_info"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
@@ -190,7 +190,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="12"
-                    android:hint="Pen description"
+                    android:hint="@string/pen_description"
                     android:inputType="textCapWords"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -207,7 +207,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="12"
-                    android:hint="Customer name"
+                    android:hint="@string/customer_name"
                     android:inputType="textCapWords"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -226,7 +226,7 @@
                     android:ems="12"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="Date"
+                    android:hint="@string/date"
                     android:inputType="number"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -243,7 +243,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="top"
-                    android:hint="Memo"
+                    android:hint="@string/memo"
                     android:inputType="textCapSentences|textMultiLine"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -256,7 +256,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Cattle Info"
+                android:text="@string/cattle_info"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
@@ -272,7 +272,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:ems="12"
-                    android:hint="Head count"
+                    android:hint="@string/head_count"
                     android:inputType="number"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -291,7 +291,7 @@
                     android:ems="12"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:hint="Date"
+                    android:hint="@string/date"
                     android:inputType="number"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -308,7 +308,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="top"
-                    android:hint="Memo"
+                    android:hint="@string/memo"
                     android:inputType="textCapSentences|textMultiLine"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -321,7 +321,7 @@
                 android:background="@drawable/accent_sign_in_btn"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="Add to pen"
+                android:text="@string/add_to_pen"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
