@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.activities.AddDrugsGivenToSpecificCowActivity" />
-        <activity android:name=".presentation.activities.EditDrugsGivenToSpecificCowActivity" />
+        <activity android:name=".presentation.edit_drugs_given_to_specific.EditDrugsGivenToSpecificCowActivity" />
         <activity
             android:name=".presentation.settings.SettingsActivity"
             android:exported="false"

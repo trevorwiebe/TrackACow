@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
+import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.compound_entities.DrugsGivenAndDrugEntity
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,15 @@ interface DrugsGivenDao {
     @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
     suspend fun deleteDrugsGivenByCowId(cowId: String)
 
+    @Update
+    suspend fun updateDrugGiven(drugsGivenEntity: DrugsGivenEntity)
+
+    @Delete
+    suspend fun deleteDrugGiven(drugsGivenEntity: DrugsGivenEntity)
+
+    // Cache
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCacheDrugGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity)
 
     // Deprecated
 

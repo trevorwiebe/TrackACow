@@ -73,7 +73,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         mEditDrugsGiven.setOnClickListener {
             val editDrugsIntent =
                 Intent(this@EditMedicatedCowActivity, EditDrugsGivenListActivity::class.java)
-            editDrugsIntent.putExtra("cowId", mCowUiModel!!.cowModel.cowId)
+            editDrugsIntent.putExtra("cowModel", mCowUiModel)
             startActivity(editDrugsIntent)
         }
         mUpdateBtn.setOnClickListener {

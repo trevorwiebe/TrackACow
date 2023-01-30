@@ -176,7 +176,17 @@ object ViewModelDomainModule {
                 drugsGivenRemoteRepository,
                 context
             ),
-            readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(drugsGivenRepository)
+            readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(drugsGivenRepository),
+            deleteDrugGivenByDrugGivenId = DeleteDrugGivenByDrugGivenId(
+                drugsGivenRepository,
+                drugsGivenRemoteRepository,
+                context
+            ),
+            updateDrugGiven = UpdateDrugGiven(
+                drugsGivenRepository,
+                drugsGivenRemoteRepository,
+                context
+            )
         )
     }
 

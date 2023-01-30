@@ -1,12 +1,20 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
 import com.google.firebase.database.*
+import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.remote.DrugsGivenRepositoryRemote
 
 class DrugsGivenRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
     private val databasePath: String
 ) : DrugsGivenRepositoryRemote {
+    override suspend fun editRemoteDrugsGiven(drugsGivenModel: DrugGivenModel) {
+        if (!drugsGivenModel.drugsGivenId.isNullOrEmpty()) {
+            firebaseDatabase.getReference(
+                "$databasePath/${drugsGivenModel.drugsGivenId}"
+            ).setValue(drugsGivenModel)
+        }
+    }
 
     override suspend fun deleteRemoteDrugsGivenByCowId(cowId: String) {
         val fbQuery: Query = firebaseDatabase.getReference(databasePath)
@@ -23,6 +31,10 @@ class DrugsGivenRepositoryRemoteImpl(
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
+
+    override suspend fun deleteRemoteDrugGivenByDrugGivenId(drugGivenId: String) {
+        firebaseDatabase.getReference("$databasePath/$drugGivenId").removeValue()
     }
 
 }

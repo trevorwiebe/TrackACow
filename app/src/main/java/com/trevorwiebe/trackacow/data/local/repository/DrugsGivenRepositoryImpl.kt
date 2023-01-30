@@ -2,7 +2,11 @@ package com.trevorwiebe.trackacow.data.local.repository
 
 import com.trevorwiebe.trackacow.data.local.dao.DrugsGivenDao
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toDrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenEntity
+import com.trevorwiebe.trackacow.data.mapper.toDrugGivenEntity
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
+import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -36,7 +40,19 @@ class DrugsGivenRepositoryImpl(
             }
     }
 
+    override suspend fun editDrugsGiven(drugGivenModel: DrugGivenModel) {
+        drugsGivenDao.updateDrugGiven(drugGivenModel.toDrugGivenEntity())
+    }
+
     override suspend fun deleteDrugsGivenByCowId(cowId: String) {
         drugsGivenDao.deleteDrugsGivenByCowId(cowId)
+    }
+
+    override suspend fun deleteDrugGiven(drugGivenModel: DrugGivenModel) {
+        drugsGivenDao.deleteDrugGiven(drugGivenModel.toDrugGivenEntity())
+    }
+
+    override suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel) {
+        drugsGivenDao.insertCacheDrugGiven(cacheDrugGivenModel.toCacheDrugGivenEntity())
     }
 }
