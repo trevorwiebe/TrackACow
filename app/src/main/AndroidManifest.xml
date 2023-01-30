@@ -31,26 +31,26 @@
         <activity
             android:name=".presentation.drugs_given_reports.DrugsGivenReportActivity"
             android:exported="false"
-            android:label="Drug Reports"
+            android:label="@string/drug_report"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
             android:name=".presentation.edit_load.EditLoadActivity"
             android:exported="false"
-            android:label="Edit cattle added"
+            android:label="@string/edit_cattle_added"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
             android:name=".presentation.activities.AddLoadOfCattleActivity"
             android:exported="false"
-            android:label="Add cattle" />
+            android:label="@string/add_cattle" />
         <activity
             android:name=".presentation.feedlot.FeedLotActivity"
             android:exported="false"
-            android:label="Feed Lot"
+            android:label="@string/feed_lot"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.activities.ArchivesActivity"
             android:exported="false"
-            android:label="Archives"
+            android:label="@string/more_archives"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.lot_reports.LotReportActivity"
@@ -71,23 +71,23 @@
         <activity
             android:name=".presentation.settings.SettingsActivity"
             android:exported="false"
-            android:label="Settings"
+            android:label="@string/more_settings"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.edit_drugs_given.EditDrugsGivenListActivity"
             android:exported="false"
-            android:label="Edit drugs given"
+            android:label="@string/edit_drugs_given"
             android:parentActivityName=".presentation.edit_medicated_cow.EditMedicatedCowActivity" />
         <activity
             android:name=".presentation.activities.CreateAccountActivity"
             android:exported="false"
-            android:label="Create Account"
+            android:label="@string/create_account"
             android:parentActivityName=".presentation.sign_in.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".presentation.sign_in.SignInActivity"
             android:exported="false"
-            android:label="Sign In"
+            android:label="@string/sign_in"
             android:parentActivityName=".presentation.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -97,12 +97,12 @@
         <activity
             android:name=".presentation.manage_drugs.ManageDrugsActivity"
             android:exported="false"
-            android:label="Manage Drugs"
+            android:label="@string/more_manage_drugs"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.manage_pens.ManagePensActivity"
             android:exported="false"
-            android:label="Manage Pens"
+            android:label="@string/more_manage_pens"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
             android:name=".presentation.medicated_cows.MedicatedCowsActivity"
@@ -111,17 +111,17 @@
         <activity
             android:name=".presentation.add_edit_drug.AddOrEditDrugActivity"
             android:exported="false"
-            android:label="Add new drug"
+            android:label="@string/add_drug"
             android:parentActivityName=".presentation.manage_drugs.ManageDrugsActivity" />
         <activity
             android:name=".presentation.activities.MedicateACowActivity"
             android:exported="false"
-            android:label="Medicate a cow"
+            android:label="@string/treat_a_cow"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
             android:name=".presentation.activities.MarkACowDeadActivity"
             android:exported="false"
-            android:label="Mark a cow dead"
+            android:label="@string/mark_a_cow_dead"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
             android:name=".presentation.edit_lot.EditLotActivity"

@@ -19,8 +19,10 @@
 
     Work Fragment Strings
     <string name="work">Treat</string>
+    <string name="treat_a_cow">Treat a cow</string>
     <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
     <string name="this_cow_is_dead">This cow is dead</string>
+    <string name="mark_a_cow_dead">Mark a cow dead</string>
     <string name="tag_number">Tag number</string>
     <string name="drugs_given">Drugs Given</string>
     <string name="edit_drugs_given">Edit drugs given</string>
@@ -56,6 +58,7 @@
     <string name="feed_reports">Feed Reports</string>
     <string name="ration">RATION</string>
     <string name="no_feed_in_this_date_range">No feed in this date range</string>
+    <string name="feed_lot">Feed lot</string>
 
     Report Strings
     <string name="reports">Reports</string>
@@ -79,8 +82,8 @@
     <string name="death_loss">Death loss</string>
     <string name="drugs_used">Drugs used</string>
     <string name="no_drugs_used">No drugs used</string>
-    <string name="drug_report">Drug Report</string>
-    <string name="feed_report">Feed Report</string>
+    <string name="drug_report">Drug Reports</string>
+    <string name="feed_report">Feed Reports</string>
     <string name="cattle_received">Cattle received</string>
     <string name="no_cattle_have_been_received">No cattle have been received.</string>
     <string name="archive_this_lot">Archive this lot</string>
@@ -88,6 +91,8 @@
     <string name="dead"> dead</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="are_you_sure_body">You are about to delete a group of cattle.  You can not undo this action.</string>
+    <string name="add_cattle">Add Cattle</string>
+    <string name="edit_cattle_added">Edit cattle added</string>
 
     More Fragment Strings
     <string name="more">More</string>

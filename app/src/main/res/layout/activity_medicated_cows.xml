@@ -52,7 +52,7 @@
             app:fab_colorPressed="@color/mini_fab2"
             app:fab_icon="@drawable/ic_remove_circle_outline_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Mark a cow dead" />
+            app:fab_title="@string/mark_a_cow_dead" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
             app:fab_colorPressed="@color/mini_fab1"
             app:fab_icon="@drawable/ic_drugs_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Treat a cow" />
+            app:fab_title="@string/treat_a_cow" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
