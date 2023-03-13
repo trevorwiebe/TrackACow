@@ -19,7 +19,7 @@ public class InsertSingleCow extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).cowDao().insertCow(mCowEntity);
+        AppDatabase.getAppDatabase(contexts[0]).cowDao().insertCow2(mCowEntity);
         return null;
     }
 }
