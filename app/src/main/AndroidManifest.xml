@@ -114,7 +114,7 @@
             android:label="@string/add_drug"
             android:parentActivityName=".presentation.manage_drugs.ManageDrugsActivity" />
         <activity
-            android:name=".presentation.activities.MedicateACowActivity"
+            android:name=".presentation.medicate_a_cow.MedicateACowActivity"
             android:exported="false"
             android:label="@string/treat_a_cow"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
