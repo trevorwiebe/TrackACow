@@ -154,12 +154,14 @@ class SignInActivity : AppCompatActivity() {
             }
             forgotPasswordDialog.show()
         }
+        // TODO: Need to fix this deprecation issue
         createAccount.setOnClickListener {
             val createAccountIntent = Intent(this@SignInActivity, CreateAccountActivity::class.java)
             startActivityForResult(createAccountIntent, CREATE_ACCOUNT_CODE)
         }
     }
 
+    // TODO: Need to fix this deprecation issue
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
