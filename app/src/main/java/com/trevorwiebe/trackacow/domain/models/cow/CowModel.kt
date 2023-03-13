@@ -11,5 +11,5 @@ data class CowModel(
     var tagNumber: Int = 0,
     var date: Long = 0,
     var notes: String? = "",
-    var lotId: String? = ""
+    var lotId: String = ""
 ) : Parcelable

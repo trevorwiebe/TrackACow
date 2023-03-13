@@ -10,7 +10,7 @@ data class DrugsGivenAndDrugModel(
     var drugsGivenDrugId: String? = "",
     var drugsGivenAmountGiven: Int = 0,
     var drugsGivenCowId: String? = "",
-    var drugsGivenLotId: String? = "",
+    var drugsGivenLotId: String = "",
     var drugsGivenDate: Long = 0,
     var drugPrimaryKey: Int = 0,
     var defaultAmount: Int = 0,
