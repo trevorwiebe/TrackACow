@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
 import android.app.DatePickerDialog
+import android.os.Build.VERSION
 import android.text.InputType
 import android.view.Menu
 import android.view.View
@@ -39,7 +40,7 @@ import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.activities.AddLoadOfCattleActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
 import com.trevorwiebe.trackacow.presentation.activities.MarkACowDeadActivity
-import com.trevorwiebe.trackacow.presentation.activities.MedicateACowActivity
+import com.trevorwiebe.trackacow.presentation.medicate_a_cow.MedicateACowActivity
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -79,10 +80,16 @@ class MedicatedCowsActivity : AppCompatActivity() {
 
     @Inject lateinit var medicatedCowsViewModelFactory: MedicatedCowsViewModel.MedicatedCowsViewModelFactory
 
+    @Suppress("DEPRECATION")
     private val medicatedCowsViewModel: MedicatedCowsViewModel by viewModels{
         MedicatedCowsViewModel.providesFactory(
             assistedFactory = medicatedCowsViewModelFactory,
-            penAndLotModel = intent.getParcelableExtra("penAndLotModel")
+            lotId = if (VERSION.SDK_INT >= 33) {
+                intent.getParcelableExtra("penAndLotModel", PenAndLotModel::class.java)
+            } else {
+                intent.getParcelableExtra("penAndLotModel")
+            }
+                ?.lotCloudDatabaseId ?: ""
         )
     }
 
@@ -104,6 +111,45 @@ class MedicatedCowsActivity : AppCompatActivity() {
         mTotalCount = findViewById(R.id.first_load_head_count)
         mLoadDate = findViewById(R.id.first_load_date)
         mLoadMemo = findViewById(R.id.first_load_memo)
+        mMedicatedCows = findViewById(R.id.track_cow_rv)
+        mMedicatedCows.layoutManager = LinearLayoutManager(this)
+        mMedicatedCowsRecyclerViewAdapter = MedicatedCowsRecyclerViewAdapter(emptyList(), this)
+        mMedicatedCows.adapter = mMedicatedCowsRecyclerViewAdapter
+        mMedicatedCows.addOnItemTouchListener(
+            ItemClickListener(
+                this,
+                mMedicatedCows,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val cowUiModel = mCowUiModelList[position]
+                        val editCowIntent = Intent(
+                            this@MedicatedCowsActivity,
+                            EditMedicatedCowActivity::class.java
+                        )
+                        editCowIntent.putExtra("cowUiModel", cowUiModel)
+                        startActivity(editCowIntent)
+                    }
+
+                    override fun onLongItemClick(view: View, position: Int) {}
+                })
+        )
+
+        @Suppress("DEPRECATION")
+        mPenAndLotModel = if (VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra("penAndLotModel", PenAndLotModel::class.java)
+        } else {
+            intent.getParcelableExtra("penAndLotModel")
+        }
+
+        if (mPenAndLotModel != null) {
+            title = "Pen: " + mPenAndLotModel?.penName
+            if (mPenAndLotModel?.lotName.isNullOrEmpty()) {
+                setInActive()
+            } else {
+                supportActionBar?.subtitle = mPenAndLotModel?.lotName
+                setActive()
+            }
+        }
 
         val todayDate = Utility.convertMillisToDate(System.currentTimeMillis())
         mDate.setText(todayDate)
@@ -182,30 +228,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
             mTotalCount.setText("")
             mNotes.setText("")
         })
-        mMedicatedCows = findViewById(R.id.track_cow_rv)
-        mMedicatedCows.layoutManager = LinearLayoutManager(this)
-        mMedicatedCowsRecyclerViewAdapter = MedicatedCowsRecyclerViewAdapter(emptyList(), this)
-        mMedicatedCows.adapter = mMedicatedCowsRecyclerViewAdapter
-        mMedicatedCows.addOnItemTouchListener(
-            ItemClickListener(
-                this,
-                mMedicatedCows,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val cowUiModel = mCowUiModelList[position]
-//                        not sure why we need this line
-//                        Utility.setCowId(this@MedicatedCowsActivity, cowModel)
-                        val editCowIntent = Intent(
-                            this@MedicatedCowsActivity,
-                            EditMedicatedCowActivity::class.java
-                        )
-                        editCowIntent.putExtra("cowUiModel", cowUiModel)
-                        startActivity(editCowIntent)
-                    }
 
-                    override fun onLongItemClick(view: View, position: Int) {}
-                })
-        )
         mDate.setOnClickListener {
             DatePickerDialog(
                 this@MedicatedCowsActivity,
@@ -242,20 +265,6 @@ class MedicatedCowsActivity : AppCompatActivity() {
         lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 medicatedCowsViewModel.uiState.collect {
-
-                    mPenAndLotModel = it.statePenAndLotModel
-
-                    if (mPenAndLotModel != null) {
-                        title = "Pen: " + mPenAndLotModel!!.penName
-
-                        if (mPenAndLotModel!!.lotName != null) {
-                            supportActionBar!!.subtitle = mPenAndLotModel!!.lotName
-                            setActive()
-                        } else {
-                            setInActive()
-                        }
-
-                    }
 
                     mCowUiModelList = if(it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
                     if (mCowUiModelList.isEmpty() && mIsActive) {
@@ -330,7 +339,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
     fun medicateCow(view: View?) {
         mMedicateACowFabMenu.collapse()
         val medicateCowIntent = Intent(this@MedicatedCowsActivity, MedicateACowActivity::class.java)
-        medicateCowIntent.putExtra("penId", mPenAndLotModel!!.penCloudDatabaseId)
+        medicateCowIntent.putExtra("penAndLotModel", mPenAndLotModel)
         startActivity(medicateCowIntent)
     }
 
@@ -378,9 +387,5 @@ class MedicatedCowsActivity : AppCompatActivity() {
         mMedicatedCows.visibility = View.GONE
         mPenIdleLayout.visibility = View.VISIBLE
         invalidateOptionsMenu()
-    }
-
-    companion object {
-        private const val TAG = "MedicatedCowsActivity"
     }
 }

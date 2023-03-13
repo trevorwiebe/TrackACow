@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface CowRepository {
 
+    suspend fun insertCow(cowModel: CowModel)
+
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowModel>>
 
     fun getCowsByLotId(lotId: String): Flow<List<CowModel>>

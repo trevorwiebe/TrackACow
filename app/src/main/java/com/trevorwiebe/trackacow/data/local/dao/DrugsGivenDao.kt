@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DrugsGivenDao {
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>)
+
     @Query(
         "SELECT * FROM DrugsGiven " +
                 "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
@@ -27,9 +31,9 @@ interface DrugsGivenDao {
     @Query(
         "SELECT * FROM DrugsGiven " +
                 "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
-                "WHERE drugsGivenCowId = :cowId"
+                "WHERE drugsGivenCowId IN (:cowIdList)"
     )
-    fun getDrugsGivenAndDrugByCowId(cowId: String): Flow<List<DrugsGivenAndDrugEntity>>
+    fun getDrugsGivenAndDrugByCowId(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugEntity>>
 
     @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
     suspend fun deleteDrugsGivenByCowId(cowId: String)
@@ -43,6 +47,9 @@ interface DrugsGivenDao {
     // Cache
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCacheDrugGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCacheDrugGivenList(cacheDrugGivenList: List<CacheDrugsGivenEntity>)
 
     // Deprecated
 

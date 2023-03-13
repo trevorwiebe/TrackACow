@@ -7,12 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface DrugsGivenRepository {
 
+    suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>)
+
     fun getDrugsGivenAndDrugs(lotId: String): Flow<List<DrugsGivenAndDrugModel>>
 
     fun getDrugsGivenAndDrugsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long):
             Flow<List<DrugsGivenAndDrugModel>>
 
-    fun getDrugsGivenAndDrugsByCowId(cowId: String): Flow<List<DrugsGivenAndDrugModel>>
+    fun getDrugsGivenAndDrugsByCowId(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugModel>>
 
     suspend fun editDrugsGiven(drugGivenModel: DrugGivenModel)
 
@@ -21,5 +23,7 @@ interface DrugsGivenRepository {
     suspend fun deleteDrugGiven(drugGivenModel: DrugGivenModel)
 
     suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel)
+
+    suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>)
 
 }

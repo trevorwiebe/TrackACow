@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.map
 class DrugsGivenRepositoryImpl(
     private val drugsGivenDao: DrugsGivenDao
 ): DrugsGivenRepository {
+    override suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>) {
+        drugsGivenDao.insertDrugsGivenList(
+            drugGivenList.map { it.toDrugGivenEntity() }
+        )
+    }
 
     override fun getDrugsGivenAndDrugs(lotId: String): Flow<List<DrugsGivenAndDrugModel>> {
         return drugsGivenDao.getDrugsGivenAndDrugByLotId(lotId)
@@ -33,8 +38,8 @@ class DrugsGivenRepositoryImpl(
             }
     }
 
-    override fun getDrugsGivenAndDrugsByCowId(cowId: String): Flow<List<DrugsGivenAndDrugModel>> {
-        return drugsGivenDao.getDrugsGivenAndDrugByCowId(cowId)
+    override fun getDrugsGivenAndDrugsByCowId(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugModel>> {
+        return drugsGivenDao.getDrugsGivenAndDrugByCowId(cowIdList)
             .map { drugsGivenList ->
                 drugsGivenList.map { it.toDrugsGivenAndDrugModel() }
             }
@@ -54,5 +59,11 @@ class DrugsGivenRepositoryImpl(
 
     override suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel) {
         drugsGivenDao.insertCacheDrugGiven(cacheDrugGivenModel.toCacheDrugGivenEntity())
+    }
+
+    override suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>) {
+        drugsGivenDao.insertCacheDrugGivenList(
+            cacheDrugsGivenList.map { it.toCacheDrugGivenEntity() }
+        )
     }
 }

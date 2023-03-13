@@ -57,9 +57,11 @@ object ActivityDomainModule {
     fun provideCowUseCases(
         cowRepository: CowRepository,
         cowRepositoryRemote: CowRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): CowUseCases {
         return CowUseCases(
+            createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
             readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
             readCowsByLotId = ReadCowsByLotId(cowRepository),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
@@ -195,9 +197,16 @@ object ActivityDomainModule {
     fun provideDrugsGivenUseCases(
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): DrugsGivenUseCases{
         return DrugsGivenUseCases(
+            createDrugsGivenList = CreateDrugsGivenList(
+                drugsGivenRepository,
+                drugsGivenRemoteRepository,
+                getCloudDatabaseId,
+                context
+            ),
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
                 drugsGivenRepository

@@ -8,6 +8,16 @@ class DrugsGivenRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
     private val databasePath: String
 ) : DrugsGivenRepositoryRemote {
+    override suspend fun createDrugsGivenListRemote(drugsGivenList: List<DrugGivenModel>) {
+        drugsGivenList.forEach {
+            if (!it.drugsGivenId.isNullOrEmpty()) {
+                firebaseDatabase.getReference(
+                    "$databasePath/${it.drugsGivenId}"
+                ).setValue(it)
+            }
+        }
+    }
+
     override suspend fun editRemoteDrugsGiven(drugsGivenModel: DrugGivenModel) {
         if (!drugsGivenModel.drugsGivenId.isNullOrEmpty()) {
             firebaseDatabase.getReference(

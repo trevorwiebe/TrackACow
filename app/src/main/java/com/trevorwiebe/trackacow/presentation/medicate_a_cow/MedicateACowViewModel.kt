@@ -1,0 +1,126 @@
+package com.trevorwiebe.trackacow.presentation.medicate_a_cow
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
+import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
+import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+class MedicateACowViewModel @AssistedInject constructor(
+    private val cowUseCases: CowUseCases,
+    private val drugUseCases: DrugUseCases,
+    private val drugsGivenUseCases: DrugsGivenUseCases,
+    @Assisted("penAndLotModel") private val penAndLotModel: PenAndLotModel
+) : ViewModel() {
+
+    @AssistedFactory
+    interface MedicateACowViewModelFactory {
+        fun create(
+            @Assisted("penAndLotModel") penAndLotModel: PenAndLotModel?
+        ): MedicateACowViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun providesFactory(
+            assistedFactory: MedicateACowViewModelFactory,
+            penAndLotModel: PenAndLotModel?
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(penAndLotModel) as T
+            }
+        }
+    }
+
+    private var readDrugs: Job? = null
+    private var drugsGivenByCows: Job? = null
+
+    private val _uiState = MutableStateFlow(MedicateACowUiState())
+    val uiState: StateFlow<MedicateACowUiState> = _uiState.asStateFlow()
+
+    init {
+        readDrugs()
+        readCowsByLotId(penAndLotModel.lotCloudDatabaseId ?: "")
+    }
+
+    fun onEvent(event: MedicateACowEvent) {
+        when (event) {
+            is MedicateACowEvent.OnDrugsGivenByCowIdList -> {
+                readDrugsAndDrugsGivenByCowIds(event.cowIdList)
+            }
+            is MedicateACowEvent.OnCowAndDrugListCreated -> {
+                createCowAndDrugList(event.cowModel, event.drugsGivenList)
+            }
+        }
+    }
+
+    private fun readDrugs() {
+        readDrugs?.cancel()
+        readDrugs = drugUseCases.readDrugsUC()
+            .map { thisDrugList ->
+                _uiState.update {
+                    it.copy(drugList = thisDrugList)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun readCowsByLotId(lotId: String) {
+        cowUseCases.readCowsByLotId(lotId)
+            .map { thisCowList ->
+                _uiState.update {
+                    it.copy(medicatedCowList = thisCowList)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+
+    private fun readDrugsAndDrugsGivenByCowIds(cowIdList: List<String>) {
+        drugsGivenByCows?.cancel()
+        drugsGivenByCows = drugsGivenUseCases
+            .readDrugsGivenAndDrugsByCowId(cowIdList)
+            .map { thisDrugsGivenList ->
+                _uiState.update {
+                    it.copy(drugsGivenAndDrugModelList = thisDrugsGivenList)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun createCowAndDrugList(cowModel: CowModel, drugList: List<DrugGivenModel>) {
+        viewModelScope.launch {
+            val cowId = cowUseCases.createCow(cowModel)
+            drugList.map { it.drugsGivenCowId = cowId }
+            drugsGivenUseCases.createDrugsGivenList(drugList)
+        }
+    }
+
+}
+
+data class MedicateACowUiState(
+    val drugList: List<DrugModel> = emptyList(),
+    val medicatedCowList: List<CowModel> = emptyList(),
+    val drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel> = emptyList()
+)
+
+sealed class MedicateACowEvent {
+    data class OnCowAndDrugListCreated(
+        val cowModel: CowModel,
+        val drugsGivenList: List<DrugGivenModel>
+    ) : MedicateACowEvent()
+
+    data class OnDrugsGivenByCowIdList(val cowIdList: List<String>) : MedicateACowEvent()
+}

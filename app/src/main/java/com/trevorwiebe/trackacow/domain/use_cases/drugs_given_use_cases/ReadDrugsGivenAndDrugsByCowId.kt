@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class ReadDrugsGivenAndDrugsByCowId(
     private val drugsGivenRepository: DrugsGivenRepository
 ) {
-    operator fun invoke(cowId: String): Flow<List<DrugsGivenAndDrugModel>> {
-        return drugsGivenRepository.getDrugsGivenAndDrugsByCowId(cowId)
+    operator fun invoke(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugModel>> {
+        return drugsGivenRepository.getDrugsGivenAndDrugsByCowId(cowIdList)
     }
 }

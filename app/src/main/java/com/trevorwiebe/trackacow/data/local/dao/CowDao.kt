@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CowDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCow(cowEntity: CowEntity): Long
+
     @Query("SELECT * FROM Cow WHERE lotId = :lotId AND isAlive = 0")
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowEntity>>
 
@@ -26,7 +29,7 @@ interface CowDao {
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCow(cowEntity: CowEntity?)
+    fun insertCow2(cowEntity: CowEntity?)
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)

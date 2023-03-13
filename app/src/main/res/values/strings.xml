@@ -43,6 +43,8 @@
         <item quantity="one">%1$d unit of %2$s</item>
         <item quantity="other">%1$d units of %2$s</item>
     </plurals>
+    <string name="this_cow_has_been_medicated">This cow has been medicated</string>
+    <string name="cow_is_dead_and_medicated">This cow is dead and has been medicated</string>
 
     Feed Fragment Strings
     <string name="feed">Feed</string>

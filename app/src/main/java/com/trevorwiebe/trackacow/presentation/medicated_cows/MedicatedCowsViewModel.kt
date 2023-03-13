@@ -1,11 +1,9 @@
 package com.trevorwiebe.trackacow.presentation.medicated_cows
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
-import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
@@ -20,13 +18,13 @@ import kotlinx.coroutines.flow.*
 class MedicatedCowsViewModel @AssistedInject constructor(
     private val cowUseCases: CowUseCases,
     private val drugsGivenUseCases: DrugsGivenUseCases,
-    @Assisted("penAndLotModel") private val penAndLotModel: PenAndLotModel?
+    @Assisted("lotId") private val lotId: String
 ): ViewModel() {
 
     @AssistedFactory
     interface MedicatedCowsViewModelFactory{
         fun create(
-            @Assisted("penAndLotModel") penAndLotModel: PenAndLotModel?
+            @Assisted("lotId") lotId: String
         ): MedicatedCowsViewModel
     }
 
@@ -34,10 +32,10 @@ class MedicatedCowsViewModel @AssistedInject constructor(
     companion object {
         fun providesFactory(
             assistedFactory: MedicatedCowsViewModelFactory,
-            penAndLotModel: PenAndLotModel?
+            lotId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory{
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(penAndLotModel) as T
+                return assistedFactory.create(lotId) as T
             }
         }
     }
@@ -52,16 +50,8 @@ class MedicatedCowsViewModel @AssistedInject constructor(
     val uiState: StateFlow<MedicatedCowsUiState> = _uiState.asStateFlow()
 
     init {
-
-        _uiState.update {
-            it.copy(statePenAndLotModel = penAndLotModel)
-        }
-
-        if(penAndLotModel?.lotCloudDatabaseId != null){
-            readDrugsAndDrugsGivenByLotId(penAndLotModel.lotCloudDatabaseId!!)
-            readCowsByLotId(penAndLotModel.lotCloudDatabaseId!!)
-        }
-
+        readDrugsAndDrugsGivenByLotId(lotId)
+        readCowsByLotId(lotId)
     }
 
     private fun readDrugsAndDrugsGivenByLotId(lotId: String){
