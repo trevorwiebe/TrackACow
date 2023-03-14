@@ -39,7 +39,7 @@ import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.activities.AddLoadOfCattleActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
-import com.trevorwiebe.trackacow.presentation.activities.MarkACowDeadActivity
+import com.trevorwiebe.trackacow.presentation.mark_a_cow_dead.MarkACowDeadActivity
 import com.trevorwiebe.trackacow.presentation.medicate_a_cow.MedicateACowActivity
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -346,7 +346,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
     fun markACowDead(view: View?) {
         mMedicateACowFabMenu.collapse()
         val markCowDeadIntent = Intent(this@MedicatedCowsActivity, MarkACowDeadActivity::class.java)
-        markCowDeadIntent.putExtra("penId", mPenAndLotModel!!.penCloudDatabaseId)
+        markCowDeadIntent.putExtra("penAndLotModel", mPenAndLotModel)
         startActivity(markCowDeadIntent)
     }
 

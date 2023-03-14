@@ -119,7 +119,7 @@
             android:label="@string/treat_a_cow"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
         <activity
-            android:name=".presentation.activities.MarkACowDeadActivity"
+            android:name=".presentation.mark_a_cow_dead.MarkACowDeadActivity"
             android:exported="false"
             android:label="@string/mark_a_cow_dead"
             android:parentActivityName=".presentation.medicated_cows.MedicatedCowsActivity" />
