@@ -13,10 +13,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByDate
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
-import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.DeleteLoad
-import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.ReadLoadsByLotId
-import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.UpdateLoad
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
@@ -149,6 +146,12 @@ object ActivityDomainModule {
         context: Application
     ): LoadUseCases{
         return LoadUseCases(
+            createLoad = CreateLoad(
+                loadRepository,
+                loadRemoteRepository,
+                getCloudDatabaseId,
+                context
+            ),
             readLoadsByLotId = ReadLoadsByLotId(loadRepository),
             updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(

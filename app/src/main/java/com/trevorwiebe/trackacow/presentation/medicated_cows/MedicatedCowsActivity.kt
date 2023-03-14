@@ -37,7 +37,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
-import com.trevorwiebe.trackacow.presentation.activities.AddLoadOfCattleActivity
+import com.trevorwiebe.trackacow.presentation.add_load_of_cattle.AddLoadOfCattleActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
 import com.trevorwiebe.trackacow.presentation.mark_a_cow_dead.MarkACowDeadActivity
 import com.trevorwiebe.trackacow.presentation.medicate_a_cow.MedicateACowActivity
@@ -354,7 +354,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
         mMedicateACowFabMenu.collapse()
         val addLoadOfCattle =
             Intent(this@MedicatedCowsActivity, AddLoadOfCattleActivity::class.java)
-        addLoadOfCattle.putExtra("lotId", mPenAndLotModel!!.lotCloudDatabaseId)
+        addLoadOfCattle.putExtra("penAndLotModel", mPenAndLotModel)
         addCattleResultLauncher.launch(addLoadOfCattle)
     }
 

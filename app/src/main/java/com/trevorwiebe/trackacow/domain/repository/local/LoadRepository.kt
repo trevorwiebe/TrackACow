@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoadRepository {
 
+    suspend fun insertLoad(loadModel: LoadModel)
+
     fun readLoadsByLotId(lotId: String): Flow<List<LoadModel>>
 
     suspend fun insertCacheLoad(cacheLoadModel: CacheLoadModel)

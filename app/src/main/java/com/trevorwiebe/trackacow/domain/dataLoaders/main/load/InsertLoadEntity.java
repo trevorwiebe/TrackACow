@@ -17,7 +17,7 @@ public class InsertLoadEntity extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).loadDao().insertLoad(loadEntity);
+        AppDatabase.getAppDatabase(contexts[0]).loadDao().insertLoad2(loadEntity);
         return null;
     }
 }

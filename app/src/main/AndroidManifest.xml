@@ -39,7 +39,7 @@
             android:label="@string/edit_cattle_added"
             android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
-            android:name=".presentation.activities.AddLoadOfCattleActivity"
+            android:name=".presentation.add_load_of_cattle.AddLoadOfCattleActivity"
             android:exported="false"
             android:label="@string/add_cattle" />
         <activity
