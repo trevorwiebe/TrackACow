@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:windowSoftInputMode="adjustResize"
-    tools:context=".presentation.activities.AddDrugsGivenToSpecificCowActivity">
+    tools:context=".presentation.add_drugs_given_to_specific_cow.AddDrugsGivenToSpecificCowActivity">
 
     <ScrollView
         android:layout_width="match_parent"

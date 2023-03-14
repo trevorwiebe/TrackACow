@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
-import com.trevorwiebe.trackacow.presentation.activities.AddDrugsGivenToSpecificCowActivity
+import com.trevorwiebe.trackacow.presentation.add_drugs_given_to_specific_cow.AddDrugsGivenToSpecificCowActivity
 import com.trevorwiebe.trackacow.presentation.edit_drugs_given_to_specific.EditDrugsGivenToSpecificCowActivity
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
