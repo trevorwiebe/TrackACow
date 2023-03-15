@@ -48,7 +48,7 @@
             android:label="@string/feed_lot"
             android:parentActivityName=".presentation.activities.MainActivity" />
         <activity
-            android:name=".presentation.activities.ArchivesActivity"
+            android:name=".presentation.archives.ArchivesActivity"
             android:exported="false"
             android:label="@string/more_archives"
             android:parentActivityName=".presentation.activities.MainActivity" />

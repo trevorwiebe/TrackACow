@@ -147,7 +147,10 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
                     "",
                     "",
                     0L,
-                    penId)
+                    0,
+                    0,
+                    penId
+                )
                 )
             }
         }

@@ -184,6 +184,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
                 customerName,
                 notes,
                 date,
+                0,
+                0,
                 mPenAndLotModel!!.penCloudDatabaseId!!
             )
             val loadDescription = mLoadMemo.text.toString()
@@ -202,6 +204,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
                     lotEntity.customerName,
                     lotEntity.notes,
                     lotEntity.date,
+                    0,
+                    0,
                     lotEntity.lotPenCloudDatabaseId,
                     Constants.INSERT_UPDATE
                 )

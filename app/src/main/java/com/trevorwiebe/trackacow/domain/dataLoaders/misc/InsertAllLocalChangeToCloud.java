@@ -12,7 +12,6 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity;
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity;
@@ -21,7 +20,6 @@ import com.trevorwiebe.trackacow.data.entities.LoadEntity;
 import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.data.entities.PenEntity;
 import com.trevorwiebe.trackacow.data.entities.UserEntity;
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity;
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity;
@@ -151,6 +149,8 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                         cacheLotEntity.getCustomerName(),
                         cacheLotEntity.getNotes(),
                         cacheLotEntity.getDate(),
+                        cacheLotEntity.getArchived(),
+                        cacheLotEntity.getDateArchived(),
                         cacheLotEntity.getLotPenCloudDatabaseId()
                 );
                 switch (cacheLotEntity.getWhatHappened()) {
@@ -163,32 +163,6 @@ public class InsertAllLocalChangeToCloud extends AsyncTask<Context, Void, Intege
                 }
             }
             db.cacheLotDao().deleteHoldingLotTable();
-
-            // update archive lot entities
-            List<CacheArchivedLotEntity> holdingArchivedLotEntities = db.cacheArchivedLotDao().getHoldingArchivedLotList();
-            for (int f = 0; f < holdingArchivedLotEntities.size(); f++) {
-
-                CacheArchivedLotEntity cacheArchivedLotEntity = holdingArchivedLotEntities.get(f);
-
-                ArchivedLotEntity archivedLotEntity = new ArchivedLotEntity(
-                        0,
-                        cacheArchivedLotEntity.getLotName(),
-                        cacheArchivedLotEntity.getLotId(),
-                        cacheArchivedLotEntity.getCustomerName(),
-                        cacheArchivedLotEntity.getNotes(),
-                        cacheArchivedLotEntity.getDateStarted(),
-                        cacheArchivedLotEntity.getDateEnded()
-                );
-                switch (cacheArchivedLotEntity.getWhatHappened()) {
-                    case Constants.INSERT_UPDATE:
-                        baseRef.child(Constants.ARCHIVE_LOT).child(archivedLotEntity.getLotId()).setValue(archivedLotEntity);
-                        break;
-                    case Constants.DELETE:
-                        baseRef.child(Constants.ARCHIVE_LOT).child(archivedLotEntity.getLotId()).removeValue();
-                        break;
-                }
-            }
-            db.cacheArchivedLotDao().deleteHoldingArchivedLotTable();
 
             // update load entities
             List<CacheLoadEntity> holdingLoadEntities = db.cacheLoadDao().getHoldingLoadList();

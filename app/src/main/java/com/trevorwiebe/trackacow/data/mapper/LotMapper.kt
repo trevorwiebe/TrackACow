@@ -13,6 +13,8 @@ fun LotModel.toLotEntity(): LotEntity {
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
@@ -25,6 +27,8 @@ fun LotEntity.toLotModel(): LotModel {
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
@@ -37,6 +41,8 @@ fun CacheLotEntity.toCacheLotModel(): CacheLotModel{
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
@@ -49,6 +55,8 @@ fun CacheLotModel.toCacheLotEntity(): CacheLotEntity {
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
@@ -61,6 +69,8 @@ fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId,
         whatHappened = whatHappened
     )
@@ -74,6 +84,8 @@ fun LotEntity.toCacheLotEntity(whatHappened: Int): CacheLotEntity{
         customerName = customerName,
         notes = notes,
         date = date,
+        archived = archived,
+        dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId,
         whatHappened = whatHappened
     )

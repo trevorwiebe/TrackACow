@@ -6,7 +6,6 @@ import com.trevorwiebe.trackacow.data.entities.RationEntity;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.QueryAllCloudData;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.CloneCloudDatabaseToLocalDatabase;
 import com.trevorwiebe.trackacow.domain.dataLoaders.misc.InsertAllLocalChangeToCloud;
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.entities.CallEntity;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
@@ -68,7 +67,6 @@ public class SyncDatabase implements
             ArrayList<DrugsGivenEntity> drugsGivenEntities,
             ArrayList<PenEntity> penEntities,
             ArrayList<LotEntity> lotEntities,
-            ArrayList<ArchivedLotEntity> archivedLotEntities,
             ArrayList<LoadEntity> loadEntities,
             ArrayList<CallEntity> callEntities,
             ArrayList<FeedEntity> feedEntities,
@@ -83,7 +81,6 @@ public class SyncDatabase implements
                     drugsGivenEntities,
                     penEntities,
                     lotEntities,
-                    archivedLotEntities,
                     loadEntities,
                     callEntities,
                     feedEntities,

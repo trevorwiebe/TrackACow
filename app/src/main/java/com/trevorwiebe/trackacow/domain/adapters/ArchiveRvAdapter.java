@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trevorwiebe.trackacow.R;
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
+import com.trevorwiebe.trackacow.data.entities.LotEntity;
 import com.trevorwiebe.trackacow.domain.utils.Utility;
 
 import java.util.ArrayList;
 
 public class ArchiveRvAdapter extends RecyclerView.Adapter<ArchiveRvAdapter.ArchiveViewHolder> {
 
-    ArrayList<ArchivedLotEntity> archivedLotEntities = new ArrayList<>();
+    ArrayList<LotEntity> archivedLotEntities = new ArrayList<>();
 
     @Override
     public int getItemCount() {
@@ -33,10 +33,10 @@ public class ArchiveRvAdapter extends RecyclerView.Adapter<ArchiveRvAdapter.Arch
 
     @Override
     public void onBindViewHolder(@NonNull ArchiveViewHolder archiveViewHolder, int i) {
-        ArchivedLotEntity archivedLotEntity = archivedLotEntities.get(i);
+        LotEntity archivedLotEntity = archivedLotEntities.get(i);
 
         String name = archivedLotEntity.getLotName();
-        long date = archivedLotEntity.getDateEnded();
+        long date = archivedLotEntity.getDateArchived();
         String strDate = Utility.convertMillisToDate(date);
 
         archiveViewHolder.mArchiveLotName.setText(name);
@@ -44,7 +44,7 @@ public class ArchiveRvAdapter extends RecyclerView.Adapter<ArchiveRvAdapter.Arch
         archiveViewHolder.mDateArchived.setText(dateString);
     }
 
-    public void swapArchivedLots(ArrayList<ArchivedLotEntity> archivedLotEntities) {
+    public void swapArchivedLots(ArrayList<LotEntity> archivedLotEntities) {
         this.archivedLotEntities = new ArrayList<>(archivedLotEntities);
         notifyDataSetChanged();
     }

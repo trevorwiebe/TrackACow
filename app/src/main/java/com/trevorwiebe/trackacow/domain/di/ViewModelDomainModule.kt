@@ -132,6 +132,7 @@ object ViewModelDomainModule {
         return LotUseCases(
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(lotRepository),
+            readArchivedLots = ReadArchivedLots(lotRepository),
             readLotsByLotId = ReadLotsByLotId(lotRepository),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
                 lotRepository,

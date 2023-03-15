@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.trevorwiebe.trackacow.data.local.AppDatabase;
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.entities.CallEntity;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
@@ -25,7 +24,6 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
     private ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList;
     private ArrayList<PenEntity> mPenEntityUpdateList;
     private ArrayList<LotEntity> mLotEntityList;
-    private ArrayList<ArchivedLotEntity> mArchivedLotEntityList;
     private ArrayList<LoadEntity> mLoadEntityList;
     private ArrayList<CallEntity> mCallEntityList;
     private ArrayList<FeedEntity> mFeedEntityList;
@@ -36,14 +34,13 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         void onDatabaseCloned();
     }
 
-    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<ArchivedLotEntity> archivedLotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<FeedEntity> feedEntities, ArrayList<UserEntity> userEntities) {
+    public CloneCloudDatabaseToLocalDatabase(OnDatabaseCloned onDatabaseCloned, ArrayList<CowEntity> cowEntities, ArrayList<DrugEntity> drugEntities, ArrayList<DrugsGivenEntity> drugsGivenEntities, ArrayList<PenEntity> penEntities, ArrayList<LotEntity> lotEntities, ArrayList<LoadEntity> loadEntities, ArrayList<CallEntity> callEntities, ArrayList<FeedEntity> feedEntities, ArrayList<UserEntity> userEntities) {
         this.onDatabaseCloned = onDatabaseCloned;
         this.mCowEntityUpdateList = cowEntities;
         this.mDrugEntityUpdateList = drugEntities;
         this.mDrugsGivenEntityUpdateList = drugsGivenEntities;
         this.mPenEntityUpdateList = penEntities;
         this.mLotEntityList = lotEntities;
-        this.mArchivedLotEntityList = archivedLotEntities;
         this.mLoadEntityList = loadEntities;
         this.mCallEntityList = callEntities;
         this.mFeedEntityList = feedEntities;
@@ -60,7 +57,6 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.drugsGivenDao().deleteDrugsGivenTable();
         db.penDao().deletePenTable();
         db.lotDao().deleteLotEntityTable();
-        db.archivedLotDao().deleteArchivedLotTable();
         db.loadDao().deleteLoadTable();
 //        db.callDao().deleteCallTable();
         db.feedDao().deleteFeedTable();
@@ -71,7 +67,6 @@ public class CloneCloudDatabaseToLocalDatabase extends AsyncTask<Context, Void, 
         db.drugsGivenDao().insertDrugsGivenList(mDrugsGivenEntityUpdateList);
         db.penDao().insertPenList(mPenEntityUpdateList);
         db.lotDao().insertLotEntityList(mLotEntityList);
-        db.archivedLotDao().insertArchivedLotEntityList(mArchivedLotEntityList);
         db.loadDao().insertLoadList(mLoadEntityList);
 //        db.callDao().insertCallList(mCallEntityList);
         db.feedDao().insertFeedEntityList(mFeedEntityList);

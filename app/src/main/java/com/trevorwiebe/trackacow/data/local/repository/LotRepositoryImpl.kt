@@ -24,6 +24,14 @@ class LotRepositoryImpl(
         }
     }
 
+    override fun readArchivedLots(): Flow<List<LotModel>> {
+        return lotDao.getLotEntities().map { lotList ->
+            lotList.map {
+                it.toLotModel()
+            }
+        }
+    }
+
     override fun readLots(): Flow<List<LotModel>> {
         return lotDao.getLotEntities()
             .map { lotList ->

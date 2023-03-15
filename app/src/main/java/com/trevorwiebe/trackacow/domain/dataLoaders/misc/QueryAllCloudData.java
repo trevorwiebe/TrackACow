@@ -10,7 +10,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity;
 import com.trevorwiebe.trackacow.data.entities.CallEntity;
 import com.trevorwiebe.trackacow.data.entities.CowEntity;
 import com.trevorwiebe.trackacow.data.entities.DrugEntity;
@@ -36,7 +35,6 @@ public class QueryAllCloudData {
     private final ArrayList<DrugsGivenEntity> mDrugsGivenEntityUpdateList = new ArrayList<>();
     private final ArrayList<PenEntity> mPenEntityUpdateList = new ArrayList<>();
     private final ArrayList<LotEntity> mLotEntityList = new ArrayList<>();
-    private final ArrayList<ArchivedLotEntity> mArchivedLotList = new ArrayList<>();
     private final ArrayList<UserEntity> mUserEntity = new ArrayList<>();
     private final ArrayList<LoadEntity> mLoadList = new ArrayList<>();
     private final ArrayList<CallEntity> mCallList = new ArrayList<>();
@@ -57,7 +55,6 @@ public class QueryAllCloudData {
                 ArrayList<DrugsGivenEntity> drugsGivenEntities,
                 ArrayList<PenEntity> penEntities,
                 ArrayList<LotEntity> lotEntities,
-                ArrayList<ArchivedLotEntity> archivedLotEntities,
                 ArrayList<LoadEntity> loadEntities,
                 ArrayList<CallEntity> callEntities,
                 ArrayList<FeedEntity> feedEntities,
@@ -115,12 +112,7 @@ public class QueryAllCloudData {
                                 }
                                 break;
                             case Constants.ARCHIVE_LOT:
-                                for (DataSnapshot archiveLotSnapShot : snapshot.getChildren()) {
-                                    ArchivedLotEntity archivedLotEntity = archiveLotSnapShot.getValue(ArchivedLotEntity.class);
-                                    if (archivedLotEntity != null) {
-                                        mArchivedLotList.add(archivedLotEntity);
-                                    }
-                                }
+
                                 break;
                             case Constants.LOAD:
                                 for (DataSnapshot loadSnapShot : snapshot.getChildren()) {
@@ -167,7 +159,6 @@ public class QueryAllCloudData {
                                         mDrugsGivenEntityUpdateList,
                                         mPenEntityUpdateList,
                                         mLotEntityList,
-                                        mArchivedLotList,
                                         mLoadList,
                                         mCallList,
                                         mFeedList,
@@ -185,7 +176,6 @@ public class QueryAllCloudData {
                         mDrugsGivenEntityUpdateList,
                         mPenEntityUpdateList,
                         mLotEntityList,
-                        mArchivedLotList,
                         mLoadList,
                         mCallList,
                         mFeedList,
@@ -202,7 +192,6 @@ public class QueryAllCloudData {
                         mDrugsGivenEntityUpdateList,
                         mPenEntityUpdateList,
                         mLotEntityList,
-                        mArchivedLotList,
                         mLoadList,
                         mCallList,
                         mFeedList,

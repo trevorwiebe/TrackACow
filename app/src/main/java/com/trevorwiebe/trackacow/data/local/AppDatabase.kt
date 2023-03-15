@@ -7,7 +7,6 @@ import com.trevorwiebe.trackacow.data.entities.CowEntity
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.DrugEntity
 import com.trevorwiebe.trackacow.data.entities.LotEntity
-import com.trevorwiebe.trackacow.data.entities.ArchivedLotEntity
 import com.trevorwiebe.trackacow.data.entities.CallEntity
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import com.trevorwiebe.trackacow.data.entities.UserEntity
@@ -18,7 +17,6 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheArchivedLotEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheUserEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
@@ -30,7 +28,6 @@ import com.trevorwiebe.trackacow.data.local.dao.CowDao
 import com.trevorwiebe.trackacow.data.local.dao.DrugsGivenDao
 import com.trevorwiebe.trackacow.data.local.dao.DrugDao
 import com.trevorwiebe.trackacow.data.local.dao.LotDao
-import com.trevorwiebe.trackacow.data.local.dao.ArchivedLotDao
 import com.trevorwiebe.trackacow.data.local.dao.CallDao
 import com.trevorwiebe.trackacow.data.local.dao.FeedDao
 import com.trevorwiebe.trackacow.data.local.dao.UserDao
@@ -42,7 +39,6 @@ import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugsGivenDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLotDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheUserDao
-import com.trevorwiebe.trackacow.data.local.cacheDao.CacheArchivedLotDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLoadDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCallDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheFeedDao
@@ -58,7 +54,6 @@ import androidx.room.migration.Migration
         DrugsGivenEntity::class,
         DrugEntity::class,
         LotEntity::class,
-        ArchivedLotEntity::class,
         CallEntity::class,
         FeedEntity::class,
         UserEntity::class,
@@ -69,7 +64,6 @@ import androidx.room.migration.Migration
         CacheDrugsGivenEntity::class,
         CacheDrugEntity::class,
         CacheLotEntity::class,
-        CacheArchivedLotEntity::class,
         CacheUserEntity::class,
         CacheLoadEntity::class,
         CacheCallEntity::class,
@@ -85,7 +79,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun drugsGivenDao(): DrugsGivenDao
     abstract fun drugDao(): DrugDao
     abstract fun lotDao(): LotDao
-    abstract fun archivedLotDao(): ArchivedLotDao
     abstract fun callDao(): CallDao
     abstract fun feedDao(): FeedDao
     abstract fun userDao(): UserDao
@@ -97,7 +90,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun cacheDrugDao(): CacheDrugDao
     abstract fun cacheLotDao(): CacheLotDao
     abstract fun cacheUserDao(): CacheUserDao
-    abstract fun cacheArchivedLotDao(): CacheArchivedLotDao
     abstract fun cacheLoadDao(): CacheLoadDao
     abstract fun cacheCallDao(): CacheCallDao
     abstract fun cacheFeedDao(): CacheFeedDao

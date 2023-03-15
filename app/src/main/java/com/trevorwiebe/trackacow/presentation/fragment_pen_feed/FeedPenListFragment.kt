@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
 import android.os.Build.VERSION
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class FeedPenListFragment : Fragment(){
@@ -102,11 +100,13 @@ class FeedPenListFragment : Fragment(){
     private fun getLotModel(bundle: Bundle?): LotModel{
         return if(VERSION.SDK_INT >= 33){
             bundle?.getParcelable("fragment_lot", LotModel::class.java) ?: LotModel(
-                0, "", "", "", "", 0L, "")
+                0, "", "", "", "", 0L, 0, 0, ""
+            )
         }else{
             @Suppress("DEPRECATION")
             bundle?.getParcelable("fragment_lot") ?: LotModel(
-                0, "", "", "", "", 0L, "")
+                0, "", "", "", "", 0L, 0, 0, ""
+            )
         }
     }
 

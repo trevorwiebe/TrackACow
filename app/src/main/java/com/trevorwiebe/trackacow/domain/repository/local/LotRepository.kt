@@ -8,6 +8,8 @@ interface LotRepository {
 
     fun readLotsByPenId(penId: String): Flow<List<LotModel>>
 
+    fun readArchivedLots(): Flow<List<LotModel>>
+
     fun readLots(): Flow<List<LotModel>>
 
     fun readLotByLotId(lotPrimaryKey: Int): Flow<LotModel?>
