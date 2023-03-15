@@ -5,17 +5,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.models.load.LoadModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 class MedicatedCowsViewModel @AssistedInject constructor(
+    private val lotUseCases: LotUseCases,
+    private val loadUseCases: LoadUseCases,
     private val cowUseCases: CowUseCases,
     private val drugsGivenUseCases: DrugsGivenUseCases,
     @Assisted("lotId") private val lotId: String
@@ -54,7 +61,15 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         readCowsByLotId(lotId)
     }
 
-    private fun readDrugsAndDrugsGivenByLotId(lotId: String){
+    fun onEvent(event: MedicatedCowsEvents) {
+        when (event) {
+            is MedicatedCowsEvents.OnPenFilled -> {
+                onPenFilled(event.lotModel, event.loadModel)
+            }
+        }
+    }
+
+    private fun readDrugsAndDrugsGivenByLotId(lotId: String) {
         drugsJob?.cancel()
         drugsJob = drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotId)
             .map { thisDrugsGivenAndDrugModelList ->
@@ -68,7 +83,15 @@ class MedicatedCowsViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun readCowsByLotId(lotId: String){
+    private fun onPenFilled(lotModel: LotModel, loadModel: LoadModel) {
+        viewModelScope.launch {
+            val lotId = lotUseCases.createLot(lotModel)
+            loadModel.lotId = lotId
+            loadUseCases.createLoad(loadModel)
+        }
+    }
+
+    private fun readCowsByLotId(lotId: String) {
         cowJob?.cancel()
         cowJob = cowUseCases.readCowsByLotId(lotId)
             .map { thisCowList ->
@@ -89,7 +112,7 @@ class MedicatedCowsViewModel @AssistedInject constructor(
 
         if(cowList.isEmpty() || privateDrugsGivenAndDrugList.isEmpty()) return null
         val cowUiModelList: MutableList<CowUiModel> = mutableListOf()
-        for(i in cowList.indices){
+        for (i in cowList.indices) {
             val cowUiModel = CowUiModel(
                 cowList[i],
                 privateDrugsGivenAndDrugList.filter { it.drugsGivenCowId == cowList[i].cowId }
@@ -98,4 +121,8 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         }
         return cowUiModelList
     }
+}
+
+sealed class MedicatedCowsEvents {
+    data class OnPenFilled(val lotModel: LotModel, val loadModel: LoadModel) : MedicatedCowsEvents()
 }

@@ -1,8 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.medicated_cows
 
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.auth.FirebaseAuth
 import android.app.DatePickerDialog.OnDateSetListener
 import androidx.recyclerview.widget.RecyclerView
 import androidx.cardview.widget.CardView
@@ -10,14 +8,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu
 import com.google.android.material.textfield.TextInputEditText
 import android.os.Bundle
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.data.entities.LotEntity
-import com.trevorwiebe.trackacow.data.entities.LoadEntity
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLot.InsertHoldingLot
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.cache.holdingLoad.InsertHoldingLoad
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.lot.InsertLotEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.load.InsertLoadEntity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
@@ -35,7 +25,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
-import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.models.load.LoadModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.add_load_of_cattle.AddLoadOfCattleActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
@@ -49,9 +40,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MedicatedCowsActivity : AppCompatActivity() {
-
-    var mBaseRef = FirebaseDatabase.getInstance().getReference("users").child(
-        FirebaseAuth.getInstance().currentUser!!.uid)
 
     private var mMedicatedCowsRecyclerViewAdapter: MedicatedCowsRecyclerViewAdapter? = null
     private var mPenAndLotModel: PenAndLotModel? = null
@@ -96,8 +84,6 @@ class MedicatedCowsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medicated_cows)
-
-        // TODO: fix issue where when adding, editing or deleting a cow, screen does not refresh
 
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu)
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv)
@@ -175,54 +161,24 @@ class MedicatedCowsActivity : AppCompatActivity() {
             val totalHead = mTotalCount.text.toString().toInt()
             val notes = mNotes.text.toString()
             val date = mCalendar.timeInMillis
-            val lotPushRef = mBaseRef.child(Constants.LOTS).push()
-            val id = lotPushRef.key
-            val lotEntity = LotEntity(
+            val loadDescription = mLoadMemo.text.toString()
+
+            val lotModel = LotModel(
                 0,
                 lotName,
-                id!!,
+                "",
                 customerName,
                 notes,
                 date,
                 0,
                 0,
-                mPenAndLotModel!!.penCloudDatabaseId!!
+                mPenAndLotModel?.penCloudDatabaseId ?: ""
             )
-            val loadDescription = mLoadMemo.text.toString()
-            val loadPushRef = mBaseRef.child(Constants.LOAD).push()
-            val loadId = loadPushRef.key
-            val loadEntity = LoadEntity(0, totalHead, date, loadDescription, id, loadId)
-            if (Utility.haveNetworkConnection(this@MedicatedCowsActivity)) {
-                lotPushRef.setValue(lotEntity)
-                loadPushRef.setValue(loadEntity)
-            } else {
-                Utility.setNewDataToUpload(this@MedicatedCowsActivity, true)
-                val cacheLotEntity = CacheLotEntity(
-                    lotEntity.lotPrimaryKey,
-                    lotEntity.lotName,
-                    lotEntity.lotCloudDatabaseId,
-                    lotEntity.customerName,
-                    lotEntity.notes,
-                    lotEntity.date,
-                    0,
-                    0,
-                    lotEntity.lotPenCloudDatabaseId,
-                    Constants.INSERT_UPDATE
-                )
-                InsertHoldingLot(cacheLotEntity).execute(this@MedicatedCowsActivity)
-                val cacheLoadEntity = CacheLoadEntity(
-                    0,
-                    loadEntity.numberOfHead,
-                    loadEntity.date,
-                    loadEntity.description,
-                    loadEntity.lotId,
-                    loadEntity.loadId,
-                    Constants.INSERT_UPDATE
-                )
-                InsertHoldingLoad(cacheLoadEntity).execute(this@MedicatedCowsActivity)
-            }
-            InsertLotEntity(lotEntity).execute(this@MedicatedCowsActivity)
-            InsertLoadEntity(loadEntity).execute(this@MedicatedCowsActivity)
+
+            val loadModel = LoadModel(0, totalHead, date, loadDescription, "", "")
+
+            medicatedCowsViewModel.onEvent(MedicatedCowsEvents.OnPenFilled(lotModel, loadModel))
+
             mNoMedicatedCows.visibility = View.VISIBLE
             setActive()
             val ab = supportActionBar

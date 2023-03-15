@@ -15,6 +15,9 @@ class LotRepositoryImpl(
     private val lotDao: LotDao,
     private val cacheLotDao: CacheLotDao
 ): LotRepository {
+    override suspend fun createLot(lotModel: LotModel) {
+        lotDao.createLot(lotModel.toLotEntity())
+    }
 
     override fun readLotsByPenId(penId: String): Flow<List<LotModel>> {
         return lotDao.getLotEntitiesByPenId(penId).map { lotList ->

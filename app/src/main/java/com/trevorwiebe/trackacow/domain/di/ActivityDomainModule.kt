@@ -102,9 +102,11 @@ object ActivityDomainModule {
     fun provideLotUseCases(
         lotRepository: LotRepository,
         lotRepositoryRemote: LotRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases{
         return LotUseCases(
+            createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readArchivedLots = ReadArchivedLots(lotRepository),
             readLots = ReadLots(lotRepository),

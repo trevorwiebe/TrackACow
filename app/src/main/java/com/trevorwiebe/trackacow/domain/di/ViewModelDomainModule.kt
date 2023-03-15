@@ -127,9 +127,11 @@ object ViewModelDomainModule {
     fun provideLotUseCases(
         lotRepository: LotRepository,
         lotRepositoryRemote: LotRepositoryRemote,
+        getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases {
         return LotUseCases(
+            createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(lotRepository),
             readArchivedLots = ReadArchivedLots(lotRepository),

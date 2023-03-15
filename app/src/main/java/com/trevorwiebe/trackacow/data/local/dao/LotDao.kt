@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LotDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun createLot(lotEntity: LotEntity)
+
     @Query("SELECT * FROM lot WHERE archived = 0")
     fun getLotEntities(): Flow<List<LotEntity>>
 

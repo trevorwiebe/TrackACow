@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface LotRepository {
 
+    suspend fun createLot(lotModel: LotModel)
+
     fun readLotsByPenId(penId: String): Flow<List<LotModel>>
 
     suspend fun archiveLot(lotModel: LotModel)
