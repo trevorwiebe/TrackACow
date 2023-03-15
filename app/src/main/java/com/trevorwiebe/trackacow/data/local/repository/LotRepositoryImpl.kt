@@ -24,8 +24,12 @@ class LotRepositoryImpl(
         }
     }
 
+    override suspend fun archiveLot(lotModel: LotModel) {
+        lotDao.archiveLot(lotModel.lotPrimaryKey, System.currentTimeMillis())
+    }
+
     override fun readArchivedLots(): Flow<List<LotModel>> {
-        return lotDao.getLotEntities().map { lotList ->
+        return lotDao.getArchivedLots().map { lotList ->
             lotList.map {
                 it.toLotModel()
             }

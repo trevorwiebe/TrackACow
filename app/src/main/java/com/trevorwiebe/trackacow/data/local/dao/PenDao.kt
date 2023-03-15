@@ -20,7 +20,10 @@ interface PenDao {
     @Query("SELECT * FROM Pen ORDER BY penName ASC")
     fun getPenList(): Flow<List<PenEntity>>
 
-    @Query("SELECT * FROM Pen LEFT JOIN lot ON lot.lotPenCloudDatabaseId = Pen.penCloudDatabaseId")
+    @Query(
+        "SELECT * FROM Pen LEFT JOIN lot ON lot.lotPenCloudDatabaseId = Pen.penCloudDatabaseId " +
+                "AND lot.archived = 0"
+    )
     fun getPenAndLotList(): Flow<List<PenAndLotEntity>>
 
     @Query("UPDATE Pen SET penName = :penName WHERE penCloudDatabaseId = :penId")

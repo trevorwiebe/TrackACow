@@ -84,8 +84,7 @@ class LotReportViewModel @AssistedInject constructor(
     fun onEvent(event: LotReportEvents) {
         when (event) {
             is LotReportEvents.OnArchiveLot -> {
-                addArchivedLot(event.lotModel)
-                deleteLot(event.lotModel)
+                archivedLot(event.lotModel)
             }
         }
     }
@@ -147,17 +146,12 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun addArchivedLot(lotModel: LotModel?) {
-
-    }
-
-    private fun deleteLot(lotModel: LotModel?) {
+    private fun archivedLot(lotModel: LotModel?) {
         if (lotModel == null) return
         viewModelScope.launch {
-            lotUseCases.deleteLot(lotModel)
+            lotUseCases.archiveLot(lotModel)
         }
     }
-
 }
 
 data class LotReportUiState(

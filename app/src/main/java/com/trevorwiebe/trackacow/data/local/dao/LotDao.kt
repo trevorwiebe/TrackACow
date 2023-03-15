@@ -7,17 +7,23 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LotDao {
 
-    @Query("SELECT * FROM lot")
+    @Query("SELECT * FROM lot WHERE archived = 0")
     fun getLotEntities(): Flow<List<LotEntity>>
 
-    @Query("SELECT * FROM lot WHERE lotPrimaryKey = :lotPrimaryKey")
+    @Query("SELECT * FROM lot WHERE lotPrimaryKey = :lotPrimaryKey AND archived = 0")
     fun getLotByLotId(lotPrimaryKey: Int): Flow<LotEntity?>
 
-    @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId")
+    @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId AND archived = 0")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
+
+    @Query("SELECT * FROM lot WHERE archived = 1")
+    fun getArchivedLots(): Flow<List<LotEntity>>
 
     @Query("UPDATE lot SET lotPenCloudDatabaseId = :penId WHERE lotCloudDatabaseId = :lotId")
     suspend fun updateLotWithNewPenId(lotId: String, penId: String)
+
+    @Query("UPDATE lot SET archived = 1, dateArchived = :date WHERE lotPrimaryKey = :lotPrimaryKey")
+    suspend fun archiveLot(lotPrimaryKey: Int, date: Long)
 
     @Query(
         "UPDATE lot SET " +

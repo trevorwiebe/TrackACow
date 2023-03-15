@@ -8,6 +8,8 @@ interface LotRepository {
 
     fun readLotsByPenId(penId: String): Flow<List<LotModel>>
 
+    suspend fun archiveLot(lotModel: LotModel)
+
     fun readArchivedLots(): Flow<List<LotModel>>
 
     fun readLots(): Flow<List<LotModel>>

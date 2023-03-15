@@ -109,6 +109,7 @@ object ActivityDomainModule {
             readArchivedLots = ReadArchivedLots(lotRepository),
             readLots = ReadLots(lotRepository),
             readLotsByLotId = ReadLotsByLotId(lotRepository),
+            archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
                 lotRepository,
                 lotRepositoryRemote,

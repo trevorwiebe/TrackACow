@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.domain.adapters.ArchiveRvAdapter
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 class ArchivesActivity : AppCompatActivity() {
 
     private val archiveRvAdapter = ArchiveRvAdapter()
-    private var archivedLotEntities: MutableList<LotModel> = mutableListOf()
+    private var archivedLotModels: List<LotModel> = emptyList()
     private lateinit var mNoArchives: TextView
 
     private val mArchivesViewModel: ArchivesViewModel by viewModels()
@@ -43,11 +42,15 @@ class ArchivesActivity : AppCompatActivity() {
                 archiveRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val (_, _, lotId) = archivedLotEntities[position]
+                        val lotModel = archivedLotModels[position]
                         val archiveReportsIntent =
                             Intent(this@ArchivesActivity, LotReportActivity::class.java)
-                        archiveReportsIntent.putExtra("lotId", lotId)
+                        archiveReportsIntent.putExtra("lotId", lotModel.lotPrimaryKey)
                         archiveReportsIntent.putExtra("reportType", Constants.ARCHIVE)
+                        archiveReportsIntent.putExtra(
+                            "lotCloudDatabaseId",
+                            lotModel.lotCloudDatabaseId
+                        )
                         startActivity(archiveReportsIntent)
                     }
 
@@ -58,20 +61,16 @@ class ArchivesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mArchivesViewModel.uiState.collect {
+                    archivedLotModels = it.archivedLotList
 
+                    if (archivedLotModels.isEmpty()) {
+                        mNoArchives.visibility = View.VISIBLE
+                    } else {
+                        mNoArchives.visibility = View.INVISIBLE
+                    }
+                    archiveRvAdapter.swapArchivedLots(archivedLotModels)
                 }
             }
         }
     }
-
-//    override fun onArchivedLotsLoaded(archivedLotEntities: ArrayList<ArchivedLotEntity>) {
-//        this.archivedLotEntities = archivedLotEntities
-//        if (archivedLotEntities.size == 0) {
-//            mNoArchives.visibility = View.VISIBLE
-//        } else {
-//            mNoArchives.visibility = View.INVISIBLE
-//        }
-//        archiveRvAdapter.swapArchivedLots(archivedLotEntities)
-//    }
-
 }

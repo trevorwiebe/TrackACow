@@ -9,6 +9,13 @@ class LotRepositoryRemoteImpl(
     private val databasePath: String
 ): LotRepositoryRemote {
 
+    override fun archiveLot(lotModel: LotModel) {
+        firebaseDatabase.getReference("$databasePath/${lotModel.lotCloudDatabaseId}/archived")
+            .setValue(1)
+        firebaseDatabase.getReference("$databasePath/${lotModel.lotCloudDatabaseId}/dateArchived")
+            .setValue(System.currentTimeMillis())
+    }
+
     override fun updateLotWithNewPenIdRemote(lotId: String, penId: String) {
         firebaseDatabase.getReference("$databasePath/$lotId/lotPenId").setValue(penId)
     }
