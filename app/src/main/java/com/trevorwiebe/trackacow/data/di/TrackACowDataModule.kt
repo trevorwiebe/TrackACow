@@ -255,4 +255,15 @@ object TrackACowDataModule {
             feedDao = db.feedDao()
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideFeedRepositoryRemote(
+        remoteDb: FirebaseDatabase
+    ): FeedRepositoryRemote {
+        return FeedRepositoryRemoteImpl(
+            firebaseDatabase = remoteDb,
+            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+        )
+    }
 }

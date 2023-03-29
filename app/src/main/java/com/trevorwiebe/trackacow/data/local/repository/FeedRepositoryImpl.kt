@@ -27,4 +27,8 @@ class FeedRepositoryImpl(
                 feedList.map { it.toFeedModel() }
             }
     }
+
+    override suspend fun createFeedListRemote(feedModelList: List<CacheFeedModel>) {
+        feedDao.insertCacheFeedEntityList(feedModelList.map { it.toCacheFeedEntity() })
+    }
 }
