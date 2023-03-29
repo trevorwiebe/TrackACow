@@ -19,7 +19,7 @@ public class InsertFeedEntities extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        AppDatabase.getAppDatabase(contexts[0]).feedDao().insertFeedEntityList(feedEntities);
+        AppDatabase.getAppDatabase(contexts[0]).feedDao().insertFeedEntityList2(feedEntities);
         return null;
     }
 }

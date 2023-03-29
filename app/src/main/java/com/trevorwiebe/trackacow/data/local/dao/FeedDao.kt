@@ -31,7 +31,7 @@ interface FeedDao {
 
     @Deprecated("use suspend function")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFeedEntityList(feedEntities: List<FeedEntity>)
+    fun insertFeedEntityList2(feedEntities: List<FeedEntity>)
 
     @Deprecated("use function with return type: flow")
     @Query("SELECT * FROM feed WHERE lotId = :lotId")
