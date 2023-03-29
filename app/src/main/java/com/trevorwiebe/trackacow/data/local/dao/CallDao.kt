@@ -33,10 +33,12 @@ interface CallDao {
     @Query("DELETE FROM call")
     suspend fun deleteCallTable()
 
-    @Query("UPDATE call " +
-            "SET callAmount = :callAmount, callRationId = :rationId " +
-            "WHERE callPrimaryKey = :primaryKey")
-    suspend fun updateCallAmount(callAmount: Int, rationId: Int?, primaryKey: Int)
+    @Query(
+        "UPDATE call " +
+                "SET callAmount = :callAmount, callRationId = :rationId " +
+                "WHERE callCloudDatabaseId = :callCloudId"
+    )
+    suspend fun updateCallAmount(callAmount: Int, rationId: Int?, callCloudId: String)
 
     @Delete
     suspend fun deleteCall(callEntity: CallEntity?)
