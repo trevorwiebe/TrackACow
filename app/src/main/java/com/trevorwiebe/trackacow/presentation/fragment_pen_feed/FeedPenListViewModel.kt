@@ -80,9 +80,10 @@ class FeedPenListViewModel @AssistedInject constructor(
 
         val feedPenUiModelList: MutableList<FeedPenListUiModel> = mutableListOf()
 
-        // if the callAndLotList is empty we will return, as there is no use processing
+        // if the start date is 0 we will return, as there is no use processing
         if(lotStartDate == 0L) return feedPenUiModelList
 
+        // calculate the beginning of the day on lot create date
         val c = Calendar.getInstance()
         c.timeInMillis = lotStartDate
         c[Calendar.HOUR_OF_DAY] = 0
