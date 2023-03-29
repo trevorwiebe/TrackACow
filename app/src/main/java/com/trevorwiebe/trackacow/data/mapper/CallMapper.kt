@@ -4,6 +4,7 @@ import com.trevorwiebe.trackacow.data.entities.CallEntity
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 
 fun CallModel.toCallEntity(): CallEntity {
     return CallEntity(
@@ -60,5 +61,16 @@ fun CallModel.toHoldingCallModel(whatHappened: Int): CacheCallModel{
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         whatHappened = whatHappened
+    )
+}
+
+fun CallAndRationModel.toCallModel(): CallModel {
+    return CallModel(
+        callPrimaryKey = callPrimaryKey,
+        callAmount = callAmount,
+        date = date,
+        lotId = lotId,
+        callRationId = callRationId,
+        callCloudDatabaseId = callCloudDatabaseId
     )
 }
