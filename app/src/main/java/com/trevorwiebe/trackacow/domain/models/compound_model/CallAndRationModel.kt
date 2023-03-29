@@ -1,5 +1,9 @@
 package com.trevorwiebe.trackacow.domain.models.compound_model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CallAndRationModel(
     var callPrimaryKey: Int = 0,
     var callAmount: Int,
@@ -10,4 +14,4 @@ data class CallAndRationModel(
     var rationPrimaryKey: Int = 0,
     var rationCloudDatabaseId: String,
     var rationName: String
-)
+) : Parcelable
