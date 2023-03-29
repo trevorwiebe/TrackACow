@@ -46,7 +46,9 @@ class CallRepositoryImpl(
 
 
     override suspend fun updateCall(callModel: CallModel) {
-        callDao.updateCallAmount(callModel.callAmount, callModel.callRationId, callModel.callPrimaryKey)
+        val callId: String? = callModel.callCloudDatabaseId
+        if (callId.isNullOrEmpty()) return
+        callDao.updateCallAmount(callModel.callAmount, callModel.callRationId, callId)
     }
 
     override suspend fun deleteCall(callModel: CallModel) {
