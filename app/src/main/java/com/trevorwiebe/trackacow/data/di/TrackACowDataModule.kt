@@ -14,6 +14,7 @@ import com.trevorwiebe.trackacow.data.remote.repository.*
 import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
+import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -66,6 +67,12 @@ object TrackACowDataModule {
     @Singleton
     fun provideCalculateDrugsGiven(): CalculateDrugsGiven {
         return CalculateDrugsGiven()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCalculateDayStartAndDayEnd(): CalculateDayStartAndDayEnd {
+        return CalculateDayStartAndDayEnd()
     }
 
     // Ration
