@@ -13,7 +13,9 @@ interface PenRepository {
 
     fun readPens(): Flow<List<PenModel>>
 
-    fun readPensAndLots(): Flow<List<PenAndLotModel>>
+    fun readPensAndLotsIncludeEmptyPens(): Flow<List<PenAndLotModel>>
+
+    fun readPensAndLotsExcludeEmptyPens(): Flow<List<PenAndLotModel>>
 
     fun readPensByPenId(penId: String): Flow<PenModel?>
 

@@ -15,7 +15,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotI
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelUC
+import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelIncludeEmptyPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
@@ -116,8 +116,14 @@ object ViewModelDomainModule {
         return PenUseCases(
             readPens = ReadPens(penRepository),
             readPenByPenId = ReadPenByPenId(penRepository),
-            readPenAndLotModelUC = ReadPenAndLotModelUC(penRepository),
-            createPenUC = CreatePenUC(penRepository, penRepositoryRemote, getCloudDatabaseId, context),
+            readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(penRepository),
+            readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(penRepository),
+            createPenUC = CreatePenUC(
+                penRepository,
+                penRepositoryRemote,
+                getCloudDatabaseId,
+                context
+            ),
             deletePenUC = DeletePenUC(penRepository, penRepositoryRemote, context),
             updatePenUC = UpdatePenUC(penRepository, penRepositoryRemote, context)
         )

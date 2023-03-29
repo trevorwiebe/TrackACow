@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.fragment_feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
@@ -26,7 +25,7 @@ class FeedContainerViewModel @Inject constructor(
     private fun getPenAndLotModels(){
         _uiState.update { it.copy(isLoading = true) }
         penAndLotModelsJob?.cancel()
-        penAndLotModelsJob = penUseCases.readPenAndLotModelUC()
+        penAndLotModelsJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
             .map { penAndLotList ->
                 _uiState.update { uiState ->
                     uiState.copy(

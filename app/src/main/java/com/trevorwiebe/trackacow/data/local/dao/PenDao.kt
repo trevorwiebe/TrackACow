@@ -24,7 +24,13 @@ interface PenDao {
         "SELECT * FROM Pen LEFT JOIN lot ON lot.lotPenCloudDatabaseId = Pen.penCloudDatabaseId " +
                 "AND lot.archived = 0"
     )
-    fun getPenAndLotList(): Flow<List<PenAndLotEntity>>
+    fun getPenAndLotListIncludeEmptyPens(): Flow<List<PenAndLotEntity>>
+
+    @Query(
+        "SELECT * FROM Pen JOIN lot ON lot.lotPenCloudDatabaseId = Pen.penCloudDatabaseId " +
+                "AND lot.archived = 0"
+    )
+    fun getPenAndLotListExcludeEmptyPens(): Flow<List<PenAndLotEntity>>
 
     @Query("UPDATE Pen SET penName = :penName WHERE penCloudDatabaseId = :penId")
     fun updatePenNameById(penName: String, penId: String)

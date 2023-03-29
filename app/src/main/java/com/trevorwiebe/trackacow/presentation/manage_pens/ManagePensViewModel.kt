@@ -55,7 +55,7 @@ class ManagePensViewModel @Inject constructor(
     }
 
     private fun readPensAndLots(){
-        penUseCases.readPenAndLotModelUC()
+        penUseCases.readPenAndLotModelIncludeEmptyPens()
             .map { thisPenList ->
                 _uiState.update { uiState ->
                     uiState.copy(

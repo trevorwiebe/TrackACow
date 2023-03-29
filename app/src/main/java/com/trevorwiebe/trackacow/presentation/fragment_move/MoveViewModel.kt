@@ -45,7 +45,7 @@ class MoveViewModel @Inject constructor(
 
     private fun readPensAndLots(){
         readPenAndLotsJob?.cancel()
-        readPenAndLotsJob = penUseCases.readPenAndLotModelUC()
+        readPenAndLotsJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
             .cancellable()
             .map { thisPenAndLotList ->
                 _uiState.update { uiState ->

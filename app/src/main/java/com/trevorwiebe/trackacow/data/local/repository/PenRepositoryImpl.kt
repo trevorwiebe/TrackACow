@@ -28,14 +28,20 @@ class PenRepositoryImpl(
 
     override fun readPens(): Flow<List<PenModel>> {
         return penDao.getPenList().map { returnedPenList ->
-                returnedPenList.map {
-                    it.toPenModel()
-                }
+            returnedPenList.map {
+                it.toPenModel()
             }
+        }
     }
 
-    override fun readPensAndLots(): Flow<List<PenAndLotModel>> {
-        return penDao.getPenAndLotList().map { penAndLotList ->
+    override fun readPensAndLotsIncludeEmptyPens(): Flow<List<PenAndLotModel>> {
+        return penDao.getPenAndLotListIncludeEmptyPens().map { penAndLotList ->
+            penAndLotList.map { it.toPenAndLotModel() }
+        }
+    }
+
+    override fun readPensAndLotsExcludeEmptyPens(): Flow<List<PenAndLotModel>> {
+        return penDao.getPenAndLotListExcludeEmptyPens().map { penAndLotList ->
             penAndLotList.map { it.toPenAndLotModel() }
         }
     }

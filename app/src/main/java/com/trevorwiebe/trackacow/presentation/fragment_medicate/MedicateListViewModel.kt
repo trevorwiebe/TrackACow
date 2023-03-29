@@ -26,7 +26,7 @@ class MedicateListViewModel @Inject constructor(
     private fun getPensAndLots(){
         _uiState.update { it.copy(isLoading = true) }
         getPenAndLotJobs?.cancel()
-        getPenAndLotJobs = penUseCases.readPenAndLotModelUC()
+        getPenAndLotJobs = penUseCases.readPenAndLotModelIncludeEmptyPens()
             .map { thisPenAndLotList ->
                 _uiState.update { uiState ->
                     uiState.copy(
