@@ -13,11 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+
+        <activity
+            android:name=".presentation.feed_lot_view_pager_container.FeedLotViewPagerContainer"
+            android:parentActivityName=".presentation.activities.MainActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.feed_reports.FeedReportsActivity"
+            android:exported="false"
             android:label="@string/feed_reports"
-            android:parentActivityName=".presentation.lot_reports.LotReportActivity"
-            android:exported="false" />
+            android:parentActivityName=".presentation.lot_reports.LotReportActivity" />
         <activity
             android:name=".presentation.add_or_edit_rations.AddOrEditRation"
             android:exported="false"

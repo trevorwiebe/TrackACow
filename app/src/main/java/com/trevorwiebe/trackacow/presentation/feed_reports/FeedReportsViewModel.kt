@@ -52,7 +52,7 @@ class FeedReportsViewModel @AssistedInject constructor(
     }
 
     private fun getFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
-        feedUseCases.readFeedsByDate(lotId, startDate, endDate)
+        feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate)
             .map { thisFeedList ->
                 _uiState.update { uiState ->
                     uiState.copy(

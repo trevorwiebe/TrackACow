@@ -5,6 +5,9 @@ import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import kotlinx.coroutines.flow.Flow
 
 interface FeedRepository {
+
+    suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>)
+
     fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>>
 
     fun readFeedsByLotIdAndDate(

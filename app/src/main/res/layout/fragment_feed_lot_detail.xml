@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.feedlot.FeedLotActivity">
+    tools:context=".presentation.feed_lot_detail_fragment.FeedLotDetailFragment">
 
     <LinearLayout
         android:orientation="vertical"
@@ -81,6 +81,25 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/feed_lot_feed_first"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:selectAllOnFocus="true"
+                        android:ems="8"
+                        android:inputType="number"
+                        android:textSize="16sp"
+                        android:hint="@string/feed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:id="@+id/feed_again_layout"

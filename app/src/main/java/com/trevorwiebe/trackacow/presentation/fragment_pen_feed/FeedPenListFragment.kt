@@ -16,8 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.trevorwiebe.trackacow.presentation.feedlot.FeedLotActivity
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container.FeedLotViewPagerContainer
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -66,9 +66,8 @@ class FeedPenListFragment : Fragment(){
                 mFeedPenRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val feedLotIntent = Intent(activity, FeedLotActivity::class.java)
+                        val feedLotIntent = Intent(activity, FeedLotViewPagerContainer::class.java)
                         feedLotIntent.putExtra("feed_ui_model_date", feedPenListUiModelList[position].date)
-                        feedLotIntent.putExtra("lot_id", mLotModel.lotCloudDatabaseId)
                         startActivity(feedLotIntent)
                     }
 
@@ -83,11 +82,13 @@ class FeedPenListFragment : Fragment(){
                     feedPenListUiModelList = it.feedPenUiList
 
                     // update ui with lot list
-                    if(feedPenListUiModelList.isEmpty() && !it.isLoading){
-                        mEmptyPen.visibility = View.VISIBLE
-                    }else{
-                        mEmptyPen.visibility = View.INVISIBLE
 
+                    //if the feedPenListUiModelList is empty and loading is false, the list is empty
+                    // and that is shown
+                    if (feedPenListUiModelList.isEmpty() && !it.isLoading) {
+                        mEmptyPen.visibility = View.VISIBLE
+                    } else {
+                        mEmptyPen.visibility = View.INVISIBLE
                         feedPenRecyclerViewAdapter.setFeedPenList(feedPenListUiModelList)
                     }
                 }

@@ -55,10 +55,11 @@
     <string name="today">Today</string>
     <string name="_0">0</string>
     <string name="amount_fed">Amount Fed</string>
+    <string name="saved">Saved</string>
 
     Feed Reports
     <string name="feed_reports">Feed Reports</string>
-    <string name="ration">RATION</string>
+    <string name="ration">Ration</string>
     <string name="no_feed_in_this_date_range">No feed in this date range</string>
     <string name="feed_lot">Feed lot</string>
 
@@ -168,6 +169,8 @@
     Utility Strings
     <string name="save_pen_id_key" translatable="false">save_pen_id</string>
     <string name="save_pen_id_name" translatable="false">save_pen_id_name</string>
+    <string name="save_ration_id_key" translatable="false">save_ration_id_key</string>
+    <string name="save_ration_id_name" translatable="false">save_ration_id_name</string>
     <string name="save_cow_id_key" translatable="false">save_cow_id_key</string>
     <string name="save_cow_id_name" translatable="false">save_cow_id_name</string>
     <string name="sync_notif_channel_id" translatable="false">sync_notif_channel_id</string>
@@ -185,5 +188,7 @@
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
     <string name="manage_sub_url" translatable="false">https://trackacow.net/subscription.html</string>
     <string name="could_not_find_this_tag">Could not find this tag</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
