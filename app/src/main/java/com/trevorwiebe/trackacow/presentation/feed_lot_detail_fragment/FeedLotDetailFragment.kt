@@ -177,13 +177,18 @@ class FeedLotDetailFragment : Fragment() {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
+        var check2 = 0
         mCallET.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(text_entered: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateReports()
             }
 
-            override fun afterTextChanged(p0: Editable?) {}
+            override fun afterTextChanged(text_entered: Editable?) {
+                if (++check2 > 1 && (text_entered.toString() != mCallAndRationModel?.callAmount.toString())) {
+                    setSaveButtonStatus(true, "Save")
+                }
+            }
         })
 
         mFeedTextWatcher = object : TextWatcher {
