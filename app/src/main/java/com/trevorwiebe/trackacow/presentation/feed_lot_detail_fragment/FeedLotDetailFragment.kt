@@ -164,10 +164,14 @@ class FeedLotDetailFragment : Fragment() {
             rationsList
         )
         mRationSpinner.adapter = mRationSpinnerAdapter
+        var check = 0
         mRationSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 mSelectedRation = mRationModelList[position]
-                Utility.saveLastUsedRation(mContext, mSelectedRation.rationPrimaryKey)
+                if (++check > 1) {
+                    Utility.saveLastUsedRation(mContext, mSelectedRation.rationPrimaryKey)
+                    setSaveButtonStatus(true, "Save")
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -175,7 +179,7 @@ class FeedLotDetailFragment : Fragment() {
 
         mCallET.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(text_entered: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateReports()
             }
 
@@ -216,9 +220,21 @@ class FeedLotDetailFragment : Fragment() {
                     if (mCallAndRationModel == null) {
                         mCallET.setText("0")
                         mCallET.tag = ""
+                        mRationSpinner.setSelection(mRationModelList
+                            .indexOfFirst { rationModel ->
+                                rationModel.rationPrimaryKey == Utility.getLastUsedRation(
+                                    mContext
+                                )
+                            })
                     } else {
                         mCallET.setText(mCallAndRationModel?.callAmount.toString())
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
+                        mRationSpinner.setSelection(mRationModelList
+                            .indexOfFirst { rationModel ->
+                                rationModel.rationPrimaryKey == (
+                                        mCallAndRationModel?.rationPrimaryKey ?: 0
+                                        )
+                            })
                     }
                 }
             }
@@ -412,6 +428,7 @@ class FeedLotDetailFragment : Fragment() {
         }
 
     private fun setSaveButtonStatus(active: Boolean, buttonText: String) {
+        mSaveBtn.isClickable = active
         if (active) {
             mSaveBtn.text = buttonText
             mSaveBtn.background = ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn)
