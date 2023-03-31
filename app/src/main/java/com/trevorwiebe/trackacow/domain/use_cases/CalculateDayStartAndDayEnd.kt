@@ -17,11 +17,11 @@ class CalculateDayStartAndDayEnd {
         timeList.add(startCalendar.timeInMillis)
 
         val endCalendar = Calendar.getInstance()
-        startCalendar.timeInMillis = date
-        startCalendar.set(Calendar.MILLISECOND, 999)
-        startCalendar.set(Calendar.SECOND, 59)
-        startCalendar.set(Calendar.MINUTE, 59)
-        startCalendar.set(Calendar.HOUR, 23)
+        endCalendar.timeInMillis = date
+        endCalendar.set(Calendar.MILLISECOND, 999)
+        endCalendar.set(Calendar.SECOND, 59)
+        endCalendar.set(Calendar.MINUTE, 59)
+        endCalendar.set(Calendar.HOUR, 23)
         timeList.add(endCalendar.timeInMillis)
 
         return timeList.toList()
