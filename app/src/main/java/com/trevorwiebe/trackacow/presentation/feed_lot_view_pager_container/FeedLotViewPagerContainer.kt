@@ -33,8 +33,9 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 val selectedPenAndLotModel = penAndLotModelList[position]
                 title = "${selectedPenAndLotModel.penName} - " +
-                        "${selectedPenAndLotModel.lotName} - " +
-                        Utility.convertMillisToFriendlyDate(mFeedPenUiModelDate)
+                        "${selectedPenAndLotModel.lotName}"
+                supportActionBar?.subtitle =
+                    Utility.convertMillisToFriendlyDate(mFeedPenUiModelDate)
                 super.onPageSelected(position)
             }
         })
