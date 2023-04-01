@@ -66,7 +66,7 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
 
         val dateList = calculateDayStartAndDayEnd.invoke(penUidDate)
 
-        readCallByLotIdAndDate(lotId, penUidDate)
+        readCallByLotIdAndDate(lotId, dateList[0], dateList[1])
         readFeedsByLotIdAndDate(lotId, dateList[0], dateList[1])
     }
 
@@ -82,17 +82,18 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun readCallByLotIdAndDate(lotId: String, date: Long) {
+    private fun readCallByLotIdAndDate(lotId: String, dateStart: Long, dateEnd: Long) {
         readCallByLotIdAndDateJob?.cancel()
-        readCallByLotIdAndDateJob = callUseCases.readCallsByLotIdAndDateUC(lotId, date)
-            .map { receivedCallModel ->
-                _uiState.update { uiState ->
-                    uiState.copy(
-                        callModel = receivedCallModel
-                    )
+        readCallByLotIdAndDateJob =
+            callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd)
+                .map { receivedCallModel ->
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                            callModel = receivedCallModel
+                        )
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(viewModelScope)
     }
 
     private fun readFeedsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long) {

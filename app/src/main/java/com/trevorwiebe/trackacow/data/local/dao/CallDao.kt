@@ -20,14 +20,22 @@ interface CallDao {
     @Query("SELECT * FROM call WHERE callCloudDatabaseId = :id")
     fun getCallById(id: String): Flow<CallEntity>
 
-    @Query("SELECT * FROM call " +
-            "LEFT JOIN ration ON ration.rationPrimaryKey == call.callRationId " +
-            "WHERE date = :date AND lotId = :lotId LIMIT 1")
-    fun getCallAndRationByDateAndLotId(date: Long, lotId: String): Flow<CallAndRationEntity?>
+    @Query(
+        "SELECT * FROM call " +
+                "LEFT JOIN ration ON ration.rationPrimaryKey == call.callRationId " +
+                "WHERE date BETWEEN :dateStart AND :dateEnd AND lotId = :lotId LIMIT 1"
+    )
+    fun getCallAndRationByDateAndLotId(
+        lotId: String,
+        dateStart: Long,
+        dateEnd: Long
+    ): Flow<CallAndRationEntity?>
 
-    @Query("SELECT * FROM call " +
-            "LEFT JOIN ration ON ration.rationPrimaryKey == call.callRationId " +
-            "WHERE lotId = :lotId")
+    @Query(
+        "SELECT * FROM call " +
+                "LEFT JOIN ration ON ration.rationPrimaryKey == call.callRationId " +
+                "WHERE lotId = :lotId"
+    )
     fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationEntity>>
 
     @Query("DELETE FROM call")

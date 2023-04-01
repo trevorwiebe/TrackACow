@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 data class ReadCallByLotIdAndDateUC(
     private val callRepository: CallRepository,
 ){
-    operator fun invoke(lotId: String, date: Long): Flow<CallAndRationModel?> {
-        return callRepository.getCallByLotIdAndDate(lotId, date)
+    operator fun invoke(lotId: String, dateStart: Long, dateEnd: Long): Flow<CallAndRationModel?> {
+        return callRepository.getCallByLotIdAndDate(lotId, dateStart, dateEnd)
     }
 }

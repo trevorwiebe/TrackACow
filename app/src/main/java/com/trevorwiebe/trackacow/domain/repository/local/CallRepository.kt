@@ -11,7 +11,11 @@ interface CallRepository {
 
     fun getCalls(): Flow<List<CallModel>>
 
-    fun getCallByLotIdAndDate(lotId: String, date: Long): Flow<CallAndRationModel?>
+    fun getCallByLotIdAndDate(
+        lotId: String,
+        dateStart: Long,
+        dateEnd: Long
+    ): Flow<CallAndRationModel?>
 
     fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationModel>>
 
