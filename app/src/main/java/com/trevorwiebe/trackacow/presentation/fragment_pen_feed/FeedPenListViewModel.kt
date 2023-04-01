@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit
 class FeedPenListViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
     private val feedUseCases: FeedUseCases,
+    private val calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
     @Assisted("lotModel") lotModel: LotModel
 ): ViewModel() {
 
@@ -84,64 +86,32 @@ class FeedPenListViewModel @AssistedInject constructor(
         if(lotStartDate == 0L) return feedPenUiModelList
 
         // calculate the beginning of the day on lot create date
-        val c = Calendar.getInstance()
-        c.timeInMillis = lotStartDate
-        c[Calendar.HOUR_OF_DAY] = 0
-        c[Calendar.MINUTE] = 0
-        c[Calendar.SECOND] = 0
-        c[Calendar.MILLISECOND] = 0
-        var dateStarted = c.timeInMillis
+        var dateToChange = calculateDayStartAndDayEnd(lotStartDate)[0]
 
         val oneDay = TimeUnit.DAYS.toMillis(1)
-        val currentTime = System.currentTimeMillis()
+        val endTime = calculateDayStartAndDayEnd(System.currentTimeMillis())[1]
 
-        val initialCallAndRationModel: CallAndRationModel = callList.find { it.date == dateStarted }
-            ?: CallAndRationModel(
-                0,
-                0,
-                0,
-                "",
-                0,
-                "",
-                0,
-                "",
-                ""
-            )
+        while (dateToChange < endTime) {
 
-        val initialFeedList: List<FeedModel> = feedList.filter { it.date == dateStarted }
+            val currentDateList = calculateDayStartAndDayEnd(dateToChange)
+            val dayStart = currentDateList[0]
+            val dayEnd = currentDateList[1]
 
-        val initialFeedPenListUiModel = FeedPenListUiModel(
-            date = dateStarted,
-            callAndRationModel = initialCallAndRationModel,
-            feedList = initialFeedList
-        )
-
-        feedPenUiModelList.add(initialFeedPenListUiModel)
-
-        while ((dateStarted + oneDay) < currentTime) {
-            dateStarted += oneDay
-
-            val callAndRationModel = callList.find { it.date == dateStarted }
-                ?: CallAndRationModel(
-                    0,
-                    0,
-                    0,
-                    "",
-                    0,
-                    "",
-                    0,
-                    "",
-                    ""
-                )
-
+            val callAndRationModel = callList.find {
+                it.date >= dayStart && it.date <= dayEnd
+            } ?: CallAndRationModel(0, 0, 0, "", 0, "", 0, "", "")
             val feedPenListUiModel = FeedPenListUiModel(
-                date = dateStarted,
+                date = dateToChange,
                 callAndRationModel = callAndRationModel,
-                feedList = feedList.filter { it.date == dateStarted }
+                feedList = feedList.filter { it.date >= dayStart && it.date <= dayEnd }
             )
 
             feedPenUiModelList.add(feedPenListUiModel)
+
+            dateToChange += oneDay
+
         }
+
         feedPenUiModelList.reverse()
         return feedPenUiModelList
     }
