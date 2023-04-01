@@ -30,6 +30,12 @@ interface FeedDao {
     @Delete
     suspend fun deleteFeedEntity(feedEntity: FeedEntity)
 
+    @Query("DELETE FROM feed WHERE id IN (:idList)")
+    suspend fun deleteFeedByIdList(idList: List<String>)
+
+
+    // Cache functions
+
     @Insert
     suspend fun insertCacheFeedEntityList(cacheFeedEntityList: List<CacheFeedEntity>)
 

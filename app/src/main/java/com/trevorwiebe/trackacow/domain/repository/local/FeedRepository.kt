@@ -17,4 +17,6 @@ interface FeedRepository {
     ): Flow<List<FeedModel>>
 
     suspend fun createFeedListRemote(feedModelList: List<CacheFeedModel>)
+
+    suspend fun deleteFeedList(feedModelList: List<FeedModel>)
 }

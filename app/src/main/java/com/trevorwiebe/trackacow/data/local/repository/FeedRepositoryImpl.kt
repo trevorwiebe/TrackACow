@@ -40,4 +40,9 @@ class FeedRepositoryImpl(
     override suspend fun createFeedListRemote(feedModelList: List<CacheFeedModel>) {
         feedDao.insertCacheFeedEntityList(feedModelList.map { it.toCacheFeedEntity() })
     }
+
+    override suspend fun deleteFeedList(feedModelList: List<FeedModel>) {
+        val idList = feedModelList.map { it.id }
+        feedDao.deleteFeedByIdList(idList)
+    }
 }
