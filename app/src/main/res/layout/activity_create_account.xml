@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccentDark"
-    tools:context=".presentation.activities.CreateAccountActivity">
+    tools:context=".presentation.create_account.CreateAccountActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,7 +47,8 @@
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
             android:textCursorDrawable="@null"
-            android:theme="@style/TextLabel" />
+            android:theme="@style/TextLabel"
+            android:autofillHints="username" />
 
         <TextView
             android:layout_width="match_parent"
@@ -69,7 +70,8 @@
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
             android:textCursorDrawable="@null"
-            android:theme="@style/TextLabel" />
+            android:theme="@style/TextLabel"
+            android:autofillHints="emailAddress" />
 
         <TextView
             android:layout_width="match_parent"
@@ -88,6 +90,7 @@
             android:backgroundTint="@android:color/white"
             android:drawableTint="@android:color/white"
             android:inputType="textPassword"
+            android:autofillHints="password"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
             android:textCursorDrawable="@null"

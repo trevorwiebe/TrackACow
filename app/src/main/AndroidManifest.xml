@@ -19,7 +19,7 @@
 
         <activity
             android:name=".presentation.feed_lot_view_pager_container.FeedLotViewPagerContainer"
-            android:parentActivityName=".presentation.activities.MainActivity"
+            android:parentActivityName=".presentation.main_activity.MainActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.feed_reports.FeedReportsActivity"
@@ -35,7 +35,7 @@
             android:name=".presentation.manage_rations.ManageRationsActivity"
             android:exported="false"
             android:label="@string/more_manage_rations"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.drugs_given_reports.DrugsGivenReportActivity"
             android:exported="false"
@@ -51,21 +51,16 @@
             android:exported="false"
             android:label="@string/add_cattle" />
         <activity
-            android:name=".presentation.feedlot.FeedLotActivity"
-            android:exported="false"
-            android:label="@string/feed_lot"
-            android:parentActivityName=".presentation.activities.MainActivity" />
-        <activity
             android:name=".presentation.archives.ArchivesActivity"
             android:exported="false"
             android:label="@string/more_archives"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.lot_reports.LotReportActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
-            android:name=".presentation.activities.MainActivity"
+            android:name=".presentation.main_activity.MainActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -80,14 +75,14 @@
             android:name=".presentation.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/more_settings"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.edit_drugs_given.EditDrugsGivenListActivity"
             android:exported="false"
             android:label="@string/edit_drugs_given"
             android:parentActivityName=".presentation.edit_medicated_cow.EditMedicatedCowActivity" />
         <activity
-            android:name=".presentation.activities.CreateAccountActivity"
+            android:name=".presentation.create_account.CreateAccountActivity"
             android:exported="false"
             android:label="@string/create_account"
             android:parentActivityName=".presentation.sign_in.SignInActivity"
@@ -96,7 +91,7 @@
             android:name=".presentation.sign_in.SignInActivity"
             android:exported="false"
             android:label="@string/sign_in"
-            android:parentActivityName=".presentation.activities.MainActivity"
+            android:parentActivityName=".presentation.main_activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".presentation.edit_medicated_cow.EditMedicatedCowActivity"
@@ -106,16 +101,16 @@
             android:name=".presentation.manage_drugs.ManageDrugsActivity"
             android:exported="false"
             android:label="@string/more_manage_drugs"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.manage_pens.ManagePensActivity"
             android:exported="false"
             android:label="@string/more_manage_pens"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.medicated_cows.MedicatedCowsActivity"
             android:exported="false"
-            android:parentActivityName=".presentation.activities.MainActivity" />
+            android:parentActivityName=".presentation.main_activity.MainActivity" />
         <activity
             android:name=".presentation.add_edit_drug.AddOrEditDrugActivity"
             android:exported="false"

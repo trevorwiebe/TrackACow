@@ -22,8 +22,8 @@ import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.trevorwiebe.trackacow.presentation.activities.CreateAccountActivity
-import com.trevorwiebe.trackacow.presentation.activities.MainActivity
+import com.trevorwiebe.trackacow.presentation.create_account.CreateAccountActivity
+import com.trevorwiebe.trackacow.presentation.main_activity.MainActivity
 
 class SignInActivity : AppCompatActivity() {
 
@@ -230,7 +230,6 @@ class SignInActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "SignInActivity"
         private const val RC_SIGN_IN = 477
         private const val CREATE_ACCOUNT_CODE = 848
         const val NO_ERROR = "NO_ERROR"
@@ -238,18 +237,19 @@ class SignInActivity : AppCompatActivity() {
         const val ERROR_USER_MISMATCH = "ERROR_USER_MISMATCH"
         const val ERROR_INVALID_EMAIL = "ERROR_INVALID_EMAIL"
         const val ERROR_USER_DISABLED = "ERROR_USER_DISABLED"
-        const val ERROR_INVALID_CUSTOM_TOKEN = "ERROR_INVALID_CUSTOM_TOKEN"
-        const val ERROR_CUSTOM_TOKEN_MISMATCH = "ERROR_CUSTOM_TOKEN_MISMATCH"
         const val ERROR_INVALID_CREDENTIAL = "ERROR_INVALID_CREDENTIAL"
-        const val ERROR_REQUIRES_RECENT_LOGIN = "ERROR_REQUIRES_RECENT_LOGIN"
-        const val ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL = "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"
+        const val ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL =
+            "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL"
         const val ERROR_EMAIL_ALREADY_IN_USE = "ERROR_EMAIL_ALREADY_IN_USE"
         const val ERROR_CREDENTIAL_ALREADY_IN_USE = "ERROR_CREDENTIAL_ALREADY_IN_USE"
-        const val ERROR_USER_TOKEN_EXPIRED = "ERROR_USER_TOKEN_EXPIRED"
         const val ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND"
-        const val ERROR_INVALID_USER_TOKEN = "ERROR_INVALID_USER_TOKEN"
-        const val ERROR_OPERATION_NOT_ALLOWED = "ERROR_OPERATION_NOT_ALLOWED"
         const val ERROR_WEAK_PASSWORD = "ERROR_WEAK_PASSWORD"
         const val ERROR_MISSING_EMAIL = "ERROR_MISSING_EMAIL"
+//        const val ERROR_INVALID_USER_TOKEN = "ERROR_INVALID_USER_TOKEN"
+//        const val ERROR_OPERATION_NOT_ALLOWED = "ERROR_OPERATION_NOT_ALLOWED"
+//        const val ERROR_USER_TOKEN_EXPIRED = "ERROR_USER_TOKEN_EXPIRED"
+//        const val ERROR_INVALID_CUSTOM_TOKEN = "ERROR_INVALID_CUSTOM_TOKEN"
+//        const val ERROR_CUSTOM_TOKEN_MISMATCH = "ERROR_CUSTOM_TOKEN_MISMATCH"
+//        const val ERROR_REQUIRES_RECENT_LOGIN = "ERROR_REQUIRES_RECENT_LOGIN"
     }
 }
