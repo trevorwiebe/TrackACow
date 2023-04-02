@@ -4,9 +4,6 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.preferences.AppPreferencesImpl
@@ -16,8 +13,6 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
-import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,12 +32,6 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun provideRemoteDatabase(): FirebaseDatabase{
-        return Firebase.database
-    }
-
-    @Provides
-    @Singleton
     fun provideSharedPreferences(
         app: Application
     ): SharedPreferences{
@@ -57,14 +46,6 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun provideCloudDatabaseId(
-        databaseReference: FirebaseDatabase
-    ): GetCloudDatabaseId {
-        return GetCloudDatabaseId(databaseReference)
-    }
-
-    @Provides
-    @Singleton
     fun provideCalculateDrugsGiven(): CalculateDrugsGiven {
         return CalculateDrugsGiven()
     }
@@ -75,7 +56,6 @@ object TrackACowDataModule {
         return CalculateDayStartAndDayEnd()
     }
 
-    // Ration
     @Provides
     @Singleton
     fun provideRationRepository(
@@ -86,18 +66,7 @@ object TrackACowDataModule {
             cacheRationDao = db.cacheRationDao()
         )
     }
-    @Provides
-    @Singleton
-    fun provideRationRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): RationRepositoryRemote {
-        return RationRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
-        )
-    }
 
-    // Call
     @Provides
     @Singleton
     fun provideCallRepository(
@@ -108,18 +77,7 @@ object TrackACowDataModule {
             cacheCallDao = db.cacheCallDao()
         )
     }
-    @Provides
-    @Singleton
-    fun provideCallRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): CallRepositoryRemote{
-        return CallRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS
-        )
-    }
 
-    // Cow
     @Provides
     @Singleton
     fun provideCowRepository(
@@ -133,18 +91,6 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun provideCowRemoteRepository(
-        remoteDb: FirebaseDatabase
-    ): CowRepositoryRemote {
-        return CowRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
-        )
-    }
-
-    // Drug
-    @Provides
-    @Singleton
     fun provideDrugRepository(
         db: AppDatabase
     ): DrugRepository {
@@ -153,18 +99,7 @@ object TrackACowDataModule {
             cacheDrugDao = db.cacheDrugDao()
         )
     }
-    @Provides
-    @Singleton
-    fun provideDrugRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): DrugRepositoryRemote{
-        return DrugRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS
-        )
-    }
 
-    // DrugsGiven
     @Provides
     @Singleton
     fun provideDrugsGivenRepository(
@@ -177,35 +112,12 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun provideDrugsGivenRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): DrugsGivenRepositoryRemote {
-        return DrugsGivenRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
-        )
-    }
-
-    // Pen
-    @Provides
-    @Singleton
     fun providePenRepository(
         db: AppDatabase
     ): PenRepository {
         return PenRepositoryImpl(
             penDao = db.penDao(),
             cachePenDao = db.cachePenDao()
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun providePenRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): PenRepositoryRemote{
-        return PenRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS
         )
     }
 
@@ -233,44 +145,11 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun providesLoadRemoteRepository(
-        remoteDb: FirebaseDatabase,
-    ): LoadRemoteRepository {
-        return LoadRemoteRepositoryImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOAD
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideLotRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): LotRepositoryRemote {
-        return LotRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
-        )
-    }
-
-    @Provides
-    @Singleton
     fun provideFeedRepository(
         db: AppDatabase
     ): FeedRepository {
         return FeedRepositoryImpl(
             feedDao = db.feedDao()
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideFeedRepositoryRemote(
-        remoteDb: FirebaseDatabase
-    ): FeedRepositoryRemote {
-        return FeedRepositoryRemoteImpl(
-            firebaseDatabase = remoteDb,
-            databasePath = Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
         )
     }
 }
