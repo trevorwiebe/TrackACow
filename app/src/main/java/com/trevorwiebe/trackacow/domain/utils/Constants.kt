@@ -1,88 +1,70 @@
-package com.trevorwiebe.trackacow.domain.utils;
+package com.trevorwiebe.trackacow.domain.utils
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth
 
-public class Constants {
+object Constants {
 
-    public static final DatabaseReference BASE_REFERENCE = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    public static final String BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/";
-
-    public static final String DATABASE_STRING_ARCHIVED_LOT = "/archives";
-    public static final String ARCHIVE_LOT = "archives";
-
-    public static final String DATABASE_STRING_RATIONS = "rations";
-    public static final String RATIONS = "rations";
-
-    public static final String DATABASE_STRING_CALLS = "calls";
-    public static final String CALLS = "calls";
-
-    public static final String DATABASE_STRING_PENS = "/pens";
-    public static final String PENS = "pens";
-
-    public static final String DATABASE_STRING_LOT = "/cattleLot";
-    public static final String LOTS = "cattleLot";
-
-    public static final String DATABASE_STRING_DRUGS = "drugs/";
-    public static final String DRUG = "drugs";
-
-    public static final String DATABASE_STRING_FEEDS = "/feed";
-    public static final String FEEDS = "feed";
-
-    public static final String DATABASE_STRING_LOAD = "/loads";
-    public static final String LOAD = "loads";
-
-    public static final String DATABASE_STRING_DRUGS_GIVEN = "drugsGiven";
-    public static final String DRUGS_GIVEN = "drugsGiven";
-
-    public static final String DATABASE_STRING_COW = "cows";
-    public static final String COW = "cows";
-
-    public static final String DATABASE_STRING_USER = "/user";
-    public static final String USER = "user";
-
-    public static final int FREE_TRIAL = 0;
-    public static final int MONTHLY_SUBSCRIPTION = 1;
-    public static final int ANNUAL_SUBSCRIPTION = 2;
-    public static final int CANCELED = 6;
-    public static final int FOREVER_FREE_USER = 7;
-
-    public static final int SUCCESS = 1;
-    public static final int NO_NETWORK_CONNECTION = 2;
-    public static final int ERROR_FETCHING_DATA_FROM_CLOUD = 3;
-    public static final int ERROR_PUSHING_DATA_TO_CLOUD = 4;
-    public static final int ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED = 5;
-
-    public static final int MEDICATE = 1;
-    public static final int FEED = 2;
-    public static final int MOVE = 3;
-    public static final int REPORTS = 4;
-    public static final int MORE = 5;
+    val BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().currentUser!!.uid + "/"
+    const val DATABASE_STRING_ARCHIVED_LOT = "/archives"
+    const val ARCHIVE_LOT = "archives"
+    const val DATABASE_STRING_RATIONS = "rations"
+    const val RATIONS = "rations"
+    const val DATABASE_STRING_CALLS = "calls"
+    const val CALLS = "calls"
+    const val DATABASE_STRING_PENS = "/pens"
+    const val PENS = "pens"
+    const val DATABASE_STRING_LOT = "/cattleLot"
+    const val LOTS = "cattleLot"
+    const val DATABASE_STRING_DRUGS = "drugs/"
+    const val DRUG = "drugs"
+    const val DATABASE_STRING_FEEDS = "/feed"
+    const val FEEDS = "feed"
+    const val DATABASE_STRING_LOAD = "/loads"
+    const val LOAD = "loads"
+    const val DATABASE_STRING_DRUGS_GIVEN = "drugsGiven"
+    const val DRUGS_GIVEN = "drugsGiven"
+    const val DATABASE_STRING_COW = "cows"
+    const val COW = "cows"
+    const val DATABASE_STRING_USER = "/user"
+    const val USER = "user"
+    const val FREE_TRIAL = 0
+    const val MONTHLY_SUBSCRIPTION = 1
+    const val ANNUAL_SUBSCRIPTION = 2
+    const val CANCELED = 6
+    const val FOREVER_FREE_USER = 7
+    const val SUCCESS = 1
+    const val NO_NETWORK_CONNECTION = 2
+    const val ERROR_FETCHING_DATA_FROM_CLOUD = 3
+    const val ERROR_PUSHING_DATA_TO_CLOUD = 4
+    const val ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED = 5
+    const val MEDICATE = 1
+    const val FEED = 2
+    const val MOVE = 3
+    const val REPORTS = 4
+    const val MORE = 5
 
     /* holding entity 'what happened' keys */
-    public static final int INSERT_UPDATE = 1;
-    public static final int DELETE = 3;
-
-    public static final int LOT = 1;
-    public static final int ARCHIVE = 2;
+    const val INSERT_UPDATE = 1
+    const val DELETE = 3
+    const val LOT = 1
+    const val ARCHIVE = 2
 
     /* time drug report types */
-    public static final int DAY_DRUG_REPORT = 1;
-    public static final int WEEK_DRUG_REPORT = 2;
-    public static final int MONTH_DRUG_REPORT = 3;
+    const val DAY_DRUG_REPORT = 1
+    const val WEEK_DRUG_REPORT = 2
+    const val MONTH_DRUG_REPORT = 3
 
     // Preference keys
-    public static final String NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name";
-    public static final String NEW_DATA_TO_UPLOAD_KEY = "new_data_to_upload_key";
+    const val NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name"
+    const val NEW_DATA_TO_UPLOAD_KEY = "new_data_to_upload_key"
 
     // Drug report types
-    public static final int YESTERDAY = 1;
-    public static final int MONTH = 2;
-    public static final int ALL = 3;
-    public static final int CUSTOM = 4;
+    const val YESTERDAY = 1
+    const val MONTH = 2
+    const val ALL = 3
+    const val CUSTOM = 4
 
     // Manage Ration Type
-    public static final int ADD_RATION = 1;
-    public static final int EDIT_RATION = 2;
+    const val ADD_RATION = 1
+    const val EDIT_RATION = 2
 }
