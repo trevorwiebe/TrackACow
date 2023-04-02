@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -116,7 +115,7 @@ class FeedLotDetailFragment : Fragment() {
         mTotalFed = view.findViewById(R.id.pen_total_fed)
         mLeftToFeed = view.findViewById(R.id.pen_left_to_feed)
 
-        setSaveButtonStatus(false, "Saved")
+//        setSaveButtonStatus(false, "Saved")
 
         mSaveBtn.setOnClickListener {
             if (mCallET.length() == 0 || mCallET.text.toString() == "0") {
@@ -151,7 +150,7 @@ class FeedLotDetailFragment : Fragment() {
                     )
                 )
 
-                setSaveButtonStatus(false, "Saved")
+//                setSaveButtonStatus(false, "Saved")
                 mTotalFed.requestFocus()
 
             }
@@ -170,7 +169,7 @@ class FeedLotDetailFragment : Fragment() {
                 mSelectedRation = mRationModelList[position]
                 if (++check > 1) {
                     Utility.saveLastUsedRation(mContext, mSelectedRation.rationPrimaryKey)
-                    setSaveButtonStatus(true, "Save")
+//                    setSaveButtonStatus(true, "Save")
                 }
             }
 
@@ -186,7 +185,7 @@ class FeedLotDetailFragment : Fragment() {
 
             override fun afterTextChanged(text_entered: Editable?) {
                 if (++check2 > 1 && (text_entered.toString() != mCallAndRationModel?.callAmount.toString())) {
-                    setSaveButtonStatus(true, "Save")
+//                    setSaveButtonStatus(true, "Save")
                 }
             }
         })
@@ -205,9 +204,9 @@ class FeedLotDetailFragment : Fragment() {
                 if (text_entered.isNotEmpty()) {
                     mShouldAddNewFeedEditText = shouldAddAnotherEditText()
                     if (mShouldAddNewFeedEditText) {
-                        addNewFeedEditText(null, mContext)
+                        addFeedEditText(null, mContext)
                     }
-                    setSaveButtonStatus(true, "Save")
+//                    setSaveButtonStatus(true, "Save")
                 }
                 updateReports()
             }
@@ -225,6 +224,7 @@ class FeedLotDetailFragment : Fragment() {
                     if (mCallAndRationModel == null) {
                         mCallET.setText("0")
                         mCallET.tag = ""
+                        mSaveBtn.setText(getString(R.string.save))
                         mRationSpinner.setSelection(mRationModelList
                             .indexOfFirst { rationModel ->
                                 rationModel.rationPrimaryKey == Utility.getLastUsedRation(
@@ -234,6 +234,7 @@ class FeedLotDetailFragment : Fragment() {
                     } else {
                         mCallET.setText(mCallAndRationModel?.callAmount.toString())
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
+                        mSaveBtn.setText(getString(R.string.update))
                         mRationSpinner.setSelection(mRationModelList
                             .indexOfFirst { rationModel ->
                                 rationModel.rationPrimaryKey == (
@@ -249,6 +250,8 @@ class FeedLotDetailFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 feedLotDetailFragmentViewModel.uiState.collect {
 
+                    mFeedAgainLayout.removeAllViews()
+
                     isLoadingMore = true
                     mOriginalFeedModelList = it.feedList
                     for (o in mOriginalFeedModelList.indices) {
@@ -256,12 +259,13 @@ class FeedLotDetailFragment : Fragment() {
                         if (o == 0) {
                             mFeedFirst.setText(numberFormatter.format(feedModel.feed))
                             mFeedFirst.tag = feedModel.id
+                            mTotalFed.tag = feedModel.primaryKey
                         } else {
-                            addNewFeedEditText(feedModel, mContext)
+                            addFeedEditText(feedModel, mContext)
                         }
                     }
                     if (mOriginalFeedModelList.isNotEmpty()) {
-                        addNewFeedEditText(null, mContext)
+                        addFeedEditText(null, mContext)
                     }
                     isLoadingMore = false
 
@@ -289,12 +293,15 @@ class FeedLotDetailFragment : Fragment() {
         }
     }
 
-    private fun addNewFeedEditText(feedModel: FeedModel?, viewContext: Context) {
+    private fun addFeedEditText(feedModel: FeedModel?, viewContext: Context) {
         mFeedAgainNumber += 1
+
         val scale = resources.displayMetrics.density
         val pixels24 = (24 * scale + 0.5f).toInt()
         val pixels16 = (16 * scale + 0.5f).toInt()
         val pixels8 = (8 * scale + 0.5f).toInt()
+
+        // create horizontal linear layout
         val linearLayout = LinearLayout(context)
         val linearLayoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -303,12 +310,17 @@ class FeedLotDetailFragment : Fragment() {
         linearLayout.id = mFeedAgainNumber
         linearLayout.layoutParams = linearLayoutParams
         linearLayout.orientation = LinearLayout.HORIZONTAL
+
+        // create textInputLayout
         val textInputLayout = TextInputLayout(viewContext)
         val textInputLayoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         textInputLayout.layoutParams = textInputLayoutParams
+        textInputLayout.tag = feedModel?.primaryKey
+
+        // create textInputEditText
         val textInputEditText = TextInputEditText(viewContext)
         val textInputEditTextParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -328,6 +340,8 @@ class FeedLotDetailFragment : Fragment() {
         textInputEditText.textSize = 16f
         textInputEditText.hint = getString(R.string.feed)
         textInputLayout.addView(textInputEditText)
+
+        // create deleteButton
         val deleteButton = ImageButton(context)
         val deleteBtnParams = LinearLayout.LayoutParams(
             pixels24,
@@ -352,16 +366,19 @@ class FeedLotDetailFragment : Fragment() {
                 ) {
                     i -= 1
                     mFeedAgainLayout.removeView(v)
-                    setSaveButtonStatus(true, "Save")
+//                    setSaveButtonStatus(true, "Save")
                 }
                 i++
             }
             updateReports()
         }
         deleteButton.layoutParams = deleteBtnParams
+
+        // add views to layouts
         linearLayout.addView(textInputLayout)
         linearLayout.addView(deleteButton)
         mFeedAgainLayout.addView(linearLayout)
+
     }
 
     private fun shouldAddAnotherEditText(): Boolean {
@@ -379,11 +396,13 @@ class FeedLotDetailFragment : Fragment() {
         get() {
             val feedModelList: MutableList<FeedModel> = mutableListOf()
             val firstFeedModel = FeedModel()
+            val firstFeedKey = mTotalFed.tag ?: 0
             val amountFeedText = mFeedFirst.text
             if (!amountFeedText.isNullOrEmpty()) {
                 firstFeedModel.feed = numberFormatter.parse(amountFeedText.toString())?.toInt() ?: 0
                 firstFeedModel.id = mFeedFirst.tag?.toString() ?: ""
                 firstFeedModel.date = mPenUiDate
+                firstFeedModel.primaryKey = firstFeedKey as Int
                 firstFeedModel.lotId = mPenAndLotModel?.lotCloudDatabaseId ?: ""
                 feedModelList.add(firstFeedModel)
             }
@@ -391,10 +410,12 @@ class FeedLotDetailFragment : Fragment() {
 
                 val rowView = mFeedAgainLayout.getChildAt(i) as LinearLayout
                 val textLayout = rowView.getChildAt(0) as TextInputLayout
+                val feedKey = textLayout.tag ?: 0
                 val feedId = textLayout.editText?.tag?.toString() ?: ""
                 val amountTextView = textLayout.editText?.text
                 if (!amountTextView.isNullOrEmpty()) {
                     val feedModel = FeedModel()
+                    feedModel.primaryKey = feedKey as Int
                     feedModel.feed = numberFormatter.parse(amountTextView.toString())?.toInt() ?: 0
                     feedModel.date = mPenUiDate
                     feedModel.lotId = mPenAndLotModel?.lotCloudDatabaseId ?: ""
@@ -432,17 +453,17 @@ class FeedLotDetailFragment : Fragment() {
             return feedIntList
         }
 
-    private fun setSaveButtonStatus(active: Boolean, buttonText: String) {
-        mSaveBtn.isClickable = active
-        if (active) {
-            mSaveBtn.text = buttonText
-            mSaveBtn.background = ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn)
-        } else {
-            mSaveBtn.text = buttonText
-            mSaveBtn.background =
-                ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn_deactivated)
-        }
-    }
+//    private fun setSaveButtonStatus(active: Boolean, buttonText: String) {
+//        mSaveBtn.isClickable = active
+//        if (active) {
+//            mSaveBtn.text = buttonText
+//            mSaveBtn.background = ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn)
+//        } else {
+//            mSaveBtn.text = buttonText
+//            mSaveBtn.background =
+//                ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn_deactivated)
+//        }
+//    }
 
     private fun updateReports() {
         var sum = 0

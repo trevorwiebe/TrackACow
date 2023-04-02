@@ -2,7 +2,6 @@ package com.trevorwiebe.trackacow.presentation.feed_lot_detail_fragment
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -114,16 +113,13 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         feedModelList: List<FeedModel>,
         originalFeedModelList: List<FeedModel>
     ) {
-        Log.d("TAG", "createOrUpdateCallandFeeds: $callModel")
-        Log.d("TAG", "createOrUpdateCallandFeeds: $feedModelList")
-        Log.d("TAG", "createOrUpdateCallandFeeds: $originalFeedModelList")
         viewModelScope.launch {
             if (callModel.callCloudDatabaseId.isNullOrEmpty()) {
                 callUseCases.createCallUC(callModel)
             } else {
                 callUseCases.updateCallUC(callModel)
             }
-//            feedUseCases.createAndUpdateFeedList(feedModelList)
+            feedUseCases.createAndUpdateFeedList(originalFeedModelList, feedModelList)
         }
     }
 }
