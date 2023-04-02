@@ -1,43 +1,38 @@
-package com.trevorwiebe.trackacow.domain.utils;
+package com.trevorwiebe.trackacow.domain.utils
 
-
-import android.content.Context;
-
-import androidx.annotation.Keep;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.view.ViewCompat;
-import android.util.AttributeSet;
-import android.view.View;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import androidx.annotation.Keep
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 
 @Keep
-public class MoveUpwardsBehavior extends CoordinatorLayout.Behavior<View> {
+class MoveUpwardsBehavior : CoordinatorLayout.Behavior<View?> {
+    constructor() : super() {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
 
-    public MoveUpwardsBehavior() {
-        super();
+    override fun layoutDependsOn(
+        parent: CoordinatorLayout,
+        child: View,
+        dependency: View
+    ): Boolean {
+        return dependency is SnackbarLayout
     }
 
-    public MoveUpwardsBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    override fun onDependentViewChanged(
+        parent: CoordinatorLayout,
+        child: View,
+        dependency: View
+    ): Boolean {
+        val translationY =
+            0f.coerceAtMost(dependency.translationY - dependency.height)
+        child.translationY = translationY
+        return true
     }
 
-    @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
-        return dependency instanceof Snackbar.SnackbarLayout;
-    }
-
-    @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
-        float translationY = Math.min(0, ViewCompat.getTranslationY(dependency) - dependency.getHeight());
-        ViewCompat.setTranslationY(child, translationY);
-        return true;
-    }
-
-    //you need this when you swipe the snackbar(thanx to ubuntudroid's comment)
-    @Override
-    public void onDependentViewRemoved(CoordinatorLayout parent, View child, View dependency) {
-        ViewCompat.animate(child).translationY(0).start();
+    override fun onDependentViewRemoved(parent: CoordinatorLayout, child: View, dependency: View) {
+        ViewCompat.animate(child).translationY(0f).start()
     }
 }
