@@ -7,10 +7,7 @@ import com.trevorwiebe.trackacow.data.entities.CallEntity
 @Dao
 interface CacheCallDao {
     @Insert
-    fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
-
-    @Insert
-    fun insertHoldingCallList(holdingCallEntities: List<CacheCallEntity>)
+    suspend fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
 
     @get:Query("SELECT * FROM holdingCall")
     val holdingCallEntities: List<CacheCallEntity>
