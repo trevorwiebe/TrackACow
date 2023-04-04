@@ -6,6 +6,12 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 @Dao
 interface CacheDrugsGivenDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCacheDrugGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCacheDrugGivenList(cacheDrugGivenList: List<CacheDrugsGivenEntity>)
+
     @Deprecated("use suspend function")
     @Insert
     fun insertHoldingDrugsGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity?)

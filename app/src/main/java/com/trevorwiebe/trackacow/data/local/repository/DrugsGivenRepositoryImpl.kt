@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.data.local.repository
 
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugsGivenDao
 import com.trevorwiebe.trackacow.data.local.dao.DrugsGivenDao
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toDrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenEntity
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DrugsGivenRepositoryImpl(
-    private val drugsGivenDao: DrugsGivenDao
+    private val drugsGivenDao: DrugsGivenDao,
+    private val cacheDrugsGivenDao: CacheDrugsGivenDao
 ): DrugsGivenRepository {
     override suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>) {
         drugsGivenDao.insertDrugsGivenList(
@@ -58,11 +60,11 @@ class DrugsGivenRepositoryImpl(
     }
 
     override suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel) {
-        drugsGivenDao.insertCacheDrugGiven(cacheDrugGivenModel.toCacheDrugGivenEntity())
+        cacheDrugsGivenDao.insertCacheDrugGiven(cacheDrugGivenModel.toCacheDrugGivenEntity())
     }
 
     override suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>) {
-        drugsGivenDao.insertCacheDrugGivenList(
+        cacheDrugsGivenDao.insertCacheDrugGivenList(
             cacheDrugsGivenList.map { it.toCacheDrugGivenEntity() }
         )
     }

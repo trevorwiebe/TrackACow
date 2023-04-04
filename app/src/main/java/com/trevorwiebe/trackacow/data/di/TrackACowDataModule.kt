@@ -106,7 +106,8 @@ object TrackACowDataModule {
         db: AppDatabase
     ): DrugsGivenRepository {
         return DrugsGivenRepositoryImpl(
-            drugsGivenDao = db.drugsGivenDao()
+            drugsGivenDao = db.drugsGivenDao(),
+            cacheDrugsGivenDao = db.cacheDrugsGivenDao()
         )
     }
 

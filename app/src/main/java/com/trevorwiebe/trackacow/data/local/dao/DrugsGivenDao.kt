@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.compound_entities.DrugsGivenAndDrugEntity
 import kotlinx.coroutines.flow.Flow
@@ -43,13 +42,6 @@ interface DrugsGivenDao {
 
     @Delete
     suspend fun deleteDrugGiven(drugsGivenEntity: DrugsGivenEntity)
-
-    // Cache
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCacheDrugGiven(cacheDrugsGivenEntity: CacheDrugsGivenEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCacheDrugGivenList(cacheDrugGivenList: List<CacheDrugsGivenEntity>)
 
     // Deprecated
 
