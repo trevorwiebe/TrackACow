@@ -7,7 +7,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
 interface CacheLoadDao {
 
     @Insert
-    fun insertCacheLoad(cacheLoadEntity: CacheLoadEntity?)
+    suspend fun insertCacheLoad(cacheLoadEntity: CacheLoadEntity?)
 
     @Deprecated("use flow return type")
     @Insert
