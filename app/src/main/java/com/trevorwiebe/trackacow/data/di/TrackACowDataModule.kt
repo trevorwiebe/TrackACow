@@ -149,7 +149,8 @@ object TrackACowDataModule {
         db: AppDatabase
     ): FeedRepository {
         return FeedRepositoryImpl(
-            feedDao = db.feedDao()
+            feedDao = db.feedDao(),
+            cacheFeedDao = db.cacheFeedDao()
         )
     }
 }

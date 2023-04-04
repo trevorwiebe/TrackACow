@@ -1,7 +1,7 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
 import com.google.firebase.database.FirebaseDatabase
-import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 
 class FeedRepositoryRemoteImpl(
@@ -9,7 +9,7 @@ class FeedRepositoryRemoteImpl(
     private val databasePath: String
 ) : FeedRepositoryRemote {
 
-    override suspend fun insertOrUpdateFeedRemoteList(feedModelList: List<FeedModel>) {
+    override suspend fun insertOrUpdateFeedRemoteList(feedModelList: List<CacheFeedModel>) {
 
     }
 

@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.data.local.dao
 
 import androidx.room.*
-import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity
 import com.trevorwiebe.trackacow.data.entities.FeedEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,12 +31,6 @@ interface FeedDao {
 
     @Query("DELETE FROM feed WHERE id IN (:idList)")
     suspend fun deleteFeedByIdList(idList: List<String>)
-
-
-    // Cache functions
-
-    @Insert
-    suspend fun insertCacheFeedEntityList(cacheFeedEntityList: List<CacheFeedEntity>)
 
 
     /* Deprecated functions */

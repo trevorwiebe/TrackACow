@@ -2,12 +2,11 @@ package com.trevorwiebe.trackacow.data.local.cacheDao
 
 import androidx.room.*
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheFeedEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CacheFeedDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHoldingFeedList(holdingFeedEntities: List<CacheFeedEntity>)
 
     @Update

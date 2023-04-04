@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.data.local.repository
 
+import com.trevorwiebe.trackacow.data.local.cacheDao.CacheFeedDao
 import com.trevorwiebe.trackacow.data.local.dao.FeedDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheFeedEntity
 import com.trevorwiebe.trackacow.data.mapper.toFeedEntity
@@ -11,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class FeedRepositoryImpl(
-    private val feedDao: FeedDao
+    private val feedDao: FeedDao,
+    private val cacheFeedDao: CacheFeedDao
 ): FeedRepository {
 
     override suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>) {
         feedDao.insertFeedEntityList(feedModelList.map { it.toFeedEntity() })
     }
-
 
     override fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>> {
         return feedDao.getFeedsByLotId(lotId)
@@ -37,12 +38,12 @@ class FeedRepositoryImpl(
             }
     }
 
-    override suspend fun createFeedListRemote(feedModelList: List<CacheFeedModel>) {
-        feedDao.insertCacheFeedEntityList(feedModelList.map { it.toCacheFeedEntity() })
-    }
-
     override suspend fun deleteFeedList(feedModelList: List<FeedModel>) {
         val idList = feedModelList.map { it.id }
         feedDao.deleteFeedByIdList(idList)
+    }
+
+    override suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>) {
+        cacheFeedDao.insertHoldingFeedList(feedModelList.map { it.toCacheFeedEntity() })
     }
 }

@@ -1,11 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases
 
 import android.app.Application
-import android.util.Log
+import com.trevorwiebe.trackacow.data.mapper.toCacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.local.FeedRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 
 class CreateAndUpdateFeedList(
@@ -22,9 +23,6 @@ class CreateAndUpdateFeedList(
             originalFeedList.size != newFeedList.size ||
             originalFeedList.toSet() != newFeedList.toSet()
         ) {
-
-            Log.d("TAG", "invoke originalList: $originalFeedList")
-            Log.d("TAG", "invoke newList: $newFeedList")
 
             val feedListToCreate: MutableList<FeedModel> = mutableListOf()
             newFeedList.forEach { feedModel ->
@@ -50,19 +48,21 @@ class CreateAndUpdateFeedList(
                 }
             }
 
-            Log.d("TAG", "invoke create: $feedListToCreate")
-            Log.d("TAG", "invoke delete: $feedListToDelete")
-
-            if (feedListToCreate.isNotEmpty()) feedRepository.createOrUpdateFeedList(
-                feedListToCreate
-            )
-            if (feedListToDelete.isNotEmpty()) feedRepository.deleteFeedList(feedListToDelete)
+            if (feedListToCreate.isNotEmpty())
+                feedRepository.createOrUpdateFeedList(feedListToCreate)
+            if (feedListToDelete.isNotEmpty())
+                feedRepository.deleteFeedList(feedListToDelete)
 
             if (Utility.haveNetworkConnection(context)) {
 
             } else {
                 Utility.setNewDataToUpload(context, true)
-
+                feedRepository.createCacheFeedList(feedListToCreate.map {
+                    it.toCacheFeedModel(Constants.INSERT_UPDATE)
+                })
+                feedRepository.createCacheFeedList(feedListToDelete.map {
+                    it.toCacheFeedModel(Constants.DELETE)
+                })
             }
 
         }
