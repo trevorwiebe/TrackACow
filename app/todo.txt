@@ -1,44 +1,40 @@
 Confirm that CRUD works on all entities
-    ArchivedLot
-        Main    C-x R-x U- D-
-        Remote  C-x R- U- D-
-        Cache   C- R- U- D-
     Call
         Main    C-x R-x U-x D-
         Remote  C-x R- U-x D-
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Cow
         Main    C-x R- U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Drug
         Main    C-x R-x U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     DrugsGiven
         Main    C-x R- U- D-
         Remote  C-x R- U- D-
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Feed
         Main    C-x R-x U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Load
         Main    C-x R-x U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Lot
         Main    C-x R-x U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Pen
         Main    C-x R- U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     Ration
         Main    C-x R-x U-x D-x
         Remote  C-x R- U-x D-x
-        Cache   C- R- U- D-
+        Cache   C-x R- U- D-
     User
         Main    C- R- U- D-
         Remote  C- R- U- D-
