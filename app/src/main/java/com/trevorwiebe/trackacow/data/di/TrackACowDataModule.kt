@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.preferences.AppPreferencesImpl
@@ -25,9 +27,17 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(app: Application): AppDatabase{
-        return Room.databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
-            .build()
+    fun provideAppDatabase(app: Application): AppDatabase {
+        val migration5to6: Migration = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE ration (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL)")
+                database.execSQL("CREATE TABLE holdingRation(primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+            }
+        }
+        return Room
+                .databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
+                .addMigrations(migration5to6)
+                .build()
     }
 
     @Provides
