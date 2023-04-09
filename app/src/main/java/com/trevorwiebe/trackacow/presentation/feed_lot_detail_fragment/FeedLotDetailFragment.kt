@@ -50,7 +50,7 @@ class FeedLotDetailFragment : Fragment() {
     private var mOriginalFeedModelList: List<FeedModel> = emptyList()
     private lateinit var mRationSpinner: Spinner
     private lateinit var mRationSpinnerAdapter: ArrayAdapter<String>
-    private lateinit var mSelectedRation: RationModel
+    private var mSelectedRation: RationModel? = null
     private lateinit var mCallET: TextInputEditText
     private lateinit var mFeedFirst: TextInputEditText
     private lateinit var mFeedAgainLayout: LinearLayout
@@ -134,12 +134,12 @@ class FeedLotDetailFragment : Fragment() {
                 c[Calendar.MILLISECOND] = 0
 
                 val callModel = CallModel(
-                    0,
-                    callAmount,
-                    c.timeInMillis,
-                    mPenAndLotModel?.lotCloudDatabaseId ?: "",
-                    mSelectedRation.rationPrimaryKey,
-                    mCallET.tag?.toString()
+                        0,
+                        callAmount,
+                        c.timeInMillis,
+                        mPenAndLotModel?.lotCloudDatabaseId ?: "",
+                        mSelectedRation?.rationPrimaryKey ?: 0,
+                        mCallET.tag?.toString()
                 )
 
                 feedLotDetailFragmentViewModel.onEvent(
@@ -167,8 +167,8 @@ class FeedLotDetailFragment : Fragment() {
         mRationSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 mSelectedRation = mRationModelList[position]
-                if (++check > 1) {
-                    Utility.saveLastUsedRation(mContext, mSelectedRation.rationPrimaryKey)
+                if (++check > 1 && mSelectedRation != null) {
+                    Utility.saveLastUsedRation(mContext, mSelectedRation!!.rationPrimaryKey)
 //                    setSaveButtonStatus(true, "Save")
                 }
             }

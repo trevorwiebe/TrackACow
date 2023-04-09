@@ -45,9 +45,9 @@ class FeedPenRecyclerViewAdapter : RecyclerView.Adapter<FeedPenViewHolder>() {
 
         // set ration
         val rationName = feedPenListUiModel.callAndRationModel.rationName
-        if(rationName.isEmpty()){
+        if (rationName.isNullOrEmpty()) {
             feedPenViewHolder.mRation.text = "-"
-        }else {
+        } else {
             feedPenViewHolder.mRation.text = rationName
         }
 

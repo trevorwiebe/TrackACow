@@ -5,13 +5,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CallAndRationModel(
-    var callPrimaryKey: Int = 0,
-    var callAmount: Int,
-    var date: Long,
-    var lotId: String,
-    val callRationId: Int? = null,
-    var callCloudDatabaseId: String?,
-    var rationPrimaryKey: Int = 0,
-    var rationCloudDatabaseId: String,
-    var rationName: String
+        var callPrimaryKey: Int = 0,
+        var callAmount: Int,
+        var date: Long,
+        var lotId: String,
+        val callRationId: Int?,
+        var callCloudDatabaseId: String?,
+        var rationPrimaryKey: Int?,
+        var rationCloudDatabaseId: String?,
+        var rationName: String?
 ) : Parcelable
