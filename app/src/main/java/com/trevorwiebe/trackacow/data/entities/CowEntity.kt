@@ -8,6 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "Cow")
 data class CowEntity (
     @PrimaryKey(autoGenerate = true)
+    // nothing changes in new version
     var primaryKey: Int = 0,
     var isAlive: Int = 0,
     var cowId: String = "",

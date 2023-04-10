@@ -7,12 +7,25 @@ import androidx.room.Entity
 @Keep
 @Entity(tableName = "DrugsGiven")
 data class DrugsGivenEntity (
-    @PrimaryKey(autoGenerate = true)
-    var drugsGivenPrimaryKey: Int = 0,
-    var drugsGivenId: String? = "",
-    var drugsGivenDrugId: String? = "",
-    var drugsGivenAmountGiven: Int = 0,
-    var drugsGivenCowId: String? = "",
-    var drugsGivenLotId: String? = "",
-    var drugsGivenDate: Long = 0
+        @PrimaryKey(autoGenerate = true)
+        // TODO add this to database migration local and cloud
+
+        // OLD - primaryKey
+        var drugsGivenPrimaryKey: Int = 0,
+        var drugsGivenId: String? = "",
+
+        // OLD - drugId
+        var drugsGivenDrugId: String? = "",
+
+        // OLD - amountGiven
+        var drugsGivenAmountGiven: Int = 0,
+
+        // OLD - cowId
+        var drugsGivenCowId: String? = "",
+
+        // OLD - lotId
+        var drugsGivenLotId: String? = "",
+
+        // OLD - date
+        var drugsGivenDate: Long = 0
 )

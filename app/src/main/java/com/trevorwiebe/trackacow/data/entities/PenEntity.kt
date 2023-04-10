@@ -7,8 +7,13 @@ import androidx.room.Entity
 @Keep
 @Entity(tableName = "Pen")
 data class PenEntity (
-    @PrimaryKey(autoGenerate = true)
-    var penPrimaryKey: Int = 0,
-    var penCloudDatabaseId: String? = null,
-    var penName: String = "",
+        @PrimaryKey(autoGenerate = true)
+        // TODO add this to database migration local and cloud
+
+        // OLD - primaryKey
+        var penPrimaryKey: Int = 0,
+
+        // OLD - penId
+        var penCloudDatabaseId: String? = null,
+        var penName: String = "",
 )
