@@ -181,6 +181,11 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP TABLE call")
                 database.execSQL("ALTER TABLE call_new RENAME TO call")
 
+                // update drug table
+                database.execSQL("CREATE TABLE drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER, drugCloudDatabaseId TEXT, drugName TEXT)")
+                database.execSQL("INSERT INTO drug_new (drugPrimaryKey, defaultAmount, drugCloudDatabaseId, drugName) SELECT primaryKey, defaultAmount, drugId, drugName FROM Drug")
+                database.execSQL("DROP TABLE Drug")
+                database.execSQL("ALTER TABLE drug_new RENAME TO drug")
             }
         }
 
