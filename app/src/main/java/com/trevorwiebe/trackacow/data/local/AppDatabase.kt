@@ -170,8 +170,17 @@ abstract class AppDatabase : RoomDatabase() {
         }
         private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
+
+                // create ration and holdingRation tables
                 database.execSQL("CREATE TABLE ration (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL)")
                 database.execSQL("CREATE TABLE holdingRation(primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+
+                // update call table
+                database.execSQL("CREATE TABLE call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER, date INTEGER, lotId TEXT, callRationId INTEGER, callCloudDatabaseId TEXT)")
+                database.execSQL("INSERT INTO call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId) SELECT primaryKey, callAmount, date, lotId, -1, id FROM call")
+                database.execSQL("DROP TABLE call")
+                database.execSQL("ALTER TABLE call_new RENAME TO call")
+
             }
         }
 

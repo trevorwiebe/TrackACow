@@ -8,17 +8,11 @@ import androidx.room.Entity
 @Entity(tableName = "call")
 data class CallEntity (
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration local and cloud
-
-        // OLD - primaryKey
+        // TODO add this to database migration cloud
         var callPrimaryKey: Int = 0,
         var callAmount: Int = 0,
         var date: Long = 0,
         var lotId: String = "",
-
-        //  OLD - ~not included, need to add~
         val callRationId: Int? = 0,
-
-        // OLD - id
         var callCloudDatabaseId: String? = ""
 )
