@@ -5,15 +5,11 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "Pen")
+@Entity(tableName = "pen")
 data class PenEntity (
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration local and cloud
-
-        // OLD - primaryKey
+        // TODO add this to database migration cloud
         var penPrimaryKey: Int = 0,
-
-        // OLD - penId
         var penCloudDatabaseId: String? = null,
         var penName: String = "",
 )
