@@ -178,6 +178,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE call_new RENAME TO call")
 
                 // update cow table
+                database.execSQL("CREATE TABLE cow_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, isAlive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL)")
+                database.execSQL("INSERT INTO cow_new (primaryKey, isAlive, cowId, tagNumber, date, notes, lotId) SELECT primaryKey, isAlive, cowId, tagNumber, date, notes, lotId FROM Cow")
+                database.execSQL("DROP TABLE Cow")
+                database.execSQL("ALTER TABLE cow_new RENAME TO cow")
 
                 // update drug table
                 database.execSQL("CREATE TABLE drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER, drugCloudDatabaseId TEXT, drugName TEXT)")

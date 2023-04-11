@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "Cow")
+@Entity(tableName = "cow")
 data class CowEntity (
     @PrimaryKey(autoGenerate = true)
     // nothing changes in new version
