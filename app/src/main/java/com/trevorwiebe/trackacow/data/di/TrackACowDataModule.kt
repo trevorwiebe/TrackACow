@@ -44,7 +44,7 @@ object TrackACowDataModule {
                 database.execSQL("ALTER TABLE cow_new RENAME TO cow")
 
                 // update drug table
-                database.execSQL("CREATE TABLE drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER, drugCloudDatabaseId TEXT, drugName TEXT)")
+                database.execSQL("CREATE TABLE drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULL, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL)")
                 database.execSQL("INSERT INTO drug_new (drugPrimaryKey, defaultAmount, drugCloudDatabaseId, drugName) SELECT primaryKey, defaultAmount, drugId, drugName FROM Drug")
                 database.execSQL("DROP TABLE Drug")
                 database.execSQL("ALTER TABLE drug_new RENAME TO drug")
