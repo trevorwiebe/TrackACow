@@ -13,28 +13,28 @@ interface DrugsGivenDao {
     suspend fun insertDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>)
 
     @Query(
-        "SELECT * FROM DrugsGiven " +
-                "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
-                "WHERE drugsGivenLotId = :lotId"
+            "SELECT * FROM drugs_given " +
+                    "INNER JOIN drug ON drug.drugCloudDatabaseId = drugs_given.drugsGivenDrugId " +
+                    "WHERE drugsGivenLotId = :lotId"
     )
     fun getDrugsGivenAndDrugByLotId(lotId: String): Flow<List<DrugsGivenAndDrugEntity>>
 
     @Query(
-        "SELECT * FROM DrugsGiven " +
-                "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
-                "WHERE drugsGivenLotId = :lotId AND drugsGivenDate BETWEEN :startDate AND :endDate"
+            "SELECT * FROM drugs_given " +
+                    "INNER JOIN drug ON drug.drugCloudDatabaseId = drugs_given.drugsGivenDrugId " +
+                    "WHERE drugsGivenLotId = :lotId AND drugsGivenDate BETWEEN :startDate AND :endDate"
     )
     fun getDrugsGivenAndDrugByLotIdAndDate(lotId: String, startDate: Long, endDate: Long):
             Flow<List<DrugsGivenAndDrugEntity>>
 
     @Query(
-        "SELECT * FROM DrugsGiven " +
-                "INNER JOIN drug ON drug.drugCloudDatabaseId = DrugsGiven.drugsGivenDrugId " +
-                "WHERE drugsGivenCowId IN (:cowIdList)"
+            "SELECT * FROM drugs_given " +
+                    "INNER JOIN drug ON drug.drugCloudDatabaseId = drugs_given.drugsGivenDrugId " +
+                    "WHERE drugsGivenCowId IN (:cowIdList)"
     )
     fun getDrugsGivenAndDrugByCowId(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugEntity>>
 
-    @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
+    @Query("DELETE FROM drugs_given WHERE drugsGivenCowId = :cowId")
     suspend fun deleteDrugsGivenByCowId(cowId: String)
 
     @Update
@@ -54,23 +54,23 @@ interface DrugsGivenDao {
     fun insertDrugsGivenList(drugsGivenEntities: List<DrugsGivenEntity?>?)
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
+    @Query("SELECT * FROM drugs_given WHERE drugsGivenCowId = :cowId")
     fun getDrugsGivenByCowId(cowId: String?): List<DrugsGivenEntity?>?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM DrugsGiven WHERE drugsGivenCowId IN(:cowIdList)")
+    @Query("SELECT * FROM drugs_given WHERE drugsGivenCowId IN(:cowIdList)")
     fun getDrugsGivenByCowIdList(cowIdList: List<String?>?): List<DrugsGivenEntity?>?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM DrugsGiven WHERE drugsGivenLotId IN(:lotIds)")
+    @Query("SELECT * FROM drugs_given WHERE drugsGivenLotId IN(:lotIds)")
     fun getDrugsGivenByLotIds(lotIds: List<String?>?): List<DrugsGivenEntity?>?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM DrugsGiven WHERE drugsGivenId = :drugGivenId")
+    @Query("SELECT * FROM drugs_given WHERE drugsGivenId = :drugGivenId")
     fun getDrugGivenByDrugGivenId(drugGivenId: String?): DrugsGivenEntity?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM DrugsGiven WHERE (drugsGivenLotId = :lotId) AND (drugsGivenDate BETWEEN :startDate AND :endDate)")
+    @Query("SELECT * FROM drugs_given WHERE (drugsGivenLotId = :lotId) AND (drugsGivenDate BETWEEN :startDate AND :endDate)")
     fun getDrugsGivenByLotIdAndDateRange(
         lotId: String?,
         startDate: Long,
@@ -78,27 +78,27 @@ interface DrugsGivenDao {
     ): List<DrugsGivenEntity?>?
 
     @Deprecated("use suspend function")
-    @Query("UPDATE DrugsGiven SET drugsGivenAmountGiven = :amountGiven WHERE drugsGivenId = :drugGivenId")
+    @Query("UPDATE drugs_given SET drugsGivenAmountGiven = :amountGiven WHERE drugsGivenId = :drugGivenId")
     fun updateDrugGivenAmountGiven(amountGiven: Int, drugGivenId: String?)
 
     @Deprecated("use suspend function")
-    @Query("UPDATE DrugsGiven Set drugsGivenDate = :date WHERE drugsGivenCowId = :cowId")
+    @Query("UPDATE drugs_given Set drugsGivenDate = :date WHERE drugsGivenCowId = :cowId")
     fun updateDrugsGivenDateByCowId(date: Long, cowId: String?)
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM DrugsGiven WHERE drugsGivenLotId = :lotId")
+    @Query("DELETE FROM drugs_given WHERE drugsGivenLotId = :lotId")
     fun deleteDrugsGivenByLotId(lotId: String?)
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM DrugsGiven WHERE drugsGivenCowId = :cowId")
+    @Query("DELETE FROM drugs_given WHERE drugsGivenCowId = :cowId")
     fun deleteDrugsGivenByCowId2(cowId: String?)
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM DrugsGiven WHERE drugsGivenId = :drugId")
+    @Query("DELETE FROM drugs_given WHERE drugsGivenId = :drugId")
     fun deleteDrugGivenById(drugId: String?)
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM DrugsGiven")
+    @Query("DELETE FROM drugs_given")
     fun deleteDrugsGivenTable()
 
     @Deprecated("use suspend function")

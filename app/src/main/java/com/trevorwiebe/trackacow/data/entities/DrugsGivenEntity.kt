@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "DrugsGiven")
+@Entity(tableName = "drugs_given")
 data class DrugsGivenEntity (
         @PrimaryKey(autoGenerate = true)
         // TODO add this to database migration local and cloud

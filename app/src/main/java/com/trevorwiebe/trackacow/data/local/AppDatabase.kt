@@ -186,6 +186,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE drug_new RENAME TO drug")
 
                 // update drugsGiven table
+                database.execSQL("CREATE TABLE drugsGiven_new (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER)")
+                database.execSQL("INSERT INTO drugsGiven_new (drugsGivenPrimaryKey, drugsGivenId, drugsGivenDrugId, DrugsGivenAmountGiven, drugsGivenCowId, drugsGivenLotId, drugsGivenDate) SELECT primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date FROM DrugsGiven")
+                database.execSQL("DROP TABLE DrugsGiven")
+                database.execSQL("ALTER TABLE drugsGiven_new RENAME TO drugs_given")
 
                 // update feed table
 
