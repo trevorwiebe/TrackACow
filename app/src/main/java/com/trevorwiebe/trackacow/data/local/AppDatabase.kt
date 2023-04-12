@@ -196,6 +196,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE drugsGiven_new RENAME TO drugs_given")
 
                 // update feed table
+                database.execSQL("CREATE TABLE feed_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL)")
+                database.execSQL("INSERT INTO feed_new (primaryKey, feed, date, id, lotId) SELECT primaryKey, feed, date, id, lotId FROM feed")
+                database.execSQL("DROP TABLE feed")
+                database.execSQL("ALTER TABLE feed_new RENAME TO feed")
 
                 // update load table
 
