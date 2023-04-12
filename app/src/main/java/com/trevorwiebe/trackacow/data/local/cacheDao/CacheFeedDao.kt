@@ -23,10 +23,10 @@ interface CacheFeedDao {
     fun insertHoldingFeed(cacheFeedEntity: CacheFeedEntity)
 
     @Deprecated("use function with return type: flow")
-    @Query("SELECT * FROM holdingFeed")
+    @Query("SELECT * FROM cache_feed")
     fun getHoldingFeedEntities(): List<CacheFeedEntity>
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM holdingFeed")
+    @Query("DELETE FROM cache_feed")
     fun deleteHoldingFeedTable()
 }

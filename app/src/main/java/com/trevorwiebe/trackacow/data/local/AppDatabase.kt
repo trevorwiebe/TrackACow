@@ -240,6 +240,10 @@ abstract class AppDatabase : RoomDatabase() {
                 // cacheDrugsGiven
 
                 // cacheFeed
+                database.execSQL("CREATE TABLE feed_cache_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO feed_cache_new (primaryKey, feed, date, id, lotId, whatHappened) SELECT primaryKey, feed, date, id, lotId, whatHappened FROM holdingFeed")
+                database.execSQL("DROP TABLE holdingFeed")
+                database.execSQL("ALTER TABLE feed_cache_new RENAME TO cache_feed")
 
                 // cacheLoad
 
