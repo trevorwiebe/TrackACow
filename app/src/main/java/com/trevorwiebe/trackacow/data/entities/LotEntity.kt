@@ -8,7 +8,7 @@ import androidx.room.Entity
 @Entity(tableName = "lot")
 class LotEntity (
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration local and cloud
+        // TODO add this to database migration cloud
 
         // OLD - primaryKey
         var lotPrimaryKey: Int = 0,

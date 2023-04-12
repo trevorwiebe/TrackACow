@@ -60,6 +60,10 @@ object TrackACowDataModule {
                 // update load table
 
                 // update lot table
+                database.execSQL("CREATE TABLE lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT NOT NULL)")
+                database.execSQL("INSERT INTO lot_new(lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId FROM lot")
+                database.execSQL("DROP TABLE lot")
+                database.execSQL("ALTER TABLE lot_new RENAME TO lot")
 
                 // update pen table
                 database.execSQL("CREATE TABLE pen_new (penPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL)")
