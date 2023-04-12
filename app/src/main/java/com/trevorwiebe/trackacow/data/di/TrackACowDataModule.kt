@@ -99,11 +99,17 @@ object TrackACowDataModule {
 
                 // cacheLoad
 
+                // cacheLot
+                database.execSQL("CREATE TABLE cache_lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO cache_lot_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId, whatHappened FROM holdingLot")
+                database.execSQL("DROP TABLE holdingLot")
+                database.execSQL("ALTER TABLE cache_lot_new RENAME TO cache_lot")
+
                 // cachePen
                 database.execSQL("CREATE TABLE cache_pen_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
                 database.execSQL("INSERT INTO cache_pen_new (primaryKey, penCloudDatabaseId, penName, whatHappened) SELECT primaryKey, penId, penName, whatHappened FROM HoldingPen")
                 database.execSQL("DROP TABLE HoldingPen")
-                database.execSQL("ALTER TABLE cache_pen_new RENAME to cache_pen")
+                database.execSQL("ALTER TABLE cache_pen_new RENAME TO cache_pen")
 
                 // cacheRation
                 database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")

@@ -15,7 +15,7 @@ interface CacheLotDao {
 
     // Deprecated
     @Deprecated("use flow return function")
-    @Query("SELECT * FROM holdingLot")
+    @Query("SELECT * FROM cache_lot")
     fun getHoldingLotList(): List<CacheLotEntity>
 
     @Deprecated("use suspend function")
@@ -27,6 +27,6 @@ interface CacheLotDao {
     fun deleteHoldingLot(cacheLotEntity: CacheLotEntity)
 
     @Deprecated("use flow return function")
-    @Query("DELETE FROM holdingLot")
+    @Query("DELETE FROM cache_lot")
     fun deleteHoldingLotTable()
 }
