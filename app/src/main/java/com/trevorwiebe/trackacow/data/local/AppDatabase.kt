@@ -217,7 +217,30 @@ abstract class AppDatabase : RoomDatabase() {
 
                 // create ration and holdingRation table
                 database.execSQL("CREATE TABLE ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL)")
-                database.execSQL("CREATE TABLE holdingRation(rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+
+
+                /*
+                Cache DB migrations
+                 */
+
+                // cacheCall
+
+                // cacheCow
+
+                // cacheDrug
+
+                // cacheDrugsGiven
+
+                // cacheFeed
+
+                // cacheLoad
+
+                // cachePen
+
+                // cacheRation
+                database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+
+                // cacheUser
 
             }
         }

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Keep
-@Entity(tableName = "holding_ration")
+@Entity(tableName = "cache_ration")
 data class CacheRationEntity(
         @PrimaryKey(autoGenerate = true)
         var rationPrimaryKey: Int = 0,

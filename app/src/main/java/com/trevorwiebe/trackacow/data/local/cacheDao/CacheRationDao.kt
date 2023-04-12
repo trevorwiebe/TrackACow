@@ -13,12 +13,12 @@ interface CacheRationDao {
     @Insert
     suspend fun insertHoldingRation(cacheRationEntity: CacheRationEntity)
 
-    @Query("SELECT * FROM holding_ration")
+    @Query("SELECT * FROM cache_ration")
     fun getHoldingRations(): Flow<List<CacheRationEntity>>
 
     @Delete
     suspend fun deleteHoldingRation(cacheRationEntity: CacheRationEntity)
 
-    @Query("DELETE FROM holding_ration")
+    @Query("DELETE FROM cache_ration")
     suspend fun deleteHoldingRationTable()
 }
