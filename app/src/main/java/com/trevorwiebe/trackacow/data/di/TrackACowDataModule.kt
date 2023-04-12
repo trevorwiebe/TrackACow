@@ -32,7 +32,7 @@ object TrackACowDataModule {
             override fun migrate(database: SupportSQLiteDatabase) {
 
                 // update call table
-                database.execSQL("CREATE TABLE call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER, date INTEGER, lotId TEXT, callRationId INTEGER, callCloudDatabaseId TEXT)")
+                database.execSQL("CREATE TABLE call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, callRationId INTEGER, callCloudDatabaseId TEXT)")
                 database.execSQL("INSERT INTO call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId) SELECT primaryKey, callAmount, date, lotId, -1, id FROM call")
                 database.execSQL("DROP TABLE call")
                 database.execSQL("ALTER TABLE call_new RENAME TO call")
