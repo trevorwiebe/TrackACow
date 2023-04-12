@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "holdingCall")
+@Entity(tableName = "cache_call")
 data class CacheCallEntity (
     @PrimaryKey(autoGenerate = true)
     var callPrimaryKey: Int = 0,

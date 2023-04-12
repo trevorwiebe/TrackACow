@@ -173,7 +173,7 @@ abstract class AppDatabase : RoomDatabase() {
 
                 // update call table
                 database.execSQL("CREATE TABLE call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, callRationId INTEGER, callCloudDatabaseId TEXT)")
-                database.execSQL("INSERT INTO call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId) SELECT primaryKey, callAmount, date, lotId, -1, id FROM call")
+                database.execSQL("INSERT INTO call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId) SELECT primaryKey, callAmount, date, lotId, NULL, id FROM call")
                 database.execSQL("DROP TABLE call")
                 database.execSQL("ALTER TABLE call_new RENAME TO call")
 
@@ -191,7 +191,7 @@ abstract class AppDatabase : RoomDatabase() {
 
                 // update drugsGiven table
                 database.execSQL("CREATE TABLE drugsGiven_new (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
-                database.execSQL("INSERT INTO drugsGiven_new (drugsGivenPrimaryKey, drugsGivenId, drugsGivenDrugId, DrugsGivenAmountGiven, drugsGivenCowId, drugsGivenLotId, drugsGivenDate) SELECT primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date FROM DrugsGiven")
+                database.execSQL("INSERT INTO drugsGiven_new (drugsGivenPrimaryKey, drugsGivenId, drugsGivenDrugId, drugsGivenAmountGiven, drugsGivenCowId, drugsGivenLotId, drugsGivenDate) SELECT primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date FROM DrugsGiven")
                 database.execSQL("DROP TABLE DrugsGiven")
                 database.execSQL("ALTER TABLE drugsGiven_new RENAME TO drugs_given")
 
@@ -215,8 +215,8 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP TABLE Pen")
                 database.execSQL("ALTER TABLE pen_new RENAME TO pen")
 
-                // create ration and holdingRation table
-                database.execSQL("CREATE TABLE ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL)")
+                // create ration table
+                database.execSQL("CREATE TABLE ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL)")
 
 
                 /*
@@ -224,6 +224,10 @@ abstract class AppDatabase : RoomDatabase() {
                  */
 
                 // cacheCall
+                database.execSQL("CREATE TABLE cache_call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, callRationId INTEGER, callCloudDatabaseId TEXT, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO cache_call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId, whatHappened) SELECT primaryKey, callAmount, date, lotId, NULL, id, whatHappened FROM holdingCall")
+                database.execSQL("DROP TABLE holdingCall")
+                database.execSQL("ALTER TABLE cache_call_new RENAME TO cache_call")
 
                 // cacheCow
 
@@ -249,7 +253,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("CREATE TABLE cache_pen_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
                 database.execSQL("INSERT INTO cache_pen_new (primaryKey, penCloudDatabaseId, penName, whatHappened) SELECT primaryKey, penId, penName, whatHappened FROM HoldingPen")
                 database.execSQL("DROP TABLE HoldingPen")
-                database.execSQL("ALTER TABLE cache_pen_new RENAME to cache_pen")
+                database.execSQL("ALTER TABLE cache_pen_new RENAME TO cache_pen")
 
                 // cacheRation
                 database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")

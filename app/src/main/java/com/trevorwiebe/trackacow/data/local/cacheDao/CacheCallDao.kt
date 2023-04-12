@@ -9,10 +9,10 @@ interface CacheCallDao {
     @Insert
     suspend fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
 
-    @get:Query("SELECT * FROM holdingCall")
+    @get:Query("SELECT * FROM cache_call")
     val holdingCallEntities: List<CacheCallEntity>
 
-    @Query("DELETE FROM holdingCall")
+    @Query("DELETE FROM cache_call")
     fun deleteCallTable()
 
     @Update
