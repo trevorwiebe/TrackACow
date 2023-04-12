@@ -260,7 +260,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE cache_pen_new RENAME TO cache_pen")
 
                 // cacheRation
-                database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
 
                 // cacheUser
 
