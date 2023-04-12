@@ -2,11 +2,10 @@ package com.trevorwiebe.trackacow.data.cacheEntities
 
 import androidx.annotation.Keep
 import androidx.room.PrimaryKey
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "HoldingDrug")
+@Entity(tableName = "cache_drug")
 class CacheDrugEntity (
     @PrimaryKey(autoGenerate = true)
     var drugPrimaryKey: Int,

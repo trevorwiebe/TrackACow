@@ -228,6 +228,10 @@ abstract class AppDatabase : RoomDatabase() {
                 // cacheCow
 
                 // cacheDrug
+                database.execSQL("CREATE TABLE cache_drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULl, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO cache_drug_new (drugPrimaryKey, defaultAmount, drugCloudDatabaseId, drugName, whatHappened) SELECT primaryKey, defaultAmount, drugId, drugName, whatHappened FROM HoldingDrug")
+                database.execSQL("DROP TABLE HoldingDrug")
+                database.execSQL("ALTER TABLE cache_drug_new RENAME TO cache_drug")
 
                 // cacheDrugsGiven
 

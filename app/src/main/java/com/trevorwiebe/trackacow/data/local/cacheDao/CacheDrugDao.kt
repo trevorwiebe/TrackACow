@@ -12,16 +12,16 @@ interface CacheDrugDao {
     @Insert
     fun insertListHoldingDrug(holdingDrugEntities: List<CacheDrugEntity>)
 
-    @Query("SELECT * FROM HoldingDrug WHERE drugCloudDatabaseId = :id")
+    @Query("SELECT * FROM cache_drug WHERE drugCloudDatabaseId = :id")
     fun getHoldingDrugById(id: String): CacheDrugEntity?
 
-    @Query("SELECT * FROM HoldingDrug")
+    @Query("SELECT * FROM cache_drug")
     fun getHoldingDrugList(): List<CacheDrugEntity>
 
-    @Query("DELETE FROM HoldingDrug WHERE drugCloudDatabaseId = :drugId")
+    @Query("DELETE FROM cache_drug WHERE drugCloudDatabaseId = :drugId")
     fun deleteHoldingDrugById(drugId: String)
 
-    @Query("DELETE FROM HoldingDrug")
+    @Query("DELETE FROM cache_drug")
     fun deleteHoldingDrugTable()
 
     @Update
