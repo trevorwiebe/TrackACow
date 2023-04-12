@@ -69,6 +69,10 @@ object TrackACowDataModule {
                 database.execSQL("DROP TABLE lot")
                 database.execSQL("ALTER TABLE lot_new RENAME TO lot")
 
+                // save archives to lot table
+                database.execSQL("INSERT INTO lot (lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '' FROM archivedLot")
+                database.execSQL("DROP TABLE archivedLot")
+
                 // update pen table
                 database.execSQL("CREATE TABLE pen_new (penPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL)")
                 database.execSQL("INSERT INTO pen_new(penPrimaryKey, penCloudDatabaseId, penName) SELECT primaryKey, penId, penName FROM Pen")
@@ -115,6 +119,10 @@ object TrackACowDataModule {
                 database.execSQL("INSERT INTO cache_lot_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId, whatHappened FROM holdingLot")
                 database.execSQL("DROP TABLE holdingLot")
                 database.execSQL("ALTER TABLE cache_lot_new RENAME TO cache_lot")
+
+                // save cacheArchivedLot to cacheLot table
+                database.execSQL("INSERT INTO cache_lot (lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '', whatHappened FROM holdingArchivedLot")
+                database.execSQL("DROP TABLE holdingArchivedLot")
 
                 // cachePen
                 database.execSQL("CREATE TABLE cache_pen_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")

@@ -209,6 +209,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP TABLE lot")
                 database.execSQL("ALTER TABLE lot_new RENAME TO lot")
 
+                // save archives to lot table
+                database.execSQL("INSERT INTO lot (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT 0, lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '' FROM archivedLot")
+                database.execSQL("DROP TABLE archivedLot")
+
                 // update pen table
                 database.execSQL("CREATE TABLE pen_new (penPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL)")
                 database.execSQL("INSERT INTO pen_new(penPrimaryKey, penCloudDatabaseId, penName) SELECT primaryKey, penId, penName FROM Pen")
@@ -230,6 +234,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE cache_call_new RENAME TO cache_call")
 
                 // cacheCow
+                database.execSQL("ALTER TABLE HoldingCow RENAME TO cache_cow")
 
                 // cacheDrug
                 database.execSQL("CREATE TABLE cache_drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULl, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
@@ -238,6 +243,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE cache_drug_new RENAME TO cache_drug")
 
                 // cacheDrugsGiven
+                database.execSQL("ALTER TABLE HoldingDrugsGiven RENAME TO cache_drugs_given")
 
                 // cacheFeed
                 database.execSQL("CREATE TABLE feed_cache_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
@@ -246,12 +252,17 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE feed_cache_new RENAME TO cache_feed")
 
                 // cacheLoad
+                database.execSQL("ALTER TABLE holdingLoad RENAME TO cache_load")
 
                 // cacheLot
                 database.execSQL("CREATE TABLE cache_lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT, whatHappened INTEGER NOT NULL)")
                 database.execSQL("INSERT INTO cache_lot_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId, whatHappened FROM holdingLot")
                 database.execSQL("DROP TABLE holdingLot")
                 database.execSQL("ALTER TABLE cache_lot_new RENAME TO cache_lot")
+
+                // save cacheArchivedLot to cacheLot table
+                database.execSQL("INSERT INTO cache_lot (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT 0, lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '', whatHappened FROM holdingArchivedLot")
+                database.execSQL("DROP TABLE holdingArchivedLot")
 
                 // cachePen
                 database.execSQL("CREATE TABLE cache_pen_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
@@ -263,7 +274,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
 
                 // cacheUser
-
+                database.execSQL("ALTER TABLE holdingUser RENAME TO cache_user")
             }
         }
 
