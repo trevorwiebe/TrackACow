@@ -236,6 +236,10 @@ abstract class AppDatabase : RoomDatabase() {
                 // cacheLoad
 
                 // cachePen
+                database.execSQL("CREATE TABLE cache_pen_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO cache_pen_new (primaryKey, penCloudDatabaseId, penName, whatHappened) SELECT primaryKey, penId, penName, whatHappened FROM HoldingPen")
+                database.execSQL("DROP TABLE HoldingPen")
+                database.execSQL("ALTER TABLE cache_pen_new RENAME to cache_pen")
 
                 // cacheRation
                 database.execSQL("CREATE TABLE cache_ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")

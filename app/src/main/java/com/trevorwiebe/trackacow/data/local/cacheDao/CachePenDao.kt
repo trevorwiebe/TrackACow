@@ -12,13 +12,13 @@ interface CachePenDao {
     @Insert
     fun insertHoldingPenList(holdingPenEntities: List<CachePenEntity>)
 
-    @Query("SELECT * FROM HoldingPen WHERE penCloudDatabaseId = :id")
+    @Query("SELECT * FROM cache_pen WHERE penCloudDatabaseId = :id")
     fun getHoldingPenById(id: String?): CachePenEntity?
 
-    @get:Query("SELECT * FROM HoldingPen")
+    @get:Query("SELECT * FROM cache_pen")
     val holdingPenList: List<CachePenEntity>
 
-    @Query("DELETE FROM HoldingPen")
+    @Query("DELETE FROM cache_pen")
     fun deleteHoldingPenTable()
 
     @Update

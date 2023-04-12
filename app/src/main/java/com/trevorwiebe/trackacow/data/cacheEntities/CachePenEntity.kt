@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "HoldingPen")
+@Entity(tableName = "cache_pen")
 data class CachePenEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int,
