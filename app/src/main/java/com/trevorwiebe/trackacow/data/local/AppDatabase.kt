@@ -212,8 +212,8 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE pen_new RENAME TO pen")
 
                 // create ration and holdingRation table
-                database.execSQL("CREATE TABLE ration (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL)")
-                database.execSQL("CREATE TABLE holdingRation(primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT, rationName TEXT NOT NULL)")
+                database.execSQL("CREATE TABLE holdingRation(rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
 
             }
         }
