@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "HoldingDrugsGiven")
+@Entity(tableName = "cache_drugs_given")
 data class CacheDrugsGivenEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,

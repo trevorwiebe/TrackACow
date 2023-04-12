@@ -11,11 +11,11 @@ interface CacheUserDao {
     fun insertHoldingUser(cacheUserEntity: CacheUserEntity?)
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM holdingUser WHERE uid = :uid")
+    @Query("SELECT * FROM cache_user WHERE uid = :uid")
     fun getHoldingUserByUid(uid: String?): CacheUserEntity?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM holdingUser")
+    @Query("SELECT * FROM cache_user")
     fun getHoldingUserList(): List<CacheUserEntity?>?
 
     @Deprecated("use suspend function")
@@ -27,6 +27,6 @@ interface CacheUserDao {
     fun deleteHoldingUser(cacheUserEntity: CacheUserEntity?)
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM holdingUser")
+    @Query("DELETE FROM cache_user")
     fun deleteHoldingUserTable()
 }

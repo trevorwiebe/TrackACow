@@ -1,3 +1,6 @@
+save archivedLots in lots database
+save holdingArchivedLots in cache_lots database
+
 Confirm that CRUD works on all entities
     Call
         Main    C-x R-x U-x D-

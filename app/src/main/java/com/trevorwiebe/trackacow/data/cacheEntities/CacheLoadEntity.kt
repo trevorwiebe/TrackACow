@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Keep
-@Entity(tableName = "holdingLoad")
+@Entity(tableName = "cache_load")
 data class CacheLoadEntity (
     @PrimaryKey(autoGenerate = true)
     var primaryKey: Int = 0,

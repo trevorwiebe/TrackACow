@@ -21,15 +21,15 @@ interface CacheDrugsGivenDao {
     fun insertHoldingDrugsGivenList(holdingDrugsGivenEntities: List<CacheDrugsGivenEntity?>?)
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM HoldingDrugsGiven WHERE cowId = :cowId")
+    @Query("SELECT * FROM cache_drugs_given WHERE cowId = :cowId")
     fun getHoldingDrugsGivenByCowId(cowId: String?): List<CacheDrugsGivenEntity?>?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM HoldingDrugsGiven")
+    @Query("SELECT * FROM cache_drugs_given")
     fun getHoldingDrugsGivenList(): List<CacheDrugsGivenEntity?>?
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM HoldingDrugsGiven")
+    @Query("DELETE FROM cache_drugs_given")
     fun deleteHoldingDrugsGivenTable()
 
     @Deprecated("use suspend function")

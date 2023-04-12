@@ -19,15 +19,15 @@ interface CacheCowDao {
     fun insertHoldingCowList(cacheCowEntityList: List<CacheCowEntity?>?)
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM HoldingCow WHERE cowId = :id")
+    @Query("SELECT * FROM cache_cow WHERE cowId = :id")
     fun getHoldingCowById(id: String?): CacheCowEntity?
 
     @Deprecated("use flow function")
-    @Query("SELECT * FROM HoldingCow")
+    @Query("SELECT * FROM cache_cow")
     fun getHoldingCowEntityList(): List<CacheCowEntity?>?
 
     @Deprecated("use suspend function")
-    @Query("DELETE FROM HoldingCow")
+    @Query("DELETE FROM cache_cow")
     fun deleteHoldingCowTable()
 
     @Deprecated("use suspend function")

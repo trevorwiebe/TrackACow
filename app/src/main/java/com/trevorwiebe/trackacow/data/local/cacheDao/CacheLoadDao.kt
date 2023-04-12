@@ -14,7 +14,7 @@ interface CacheLoadDao {
     fun insertHoldingLoad(cacheLoadEntity: CacheLoadEntity?)
 
     @Deprecated("use flow return type")
-    @Query("SELECT * FROM holdingLoad")
+    @Query("SELECT * FROM cache_load")
     fun getHoldingLoadList(): List<CacheLoadEntity?>?
 
     @Deprecated("use flow return type")
@@ -26,6 +26,6 @@ interface CacheLoadDao {
     fun deleteHoldingLoad(cacheLoadEntity: CacheLoadEntity?)
 
     @Deprecated("use flow return type")
-    @Query("DELETE FROM holdingLoad")
+    @Query("DELETE FROM cache_load")
     fun deleteHoldingLoadTable()
 }
