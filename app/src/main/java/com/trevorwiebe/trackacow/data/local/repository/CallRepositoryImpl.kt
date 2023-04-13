@@ -59,6 +59,10 @@ class CallRepositoryImpl(
         callDao.deleteCall(callModel.toCallEntity())
     }
 
+    override suspend fun deleteAllCalls() {
+        callDao.deleteCallTable()
+    }
+
     override suspend fun insertCacheCall(cacheCallModel: CacheCallModel) {
         cacheCallDao.insertHoldingCall(cacheCallModel.toHoldingCallEntity())
     }

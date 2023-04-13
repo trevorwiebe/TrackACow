@@ -14,5 +14,7 @@ interface DrugRepository {
 
     suspend fun deleteDrug(drugModel: DrugModel)
 
+    suspend fun deleteAllDrugs()
+
     fun getDrugList(): Flow<List<DrugModel>>
 }

@@ -32,6 +32,8 @@ interface FeedDao {
     @Query("DELETE FROM feed WHERE id IN (:idList)")
     suspend fun deleteFeedByIdList(idList: List<String>)
 
+    @Query("DELETE FROM feed")
+    suspend fun deleteAllFeeds()
 
     /* Deprecated functions */
 

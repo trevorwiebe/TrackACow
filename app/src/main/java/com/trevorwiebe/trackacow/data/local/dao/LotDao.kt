@@ -34,15 +34,18 @@ interface LotDao {
                 "WHERE lotPrimaryKey = :lotPrimaryKey"
     )
     suspend fun updateLot(
-        lotPrimaryKey: Int,
-        lotName: String,
-        customerName: String?,
-        notes: String?,
-        date: Long
+            lotPrimaryKey: Int,
+            lotName: String,
+            customerName: String?,
+            notes: String?,
+            date: Long
     )
 
     @Delete
     suspend fun deleteLot(lotEntity: LotEntity)
+
+    @Query("DELETE FROM lot")
+    suspend fun deleteAllLots()
 
     // Deprecated
     @Deprecated("use suspend function")

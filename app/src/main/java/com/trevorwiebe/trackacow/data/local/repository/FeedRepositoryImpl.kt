@@ -33,14 +33,18 @@ class FeedRepositoryImpl(
         endDate: Long
     ): Flow<List<FeedModel>> {
         return feedDao.getFeedsByLotIdAndDate(lotId, startDate, endDate)
-            .map { feedList ->
-                feedList.map { it.toFeedModel() }
-            }
+                .map { feedList ->
+                    feedList.map { it.toFeedModel() }
+                }
     }
 
     override suspend fun deleteFeedList(feedModelList: List<FeedModel>) {
         val idList = feedModelList.map { it.id }
         feedDao.deleteFeedByIdList(idList)
+    }
+
+    override suspend fun deleteAllFeeds() {
+        feedDao.deleteAllFeeds()
     }
 
     override suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>) {

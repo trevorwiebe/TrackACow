@@ -40,6 +40,10 @@ data class CowRepositoryImpl(
         cowDao.deleteCow(cowModel.toCowEntity())
     }
 
+    override suspend fun deleteAllCows() {
+        cowDao.deleteAllCows()
+    }
+
     override suspend fun insertCacheCow(cacheCowModel: CacheCowModel) {
         cacheCowDao.insertCacheCow(cacheCowModel.toCacheCowEntity())
     }

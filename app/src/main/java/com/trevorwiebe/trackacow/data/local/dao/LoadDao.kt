@@ -19,16 +19,19 @@ interface LoadDao {
                 "WHERE primaryKey = :primaryKey"
     )
     suspend fun updateLoad(
-        primaryKey: Int,
-        numberOfHead: Int,
-        date: Long,
-        description: String?,
-        lotId: String?,
-        loadId: String?
+            primaryKey: Int,
+            numberOfHead: Int,
+            date: Long,
+            description: String?,
+            lotId: String?,
+            loadId: String?
     )
 
     @Delete
     suspend fun deleteLoad(loadEntity: LoadEntity)
+
+    @Query("DELETE FROM load")
+    suspend fun deleteAllLoads()
 
     // Deprecated
     @Deprecated("use suspend function")

@@ -11,12 +11,14 @@ interface FeedRepository {
     fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>>
 
     fun readFeedsByLotIdAndDate(
-        lotId: String,
-        startDate: Long,
-        endDate: Long
+            lotId: String,
+            startDate: Long,
+            endDate: Long
     ): Flow<List<FeedModel>>
 
     suspend fun deleteFeedList(feedModelList: List<FeedModel>)
+
+    suspend fun deleteAllFeeds()
 
     suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)
 }

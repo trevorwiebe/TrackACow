@@ -15,7 +15,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -24,14 +23,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.data.entities.UserEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity
-import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity.OnUserLoaded
-import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData
-import com.trevorwiebe.trackacow.domain.services.SyncDatabaseService
 import com.trevorwiebe.trackacow.domain.utils.Constants
-import com.trevorwiebe.trackacow.domain.utils.SyncDatabase
-import com.trevorwiebe.trackacow.domain.utils.SyncDatabase.OnDatabaseSynced
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.fragment_feed.FeedContainerFragment
 import com.trevorwiebe.trackacow.presentation.fragment_medicate.MedicateFragment
@@ -40,19 +32,14 @@ import com.trevorwiebe.trackacow.presentation.fragment_move.MoveFragment
 import com.trevorwiebe.trackacow.presentation.fragment_report.ReportsFragment
 import com.trevorwiebe.trackacow.presentation.sign_in.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.NumberFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
+class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
 
     private var mAuthListener: AuthStateListener? = null
     private var mFirebaseAuth = FirebaseAuth.getInstance()
-    private val numberFormat = NumberFormat.getInstance(Locale.getDefault())
-    private var mSyncDatabase: SyncDatabase? = null
     private var mIsActivityPaused = true
 
     private lateinit var mBottomNavigationView: BottomNavigationView
@@ -87,7 +74,6 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
                 onSignedInInitialized()
             }
         }
-
     }
 
     override fun onResume() {
@@ -106,27 +92,25 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
-        val upload_menu = menu.findItem(R.id.action_upload_data)
-        upload_menu.isVisible =
-            Utility.isThereNewDataToUpload(this@MainActivity)
+        val uploadMenu = menu.findItem(R.id.action_upload_data)
+        uploadMenu.isVisible =
+                Utility.isThereNewDataToUpload(this@MainActivity)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.action_sync_data) {
-            mMainProgressBar.visibility = View.VISIBLE
-            mSyncDatabase = SyncDatabase(this@MainActivity, this@MainActivity)
-            mSyncDatabase!!.beginSync()
-        } else {
+        if (id == R.id.action_upload_data) {
             val dataToUploadDialog = AlertDialog.Builder(this@MainActivity)
             dataToUploadDialog.setTitle("Local changes made")
             dataToUploadDialog.setMessage("You have made local changes that are not synced to the cloud.")
             dataToUploadDialog.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> }
             dataToUploadDialog.setPositiveButton("Sync") { _: DialogInterface?, _: Int ->
-                mMainProgressBar.visibility = View.VISIBLE
-                mSyncDatabase = SyncDatabase(this@MainActivity, this@MainActivity)
-                mSyncDatabase!!.beginSync()
+                Toast.makeText(
+                        this@MainActivity,
+                        "Not implemented yet",
+                        Toast.LENGTH_SHORT
+                ).show()
             }
             dataToUploadDialog.show()
         }
@@ -135,29 +119,6 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
 
     private fun onSignedInInitialized() {
 
-        val currentTime = System.currentTimeMillis()
-        val lastSyncTime = Utility.getLastSync(this@MainActivity)
-        val timeElapsed = currentTime - lastSyncTime
-        val timeUntilNextLoad = TimeUnit.MINUTES.toMillis(30)
-        if (timeElapsed >= timeUntilNextLoad) {
-            mMainProgressBar.visibility = View.VISIBLE
-            mSyncDatabase = SyncDatabase(this@MainActivity, this@MainActivity)
-            mSyncDatabase!!.beginSync()
-        }
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresDeviceIdle(true)
-            .build()
-        val request: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<SyncDatabaseService>(24, TimeUnit.HOURS)
-                .setConstraints(constraints)
-                .build()
-        WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork(
-                "sync_database_job_tag",
-                ExistingPeriodicWorkPolicy.KEEP,
-                request
-            )
         val lastUsedScreenFragId = Utility.getLastUsedScreen(this@MainActivity)
         mBottomNavigationView.visibility = View.VISIBLE
         mBottomNavigationView.selectedItemId =
@@ -176,124 +137,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
 
     private fun onSignedOutCleanUp() {
         Utility.saveLastUsedScreen(this@MainActivity, Constants.MEDICATE)
-        DeleteAllLocalData().execute(this@MainActivity)
-    }
-
-    override fun onDatabaseSynced(resultCode: Int) {
-        when (resultCode) {
-            Constants.SUCCESS -> {
-                val uid = mFirebaseAuth.currentUser!!.uid
-                QueryUserEntity(uid, this@MainActivity).execute(this@MainActivity)
-                Utility.setNewDataToUpload(this@MainActivity, false)
-                invalidateOptionsMenu()
-                setSelectedFragment(Utility.getLastUsedScreen(this@MainActivity))
-            }
-            Constants.ERROR_FETCHING_DATA_FROM_CLOUD -> Toast.makeText(
-                this,
-                "There was an error fetching the data from the cloud.",
-                Toast.LENGTH_SHORT
-            ).show()
-            Constants.ERROR_PUSHING_DATA_TO_CLOUD -> Toast.makeText(
-                this,
-                "There was an error pushing data to the cloud.",
-                Toast.LENGTH_SHORT
-            ).show()
-            Constants.NO_NETWORK_CONNECTION -> Toast.makeText(
-                this,
-                "No internet connection.",
-                Toast.LENGTH_SHORT
-            ).show()
-            Constants.ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED -> {}
-            else -> Toast.makeText(
-                this,
-                "An unknown error occurred while syncing database",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-        mMainProgressBar.visibility = View.INVISIBLE
-    }
-
-    override fun onUserLoaded(userEntity: UserEntity?) {
-        if (userEntity == null) return
-        val currentTime = System.currentTimeMillis()
-        val renewalDate = userEntity.renewalDate
-        val timeElapsed = renewalDate - currentTime
-        val daysLeft = (timeElapsed / (1000 * 60 * 60 * 24)).toInt().toLong()
-        val daysLeftStr = numberFormat.format(daysLeft)
-        val title: String
-        var message =
-            "You will need to subscribe to a plan to continue.  All you data is saved and waiting for you."
-        when (userEntity.accountType) {
-            Constants.FREE_TRIAL -> {
-                title = "Your free trial has ended."
-                if (daysLeft <= 0) {
-                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else if (daysLeft <= 7) {
-                    showPassableDialog(
-                        "Free trial ends soon.",
-                        "You have $daysLeftStr day(s) left on your free trial.  Please subscribe to avoid a stall in service."
-                    )
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else {
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                }
-            }
-            Constants.MONTHLY_SUBSCRIPTION -> {
-                title = "Your monthly subscription has ended."
-                if (daysLeft <= -3) {
-                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else if (daysLeft <= 0) {
-                    val daysLeftOnGracePeriod = daysLeft + 3
-                    val daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod)
-                    showPassableDialog(
-                        "Monthly subscription has ended.",
-                        "But we will give you a 3 day grace period to get your account issues ironed out. There is/are $daysLeftOnGracePeriodStr day(s) left on the grace period."
-                    )
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else {
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                }
-            }
-            Constants.ANNUAL_SUBSCRIPTION -> {
-                title = "Your annual subscription has ended."
-                if (daysLeft <= -3) {
-                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else if (daysLeft <= 0) {
-                    val daysLeftOnGracePeriod = daysLeft + 3
-                    val daysLeftOnGracePeriodStr = numberFormat.format(daysLeftOnGracePeriod)
-                    showPassableDialog(
-                        "Monthly subscription has ended.",
-                        "But we will give you a 3 day grace period to get your account issues ironed out. There is/are $daysLeftOnGracePeriodStr day(s) left on the grace period."
-                    )
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                } else {
-                    Utility.setLastSync(this, System.currentTimeMillis())
-                }
-            }
-            Constants.CANCELED -> {
-                title = "Your account has been canceled."
-                message =
-                    "You will need to re-subscribe to a plan to continue. Your data may be all saved yet."
-                showNoPassDialog(title, message, "Renew", "Cancel", "", "")
-                Utility.setLastSync(this, System.currentTimeMillis())
-                Utility.setLastSync(this, System.currentTimeMillis())
-            }
-            Constants.FOREVER_FREE_USER -> Utility.setLastSync(this, System.currentTimeMillis())
-            else -> {
-                title = "Error"
-                message =
-                    "Unknown error occurred.  Please send an email to app@trackacow.net for support."
-                showNoPassDialog(title, message, "Renew", "Cancel", "", "")
-                Utility.setLastSync(this, System.currentTimeMillis())
-                return
-            }
-        }
-        mBottomNavigationView.visibility = View.VISIBLE
-        mToolBar.visibility = View.VISIBLE
-        mMainLayout.visibility = View.VISIBLE
+        mainViewModel.onEvent(MainUiEvent.OnSignedOut)
     }
 
     private fun checkIfAppIsOnRequiredVersion() {
@@ -337,38 +181,17 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
         })
     }
 
-
-    private fun showPassableDialog(title: String, message: String) {
-        val accountEnding = AlertDialog.Builder(this@MainActivity)
-        accountEnding.setTitle(title)
-        accountEnding.setMessage(message)
-        accountEnding.setNegativeButton("Cancel") { _: DialogInterface?, which: Int ->
-            Utility.setShouldShowTrialEndsSoon(
-                this@MainActivity,
-                true
-            )
-        }
-        accountEnding.setPositiveButton("Renew") { _: DialogInterface?, which: Int -> }
-        accountEnding.setNeutralButton("Don't show again") { _: DialogInterface?, which: Int ->
-            Utility.setShouldShowTrialEndsSoon(
-                this@MainActivity,
-                false
-            )
-        }
-        if (Utility.shouldShowTrialEndsSoon(this@MainActivity)) {
-            accountEnding.show()
-        }
-    }
-
     private fun showNoPassDialog(title: String, message: String, posBtn: String, negBtn: String, firstUrl: String, secondUrl: String) {
-        val accountEnded = AlertDialog.Builder(this@MainActivity)
+
         mBottomNavigationView.visibility = View.GONE
         mToolBar.visibility = View.GONE
         mMainLayout.visibility = View.GONE
-        accountEnded.setTitle(title)
-        accountEnded.setMessage(message)
-        accountEnded.setCancelable(false)
-        accountEnded.setPositiveButton(posBtn) { _: DialogInterface?, _: Int ->
+
+        val noPassDialog = AlertDialog.Builder(this@MainActivity)
+        noPassDialog.setTitle(title)
+        noPassDialog.setMessage(message)
+        noPassDialog.setCancelable(false)
+        noPassDialog.setPositiveButton(posBtn) { _: DialogInterface?, _: Int ->
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(firstUrl))
                 startActivity(browserIntent)
@@ -377,8 +200,8 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
                 startActivity(secondIntent)
             }
         }
-        accountEnded.setNegativeButton(negBtn) { _: DialogInterface?, _: Int -> finish() }
-        accountEnded.show()
+        noPassDialog.setNegativeButton(negBtn) { _: DialogInterface?, _: Int -> finish() }
+        noPassDialog.show()
     }
 
     private fun setSelectedFragment(fragmentId: Int) {

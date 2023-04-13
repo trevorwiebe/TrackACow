@@ -22,4 +22,6 @@ interface PenRepository {
     suspend fun deletePen(penModel: PenModel)
 
     suspend fun updatePen(penModel: PenModel)
+
+    suspend fun deleteAllPens()
 }

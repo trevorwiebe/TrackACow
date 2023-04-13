@@ -13,15 +13,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.domain.dataLoaders.misc.DeleteAllLocalData
-import com.trevorwiebe.trackacow.domain.dataLoaders.misc.InsertAllLocalChangeToCloud
-import com.trevorwiebe.trackacow.domain.dataLoaders.misc.InsertAllLocalChangeToCloud.OnAllLocalDbInsertedToCloud
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility.isThereNewDataToUpload
 import com.trevorwiebe.trackacow.domain.utils.Utility.setLastSync
 import com.trevorwiebe.trackacow.domain.utils.Utility.setNewDataToUpload
 
-class SettingsFragment : PreferenceFragmentCompat(), OnAllLocalDbInsertedToCloud {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var mContext: Context
     private var mBackingUpData: AlertDialog.Builder? = null
@@ -56,9 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat(), OnAllLocalDbInsertedToCloud
                             .inflate(R.layout.dialog_inserting_data_to_cloud, null)
                         mBackingUpData!!.setView(dialogLoadingLayout)
                         mBackingUpData!!.show()
-                        InsertAllLocalChangeToCloud(this@SettingsFragment).execute(
-                            context
-                        )
+                        // TODO implement this
                     }
                     thereIsDataDialog.setNeutralButton(
                         "Sign out anyway"
@@ -119,45 +113,12 @@ class SettingsFragment : PreferenceFragmentCompat(), OnAllLocalDbInsertedToCloud
         return pInfo.versionName
     }
 
-    override fun onAllLocalDbInsertedToCloud(resultCode: Int) {
-        if (resultCode == Constants.SUCCESS) {
-            if (mBackingUpData != null) {
-                val createDialog = mBackingUpData!!.create()
-                createDialog.dismiss()
-            }
-            signOut()
-        } else {
-            val message: String = when (resultCode) {
-                Constants.NO_NETWORK_CONNECTION -> "You do not have a connection, please connect so you can push your data to the cloud."
-                Constants.ERROR_PUSHING_DATA_TO_CLOUD -> "There was an error pushing your data to the cloud."
-                else -> "An unknown error occurred while pushing your data to the cloud."
-            }
-            val errorBackingUpDialog = AlertDialog.Builder(mContext)
-            errorBackingUpDialog.setTitle("There was an error backing up your data.")
-            errorBackingUpDialog.setMessage(message)
-            errorBackingUpDialog.setPositiveButton(
-                "Try again"
-            ) { _, _ ->
-                InsertAllLocalChangeToCloud(this@SettingsFragment).execute(
-                    context
-                )
-            }
-            errorBackingUpDialog.setNegativeButton(
-                "Cancel"
-            ) { _, _ -> }
-            errorBackingUpDialog.setNeutralButton(
-                "Sign out anyway"
-            ) { _, _ -> signOut() }
-            errorBackingUpDialog.show()
-        }
-    }
-
     private fun signOut() {
         FirebaseAuth.getInstance().signOut()
         if (activity != null) {
             requireActivity().finish()
         }
-        DeleteAllLocalData().execute(context)
+        // TODO: see if need to add delete all data code here
         setNewDataToUpload((mContext), false)
         setLastSync((mContext), 0)
     }

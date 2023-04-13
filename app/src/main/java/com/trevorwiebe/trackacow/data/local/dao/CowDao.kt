@@ -25,6 +25,9 @@ interface CowDao {
     @Delete()
     suspend fun deleteCow(cowEntity: CowEntity)
 
+    @Query("DELETE FROM cow")
+    suspend fun deleteAllCows()
+
     // Deprecated
 
     @Deprecated("use suspend function")

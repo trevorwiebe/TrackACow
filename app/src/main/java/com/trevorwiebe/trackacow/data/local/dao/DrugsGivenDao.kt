@@ -43,6 +43,9 @@ interface DrugsGivenDao {
     @Delete
     suspend fun deleteDrugGiven(drugsGivenEntity: DrugsGivenEntity)
 
+    @Query("DELETE FROM drugs_given")
+    suspend fun deleteAllDrugsGiven()
+
     // Deprecated
 
     @Deprecated("use suspend function")

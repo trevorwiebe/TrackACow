@@ -32,6 +32,10 @@ class DrugRepositoryImpl(
         drugDao.deleteDrug(drugModel.toDrugEntity())
     }
 
+    override suspend fun deleteAllDrugs() {
+        drugDao.deleteAllDrugs()
+    }
+
     override fun getDrugList(): Flow<List<DrugModel>> {
         return drugDao.getDrugList().map { drugList ->
             drugList.map { it.toDrugModel() }

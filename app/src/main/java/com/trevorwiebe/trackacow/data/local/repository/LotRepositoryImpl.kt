@@ -59,16 +59,20 @@ class LotRepositoryImpl(
 
     override suspend fun updateLot(lotModel: LotModel) {
         lotDao.updateLot(
-            lotModel.lotPrimaryKey,
-            lotModel.lotName,
-            lotModel.customerName,
-            lotModel.notes,
-            lotModel.date
+                lotModel.lotPrimaryKey,
+                lotModel.lotName,
+                lotModel.customerName,
+                lotModel.notes,
+                lotModel.date
         )
     }
 
     override suspend fun deleteLot(lotModel: LotModel) {
         lotDao.deleteLot(lotModel.toLotEntity())
+    }
+
+    override suspend fun deleteAllLots() {
+        lotDao.deleteAllLots()
     }
 
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {

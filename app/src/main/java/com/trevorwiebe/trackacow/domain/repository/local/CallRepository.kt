@@ -12,9 +12,9 @@ interface CallRepository {
     fun getCalls(): Flow<List<CallModel>>
 
     fun getCallByLotIdAndDate(
-        lotId: String,
-        dateStart: Long,
-        dateEnd: Long
+            lotId: String,
+            dateStart: Long,
+            dateEnd: Long
     ): Flow<CallAndRationModel?>
 
     fun getCallsAndRationByLotId(lotId: String): Flow<List<CallAndRationModel>>
@@ -22,6 +22,8 @@ interface CallRepository {
     suspend fun updateCall(callModel: CallModel)
 
     suspend fun deleteCall(callModel: CallModel)
+
+    suspend fun deleteAllCalls()
 
     suspend fun insertCacheCall(cacheCallModel: CacheCallModel)
 }

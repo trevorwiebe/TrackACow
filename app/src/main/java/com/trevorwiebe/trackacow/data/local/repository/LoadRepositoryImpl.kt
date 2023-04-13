@@ -31,17 +31,21 @@ class LoadRepositoryImpl(
 
     override suspend fun updateLoad(loadModel: LoadModel) {
         loadDao.updateLoad(
-            loadModel.primaryKey,
-            loadModel.numberOfHead,
-            loadModel.date,
-            loadModel.description,
-            loadModel.lotId,
-            loadModel.loadId
+                loadModel.primaryKey,
+                loadModel.numberOfHead,
+                loadModel.date,
+                loadModel.description,
+                loadModel.lotId,
+                loadModel.loadId
         )
     }
 
     override suspend fun deleteLoad(loadModel: LoadModel) {
         loadDao.deleteLoad(loadModel.toLoadEntity())
+    }
+
+    override suspend fun deleteAllLoads() {
+        loadDao.deleteAllLoads()
     }
 
 }

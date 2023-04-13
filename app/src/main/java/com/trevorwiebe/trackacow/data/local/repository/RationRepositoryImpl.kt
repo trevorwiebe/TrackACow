@@ -35,6 +35,10 @@ class RationRepositoryImpl(
         rationDao.deleteRationById(rationModel.rationPrimaryKey)
     }
 
+    override suspend fun deleteAllRations() {
+        rationDao.deleteAllRations()
+    }
+
     override suspend fun insertCacheRation(cacheRationModel: CacheRationModel) {
         cacheRationDao.insertHoldingRation(cacheRationModel.toCacheRationEntity())
     }

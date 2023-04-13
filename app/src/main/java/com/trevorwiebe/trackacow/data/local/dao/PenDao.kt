@@ -39,7 +39,7 @@ interface PenDao {
     suspend fun updatePen(penName: String, penPrimaryKey: Int)
 
     @Query("DELETE FROM Pen")
-    fun deletePenTable()
+    suspend fun deleteAllPens()
 
     @Delete
     suspend fun deletePen(penEntity: PenEntity)

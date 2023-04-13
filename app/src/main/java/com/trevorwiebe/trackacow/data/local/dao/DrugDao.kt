@@ -17,7 +17,7 @@ interface DrugDao {
     suspend fun updateDrug(drugName: String, defaultAmount: Int, id: Int)
 
     @Query("DELETE FROM Drug")
-    fun deleteDrugTable()
+    suspend fun deleteAllDrugs()
 
     @Query("DELETE FROM Drug WHERE drugCloudDatabaseId = :drugId")
     fun deleteDrugById(drugId: String)
