@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.firebase.functions.FirebaseFunctions
 import com.trevorwiebe.trackacow.data.local.AppDatabase
 import com.trevorwiebe.trackacow.data.local.repository.*
 import com.trevorwiebe.trackacow.data.preferences.AppPreferencesImpl
@@ -15,6 +16,7 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
+import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -172,12 +174,20 @@ object TrackACowDataModule {
 
     @Provides
     @Singleton
+    fun provideInitiateCloudDatabaseMigration5to6(
+            firebaseFunctions: FirebaseFunctions
+    ): InitiateCloudDatabaseMigration5to6 {
+        return InitiateCloudDatabaseMigration5to6(firebaseFunctions)
+    }
+
+    @Provides
+    @Singleton
     fun provideRationRepository(
-        db: AppDatabase
+            db: AppDatabase
     ): RationsRepository {
         return RationRepositoryImpl(
-            rationDao = db.rationDao(),
-            cacheRationDao = db.cacheRationDao()
+                rationDao = db.rationDao(),
+                cacheRationDao = db.cacheRationDao()
         )
     }
 

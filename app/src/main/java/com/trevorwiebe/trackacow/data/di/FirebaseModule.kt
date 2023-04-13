@@ -2,6 +2,8 @@ package com.trevorwiebe.trackacow.data.di
 
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.trevorwiebe.trackacow.data.remote.repository.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
@@ -25,8 +27,14 @@ object FirebaseModule {
 
     @Provides
     @Singleton
+    fun provideFirebaseFunction(): FirebaseFunctions {
+        return Firebase.functions
+    }
+
+    @Provides
+    @Singleton
     fun provideCloudDatabaseId(
-        databaseReference: FirebaseDatabase
+            databaseReference: FirebaseDatabase
     ): GetCloudDatabaseId {
         return GetCloudDatabaseId(databaseReference)
     }

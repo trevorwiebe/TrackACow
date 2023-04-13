@@ -105,6 +105,7 @@ dependencies {
     }
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-functions-ktx'
 
     // Crashlytics
     releaseImplementation 'com.google.firebase:firebase-analytics'
