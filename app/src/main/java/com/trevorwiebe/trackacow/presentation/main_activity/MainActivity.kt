@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.presentation.main_activity
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -17,6 +18,10 @@ import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.data.entities.UserEntity
 import com.trevorwiebe.trackacow.domain.dataLoaders.main.user.QueryUserEntity
@@ -162,6 +167,8 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
             lastUsedScreenFragId != Constants.MOVE,
             true
         )
+
+        checkIfAppIsOnRequiredVersion()
     }
 
     private fun onSignedOutCleanUp() {
@@ -217,7 +224,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
             Constants.FREE_TRIAL -> {
                 title = "Your free trial has ended."
                 if (daysLeft <= 0) {
-                    showNoPassDialog(title, message)
+                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
                     Utility.setLastSync(this, System.currentTimeMillis())
                 } else if (daysLeft <= 7) {
                     showPassableDialog(
@@ -232,7 +239,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
             Constants.MONTHLY_SUBSCRIPTION -> {
                 title = "Your monthly subscription has ended."
                 if (daysLeft <= -3) {
-                    showNoPassDialog(title, message)
+                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
                     Utility.setLastSync(this, System.currentTimeMillis())
                 } else if (daysLeft <= 0) {
                     val daysLeftOnGracePeriod = daysLeft + 3
@@ -249,7 +256,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
             Constants.ANNUAL_SUBSCRIPTION -> {
                 title = "Your annual subscription has ended."
                 if (daysLeft <= -3) {
-                    showNoPassDialog(title, message)
+                    showNoPassDialog(title, message, "Renew", "Cancel", "", "")
                     Utility.setLastSync(this, System.currentTimeMillis())
                 } else if (daysLeft <= 0) {
                     val daysLeftOnGracePeriod = daysLeft + 3
@@ -267,7 +274,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
                 title = "Your account has been canceled."
                 message =
                     "You will need to re-subscribe to a plan to continue. Your data may be all saved yet."
-                showNoPassDialog(title, message)
+                showNoPassDialog(title, message, "Renew", "Cancel", "", "")
                 Utility.setLastSync(this, System.currentTimeMillis())
                 Utility.setLastSync(this, System.currentTimeMillis())
             }
@@ -276,7 +283,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
                 title = "Error"
                 message =
                     "Unknown error occurred.  Please send an email to app@trackacow.net for support."
-                showNoPassDialog(title, message)
+                showNoPassDialog(title, message, "Renew", "Cancel", "", "")
                 Utility.setLastSync(this, System.currentTimeMillis())
                 return
             }
@@ -285,6 +292,48 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
         mToolBar.visibility = View.VISIBLE
         mMainLayout.visibility = View.VISIBLE
     }
+
+    private fun checkIfAppIsOnRequiredVersion() {
+        val appVersionRef = FirebaseDatabase
+                .getInstance()
+                .getReference("users")
+                .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .child("requiredAppVersion")
+        var appVersion: Long
+        try {
+            val pInfo = this@MainActivity.packageManager.getPackageInfo(this@MainActivity.packageName, 0)
+            appVersion = pInfo.versionCode.toLong()
+        } catch (e: PackageManager.NameNotFoundException) {
+            appVersion = 0
+            e.printStackTrace()
+        }
+
+        val appVersionCode = appVersion
+        appVersionRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.value != null) {
+                    val databaseAppVersion = snapshot.value as Long
+                    if (databaseAppVersion > appVersion) {
+                        showNoPassDialog(
+                                "Update required",
+                                "You must update to the latest version of TrackACow to continue.",
+                                "Update",
+                                "Cancel",
+                                "market://details?id=$packageName",
+                                "https://play.google.com/store/apps/details?id=$packageName"
+                        )
+                    } else if (databaseAppVersion < appVersion) {
+                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration(appVersionCode))
+                    }
+                } else {
+                    mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration(appVersionCode))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
 
     private fun showPassableDialog(title: String, message: String) {
         val accountEnding = AlertDialog.Builder(this@MainActivity)
@@ -308,7 +357,7 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
         }
     }
 
-    private fun showNoPassDialog(title: String, message: String) {
+    private fun showNoPassDialog(title: String, message: String, posBtn: String, negBtn: String, firstUrl: String, secondUrl: String) {
         val accountEnded = AlertDialog.Builder(this@MainActivity)
         mBottomNavigationView.visibility = View.GONE
         mToolBar.visibility = View.GONE
@@ -316,15 +365,16 @@ class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
         accountEnded.setTitle(title)
         accountEnded.setMessage(message)
         accountEnded.setCancelable(false)
-        accountEnded.setPositiveButton("Renew") { _: DialogInterface?, _: Int ->
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW, Uri.parse(
-                    resources.getString(R.string.manage_sub_url)
-                )
-            )
-            startActivity(browserIntent)
+        accountEnded.setPositiveButton(posBtn) { _: DialogInterface?, _: Int ->
+            try {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(firstUrl))
+                startActivity(browserIntent)
+            } catch (e: java.lang.Exception) {
+                val secondIntent = Intent(Intent.ACTION_VIEW, Uri.parse(secondUrl))
+                startActivity(secondIntent)
+            }
         }
-        accountEnded.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> finish() }
+        accountEnded.setNegativeButton(negBtn) { _: DialogInterface?, _: Int -> finish() }
         accountEnded.show()
     }
 
