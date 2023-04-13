@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -45,6 +46,8 @@ import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnDatabaseSynced, OnUserLoaded {
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     private var mAuthListener: AuthStateListener? = null
     private var mFirebaseAuth = FirebaseAuth.getInstance()
