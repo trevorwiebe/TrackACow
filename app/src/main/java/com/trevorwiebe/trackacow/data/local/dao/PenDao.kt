@@ -43,27 +43,4 @@ interface PenDao {
 
     @Delete
     suspend fun deletePen(penEntity: PenEntity)
-
-
-    // Deprecated
-
-    @Deprecated("Use suspend function")
-    @Update
-    fun updatePen2(penEntity: PenEntity)
-
-    @Deprecated("Use suspend function")
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPen2(penEntity: PenEntity)
-
-    @Deprecated("Use getPenByPenId with return type: Flow, instead")
-    @Query("SELECT * FROM Pen WHERE penCloudDatabaseId = :id")
-    fun getPenById2(id: String): PenEntity?
-
-    @Deprecated("Use getPenList with return type: Flow, instead")
-    @Query("SELECT * FROM Pen ORDER BY penName ASC")
-    fun getPenList2(): List<PenEntity>
-
-    @Deprecated("Use suspend function")
-    @Delete
-    fun deletePen2(penEntity: PenEntity)
 }

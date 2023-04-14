@@ -9,24 +9,7 @@ interface CacheLotDao {
     @Insert
     suspend fun insertCacheLot(cacheLotEntity: CacheLotEntity)
 
-
     @Update
     fun updateHoldingLot(cacheLotEntity: CacheLotEntity)
 
-    // Deprecated
-    @Deprecated("use flow return function")
-    @Query("SELECT * FROM cache_lot")
-    fun getHoldingLotList(): List<CacheLotEntity>
-
-    @Deprecated("use suspend function")
-    @Insert
-    fun insertHoldingLot(cacheLotEntity: CacheLotEntity)
-
-    @Deprecated("use suspend function")
-    @Delete
-    fun deleteHoldingLot(cacheLotEntity: CacheLotEntity)
-
-    @Deprecated("use flow return function")
-    @Query("DELETE FROM cache_lot")
-    fun deleteHoldingLotTable()
 }

@@ -34,34 +34,4 @@ interface FeedDao {
 
     @Query("DELETE FROM feed")
     suspend fun deleteAllFeeds()
-
-    /* Deprecated functions */
-
-    @Deprecated("use function with return type: flow")
-    @Query("SELECT * FROM feed")
-    fun allFeedEntities(): List<FeedEntity>
-
-    @Deprecated("use suspend function")
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFeedEntityList2(feedEntities: List<FeedEntity>)
-
-    @Deprecated("use function with return type: flow")
-    @Query("SELECT * FROM feed WHERE lotId = :lotId")
-    fun getFeedEntitiesByLotId(lotId: String): List<FeedEntity>
-
-    @Deprecated("use function with return type: flow")
-    @Query("SELECT * FROM feed WHERE lotId = :lotId AND date = :date")
-    fun getFeedEntitiesByLotAndDate(lotId: String, date: Long): List<FeedEntity>
-
-    @Deprecated("use suspend function")
-    @Query("DELETE FROM feed WHERE date = :date AND lotId = :lotId")
-    fun deleteFeedEntitiesByDateAndLotId(date: Long, lotId: String): Int
-
-    @Deprecated("use suspend function")
-    @Query("DELETE FROM feed WHERE id = :id")
-    fun deleteFeedEntityById(id: String): Int
-
-    @Deprecated("use suspend function")
-    @Query("DELETE FROM feed")
-    fun deleteFeedTable()
 }
