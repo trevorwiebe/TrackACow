@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
+import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
@@ -20,6 +21,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -160,10 +162,15 @@ object ViewModelDomainModule {
         drugRepository: DrugRepository,
         drugRepositoryRemote: DrugRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
+        firebaseDatabase: FirebaseDatabase,
         context: Application
     ): DrugUseCases{
         return DrugUseCases(
-            readDrugsUC = ReadDrugsUC(drugRepository),
+            readDrugsUC = ReadDrugsUC(
+                drugRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS
+            ),
             createDrug = CreateDrug(
                 drugRepository,
                 drugRepositoryRemote,
