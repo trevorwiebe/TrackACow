@@ -18,7 +18,6 @@ import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelIncludeEmptyPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -91,7 +90,6 @@ object ActivityDomainModule {
         context: Application
     ): PenUseCases {
         return PenUseCases(
-            readPens = ReadPens(penRepository),
             readPenByPenId = ReadPenByPenId(penRepository),
             readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(penRepository),
             readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(penRepository),
