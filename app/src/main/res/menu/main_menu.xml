@@ -8,10 +8,4 @@
         android:title="Data to upload"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_sync_data"
-        android:icon="@drawable/ic_baseline_sync_24"
-        android:title="Sync data"
-        app:showAsAction="ifRoom"/>
-
 </menu>
