@@ -11,7 +11,7 @@ class InitiateCloudDatabaseMigration5to6(
         val data = hashMapOf("appVersion" to appVersion)
 
         firebaseFunctions
-                .getHttpsCallable("migrateCloud")
+            .getHttpsCallable("migrateDatabase")
                 .call(data)
 
         return ""
