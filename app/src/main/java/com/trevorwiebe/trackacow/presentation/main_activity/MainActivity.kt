@@ -15,6 +15,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -33,6 +36,7 @@ import com.trevorwiebe.trackacow.presentation.fragment_move.MoveFragment
 import com.trevorwiebe.trackacow.presentation.fragment_report.ReportsFragment
 import com.trevorwiebe.trackacow.presentation.sign_in.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -79,6 +83,18 @@ class MainActivity : AppCompatActivity() {
                 startActivity(signInIntent)
             } else {
                 onSignedInInitialized()
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                mainViewModel.uiState.collect {
+                    if (it.cloudDatabaseMigrationInProgress) {
+
+                    } else {
+
+                    }
+                }
             }
         }
     }
