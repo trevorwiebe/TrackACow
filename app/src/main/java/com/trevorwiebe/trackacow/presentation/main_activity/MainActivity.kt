@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.BuildConfig
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -62,6 +63,12 @@ class MainActivity : AppCompatActivity() {
             setSelectedFragment(Utility.getFragmentIdFromResourceID(id))
             true
         })
+
+        if (BuildConfig.DEBUG) {
+            mFirebaseAuth.useEmulator("10.0.2.2", 9099)
+            val firebaseDatabase = FirebaseDatabase.getInstance()
+            firebaseDatabase.useEmulator("10.0.2.2", 9000)
+        }
 
         mAuthListener = AuthStateListener { firebaseAuth: FirebaseAuth ->
             mFirebaseAuth = firebaseAuth
