@@ -8,7 +8,6 @@ import androidx.room.Entity
 @Entity(tableName = "load")
 data class LoadEntity (
     @PrimaryKey(autoGenerate = true)
-    // nothing changes in new version
     var primaryKey: Int = 0,
     var numberOfHead: Int = 0,
     var date: Long = 0,

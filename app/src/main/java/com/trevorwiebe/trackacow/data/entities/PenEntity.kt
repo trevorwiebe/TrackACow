@@ -8,7 +8,6 @@ import androidx.room.Entity
 @Entity(tableName = "pen")
 data class PenEntity (
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration cloud
         var penPrimaryKey: Int = 0,
         var penCloudDatabaseId: String? = null,
         var penName: String = "",

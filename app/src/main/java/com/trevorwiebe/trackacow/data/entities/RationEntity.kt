@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ration")
 data class RationEntity(
         @PrimaryKey(autoGenerate = true)
-        // TODO not included, need to add new table to cloud
         var rationPrimaryKey: Int = 0,
         var rationCloudDatabaseId: String = "",
         var rationName: String = ""

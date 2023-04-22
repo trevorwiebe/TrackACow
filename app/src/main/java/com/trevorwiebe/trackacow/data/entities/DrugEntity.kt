@@ -8,7 +8,6 @@ import androidx.room.Entity
 @Entity(tableName = "drug")
 data class DrugEntity(
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration cloud
         var drugPrimaryKey: Int = 0,
         var defaultAmount: Int = 0,
         var drugCloudDatabaseId: String = "",

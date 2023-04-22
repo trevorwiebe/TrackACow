@@ -8,7 +8,6 @@ import androidx.room.Entity
 @Entity(tableName = "feed")
 class FeedEntity (
     @PrimaryKey(autoGenerate = true)
-    // nothing changes in new version
     var primaryKey: Int = 0,
     var feed: Int = 0,
     var date: Long = 0,

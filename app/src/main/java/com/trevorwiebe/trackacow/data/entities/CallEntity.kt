@@ -8,7 +8,6 @@ import androidx.room.Entity
 @Entity(tableName = "call")
 data class CallEntity (
         @PrimaryKey(autoGenerate = true)
-        // TODO add this to database migration cloud
         var callPrimaryKey: Int = 0,
         var callAmount: Int = 0,
         var date: Long = 0,
