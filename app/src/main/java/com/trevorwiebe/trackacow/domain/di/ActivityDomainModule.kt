@@ -109,6 +109,7 @@ object ActivityDomainModule {
     fun provideLotUseCases(
         lotRepository: LotRepository,
         lotRepositoryRemote: LotRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases{
@@ -116,7 +117,11 @@ object ActivityDomainModule {
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLotsByPenId = ReadLotsByPenId(lotRepository),
             readArchivedLots = ReadArchivedLots(lotRepository),
-            readLots = ReadLots(lotRepository),
+            readLots = ReadLots(
+                lotRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             readLotsByLotId = ReadLotsByLotId(lotRepository),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(

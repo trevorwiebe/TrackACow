@@ -134,13 +134,18 @@ object ViewModelDomainModule {
     fun provideLotUseCases(
         lotRepository: LotRepository,
         lotRepositoryRemote: LotRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases {
         return LotUseCases(
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLotsByPenId = ReadLotsByPenId(lotRepository),
-            readLots = ReadLots(lotRepository),
+            readLots = ReadLots(
+                lotRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             readArchivedLots = ReadArchivedLots(lotRepository),
             readLotsByLotId = ReadLotsByLotId(lotRepository),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
