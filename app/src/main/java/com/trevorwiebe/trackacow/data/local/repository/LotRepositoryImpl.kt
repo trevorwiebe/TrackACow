@@ -48,8 +48,8 @@ class LotRepositoryImpl(
             }
     }
 
-    override fun readLotByLotId(lotPrimaryKey: Int): Flow<LotModel?> {
-        return lotDao.getLotByLotId(lotPrimaryKey)
+    override fun readLotByLotId(lotCloudDatabaseId: String): Flow<LotModel?> {
+        return lotDao.getLotByLotId(lotCloudDatabaseId)
             .map { it?.toLotModel() }
     }
 
@@ -59,11 +59,11 @@ class LotRepositoryImpl(
 
     override suspend fun updateLot(lotModel: LotModel) {
         lotDao.updateLot(
-                lotModel.lotPrimaryKey,
-                lotModel.lotName,
-                lotModel.customerName,
-                lotModel.notes,
-                lotModel.date
+            lotModel.lotPrimaryKey,
+            lotModel.lotName,
+            lotModel.customerName,
+            lotModel.notes,
+            lotModel.date
         )
     }
 

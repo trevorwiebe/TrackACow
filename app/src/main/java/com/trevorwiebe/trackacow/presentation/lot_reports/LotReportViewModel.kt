@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,7 +14,6 @@ import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGiv
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -30,8 +30,6 @@ class LotReportViewModel @AssistedInject constructor(
     private val cowUseCases: CowUseCases,
     private val feedUseCases: FeedUseCases,
     private val calculateDrugsGiven: CalculateDrugsGiven,
-    @Assisted("reportType") private val reportType: Int,
-    @Assisted("lotId") private val lotId: Int,
     @Assisted("lotCloudDatabaseId") private val lotCloudDatabaseId: String
 ): ViewModel() {
 
@@ -40,8 +38,6 @@ class LotReportViewModel @AssistedInject constructor(
     @AssistedFactory
     interface LotReportViewModelFactory {
         fun create(
-            @Assisted("reportType") reportType: Int,
-            @Assisted("lotId") lotId: Int,
             @Assisted("lotCloudDatabaseId") lotCloudDatabaseId: String
         ): LotReportViewModel
     }
@@ -50,12 +46,10 @@ class LotReportViewModel @AssistedInject constructor(
     companion object {
         fun providesFactory(
             assistedFactory: LotReportViewModelFactory,
-            reportType: Int,
-            lotId: Int,
             lotCloudDatabaseId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(reportType, lotId, lotCloudDatabaseId) as T
+                return assistedFactory.create(lotCloudDatabaseId) as T
             }
         }
     }
@@ -70,10 +64,7 @@ class LotReportViewModel @AssistedInject constructor(
     val uiState: StateFlow<LotReportUiState> = _uiState.asStateFlow()
 
     init {
-        if (reportType == Constants.LOT) {
-            readLotByLotId(lotId)
-        }
-
+        readLotByLotId(lotCloudDatabaseId)
         readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId)
         readLoadsByLotId(lotCloudDatabaseId)
         readDeadCowsByLotId(lotCloudDatabaseId)
@@ -89,10 +80,12 @@ class LotReportViewModel @AssistedInject constructor(
         }
     }
 
-    private fun readLotByLotId(lotId: Int) {
+    private fun readLotByLotId(lotCloudDatabaseId: String) {
+        Log.d("TAG", "readLotByLotId: $lotCloudDatabaseId")
         lotJob?.cancel()
-        lotJob = lotUseCases.readLotsByLotId(lotId)
+        lotJob = lotUseCases.readLotsByLotId(lotCloudDatabaseId)
             .map { thisLotModel ->
+                Log.d("TAG", "readLotByLotId: $thisLotModel")
                 _uiState.update {
                     it.copy(lotModel = thisLotModel)
                 }

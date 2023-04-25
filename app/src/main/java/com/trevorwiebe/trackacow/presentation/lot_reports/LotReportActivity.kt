@@ -67,8 +67,6 @@ class LotReportActivity : AppCompatActivity() {
     private val lotReportViewModel: LotReportViewModel by viewModels{
         LotReportViewModel.providesFactory(
             assistedFactory = lotReportViewModelFactory,
-            reportType = intent.getIntExtra("reportType", 0),
-            lotId = intent.getIntExtra("lotId", -1),
             lotCloudDatabaseId = intent.getStringExtra("lotCloudDatabaseId") ?: ""
         )
     }

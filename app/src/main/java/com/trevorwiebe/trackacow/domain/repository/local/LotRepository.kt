@@ -16,7 +16,7 @@ interface LotRepository {
 
     fun readLots(): Flow<List<LotModel>>
 
-    fun readLotByLotId(lotPrimaryKey: Int): Flow<LotModel?>
+    fun readLotByLotId(lotCloudDatabaseId: String): Flow<LotModel?>
 
     suspend fun updateLotByLotIdWithNewPenID(lotId: String, penId: String)
 

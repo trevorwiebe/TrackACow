@@ -147,7 +147,11 @@ object ViewModelDomainModule {
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
             ),
             readArchivedLots = ReadArchivedLots(lotRepository),
-            readLotsByLotId = ReadLotsByLotId(lotRepository),
+            readLotsByLotId = ReadLotsByLotId(
+                lotRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
                 lotRepository,

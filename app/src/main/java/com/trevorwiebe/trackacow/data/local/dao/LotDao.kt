@@ -13,8 +13,8 @@ interface LotDao {
     @Query("SELECT * FROM lot WHERE archived = 0")
     fun getLotEntities(): Flow<List<LotEntity>>
 
-    @Query("SELECT * FROM lot WHERE lotPrimaryKey = :lotPrimaryKey AND archived = 0")
-    fun getLotByLotId(lotPrimaryKey: Int): Flow<LotEntity?>
+    @Query("SELECT * FROM lot WHERE lotCloudDatabaseId = :lotCloudDatabaseId AND archived = 0")
+    fun getLotByLotId(lotCloudDatabaseId: String): Flow<LotEntity?>
 
     @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId AND archived = 0")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
