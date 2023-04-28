@@ -177,7 +177,6 @@ object ViewModelDomainModule {
     ): LotUseCases {
         return LotUseCases(
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
-            readLotsByPenId = ReadLotsByPenId(lotRepository),
             readLots = ReadLots(
                 lotRepository,
                 firebaseDatabase,
