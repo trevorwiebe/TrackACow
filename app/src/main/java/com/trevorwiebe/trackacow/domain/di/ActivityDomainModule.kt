@@ -175,6 +175,7 @@ object ActivityDomainModule {
     fun provideLoadUseCases(
         loadRepository: LoadRepository,
         loadRemoteRepository: LoadRemoteRepository,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LoadUseCases{
@@ -185,7 +186,11 @@ object ActivityDomainModule {
                 getCloudDatabaseId,
                 context
             ),
-            readLoadsByLotId = ReadLoadsByLotId(loadRepository),
+            readLoadsByLotId = ReadLoadsByLotId(
+                loadRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOAD
+            ),
             updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(
                 loadRepository,

@@ -1,13 +1,31 @@
 package com.trevorwiebe.trackacow.domain.use_cases.load_use_cases
 
+import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.repository.local.LoadRepository
+import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.onStart
 
 data class ReadLoadsByLotId(
-    private val loadRepository: LoadRepository
+    private val loadRepository: LoadRepository,
+    private val firebaseDatabase: FirebaseDatabase,
+    private val databaseString: String
 ){
+    @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<LoadModel>> {
-        return loadRepository.readLoadsByLotId(lotId)
+        val localFlow = loadRepository.readLoadsByLotId(lotId)
+        val loadRef = firebaseDatabase
+            .getReference(databaseString)
+            .orderByChild("lotId")
+            .equalTo(lotId)
+        val loadFlow = loadRef.addQueryListValueEventListenerFlow(LoadModel::class.java)
+
+        return localFlow
+            .flatMapConcat { localData ->
+                loadFlow.onStart { emit(localData) }
+            }
     }
 }
