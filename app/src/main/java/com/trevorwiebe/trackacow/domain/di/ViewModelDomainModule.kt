@@ -183,7 +183,11 @@ object ViewModelDomainModule {
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
             ),
-            readArchivedLots = ReadArchivedLots(lotRepository),
+            readArchivedLots = ReadArchivedLots(
+                lotRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             readLotsByLotId = ReadLotsByLotId(
                 lotRepository,
                 firebaseDatabase,

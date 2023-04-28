@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
-import com.trevorwiebe.trackacow.domain.utils.combineDatabaseNodes
+import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -26,11 +26,14 @@ class ReadPenAndLotModelIncludeEmptyPens(
         val localFlow = penRepository.readPensAndLotsIncludeEmptyPens()
 
         val penRef = firebaseDatabase.getReference(penDatabaseString)
-        val lotRef = firebaseDatabase.getReference(lotDatabaseString)
+        val lotRef = firebaseDatabase
+            .getReference(lotDatabaseString)
+            .orderByChild("archived")
+            .equalTo(0.toDouble())
 
         return localFlow
             .flatMapConcat { localData ->
-                combineDatabaseNodes(
+                combineQueryDatabaseNodes(
                     penRef,
                     lotRef,
                     PenModel::class.java,

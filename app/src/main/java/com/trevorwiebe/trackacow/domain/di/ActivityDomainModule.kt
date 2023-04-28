@@ -148,7 +148,11 @@ object ActivityDomainModule {
         return LotUseCases(
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLotsByPenId = ReadLotsByPenId(lotRepository),
-            readArchivedLots = ReadArchivedLots(lotRepository),
+            readArchivedLots = ReadArchivedLots(
+                lotRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             readLots = ReadLots(
                 lotRepository,
                 firebaseDatabase,

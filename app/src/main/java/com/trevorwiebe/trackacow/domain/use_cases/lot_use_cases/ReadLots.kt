@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases
 import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
-import com.trevorwiebe.trackacow.domain.utils.addListValueEventListenerFlow
+import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -19,8 +19,12 @@ data class ReadLots(
 
         val localLotFlow = lotRepository.readLots()
 
-        val lotRef = firebaseDatabase.getReference(lotDatabaseString)
-        val lotCloudFlow = lotRef.addListValueEventListenerFlow(LotModel::class.java)
+        val lotRef = firebaseDatabase
+            .getReference(lotDatabaseString)
+            .orderByChild("archived")
+            .equalTo(0.toDouble())
+
+        val lotCloudFlow = lotRef.addQueryListValueEventListenerFlow(LotModel::class.java)
 
         return localLotFlow
             .flatMapConcat { localData ->
