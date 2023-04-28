@@ -116,7 +116,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         mCalendar.timeInMillis = cowModel.date
         mDrugsGiven.removeAllViews()
 
-        if (cowModel.isAlive == 1) {
+        if (cowModel.alive == 1) {
             mCowIsDead.visibility = View.GONE
         } else {
             mCowIsDead.visibility = View.VISIBLE

@@ -44,7 +44,7 @@ class MedicatedCowsRecyclerViewAdapter(
             trackCowViewHolder.mNotes.text =
                 mContext.resources.getString(R.string.notes_more, cowUiModel.cowModel.notes)
         }
-        if (cowUiModel.cowModel.isAlive == 1) {
+        if (cowUiModel.cowModel.alive == 1) {
 
             trackCowViewHolder.mTagNumber.setTextColor(
                 ContextCompat.getColor(

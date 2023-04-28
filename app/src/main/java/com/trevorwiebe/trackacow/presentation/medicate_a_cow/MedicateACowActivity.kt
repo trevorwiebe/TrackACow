@@ -110,7 +110,7 @@ class MedicateACowActivity : AppCompatActivity() {
 
                     if (cowEntities.isNotEmpty()) {
 
-                        mIsSearchForCowDead = cowEntities.any { it.isAlive == 0 }
+                        mIsSearchForCowDead = cowEntities.any { it.alive == 0 }
 
                         val cowIds = cowEntities.map { it.cowId }
 

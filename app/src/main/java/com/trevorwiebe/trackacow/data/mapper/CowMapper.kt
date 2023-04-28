@@ -8,7 +8,7 @@ import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 fun CowEntity.toCowModel(): CowModel{
     return CowModel(
         primaryKey = primaryKey,
-        isAlive = isAlive,
+        alive = alive,
         cowId = cowId,
         tagNumber = tagNumber,
         date = date,
@@ -20,7 +20,7 @@ fun CowEntity.toCowModel(): CowModel{
 fun CowModel.toCowEntity(): CowEntity{
     return CowEntity(
         primaryKey = primaryKey,
-        isAlive = isAlive,
+        alive = alive,
         cowId = cowId,
         tagNumber = tagNumber,
         date = date,
@@ -32,7 +32,7 @@ fun CowModel.toCowEntity(): CowEntity{
 fun CowModel.toCacheCowModel(whatHappened: Int): CacheCowModel {
     return CacheCowModel(
         primaryKey = primaryKey,
-        isAlive = isAlive,
+        alive = alive,
         cowId = cowId,
         tagNumber = tagNumber,
         date = date,
@@ -45,7 +45,7 @@ fun CowModel.toCacheCowModel(whatHappened: Int): CacheCowModel {
 fun CacheCowModel.toCacheCowEntity(): CacheCowEntity {
     return CacheCowEntity(
         primaryKey = primaryKey,
-        isAlive = isAlive,
+        alive = alive,
         cowId = cowId,
         tagNumber = tagNumber,
         date = date,
