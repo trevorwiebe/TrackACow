@@ -203,6 +203,7 @@ object ViewModelDomainModule {
     fun provideDrugsGivenUseCases(
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): DrugsGivenUseCases {
@@ -210,7 +211,12 @@ object ViewModelDomainModule {
             createDrugsGivenList = CreateDrugsGivenList(
                 drugsGivenRepository, drugsGivenRemoteRepository, getCloudDatabaseId, context
             ),
-            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(drugsGivenRepository),
+            readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
+                drugsGivenRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+            ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
                 drugsGivenRepository
             ),

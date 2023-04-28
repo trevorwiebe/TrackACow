@@ -1,13 +1,59 @@
 package com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases
 
+import com.google.firebase.database.FirebaseDatabase
+import com.trevorwiebe.trackacow.data.mapper.toDrugGivenAndDrug
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
+import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
+import com.trevorwiebe.trackacow.domain.utils.combineDatabaseNodes
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 
-class ReadDrugsGivenAndDrugsByLotId (
-    private val drugsGivenRepository: DrugsGivenRepository
-){
+class ReadDrugsGivenAndDrugsByLotId(
+    private val drugsGivenRepository: DrugsGivenRepository,
+    private val firebaseDatabase: FirebaseDatabase,
+    private val drugDatabaseString: String,
+    private val drugsGivenDatabaseString: String
+) {
+    @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<DrugsGivenAndDrugModel>> {
-        return drugsGivenRepository.getDrugsGivenAndDrugs(lotId)
+        val localFlow = drugsGivenRepository.getDrugsGivenAndDrugs(lotId)
+
+        val drugRef = firebaseDatabase.getReference(drugDatabaseString)
+        val drugsGivenRef = firebaseDatabase.getReference(drugsGivenDatabaseString)
+
+        return localFlow
+            .flatMapConcat { localData ->
+                combineDatabaseNodes(
+                    drugRef,
+                    drugsGivenRef,
+                    DrugModel::class.java,
+                    DrugGivenModel::class.java
+                ).flatMapConcat { pair ->
+                    flow {
+                        val combinedList = combineDrugList(pair.first, pair.second)
+                        emit(combinedList)
+                    }
+                }.onStart { emit(localData) }
+            }
+    }
+
+    private fun combineDrugList(
+        drugList: List<DrugModel>,
+        drugGivenList: List<DrugGivenModel>
+    ): List<DrugsGivenAndDrugModel> {
+        val result = mutableListOf<DrugsGivenAndDrugModel>()
+        drugGivenList.forEach { drugGivenModel ->
+            val drug = drugList.find { it.drugCloudDatabaseId == drugGivenModel.drugsGivenDrugId }
+            if (drug != null) {
+                val drugsGivenAndDrugModel = drugGivenModel.toDrugGivenAndDrug(drug)
+                result.add(drugsGivenAndDrugModel)
+            }
+        }
+        return result
     }
 }
