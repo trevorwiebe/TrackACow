@@ -17,7 +17,7 @@ class LotRepositoryRemoteImpl(
     }
 
     override fun updateLotWithNewPenIdRemote(lotId: String, penId: String) {
-        firebaseDatabase.getReference("$databasePath/$lotId/lotPenId").setValue(penId)
+        firebaseDatabase.getReference("$databasePath/$lotId/lotPenCloudDatabaseId").setValue(penId)
     }
 
     override fun insertAndUpdateLotRemote(lotModel: LotModel) {
