@@ -41,7 +41,11 @@ object ViewModelDomainModule {
     ): CowUseCases {
         return CowUseCases(
             createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
-            readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
+            readDeadCowsByLotId = ReadDeadCowsByLotId(
+                cowRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+            ),
             readCowsByLotId = ReadCowsByLotId(
                 cowRepository,
                 firebaseDatabase,
