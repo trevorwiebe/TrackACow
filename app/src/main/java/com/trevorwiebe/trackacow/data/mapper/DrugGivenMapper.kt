@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.mapper
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheDrugsGivenEntity
 import com.trevorwiebe.trackacow.data.entities.DrugsGivenEntity
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 
@@ -31,15 +32,19 @@ fun DrugGivenModel.toDrugGivenEntity(): DrugsGivenEntity {
     )
 }
 
-fun DrugsGivenAndDrugModel.toDrugGivenModel(): DrugGivenModel {
-    return DrugGivenModel(
+fun DrugGivenModel.toDrugGivenAndDrug(drugModel: DrugModel): DrugsGivenAndDrugModel {
+    return DrugsGivenAndDrugModel(
         drugsGivenPrimaryKey = drugsGivenPrimaryKey,
         drugsGivenId = drugsGivenId,
         drugsGivenDrugId = drugsGivenDrugId,
         drugsGivenAmountGiven = drugsGivenAmountGiven,
         drugsGivenCowId = drugsGivenCowId,
         drugsGivenLotId = drugsGivenLotId,
-        drugsGivenDate = drugsGivenDate
+        drugsGivenDate = drugsGivenDate,
+        drugPrimaryKey = drugModel.drugPrimaryKey,
+        defaultAmount = drugModel.defaultAmount,
+        drugCloudDatabaseId = drugModel.drugCloudDatabaseId,
+        drugName = drugModel.drugName
     )
 }
 
