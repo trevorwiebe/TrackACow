@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.data.mapper.toDrugGivenModel
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import dagger.hilt.android.AndroidEntryPoint
