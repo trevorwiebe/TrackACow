@@ -35,13 +35,18 @@ object ViewModelDomainModule {
     fun provideCowUseCases(
         cowRepository: CowRepository,
         cowRepositoryRemote: CowRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): CowUseCases {
         return CowUseCases(
             createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
             readDeadCowsByLotId = ReadDeadCowsByLotId(cowRepository),
-            readCowsByLotId = ReadCowsByLotId(cowRepository),
+            readCowsByLotId = ReadCowsByLotId(
+                cowRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+            ),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
             deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context)
         )
