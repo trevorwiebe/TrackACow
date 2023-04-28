@@ -57,14 +57,28 @@ object ViewModelDomainModule {
     fun provideRationUseCases(
         rationsRepository: RationsRepository,
         rationsRepositoryRemote: RationRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): RationUseCases {
         return RationUseCases(
-            createRationUC = CreateRationUC(rationsRepository, rationsRepositoryRemote, getCloudDatabaseId, context),
-            readAllRationsUC = ReadAllRationsUC(rationsRepository),
+            createRationUC = CreateRationUC(
+                rationsRepository,
+                rationsRepositoryRemote,
+                getCloudDatabaseId,
+                context
+            ),
+            readAllRationsUC = ReadAllRationsUC(
+                rationsRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+            ),
             updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
-            deleteRationByIdUC = DeleteRationByIdUC(rationsRepository, rationsRepositoryRemote, context)
+            deleteRationByIdUC = DeleteRationByIdUC(
+                rationsRepository,
+                rationsRepositoryRemote,
+                context
+            )
         )
     }
 
