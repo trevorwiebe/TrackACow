@@ -17,7 +17,6 @@ import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelIncludeEmptyPens
-import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenByPenId
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
 import com.trevorwiebe.trackacow.domain.utils.Constants
@@ -87,12 +86,22 @@ object ActivityDomainModule {
         penRepository: PenRepository,
         penRepositoryRemote: PenRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
+        firebaseDatabase: FirebaseDatabase,
         context: Application
     ): PenUseCases {
         return PenUseCases(
-            readPenByPenId = ReadPenByPenId(penRepository),
-            readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(penRepository),
-            readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(penRepository),
+            readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(
+                penRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
+            readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(
+                penRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+            ),
             createPenUC = CreatePenUC(
                 penRepository,
                 penRepositoryRemote,

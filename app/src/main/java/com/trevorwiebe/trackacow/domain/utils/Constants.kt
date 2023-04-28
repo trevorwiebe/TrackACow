@@ -5,28 +5,16 @@ import com.google.firebase.auth.FirebaseAuth
 object Constants {
 
     val BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().currentUser!!.uid + "/"
-    const val DATABASE_STRING_ARCHIVED_LOT = "/archives"
-    const val ARCHIVE_LOT = "archives"
-    const val DATABASE_STRING_RATIONS = "rations"
-    const val RATIONS = "rations"
-    const val DATABASE_STRING_CALLS = "calls"
-    const val CALLS = "calls"
+    const val DATABASE_STRING_RATIONS = "/rations"
+    const val DATABASE_STRING_CALLS = "/call"
     const val DATABASE_STRING_PENS = "/pens"
-    const val PENS = "pens"
     const val DATABASE_STRING_LOT = "/cattleLot"
-    const val LOTS = "cattleLot"
     const val DATABASE_STRING_DRUGS = "drugs/"
-    const val DRUG = "drugs"
     const val DATABASE_STRING_FEEDS = "/feed"
-    const val FEEDS = "feed"
     const val DATABASE_STRING_LOAD = "/loads"
-    const val LOAD = "loads"
     const val DATABASE_STRING_DRUGS_GIVEN = "drugsGiven"
-    const val DRUGS_GIVEN = "drugsGiven"
-    const val DATABASE_STRING_COW = "cows"
-    const val COW = "cows"
+    const val DATABASE_STRING_COW = "/cows"
     const val DATABASE_STRING_USER = "/user"
-    const val USER = "user"
     const val FREE_TRIAL = 0
     const val MONTHLY_SUBSCRIPTION = 1
     const val ANNUAL_SUBSCRIPTION = 2
