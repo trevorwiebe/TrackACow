@@ -189,7 +189,7 @@ class LotReportActivity : AppCompatActivity() {
 
                         mNoCattleReceived.visibility = View.GONE
 
-                        cattleListAdapter.setData(mLoadModelList)
+                        cattleListAdapter.setData(mLoadModelList, this@LotReportActivity)
 
                         mTotalHeadInt = 0
                         mCurrentHeadDays = 0
@@ -226,7 +226,7 @@ class LotReportActivity : AppCompatActivity() {
                     val decimalFormat = DecimalFormat("#.##")
                     val percent = numberDead * 100f / mTotalHeadInt
                     val deadText =
-                        numberFormat.format(numberDead.toLong()) + resources.getString(R.string.dead)
+                        numberFormat.format(numberDead.toLong()) + " " + resources.getString(R.string.dead)
                     val percentDeadText = decimalFormat.format(percent.toDouble()) + "%"
                     mTotalDeathLoss.text = deadText
                     mDeathLossPercentage.text = percentDeadText
