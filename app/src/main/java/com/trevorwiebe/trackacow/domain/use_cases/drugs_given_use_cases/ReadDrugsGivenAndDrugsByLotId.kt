@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugM
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
-import com.trevorwiebe.trackacow.domain.utils.combineDatabaseNodes
+import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -24,11 +24,14 @@ class ReadDrugsGivenAndDrugsByLotId(
         val localFlow = drugsGivenRepository.getDrugsGivenAndDrugs(lotId)
 
         val drugRef = firebaseDatabase.getReference(drugDatabaseString)
-        val drugsGivenRef = firebaseDatabase.getReference(drugsGivenDatabaseString)
+        val drugsGivenRef = firebaseDatabase
+            .getReference(drugsGivenDatabaseString)
+            .orderByChild("drugsGivenLotId")
+            .equalTo(lotId)
 
         return localFlow
             .flatMapConcat { localData ->
-                combineDatabaseNodes(
+                combineQueryDatabaseNodes(
                     drugRef,
                     drugsGivenRef,
                     DrugModel::class.java,
