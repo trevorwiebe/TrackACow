@@ -48,6 +48,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
     private val mCalendar = Calendar.getInstance()
     private val mLoadCalender = Calendar.getInstance()
     private lateinit var mCowUiModelList: List<CowUiModel>
+    private lateinit var mFilteredCowUiModelList: List<CowUiModel>
 
     private lateinit var mDatePicker: OnDateSetListener
     private lateinit var mLoadDatePicker: OnDateSetListener
@@ -107,7 +108,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
                 mMedicatedCows,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val cowUiModel = mCowUiModelList[position]
+                        val cowUiModel = mFilteredCowUiModelList[position]
                         val editCowIntent = Intent(
                             this@MedicatedCowsActivity,
                             EditMedicatedCowActivity::class.java
@@ -226,12 +227,15 @@ class MedicatedCowsActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 medicatedCowsViewModel.uiState.collect {
 
-                    mCowUiModelList = if(it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
+                    mCowUiModelList =
+                        if (it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
                     if (mCowUiModelList.isEmpty() && mIsActive) {
                         mNoMedicatedCows.visibility = View.VISIBLE
                     } else {
                         mNoMedicatedCows.visibility = View.INVISIBLE
                     }
+
+                    mFilteredCowUiModelList = mCowUiModelList
 
                     mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
 
@@ -263,8 +267,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(s: String): Boolean {
                 if (s.isNotEmpty()) {
-                    val cowUiModelList = findTags(s)
-                    if (cowUiModelList.isEmpty() && shouldShowCouldntFindTag) {
+                    mFilteredCowUiModelList = findTags(s)
+                    if (mFilteredCowUiModelList.isEmpty() && shouldShowCouldntFindTag) {
                         mResultsNotFound.visibility = View.VISIBLE
                         mMedicateACowFabMenu.visibility = View.INVISIBLE
                     } else {
@@ -272,12 +276,13 @@ class MedicatedCowsActivity : AppCompatActivity() {
                         mResultsNotFound.visibility = View.INVISIBLE
                     }
                     shouldShowCouldntFindTag = true
-                    mMedicatedCowsRecyclerViewAdapter!!.swapData(cowUiModelList)
+                    mMedicatedCowsRecyclerViewAdapter!!.swapData(mFilteredCowUiModelList)
                 } else {
                     if (shouldShowCouldntFindTag) {
                         mMedicateACowFabMenu.visibility = View.VISIBLE
                     }
                     mResultsNotFound.visibility = View.INVISIBLE
+                    mFilteredCowUiModelList = mCowUiModelList
                     mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
                 }
                 return false
