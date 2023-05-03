@@ -5,6 +5,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
 fun CallModel.toCallEntity(): CallEntity {
     return CallEntity(
@@ -17,6 +18,20 @@ fun CallModel.toCallEntity(): CallEntity {
     )
 }
 
+fun CallModel.toCallAndRationModel(rationModel: RationModel): CallAndRationModel {
+    return CallAndRationModel(
+        callPrimaryKey = callPrimaryKey,
+        callAmount = callAmount,
+        date = date,
+        lotId = lotId,
+        callRationId = callRationId,
+        callCloudDatabaseId = callCloudDatabaseId,
+        rationPrimaryKey = rationModel.rationPrimaryKey,
+        rationCloudDatabaseId = rationModel.rationCloudDatabaseId,
+        rationName = rationModel.rationName
+    )
+}
+
 fun CallEntity.toCallModel(): CallModel {
     return CallModel(
         callPrimaryKey = callPrimaryKey,
@@ -25,18 +40,6 @@ fun CallEntity.toCallModel(): CallModel {
         lotId = lotId,
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId
-    )
-}
-
-fun CacheCallEntity.toHoldingCallModel(): CacheCallModel{
-    return CacheCallModel(
-        callPrimaryKey = callPrimaryKey,
-        callAmount = callAmount,
-        date = date,
-        lotId = lotId,
-        callRationId = callRationId,
-        callCloudDatabaseId = callCloudDatabaseId,
-        whatHappened = whatHappened
     )
 }
 
@@ -61,16 +64,5 @@ fun CallModel.toHoldingCallModel(whatHappened: Int): CacheCallModel{
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
         whatHappened = whatHappened
-    )
-}
-
-fun CallAndRationModel.toCallModel(): CallModel {
-    return CallModel(
-        callPrimaryKey = callPrimaryKey,
-        callAmount = callAmount,
-        date = date,
-        lotId = lotId,
-        callRationId = callRationId,
-        callCloudDatabaseId = callCloudDatabaseId
     )
 }

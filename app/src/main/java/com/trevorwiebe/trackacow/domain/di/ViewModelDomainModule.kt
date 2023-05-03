@@ -89,16 +89,27 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun provideCallUseCases(
-            callRepository: CallRepository,
-            callRepositoryRemote: CallRepositoryRemote,
-            getCloudDatabaseId: GetCloudDatabaseId,
-            context: Application
+        callRepository: CallRepository,
+        callRepositoryRemote: CallRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
+        getCloudDatabaseId: GetCloudDatabaseId,
+        context: Application
     ): CallUseCases {
         return CallUseCases(
-                readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
-                readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(callRepository),
-                createCallUC = CreateCallUC(callRepository, callRepositoryRemote, getCloudDatabaseId, context),
-                updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
+            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+            readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
+                callRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+            ),
+            createCallUC = CreateCallUC(
+                callRepository,
+                callRepositoryRemote,
+                getCloudDatabaseId,
+                context
+            ),
+            updateCallUC = UpdateCallUC(callRepository, callRepositoryRemote, context)
         )
     }
 
