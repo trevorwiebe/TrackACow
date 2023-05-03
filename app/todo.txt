@@ -1,7 +1,6 @@
 When updating a drug given for a specific cow, and returning to EditDrugGivenListActivity and EditMedicatedCowActivity
 Fix bug when in MedicateACowActivity, where when entering a tag number twice, the second time cow medicated or dead flag does not show
 Fix bug on LotReportActivity, where it's pulling all drugsGiven instead of DrugsGivenByLotId
-Fix bug in FeeLotDetailFragment ration spinner is scrunched when there is no default ration saved
 Add code to save feeds to cloud
 Fix issue in Move where when lot is moved on top of another lot, it disappears from the app
 
