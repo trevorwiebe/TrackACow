@@ -2,6 +2,8 @@ package com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +22,7 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
 
     var penAndLotModelList: List<PenAndLotModel> = emptyList()
     var mFeedPenUiModelDate: Long = -1
+    var mLotId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,7 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
         })
 
         mFeedPenUiModelDate = intent.getLongExtra("feed_ui_model_date", -1)
+        mLotId = intent.getStringExtra("feed_lot_model_id") ?: ""
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -53,6 +57,15 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
                         it.lastUsedRation,
                         mFeedPenUiModelDate
                     )
+
+                    if (penAndLotModelList.isNotEmpty()) {
+                        val position = penAndLotModelList.indexOfFirst { penAndLotModel ->
+                            penAndLotModel.lotCloudDatabaseId == mLotId
+                        }
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            feedViewPager.setCurrentItem(position, false)
+                        }, 100)
+                    }
                 }
             }
         }

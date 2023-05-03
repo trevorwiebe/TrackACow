@@ -67,7 +67,11 @@ class FeedPenListFragment : Fragment(){
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         val feedLotIntent = Intent(activity, FeedLotViewPagerContainer::class.java)
-                        feedLotIntent.putExtra("feed_ui_model_date", feedPenListUiModelList[position].date)
+                        feedLotIntent.putExtra(
+                            "feed_ui_model_date",
+                            feedPenListUiModelList[position].date
+                        )
+                        feedLotIntent.putExtra("feed_lot_model_id", mLotModel.lotCloudDatabaseId)
                         startActivity(feedLotIntent)
                     }
 
