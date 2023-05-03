@@ -10,7 +10,6 @@ Fix bug on LotReportActivity, where it's pulling all drugsGiven instead of Drugs
 Fix bug in FeeLotDetailFragment ration spinner is scrunched when there is no default ration saved
 Add code to save feeds to cloud
 Fix issue in Move where when lot is moved on top of another lot, it disappears from the app
-Remove "Drag here to merge or split a lot" item in Move
 
 Confirm that CRUD works on all entities
     Call

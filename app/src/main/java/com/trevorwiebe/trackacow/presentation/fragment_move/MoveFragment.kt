@@ -72,15 +72,7 @@ class MoveFragment : Fragment() {
                     val penAndLotList = it.penAndLotList
 
                     val shuffleObjectsList: MutableList<ShuffleObject> = mutableListOf()
-
-                    val mergeShuffleObject = ShuffleObject(
-                        ShufflePenAndLotsAdapter.MERGE_AND_SPLIT,
-                        resources.getString(R.string.drag_here_to_split),
-                        "id"
-                    )
-
-                    shuffleObjectsList.add(mergeShuffleObject)
-
+                    
                     for (r in penAndLotList.indices){
 
                         val penAndLotModel = penAndLotList[r]

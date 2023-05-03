@@ -15,7 +15,6 @@ import android.view.MotionEvent
 import android.view.View
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.PenViewHolder
-import com.trevorwiebe.trackacow.presentation.fragment_move.utils.MergeOrShuffleViewHolder
 import java.util.ArrayList
 
 class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
@@ -54,11 +53,6 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .inflate(R.layout.list_shuffle_pen, parent, false)
                 PenViewHolder(view)
             }
-            MERGE_AND_SPLIT -> {
-                view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.list_shuffle_merge_or_split_lot, parent,false)
-                MergeOrShuffleViewHolder(view)
-            }
             else -> {
                 view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.list_shuffle_lot, parent, false)
@@ -89,10 +83,6 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
                 val penViewHolder = holder as PenViewHolder
                 penViewHolder.penName.text = penText
                 penViewHolder.tooManyLots.visibility = View.GONE
-            }
-            MERGE_AND_SPLIT -> {
-                val mergeOrSplitViewHolder = holder as MergeOrShuffleViewHolder
-                mergeOrSplitViewHolder.title.text = shuffleObject.name
             }
         }
     }
@@ -176,6 +166,5 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
         private const val TAG = "ShufflePenAndLotsAdapte"
         const val LOT_NAME = 1
         const val PEN_NAME = 2
-        const val MERGE_AND_SPLIT = 3
     }
 }
