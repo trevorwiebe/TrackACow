@@ -48,6 +48,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="number"
                 android:ems="7"
+                android:selectAllOnFocus="true"
                 android:id="@+id/edit_tag_number"
                 android:hint="@string/tag_number"
                 android:textSize="16sp"

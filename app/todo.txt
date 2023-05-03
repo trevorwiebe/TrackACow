@@ -1,5 +1,4 @@
 When updating a drug given for a specific cow, and returning to EditDrugGivenListActivity and EditMedicatedCowActivity
-Add auto focus when editing editing tag number, on EditMedicatedCowActivity
 Fix bug when in MedicateACowActivity, where when entering a tag number twice, the second time cow medicated or dead flag does not show
 Fix bug on MedicatedCowsActivity when searching for tag number, it's selecting the one out of the whole list instead of the searched list
 On LotReportActivity by Cattle Received, remove some of the padding around the Memo
