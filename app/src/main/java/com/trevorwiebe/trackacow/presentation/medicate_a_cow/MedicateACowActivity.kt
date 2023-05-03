@@ -98,6 +98,7 @@ class MedicateACowActivity : AppCompatActivity() {
         mAddMemoBtn.setOnClickListener {
             mAddMemoBtn.visibility = View.GONE
             mNotesLayout.visibility = View.VISIBLE
+            mNotes.requestFocus()
         }
 
         mTagName.addTextChangedListener(object : TextWatcher {

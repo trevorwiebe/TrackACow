@@ -120,6 +120,7 @@ class MarkACowDeadActivity : AppCompatActivity() {
         mAddNotes.setOnClickListener {
             mAddNotesLayout.visibility = View.VISIBLE
             mAddNotes.visibility = View.GONE
+            mNotes.requestFocus()
         }
 
         lifecycleScope.launch {
