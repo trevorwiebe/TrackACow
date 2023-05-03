@@ -15,7 +15,7 @@
     <string name="memo">Memo</string>
     <string name="name_already_used">Name already used</string>
     <string name="ok">OK</string>
-    <string name="notes_more">Notes: %1$s</string>
+    <string name="notes_more">Memo: %1$s</string>
 
     Work Fragment Strings
     <string name="work">Treat</string>
