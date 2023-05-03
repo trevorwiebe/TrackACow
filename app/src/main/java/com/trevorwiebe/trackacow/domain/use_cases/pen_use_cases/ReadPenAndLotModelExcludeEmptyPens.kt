@@ -23,7 +23,7 @@ class ReadPenAndLotModelExcludeEmptyPens(
     @OptIn(FlowPreview::class)
     operator fun invoke(): Flow<List<PenAndLotModel>> {
 
-        val localFlow = penRepository.readPensAndLotsIncludeEmptyPens()
+        val localFlow = penRepository.readPensAndLotsExcludeEmptyPens()
 
         val penRef = firebaseDatabase.getReference(penDatabaseString)
         val lotRef = firebaseDatabase
