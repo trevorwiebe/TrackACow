@@ -89,6 +89,7 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun provideCallUseCases(
+        rationsRepository: RationsRepository,
         callRepository: CallRepository,
         callRepositoryRemote: CallRepositoryRemote,
         firebaseDatabase: FirebaseDatabase,
@@ -98,6 +99,7 @@ object ViewModelDomainModule {
         return CallUseCases(
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
+                rationsRepository,
                 callRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,

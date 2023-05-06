@@ -12,7 +12,7 @@ interface CallDao {
     suspend fun insertCall(callEntity: CallEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCallList(callEntities: List<CallEntity>)
+    suspend fun insertCallList(callEntities: List<CallEntity>): List<Long>
 
     @Query("SELECT * FROM call")
     fun getCalls(): Flow<List<CallEntity>>
@@ -48,6 +48,19 @@ interface CallDao {
     )
     suspend fun updateCallAmount(callAmount: Int, rationId: Int?, callCloudId: String)
 
+    @Update
+    suspend fun updateCallList(callList: List<CallEntity>)
+
     @Delete
     suspend fun deleteCall(callEntity: CallEntity?)
+
+    @Transaction
+    suspend fun insertOrUpdate(callList: List<CallEntity>) {
+        val insertResult = insertCallList(callList)
+        val updateList = mutableListOf<CallEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(callList[i])
+        }
+        if (updateList.isNotEmpty()) updateCallList(callList)
+    }
 }

@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
+import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 
 data class ReadCallsAndRationsByLotIdUC(
+    private val rationRepository: RationsRepository,
     private val callRepository: CallRepository,
     private val firebaseDatabase: FirebaseDatabase,
     private val callDatabaseString: String,
@@ -37,6 +39,8 @@ data class ReadCallsAndRationsByLotIdUC(
                     RationModel::class.java,
                     CallModel::class.java
                 ).flatMapConcat { pair ->
+                    rationRepository.insertOrUpdateRationList(pair.first)
+                    callRepository.insertOrUpdateCallList(pair.second)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)
                         emit(combinedList)

@@ -26,4 +26,6 @@ interface CallRepository {
     suspend fun deleteAllCalls()
 
     suspend fun insertCacheCall(cacheCallModel: CacheCallModel)
+
+    suspend fun insertOrUpdateCallList(callList: List<CallModel>)
 }
