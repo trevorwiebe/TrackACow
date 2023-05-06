@@ -20,7 +20,9 @@ class CreateLoad(
 
         loadModel.loadId = getCloudDatabaseId.invoke("")
 
-        loadRepository.insertLoad(loadModel)
+        val id = loadRepository.insertLoad(loadModel)
+
+        loadModel.primaryKey = id.toInt()
 
         if (Utility.haveNetworkConnection(context)) {
             loadRemoteRepository.insertOrUpdateRemoteLoad(loadModel)

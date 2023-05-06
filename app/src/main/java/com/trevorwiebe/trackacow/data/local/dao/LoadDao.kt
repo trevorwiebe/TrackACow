@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface LoadDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLoad(loadEntity: LoadEntity)
+    suspend fun insertLoad(loadEntity: LoadEntity): Long
 
     @Query("SELECT * FROM load WHERE lotId = :lotId")
     fun readLoadsByLotId(lotId: String): Flow<List<LoadEntity>>

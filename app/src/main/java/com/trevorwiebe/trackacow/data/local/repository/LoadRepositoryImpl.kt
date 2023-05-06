@@ -15,8 +15,8 @@ class LoadRepositoryImpl(
     private val loadDao: LoadDao,
     private val cacheLoadDao: CacheLoadDao
 ): LoadRepository {
-    override suspend fun insertLoad(loadModel: LoadModel) {
-        loadDao.insertLoad(loadModel.toLoadEntity())
+    override suspend fun insertLoad(loadModel: LoadModel): Long {
+        return loadDao.insertLoad(loadModel.toLoadEntity())
     }
 
     override fun readLoadsByLotId(lotId: String): Flow<List<LoadModel>> {
