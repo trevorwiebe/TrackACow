@@ -35,8 +35,8 @@
     <string name="treat">Treat</string>
     <string name="this_pen_is_empty">This pen is empty</string>
     <string name="fill_out_the_blanks_below_to_continue">Fill out the blanks below to continue.</string>
-    <string name="pen_info">Pen Info</string>
-    <string name="pen_description">Pen description</string>
+    <string name="pen_info">Lot Info</string>
+    <string name="pen_description">Lot description</string>
     <string name="cattle_info">Cattle Info</string>
     <string name="add_to_pen">Add to pen</string>
     <plurals name="drug_unit">
