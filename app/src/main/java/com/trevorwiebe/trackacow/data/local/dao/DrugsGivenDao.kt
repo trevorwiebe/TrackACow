@@ -10,7 +10,7 @@ interface DrugsGivenDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>)
+    suspend fun insertDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>): List<Long>
 
     @Query(
             "SELECT * FROM drugs_given " +

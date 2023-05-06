@@ -21,7 +21,11 @@ class CreateDrugsGivenList(
             it.drugsGivenId = getCloudDatabaseId.invoke("")
         }
 
-        drugsGivenRepository.createDrugsGivenList(drugList)
+        val idList = drugsGivenRepository.createDrugsGivenList(drugList)
+
+        for (r in idList.indices) {
+            drugList[r].drugsGivenPrimaryKey = idList[r].toInt()
+        }
 
         if (Utility.haveNetworkConnection(context)) {
             drugsGivenRepositoryRemote.createDrugsGivenListRemote(drugList)

@@ -16,8 +16,8 @@ class DrugsGivenRepositoryImpl(
     private val drugsGivenDao: DrugsGivenDao,
     private val cacheDrugsGivenDao: CacheDrugsGivenDao
 ): DrugsGivenRepository {
-    override suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>) {
-        drugsGivenDao.insertDrugsGivenList(
+    override suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>): List<Long> {
+        return drugsGivenDao.insertDrugsGivenList(
             drugGivenList.map { it.toDrugGivenEntity() }
         )
     }

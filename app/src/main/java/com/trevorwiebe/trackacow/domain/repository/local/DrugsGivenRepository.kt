@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DrugsGivenRepository {
 
-    suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>)
+    suspend fun createDrugsGivenList(drugGivenList: List<DrugGivenModel>): List<Long>
 
     fun getDrugsGivenAndDrugs(lotId: String): Flow<List<DrugsGivenAndDrugModel>>
 
