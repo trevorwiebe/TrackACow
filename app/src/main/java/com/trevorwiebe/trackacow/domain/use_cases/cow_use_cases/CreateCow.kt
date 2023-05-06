@@ -21,7 +21,9 @@ class CreateCow(
         val cloudCowId = getCloudDatabaseId("")
         cowModel.cowId = cloudCowId
 
-        cowRepository.insertCow(cowModel)
+        val id = cowRepository.insertCow(cowModel)
+
+        cowModel.primaryKey = id.toInt()
 
         if (Utility.haveNetworkConnection(context)) {
             cowRepositoryRemote.insertCowRemote(cowModel)

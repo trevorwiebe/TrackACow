@@ -16,8 +16,8 @@ data class CowRepositoryImpl(
     private val cacheCowDao: CacheCowDao
 ): CowRepository{
 
-    override suspend fun insertCow(cowModel: CowModel) {
-        cowDao.insertCow(cowModel.toCowEntity())
+    override suspend fun insertCow(cowModel: CowModel): Long {
+        return cowDao.insertCow(cowModel.toCowEntity())
     }
 
     override fun getDeadCowsByLotId(lotId: String): Flow<List<CowModel>> {
