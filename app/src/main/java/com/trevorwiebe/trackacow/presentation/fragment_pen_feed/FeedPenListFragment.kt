@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +10,9 @@ import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
 import android.os.Build.VERSION
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,16 +27,18 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FeedPenListFragment : Fragment(){
-    private lateinit var mEmptyPen: TextView
+class FeedPenListFragment : Fragment() {
+    private lateinit var mEmptyPen: LinearLayout
+    private lateinit var mAddLotBtn: Button
     private lateinit var mFeedPenRv: RecyclerView
     private lateinit var mLotModel: LotModel
     private lateinit var feedPenRecyclerViewAdapter: FeedPenRecyclerViewAdapter
     private lateinit var feedPenListUiModelList: List<FeedPenListUiModel>
 
-    @Inject lateinit var feedPenListViewModelFactory: FeedPenListViewModel.FeedPenListViewModelFactory
+    @Inject
+    lateinit var feedPenListViewModelFactory: FeedPenListViewModel.FeedPenListViewModelFactory
 
-    private val feedPenListViewModel: FeedPenListViewModel by viewModels{
+    private val feedPenListViewModel: FeedPenListViewModel by viewModels {
         FeedPenListViewModel.providesFactory(
             assistedFactory = feedPenListViewModelFactory,
             lotModel = getLotModel(arguments)
@@ -51,7 +55,8 @@ class FeedPenListFragment : Fragment(){
 
         mLotModel = getLotModel(arguments)
 
-        mEmptyPen = rootView.findViewById(R.id.feed_pen_empty)
+        mEmptyPen = rootView.findViewById(R.id.feed_pen_empty_layout)
+        mAddLotBtn = rootView.findViewById(R.id.feed_add_lot_btn)
         mFeedPenRv = rootView.findViewById(R.id.feed_pen_rv)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.reverseLayout = true
@@ -59,6 +64,10 @@ class FeedPenListFragment : Fragment(){
 
         feedPenRecyclerViewAdapter = FeedPenRecyclerViewAdapter()
         mFeedPenRv.adapter = feedPenRecyclerViewAdapter
+
+        mAddLotBtn.setOnClickListener {
+            Toast.makeText(context, "Not implemented yet", Toast.LENGTH_SHORT).show()
+        }
 
         mFeedPenRv.addOnItemTouchListener(
             ItemClickListener(

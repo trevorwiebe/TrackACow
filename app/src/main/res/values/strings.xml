@@ -22,7 +22,7 @@
     Work Fragment Strings
     <string name="work">Treat</string>
     <string name="treat_a_cow">Treat a cow</string>
-    <string name="work_no_cattle_in_this_pen">No cattle in this pen</string>
+    <string name="work_no_cattle_in_this_pen">No cattle in this Pen, Tap to add a Lot.</string>
     <string name="this_cow_is_dead">This cow is dead</string>
     <string name="mark_a_cow_dead">Mark a cow dead</string>
     <string name="tag_number">Tag number</string>
@@ -51,6 +51,7 @@
     Feed Fragment Strings
     <string name="feed">Feed</string>
     <string name="no_pens_create_one">No pens saved. You must add one to continue</string>
+    <string name="feed_no_cattle_in_this_pen">No cattle in this Pen.</string>
     <string name="call">Call</string>
     <string name="total_fed">Total Fed</string>
     <string name="left_to_feed">Left To Feed</string>
@@ -71,7 +72,7 @@
 
     Move Strings
     <string name="move">Move</string>
-    <string name="empty_move">This is where you will be able to move your lots from one pen to another</string>
+    <string name="empty_move">No pens or lots found. \n \n This is where lots are moved from one pen to another.</string>
     <string name="merge">MERGE</string>
     <string name="only_one_lot_per_pen">You can only have one lot in each pen. Reports will not be accurate</string>
     <string name="reorder_lots">Reorder lots</string>
@@ -101,10 +102,10 @@
 
     More Fragment Strings
     <string name="more">More</string>
-    <string name="more_manage_pens">Manage Pens</string>
+    <string name="more_manage_pens">Add and Edit Pens</string>
     <string name="add_pen">Add new pen</string>
-    <string name="more_manage_drugs">Manage Drugs</string>
-    <string name="more_manage_rations">Manage Rations</string>
+    <string name="more_manage_drugs">Add and Edit Drugs</string>
+    <string name="more_manage_rations">Add and Edit Rations</string>
     <string name="more_archives">Archives</string>
     <string name="more_settings">Settings</string>
 
@@ -121,7 +122,7 @@
     <string name="drug_report_title">Drug Reports: %1$s</string>
 
     Manage Pens
-    <string name="empty_pen_list">No saved pens.  Please add one to use full functionality.</string>
+    <string name="empty_pen_list">No saved pens. \n \n Please add one to use full functionality.</string>
     <string name="pen_name">Pen Name</string>
     <string name="pen">Pen:</string>
     <string name="still_cows_title">There are cows in this pen</string>
@@ -129,7 +130,7 @@
 
     Manage Drugs
     <string name="add_drug">Add drug</string>
-    <string name="empty_drug_list">No saved drugs.  Please add one to use full functionality.</string>
+    <string name="empty_drug_list">No saved drugs. \n \n Please add one to use full functionality.</string>
     <string name="drugs">Drugs</string>
     <string name="add_drugs_first">You need to add some drugs first. Go to the navigation drawer and select Drugs</string>
     <string name="drug_name">Drug name</string>
@@ -146,7 +147,7 @@
     <string name="add_ration">Add Ration</string>
     <string name="edit_ration">Edit Ration</string>
     <string name="update_ration">Update Ration</string>
-    <string name="empty_ration_list">No saved rations.  Please add one to use full functionality.</string>
+    <string name="empty_ration_list">No saved rations. \n \n Please add one to use full functionality.</string>
     <string name="ration_name">Ration Name</string>
     <string name="ration_saved">Ration Saved</string>
 
