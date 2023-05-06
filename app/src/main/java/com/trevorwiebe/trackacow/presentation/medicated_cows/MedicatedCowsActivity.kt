@@ -262,9 +262,11 @@ class MedicatedCowsActivity : AppCompatActivity() {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.medicated_cows_menu, menu)
         val searchItem = menu.findItem(R.id.search)
+        val editItem = menu.findItem(R.id.item_edit_lot_medicated_cows)
         mSearchView = (searchItem.actionView as SearchView?)!!
         mSearchView.inputType = InputType.TYPE_CLASS_NUMBER
         searchItem.isVisible = mIsActive
+        editItem.isVisible = mIsActive
 
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(s: String): Boolean {
