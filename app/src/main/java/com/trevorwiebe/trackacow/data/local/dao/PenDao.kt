@@ -11,7 +11,7 @@ interface PenDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPen(penEntity: PenEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPenList(penEntities: List<PenEntity>): List<Long>
 
     @Query("SELECT * FROM Pen WHERE penCloudDatabaseId = :id")

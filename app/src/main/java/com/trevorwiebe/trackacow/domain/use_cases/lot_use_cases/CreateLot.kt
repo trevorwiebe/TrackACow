@@ -22,7 +22,9 @@ class CreateLot(
 
         lotModel.lotCloudDatabaseId = lotCloudId
 
-        lotRepository.createLot(lotModel)
+        val id = lotRepository.createLot(lotModel)
+
+        lotModel.lotPrimaryKey = id.toInt()
 
         if (Utility.haveNetworkConnection(context)) {
             lotRepositoryRemote.insertAndUpdateLotRemote(lotModel)

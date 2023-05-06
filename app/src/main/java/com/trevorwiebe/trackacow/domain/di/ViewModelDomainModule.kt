@@ -148,6 +148,7 @@ object ViewModelDomainModule {
     @Provides
     fun providePenUseCases(
         penRepository: PenRepository,
+        lotRepository: LotRepository,
         penRepositoryRemote: PenRepositoryRemote,
         firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
@@ -156,12 +157,14 @@ object ViewModelDomainModule {
         return PenUseCases(
             readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(
                 penRepository,
+                lotRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
             ),
             readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(
                 penRepository,
+                lotRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT

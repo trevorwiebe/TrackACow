@@ -15,8 +15,8 @@ class LotRepositoryImpl(
     private val lotDao: LotDao,
     private val cacheLotDao: CacheLotDao
 ): LotRepository {
-    override suspend fun createLot(lotModel: LotModel) {
-        lotDao.createLot(lotModel.toLotEntity())
+    override suspend fun createLot(lotModel: LotModel): Long {
+        return lotDao.createLot(lotModel.toLotEntity())
     }
 
     override fun readLotsByPenId(penId: String): Flow<List<LotModel>> {
@@ -73,6 +73,10 @@ class LotRepositoryImpl(
 
     override suspend fun deleteAllLots() {
         lotDao.deleteAllLots()
+    }
+
+    override suspend fun insertOrUpdateLotList(lotList: List<LotModel>) {
+        lotDao.insertOrUpdateLotList(lotList.map { it.toLotEntity() })
     }
 
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {

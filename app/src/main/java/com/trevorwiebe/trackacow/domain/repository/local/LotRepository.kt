@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LotRepository {
 
-    suspend fun createLot(lotModel: LotModel)
+    suspend fun createLot(lotModel: LotModel): Long
 
     fun readLotsByPenId(penId: String): Flow<List<LotModel>>
 
@@ -25,6 +25,8 @@ interface LotRepository {
     suspend fun deleteLot(lotModel: LotModel)
 
     suspend fun deleteAllLots()
+
+    suspend fun insertOrUpdateLotList(lotList: List<LotModel>)
 
     // cache function
     suspend fun createCacheLot(cacheLotModel: CacheLotModel)

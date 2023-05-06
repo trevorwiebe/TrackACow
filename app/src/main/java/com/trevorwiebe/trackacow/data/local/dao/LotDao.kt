@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface LotDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun createLot(lotEntity: LotEntity)
+    suspend fun createLot(lotEntity: LotEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertLotList(lotEntities: List<LotEntity>): List<Long>
 
     @Query("SELECT * FROM lot WHERE archived = 0")
     fun getLotEntities(): Flow<List<LotEntity>>
@@ -34,16 +37,29 @@ interface LotDao {
                 "WHERE lotPrimaryKey = :lotPrimaryKey"
     )
     suspend fun updateLot(
-            lotPrimaryKey: Int,
-            lotName: String,
-            customerName: String?,
-            notes: String?,
-            date: Long
+        lotPrimaryKey: Int,
+        lotName: String,
+        customerName: String?,
+        notes: String?,
+        date: Long
     )
+
+    @Update()
+    suspend fun updateLotList(lotList: List<LotEntity>)
 
     @Delete
     suspend fun deleteLot(lotEntity: LotEntity)
 
     @Query("DELETE FROM lot")
     suspend fun deleteAllLots()
+
+    @Transaction
+    suspend fun insertOrUpdateLotList(lotList: List<LotEntity>) {
+        val insertResult = insertLotList(lotList)
+        val updateList = mutableListOf<LotEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(lotList[i])
+        }
+        if (updateList.isNotEmpty()) updateLotList(lotList)
+    }
 }

@@ -5,6 +5,7 @@ import com.trevorwiebe.trackacow.data.mapper.toPenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
+import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
 import com.trevorwiebe.trackacow.domain.repository.local.PenRepository
 import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.FlowPreview
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.onStart
 
 class ReadPenAndLotModelExcludeEmptyPens(
     private val penRepository: PenRepository,
+    private val lotRepository: LotRepository,
     private val firebaseDatabase: FirebaseDatabase,
     private val penDatabaseString: String,
     private val lotDatabaseString: String
@@ -40,6 +42,7 @@ class ReadPenAndLotModelExcludeEmptyPens(
                     LotModel::class.java,
                 ).flatMapConcat { pair ->
                     penRepository.insertOrUpdatePenList(pair.first)
+                    lotRepository.insertOrUpdateLotList(pair.second)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)
                         emit(combinedList)
