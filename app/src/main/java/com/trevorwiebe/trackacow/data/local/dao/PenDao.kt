@@ -12,7 +12,7 @@ interface PenDao {
     suspend fun insertPen(penEntity: PenEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPenList(penEntities: List<PenEntity>)
+    suspend fun insertPenList(penEntities: List<PenEntity>): List<Long>
 
     @Query("SELECT * FROM Pen WHERE penCloudDatabaseId = :id")
     fun getPenById(id: String): Flow<PenEntity?>
@@ -38,9 +38,22 @@ interface PenDao {
     @Query("UPDATE Pen SET penName = :penName WHERE penPrimaryKey = :penPrimaryKey")
     suspend fun updatePen(penName: String, penPrimaryKey: Int)
 
+    @Update()
+    suspend fun updatePenList(penList: List<PenEntity>)
+
     @Query("DELETE FROM Pen")
     suspend fun deleteAllPens()
 
     @Delete
     suspend fun deletePen(penEntity: PenEntity)
+
+    @Transaction
+    suspend fun insertOrUpdatePenList(penList: List<PenEntity>) {
+        val insertResult = insertPenList(penList)
+        val updateList = mutableListOf<PenEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(penList[i])
+        }
+        if (updateList.isNotEmpty()) updatePenList(updateList)
+    }
 }

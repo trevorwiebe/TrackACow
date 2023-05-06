@@ -39,6 +39,7 @@ class ReadPenAndLotModelExcludeEmptyPens(
                     PenModel::class.java,
                     LotModel::class.java,
                 ).flatMapConcat { pair ->
+                    penRepository.insertOrUpdatePenList(pair.first)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)
                         emit(combinedList)
