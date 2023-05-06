@@ -14,7 +14,9 @@ import android.content.Intent
 import android.app.DatePickerDialog
 import android.os.Build.VERSION
 import android.text.InputType
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,11 +26,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.add_load_of_cattle.AddLoadOfCattleActivity
+import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
 import com.trevorwiebe.trackacow.presentation.mark_a_cow_dead.MarkACowDeadActivity
 import com.trevorwiebe.trackacow.presentation.medicate_a_cow.MedicateACowActivity
@@ -127,6 +131,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra("penAndLotModel")
         }
+
+        Log.d("TAG", "onCreate: $mPenAndLotModel")
 
         if (mPenAndLotModel != null) {
             title = "Pen: " + mPenAndLotModel?.penName
@@ -254,7 +260,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.track_cow_menu, menu)
+        menuInflater.inflate(R.menu.medicated_cows_menu, menu)
         val searchItem = menu.findItem(R.id.search)
         mSearchView = (searchItem.actionView as SearchView?)!!
         mSearchView.inputType = InputType.TYPE_CLASS_NUMBER
@@ -289,6 +295,18 @@ class MedicatedCowsActivity : AppCompatActivity() {
             }
         })
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.item_edit_lot_medicated_cows) {
+            val editLotIntent = Intent(
+                this@MedicatedCowsActivity,
+                EditLotActivity::class.java
+            )
+            editLotIntent.putExtra("lotModel", mPenAndLotModel?.toLotModel())
+            startActivity(editLotIntent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private var addCattleResultLauncher = registerForActivityResult(

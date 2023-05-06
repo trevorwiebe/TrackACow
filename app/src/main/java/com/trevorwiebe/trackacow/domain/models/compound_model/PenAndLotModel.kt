@@ -14,4 +14,6 @@ data class PenAndLotModel(
     var customerName: String? = null,
     var notes: String? = null,
     var date: Long? = 0,
+    var archived: Long = 0,
+    var dateArchived: Long = 0
 ): Parcelable

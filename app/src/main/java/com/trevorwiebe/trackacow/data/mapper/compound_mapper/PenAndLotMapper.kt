@@ -15,31 +15,23 @@ fun PenAndLotEntity.toPenAndLotModel(): PenAndLotModel{
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
         notes = notes,
-        date = date
-    )
-}
-
-fun PenAndLotModel.toPenAndLotEntity(): PenAndLotEntity{
-    return PenAndLotEntity(
-        penPrimaryKey = penPrimaryKey,
-        penCloudDatabaseId = penCloudDatabaseId,
-        penName = penName,
-        lotPrimaryKey = lotPrimaryKey,
-        lotName = lotName,
-        lotCloudDatabaseId = lotCloudDatabaseId,
-        customerName = customerName,
-        notes = notes,
-        date = date
+        date = date,
+        archived = archived,
+        dateArchived = dateArchived
     )
 }
 
 fun PenAndLotModel.toLotModel(): LotModel{
     return LotModel(
+        lotPrimaryKey = lotPrimaryKey ?: 0,
         lotName = lotName ?: "",
         lotCloudDatabaseId = lotCloudDatabaseId ?: "",
         customerName = customerName,
         notes = notes,
-        date = date ?: 0L
+        date = date ?: 0L,
+        archived = archived,
+        dateArchived = dateArchived,
+        lotPenCloudDatabaseId = penCloudDatabaseId ?: ""
     )
 }
 

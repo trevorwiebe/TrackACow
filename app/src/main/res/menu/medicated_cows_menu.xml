@@ -4,9 +4,15 @@
 
     <item
         android:id="@+id/search"
-        android:title="Search"
+        android:title="@string/search"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/item_edit_lot_medicated_cows"
+        android:title="@string/edit_lot"
+        android:icon="@drawable/ic_edit_white_24dp"
+        app:showAsAction="ifRoom" />
 
 </menu>

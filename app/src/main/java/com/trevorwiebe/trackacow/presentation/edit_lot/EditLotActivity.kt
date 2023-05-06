@@ -9,6 +9,7 @@ import android.app.DatePickerDialog
 import com.google.android.material.snackbar.Snackbar
 import android.content.Intent
 import android.os.Build.VERSION
+import android.util.Log
 import android.widget.Button
 import androidx.activity.viewModels
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
@@ -37,6 +38,8 @@ class EditLotActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra("lotModel")
         }
+
+        Log.d("TAG", "onCreate: $lotModel")
 
         val lotDescriptionTV = findViewById<TextInputEditText>(R.id.edit_lot_description)
         val customerNameTV = findViewById<TextInputEditText>(R.id.edit_customer_name)

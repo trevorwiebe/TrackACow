@@ -9,6 +9,8 @@
     <string name="add">Add</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
+    <string name="search">Search</string>
+    <string name="edit_lot">Edit lot</string>
     <string name="please_fill_blank">Please fill this blank</string>
     <string name="generic_error">An unknown error occurred</string>
     <string name="date">Date</string>
