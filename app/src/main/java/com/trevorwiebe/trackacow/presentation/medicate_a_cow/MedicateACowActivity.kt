@@ -41,7 +41,7 @@ class MedicateACowActivity : AppCompatActivity() {
     private lateinit var mNotes: TextInputEditText
     private lateinit var mDrugLayout: LinearLayout
     private lateinit var mMoreDrugsGivenLayout: LinearLayout
-    private lateinit var mDrugsGivenCardView: CardView
+    private lateinit var mCowFoundCardView: CardView
     private lateinit var mNoDrugs: TextView
     private lateinit var mSaveCow: Button
     private lateinit var mMedicateACowMessage: TextView
@@ -50,7 +50,6 @@ class MedicateACowActivity : AppCompatActivity() {
 
     private var mDrugList: List<DrugModel> = emptyList()
     private var mCowModels: MutableList<CowModel> = mutableListOf()
-    private var mIsSearchForCowDead = false
     private var mPenAndLotModel: PenAndLotModel? = null
 
     @Inject
@@ -79,13 +78,17 @@ class MedicateACowActivity : AppCompatActivity() {
         mTagName = findViewById(R.id.tag_number)
         mNotes = findViewById(R.id.notes)
         mNoDrugs = findViewById(R.id.no_drugs_added)
-        mDrugsGivenCardView = findViewById(R.id.drugs_given_card_view)
+        mCowFoundCardView = findViewById(R.id.cow_found_card_view)
         mMoreDrugsGivenLayout = findViewById(R.id.more_drugs_given_layout)
         mDrugLayout = findViewById(R.id.drug_layout)
         mSaveCow = findViewById(R.id.save_medicated_cow)
         mMedicateACowMessage = findViewById(R.id.medicate_a_cow_message_center)
         mAddMemoBtn = findViewById(R.id.add_notes_btn)
         mNotesLayout = findViewById(R.id.notes_layout)
+
+        val scale = resources.displayMetrics.density
+        val pixels16 = (16 * scale + 0.5f).toInt()
+        val pixels4 = (4 * scale + 0.5f).toInt()
 
         @Suppress("DEPRECATION")
         mPenAndLotModel = if (Build.VERSION.SDK_INT >= 33) {
@@ -105,29 +108,20 @@ class MedicateACowActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-
-                    val cowEntities =
-                        mCowModels.filter { it.tagNumber == Integer.parseInt(s.toString()) }
-
-                    if (cowEntities.isNotEmpty()) {
-
-                        mIsSearchForCowDead = cowEntities.any { it.alive == 0 }
-
-                        val cowIds = cowEntities.map { it.cowId }
-
-                        medicateACowViewModel.onEvent(
-                            MedicateACowEvent.OnDrugsGivenByCowIdList(
-                                cowIds
-                            )
-                        )
-
+                    val cowModels = mCowModels.filter {
+                        it.tagNumber == Integer.parseInt(s.toString())
+                    }
+                    if (cowModels.isNotEmpty()) {
+                        medicateACowViewModel.onEvent(MedicateACowEvent.OnCowFound(cowModels))
                     } else {
-                        mDrugsGivenCardView.visibility = View.GONE
+                        mCowFoundCardView.visibility = View.GONE
                         mMoreDrugsGivenLayout.removeAllViews()
+                        medicateACowViewModel.onEvent(
+                            MedicateACowEvent.OnCowFound(emptyList())
+                        )
                     }
                 }
             }
-
             override fun afterTextChanged(s: Editable) {}
         })
 
@@ -163,67 +157,78 @@ class MedicateACowActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                medicateACowViewModel.uiState.collect {
+                medicateACowViewModel.uiState.collect { medicateACowUiState ->
 
-                    val drugsGivenAndDrugModelList = it.drugsGivenAndDrugModelList
+                    val cowFoundList = medicateACowUiState.cowFoundList
 
-                    if (drugsGivenAndDrugModelList.isNotEmpty()) {
-                        mDrugsGivenCardView.visibility = View.VISIBLE
-                        if (mIsSearchForCowDead) {
+                    val drugGivenAndDrugModelList =
+                        medicateACowUiState.drugAndDrugGivenListForFoundCows
+
+                    if (cowFoundList.isNotEmpty()) {
+                        mCowFoundCardView.visibility = View.VISIBLE
+                        val cowIsDead = cowFoundList.any { it.alive == 0 }
+                        if (cowIsDead && cowFoundList.size > 1) {
                             mMedicateACowMessage.text =
                                 getString(R.string.cow_is_dead_and_medicated)
-                            mDrugsGivenCardView.setCardBackgroundColor(
+                            mCowFoundCardView.setCardBackgroundColor(
                                 ContextCompat.getColor(
                                     this@MedicateACowActivity,
                                     R.color.colorPrimaryDark
                                 )
                             )
                         } else {
-                            mMedicateACowMessage.text =
-                                getString(R.string.this_cow_has_been_medicated)
-                            mDrugsGivenCardView.setCardBackgroundColor(
-                                ContextCompat.getColor(this@MedicateACowActivity, R.color.greenText)
-                            )
+                            if (cowIsDead) {
+                                mMedicateACowMessage.text = getString(R.string.this_cow_is_dead)
+                                mCowFoundCardView.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@MedicateACowActivity,
+                                        R.color.redText
+                                    )
+                                )
+                            } else {
+                                mMedicateACowMessage.text =
+                                    getString(R.string.this_cow_has_been_medicated)
+                                mCowFoundCardView.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@MedicateACowActivity,
+                                        R.color.greenText
+                                    )
+                                )
+                            }
                         }
-                        val scale = resources.displayMetrics.density
-                        val pixels16 = (16 * scale + 0.5f).toInt()
-                        val pixels8 = (8 * scale + 0.5f).toInt()
-                        val pixels4 = (4 * scale + 0.5f).toInt()
 
-                        for (r in drugsGivenAndDrugModelList.indices) {
+                        if (drugGivenAndDrugModelList.isNotEmpty()) {
+                            for (r in drugGivenAndDrugModelList.indices) {
 
-                            val drugGivenAndDrugModel = drugsGivenAndDrugModelList[r]
-                            val drugName = drugGivenAndDrugModel.drugName
-                            val amountGivenStr =
-                                drugGivenAndDrugModel.drugsGivenAmountGiven.toString()
-                            val date =
-                                Utility.convertMillisToDate(drugGivenAndDrugModel.drugsGivenDate)
-                            val textToSet = "$amountGivenStr units of $drugName on $date"
+                                val drugGivenAndDrugModel = drugGivenAndDrugModelList[r]
+                                val drugName = drugGivenAndDrugModel.drugName
+                                val amountGivenStr =
+                                    drugGivenAndDrugModel.drugsGivenAmountGiven.toString()
+                                val date =
+                                    Utility.convertMillisToDate(drugGivenAndDrugModel.drugsGivenDate)
+                                val textToSet = "$amountGivenStr units of $drugName on $date"
 
-                            val textView = TextView(this@MedicateACowActivity)
-                            val params = LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
-                            params.setMargins(pixels16, 0, pixels16, pixels4)
-                            textView.layoutParams = params
-                            textView.setTextColor(resources.getColor(android.R.color.white))
-                            textView.text = textToSet
-                            mMoreDrugsGivenLayout.addView(textView)
+                                val textView = TextView(this@MedicateACowActivity)
+                                val params = LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                )
+                                params.setMargins(pixels16, 0, pixels16, pixels4)
+                                textView.layoutParams = params
+                                textView.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@MedicateACowActivity,
+                                        android.R.color.white
+                                    )
+                                )
+                                textView.text = textToSet
+                                mMoreDrugsGivenLayout.addView(textView)
+                            }
                         }
+
                     } else {
-                        if (mIsSearchForCowDead) {
-                            mDrugsGivenCardView.visibility = View.VISIBLE
-                            mMedicateACowMessage.text = getString(R.string.this_cow_is_dead)
-                            mDrugsGivenCardView.setCardBackgroundColor(
-                                ContextCompat.getColor(this@MedicateACowActivity, R.color.redText)
-                            )
-                        } else {
-                            mDrugsGivenCardView.visibility = View.GONE
-                        }
+                        mCowFoundCardView.visibility = View.GONE
                     }
-                    mIsSearchForCowDead = false
-
                 }
             }
         }
@@ -245,7 +250,6 @@ class MedicateACowActivity : AppCompatActivity() {
         val defaultAmountStr = defaultAmount.toString()
         val scale = resources.displayMetrics.density
         val pixels24 = (24 * scale + 0.5f).toInt()
-        val pixels16 = (16 * scale + 0.5f).toInt()
         val pixels8 = (8 * scale + 0.5f).toInt()
 
         val cardView = CardView(this)
@@ -410,7 +414,7 @@ class MedicateACowActivity : AppCompatActivity() {
 
             mTagName.setText("")
             mNotes.setText("")
-            mDrugsGivenCardView.visibility = View.GONE
+            mCowFoundCardView.visibility = View.GONE
             for (r in 0 until mDrugLayout.childCount) {
                 val cardView = mDrugLayout.getChildAt(r)
                 if (cardView is CardView) {

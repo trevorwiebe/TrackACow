@@ -57,9 +57,10 @@ class MedicateACowViewModel @AssistedInject constructor(
 
     fun onEvent(event: MedicateACowEvent) {
         when (event) {
-            is MedicateACowEvent.OnDrugsGivenByCowIdList -> {
-                readDrugsAndDrugsGivenByCowIds(event.cowIdList)
+            is MedicateACowEvent.OnCowFound -> {
+                updateStateWithCowFoundList(event.cowModelList)
             }
+
             is MedicateACowEvent.OnCowAndDrugListCreated -> {
                 createCowAndDrugList(event.cowModel, event.drugsGivenList)
             }
@@ -87,17 +88,25 @@ class MedicateACowViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-
-    private fun readDrugsAndDrugsGivenByCowIds(cowIdList: List<String>) {
-        drugsGivenByCows?.cancel()
-        drugsGivenByCows = drugsGivenUseCases
-            .readDrugsGivenAndDrugsByCowId(cowIdList)
-            .map { thisDrugsGivenList ->
-                _uiState.update {
-                    it.copy(drugsGivenAndDrugModelList = thisDrugsGivenList)
+    private fun updateStateWithCowFoundList(cowList: List<CowModel>) {
+        _uiState.update {
+            it.copy(cowFoundList = cowList)
+        }
+        if (cowList.isNotEmpty()) {
+            val cowIdList = cowList.map { it.cowId }
+            drugsGivenByCows?.cancel()
+            drugsGivenByCows = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(cowIdList)
+                .map { thisDrugAndDrugGivenList ->
+                    _uiState.update {
+                        it.copy(drugAndDrugGivenListForFoundCows = thisDrugAndDrugGivenList)
+                    }
                 }
+                .launchIn(viewModelScope)
+        } else {
+            _uiState.update {
+                it.copy(drugAndDrugGivenListForFoundCows = emptyList())
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun createCowAndDrugList(cowModel: CowModel, drugList: List<DrugGivenModel>) {
@@ -112,8 +121,9 @@ class MedicateACowViewModel @AssistedInject constructor(
 
 data class MedicateACowUiState(
     val drugList: List<DrugModel> = emptyList(),
+    val cowFoundList: List<CowModel> = emptyList(),
     val medicatedCowList: List<CowModel> = emptyList(),
-    val drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel> = emptyList()
+    val drugAndDrugGivenListForFoundCows: List<DrugsGivenAndDrugModel> = emptyList()
 )
 
 sealed class MedicateACowEvent {
@@ -122,5 +132,5 @@ sealed class MedicateACowEvent {
         val drugsGivenList: List<DrugGivenModel>
     ) : MedicateACowEvent()
 
-    data class OnDrugsGivenByCowIdList(val cowIdList: List<String>) : MedicateACowEvent()
+    data class OnCowFound(val cowModelList: List<CowModel>) : MedicateACowEvent()
 }

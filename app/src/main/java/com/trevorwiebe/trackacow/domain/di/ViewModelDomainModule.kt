@@ -267,7 +267,12 @@ object ViewModelDomainModule {
                 drugsGivenRemoteRepository,
                 context
             ),
-            readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(drugsGivenRepository),
+            readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
+                drugsGivenRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+            ),
             deleteDrugGivenByDrugGivenId = DeleteDrugGivenByDrugGivenId(
                 drugsGivenRepository,
                 drugsGivenRemoteRepository,

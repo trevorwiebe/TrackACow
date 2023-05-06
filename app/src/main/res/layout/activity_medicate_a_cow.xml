@@ -26,8 +26,7 @@
                     app:cardCornerRadius="5dp"
                     android:layout_margin="5dp"
                     android:visibility="gone"
-                    app:cardBackgroundColor="@color/greenText"
-                    android:id="@+id/drugs_given_card_view"
+                    android:id="@+id/cow_found_card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
