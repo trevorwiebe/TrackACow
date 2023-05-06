@@ -20,9 +20,12 @@ class ReadAllRationsUC(
         val rationRef = firebaseDatabase.getReference(databaseString)
         val rationCloudFlow = rationRef.addListValueEventListenerFlow(RationModel::class.java)
 
+        // TODO: figure out how to collect the cloud ration flow and save it to the local db
+
         return localFlow
             .flatMapConcat { localData ->
-                rationCloudFlow.onStart { emit(localData) }
+                rationCloudFlow
+                    .onStart { emit(localData) }
             }
     }
 }
