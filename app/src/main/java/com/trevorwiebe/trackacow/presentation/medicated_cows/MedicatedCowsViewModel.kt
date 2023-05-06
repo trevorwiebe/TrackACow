@@ -85,9 +85,18 @@ class MedicatedCowsViewModel @AssistedInject constructor(
 
     private fun onPenFilled(lotModel: LotModel, loadModel: LoadModel) {
         viewModelScope.launch {
-            val lotId = lotUseCases.createLot(lotModel)
-            loadModel.lotId = lotId
+            val newLotId = lotUseCases.createLot(lotModel)
+            loadModel.lotId = newLotId
             loadUseCases.createLoad(loadModel)
+
+            lotModel.lotCloudDatabaseId = newLotId
+
+            _uiState.update {
+                it.copy(selectedLot = lotModel)
+            }
+
+            readDrugsAndDrugsGivenByLotId(newLotId)
+            readCowsByLotId(newLotId)
         }
     }
 

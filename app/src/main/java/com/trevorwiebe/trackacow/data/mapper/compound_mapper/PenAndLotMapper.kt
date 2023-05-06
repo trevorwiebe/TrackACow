@@ -35,10 +35,26 @@ fun PenAndLotModel.toLotModel(): LotModel{
     )
 }
 
-fun PenAndLotModel.toPenModel(): PenModel{
+fun PenAndLotModel.toPenModel(): PenModel {
     return PenModel(
         penPrimaryKey = penPrimaryKey,
         penName = penName,
         penCloudDatabaseId = penCloudDatabaseId
+    )
+}
+
+fun PenAndLotModel.addLotModel(thisLotModel: LotModel): PenAndLotModel {
+    return PenAndLotModel(
+        penPrimaryKey = penPrimaryKey,
+        penCloudDatabaseId = penCloudDatabaseId,
+        penName = penName,
+        lotPrimaryKey = thisLotModel.lotPrimaryKey,
+        lotName = thisLotModel.lotName,
+        lotCloudDatabaseId = thisLotModel.lotCloudDatabaseId,
+        customerName = thisLotModel.customerName,
+        notes = thisLotModel.notes,
+        date = thisLotModel.date,
+        archived = thisLotModel.archived,
+        dateArchived = thisLotModel.dateArchived
     )
 }

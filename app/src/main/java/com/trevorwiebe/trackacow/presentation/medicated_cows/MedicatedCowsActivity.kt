@@ -14,7 +14,6 @@ import android.content.Intent
 import android.app.DatePickerDialog
 import android.os.Build.VERSION
 import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,6 +25,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.addLotModel
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
@@ -132,8 +132,6 @@ class MedicatedCowsActivity : AppCompatActivity() {
             intent.getParcelableExtra("penAndLotModel")
         }
 
-        Log.d("TAG", "onCreate: $mPenAndLotModel")
-
         if (mPenAndLotModel != null) {
             title = "Pen: " + mPenAndLotModel?.penName
             if (mPenAndLotModel?.lotName.isNullOrEmpty()) {
@@ -162,6 +160,15 @@ class MedicatedCowsActivity : AppCompatActivity() {
                 mTotalCount.error = getString(R.string.please_fill_blank)
                 shouldSave = false
             }
+            if (mPenAndLotModel?.penCloudDatabaseId.isNullOrEmpty()) {
+                Toast.makeText(
+                    this@MedicatedCowsActivity,
+                    "Error occurred when saving",
+                    Toast.LENGTH_SHORT
+                ).show()
+                shouldSave = false
+            }
+
             if (!shouldSave) return@OnClickListener
             val lotName = mLotName.text.toString()
             val customerName = mCustomerName.text.toString()
@@ -245,6 +252,9 @@ class MedicatedCowsActivity : AppCompatActivity() {
 
                     mMedicatedCowsRecyclerViewAdapter!!.swapData(mCowUiModelList)
 
+                    if (it.selectedLot != null) {
+                        mPenAndLotModel = mPenAndLotModel?.addLotModel(it.selectedLot)
+                    }
                 }
             }
         }
