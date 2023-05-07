@@ -19,4 +19,6 @@ interface CowRepository {
     suspend fun deleteAllCows()
 
     suspend fun insertCacheCow(cacheCowModel: CacheCowModel)
+
+    suspend fun insertOrUpdateCowList(cowList: List<CowModel>)
 }

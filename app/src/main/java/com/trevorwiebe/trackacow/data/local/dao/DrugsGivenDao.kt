@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface DrugsGivenDao {
 
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>): List<Long>
 
     @Query(
@@ -40,10 +40,23 @@ interface DrugsGivenDao {
     @Update
     suspend fun updateDrugGiven(drugsGivenEntity: DrugsGivenEntity)
 
+    @Update
+    suspend fun updateDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>)
+
     @Delete
     suspend fun deleteDrugGiven(drugsGivenEntity: DrugsGivenEntity)
 
     @Query("DELETE FROM drugs_given")
     suspend fun deleteAllDrugsGiven()
+
+    @Transaction
+    suspend fun insertOrUpdate(drugsGivenList: List<DrugsGivenEntity>) {
+        val insertResult = insertDrugsGivenList(drugsGivenList)
+        val updateList = mutableListOf<DrugsGivenEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(drugsGivenList[i])
+        }
+        if (updateList.isNotEmpty()) updateDrugsGivenList(drugsGivenList)
+    }
 
 }

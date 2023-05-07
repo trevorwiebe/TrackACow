@@ -69,7 +69,11 @@ class DrugsGivenRepositoryImpl(
 
     override suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>) {
         cacheDrugsGivenDao.insertCacheDrugGivenList(
-                cacheDrugsGivenList.map { it.toCacheDrugGivenEntity() }
+            cacheDrugsGivenList.map { it.toCacheDrugGivenEntity() }
         )
+    }
+
+    override suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>) {
+        drugsGivenDao.insertOrUpdate(drugGivenList.map { it.toDrugGivenEntity() })
     }
 }

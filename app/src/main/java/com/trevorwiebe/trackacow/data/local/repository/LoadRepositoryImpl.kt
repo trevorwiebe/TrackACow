@@ -48,4 +48,8 @@ class LoadRepositoryImpl(
         loadDao.deleteAllLoads()
     }
 
+    override suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>) {
+        loadDao.insertOrUpdate(loadList.map { it.toLoadEntity() })
+    }
+
 }

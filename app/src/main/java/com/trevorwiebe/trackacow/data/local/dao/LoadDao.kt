@@ -10,6 +10,9 @@ interface LoadDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLoad(loadEntity: LoadEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertLoadList(loadList: List<LoadEntity>): List<Long>
+
     @Query("SELECT * FROM load WHERE lotId = :lotId")
     fun readLoadsByLotId(lotId: String): Flow<List<LoadEntity>>
 
@@ -19,17 +22,30 @@ interface LoadDao {
                 "WHERE primaryKey = :primaryKey"
     )
     suspend fun updateLoad(
-            primaryKey: Int,
-            numberOfHead: Int,
-            date: Long,
-            description: String?,
-            lotId: String?,
-            loadId: String?
+        primaryKey: Int,
+        numberOfHead: Int,
+        date: Long,
+        description: String?,
+        lotId: String?,
+        loadId: String?
     )
+
+    @Update
+    suspend fun updateLoadList(loadList: List<LoadEntity>)
 
     @Delete
     suspend fun deleteLoad(loadEntity: LoadEntity)
 
     @Query("DELETE FROM load")
     suspend fun deleteAllLoads()
+
+    @Transaction
+    suspend fun insertOrUpdate(loadList: List<LoadEntity>) {
+        val insertResult = insertLoadList(loadList)
+        val updateList = mutableListOf<LoadEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(loadList[i])
+        }
+        if (updateList.isNotEmpty()) updateLoadList(loadList)
+    }
 }

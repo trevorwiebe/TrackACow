@@ -42,4 +42,8 @@ class DrugRepositoryImpl(
         }
     }
 
+    override suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>) {
+        drugDao.insertOrUpdate(drugList.map { it.toDrugEntity() })
+    }
+
 }

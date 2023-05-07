@@ -10,8 +10,8 @@ interface FeedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFeedEntity(feedEntity: FeedEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFeedEntityList(feedEntityList: List<FeedEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFeedEntityList(feedEntityList: List<FeedEntity>): List<Long>
 
     @Query("SELECT * FROM feed WHERE lotId = :lotId")
     fun getFeedsByLotId(lotId: String): Flow<List<FeedEntity>>
@@ -26,6 +26,9 @@ interface FeedDao {
     @Update
     suspend fun updateFeedEntity(feedEntity: FeedEntity)
 
+    @Update
+    suspend fun updateFeedList(feedEntityList: List<FeedEntity>)
+
     @Delete
     suspend fun deleteFeedEntity(feedEntity: FeedEntity)
 
@@ -34,4 +37,14 @@ interface FeedDao {
 
     @Query("DELETE FROM feed")
     suspend fun deleteAllFeeds()
+
+    @Transaction
+    suspend fun insertOrUpdate(feedList: List<FeedEntity>) {
+        val insertResult = insertFeedEntityList(feedList)
+        val updateList = mutableListOf<FeedEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(feedList[i])
+        }
+        if (updateList.isNotEmpty()) updateFeedList(feedList)
+    }
 }

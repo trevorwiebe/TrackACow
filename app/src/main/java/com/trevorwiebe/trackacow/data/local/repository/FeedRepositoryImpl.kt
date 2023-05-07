@@ -50,4 +50,8 @@ class FeedRepositoryImpl(
     override suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>) {
         cacheFeedDao.insertHoldingFeedList(feedModelList.map { it.toCacheFeedEntity() })
     }
+
+    override suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>) {
+        feedDao.insertOrUpdate(feedList.map { it.toFeedEntity() })
+    }
 }

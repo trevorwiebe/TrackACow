@@ -47,4 +47,8 @@ data class CowRepositoryImpl(
     override suspend fun insertCacheCow(cacheCowModel: CacheCowModel) {
         cacheCowDao.insertCacheCow(cacheCowModel.toCacheCowEntity())
     }
+
+    override suspend fun insertOrUpdateCowList(cowList: List<CowModel>) {
+        cowDao.insertOrUpdate(cowList.map { it.toCowEntity() })
+    }
 }

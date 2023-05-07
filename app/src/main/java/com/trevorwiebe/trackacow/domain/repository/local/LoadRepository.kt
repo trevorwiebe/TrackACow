@@ -17,4 +17,6 @@ interface LoadRepository {
     suspend fun deleteLoad(loadModel: LoadModel)
 
     suspend fun deleteAllLoads()
+
+    suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>)
 }

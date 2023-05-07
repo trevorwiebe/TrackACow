@@ -10,6 +10,9 @@ interface CowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCow(cowEntity: CowEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCowList(cowEntityList: List<CowEntity>): List<Long>
+
     @Query("SELECT * FROM Cow WHERE lotId = :lotId AND alive = 0")
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowEntity>>
 
@@ -22,9 +25,22 @@ interface CowDao {
     @Update
     suspend fun updateCow(cowEntity: CowEntity)
 
+    @Update
+    suspend fun updateCowList(cowlist: List<CowEntity>)
+
     @Delete()
     suspend fun deleteCow(cowEntity: CowEntity)
 
     @Query("DELETE FROM cow")
     suspend fun deleteAllCows()
+
+    @Transaction
+    suspend fun insertOrUpdate(cowList: List<CowEntity>) {
+        val insertResult = insertCowList(cowList)
+        val updateList = mutableListOf<CowEntity>()
+        for (i in insertResult.indices) {
+            if (insertResult[i] == -1L) updateList.add(cowList[i])
+        }
+        if (updateList.isNotEmpty()) updateCowList(cowList)
+    }
 }
