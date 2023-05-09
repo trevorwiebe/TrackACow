@@ -254,6 +254,7 @@ object ViewModelDomainModule {
     @ViewModelScoped
     @Provides
     fun provideDrugsGivenUseCases(
+        drugRepository: DrugRepository,
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
         firebaseDatabase: FirebaseDatabase,
@@ -266,12 +267,17 @@ object ViewModelDomainModule {
             ),
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
                 drugsGivenRepository,
+                drugRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
-                drugsGivenRepository
+                drugRepository,
+                drugsGivenRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
             ),
             deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
                 drugsGivenRepository,
@@ -280,6 +286,7 @@ object ViewModelDomainModule {
             ),
             readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
                 drugsGivenRepository,
+                drugRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN

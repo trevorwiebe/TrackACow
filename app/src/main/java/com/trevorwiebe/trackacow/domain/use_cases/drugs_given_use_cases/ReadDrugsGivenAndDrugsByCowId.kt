@@ -5,6 +5,7 @@ import com.trevorwiebe.trackacow.data.mapper.toDrugGivenAndDrug
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
+import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
 import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.FlowPreview
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.onStart
 
 class ReadDrugsGivenAndDrugsByCowId(
     private val drugsGivenRepository: DrugsGivenRepository,
+    private val drugRepository: DrugRepository,
     private val firebaseDatabase: FirebaseDatabase,
     private val drugDatabaseString: String,
     private val drugsGivenDatabaseString: String
@@ -37,6 +39,8 @@ class ReadDrugsGivenAndDrugsByCowId(
                     DrugModel::class.java,
                     DrugGivenModel::class.java
                 ).flatMapConcat { pair ->
+                    drugRepository.insertOrUpdateDrugList(pair.first)
+                    drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
                     flow {
                         val combinedList = combineDrugList(pair.first, pair.second)
                         emit(combinedList)

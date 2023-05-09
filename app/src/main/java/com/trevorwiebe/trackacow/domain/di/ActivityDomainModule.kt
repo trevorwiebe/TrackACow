@@ -275,6 +275,7 @@ object ActivityDomainModule {
     @ActivityScoped
     @Provides
     fun provideDrugsGivenUseCases(
+        drugRepository: DrugRepository,
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
         firebaseDatabase: FirebaseDatabase,
@@ -290,12 +291,17 @@ object ActivityDomainModule {
             ),
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
                 drugsGivenRepository,
+                drugRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
-                drugsGivenRepository
+                drugRepository,
+                drugsGivenRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
             ),
             deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
                 drugsGivenRepository,
@@ -304,6 +310,7 @@ object ActivityDomainModule {
             ),
             readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
                 drugsGivenRepository,
+                drugRepository,
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
