@@ -56,10 +56,8 @@ data class ReadCallsAndRationsByLotIdUC(
         val result = mutableListOf<CallAndRationModel>()
         callList.forEach { callModel ->
             val ration = rationList.find { it.rationPrimaryKey == callModel.callRationId }
-            if (ration != null) {
-                val callAndRationModel = callModel.toCallAndRationModel(ration)
-                result.add(callAndRationModel)
-            }
+            val callAndRationModel = callModel.toCallAndRationModel(ration)
+            result.add(callAndRationModel)
         }
         return result
     }

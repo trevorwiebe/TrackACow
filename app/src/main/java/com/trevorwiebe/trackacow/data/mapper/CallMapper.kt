@@ -18,7 +18,7 @@ fun CallModel.toCallEntity(): CallEntity {
     )
 }
 
-fun CallModel.toCallAndRationModel(rationModel: RationModel): CallAndRationModel {
+fun CallModel.toCallAndRationModel(rationModel: RationModel?): CallAndRationModel {
     return CallAndRationModel(
         callPrimaryKey = callPrimaryKey,
         callAmount = callAmount,
@@ -26,9 +26,9 @@ fun CallModel.toCallAndRationModel(rationModel: RationModel): CallAndRationModel
         lotId = lotId,
         callRationId = callRationId,
         callCloudDatabaseId = callCloudDatabaseId,
-        rationPrimaryKey = rationModel.rationPrimaryKey,
-        rationCloudDatabaseId = rationModel.rationCloudDatabaseId,
-        rationName = rationModel.rationName
+        rationPrimaryKey = rationModel?.rationPrimaryKey,
+        rationCloudDatabaseId = rationModel?.rationCloudDatabaseId,
+        rationName = rationModel?.rationName
     )
 }
 

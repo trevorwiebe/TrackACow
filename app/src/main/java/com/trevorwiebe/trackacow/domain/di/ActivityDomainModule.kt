@@ -98,7 +98,13 @@ object ActivityDomainModule {
         context: Application
     ): CallUseCases {
         return CallUseCases(
-            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(callRepository),
+            readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(
+                rationsRepository,
+                callRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+            ),
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
                 rationsRepository,
                 callRepository,
