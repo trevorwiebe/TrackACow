@@ -48,13 +48,23 @@ class CreateAndUpdateFeedList(
                 }
             }
 
-            if (feedListToCreate.isNotEmpty())
-                feedRepository.createOrUpdateFeedList(feedListToCreate)
+            // Add or Delete feed list from local DB
+            if (feedListToCreate.isNotEmpty()) {
+                val idList = feedRepository.createOrUpdateFeedList(feedListToCreate)
+                feedListToCreate.forEachIndexed { index, feedModel ->
+                    val updatedFeedModel = feedModel.copy(
+                        primaryKey = idList[index].toInt()
+                    )
+                    feedListToCreate[index] = updatedFeedModel
+                }
+            }
+
             if (feedListToDelete.isNotEmpty())
                 feedRepository.deleteFeedList(feedListToDelete)
 
             if (Utility.haveNetworkConnection(context)) {
-
+                feedRepositoryRemote.insertOrUpdateFeedRemoteList(feedListToCreate)
+                feedRepositoryRemote.deleteFeedRemoteList(feedListToDelete)
             } else {
                 Utility.setNewDataToUpload(context, true)
                 feedRepository.createCacheFeedList(feedListToCreate.map {

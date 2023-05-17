@@ -16,8 +16,8 @@ class FeedRepositoryImpl(
     private val cacheFeedDao: CacheFeedDao
 ): FeedRepository {
 
-    override suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>) {
-        feedDao.insertFeedEntityList(feedModelList.map { it.toFeedEntity() })
+    override suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>): List<Long> {
+        return feedDao.insertFeedEntityList(feedModelList.map { it.toFeedEntity() })
     }
 
     override fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>> {

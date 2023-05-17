@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FeedRepository {
 
-    suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>)
+    suspend fun createOrUpdateFeedList(feedModelList: List<FeedModel>): List<Long>
 
     fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>>
 
