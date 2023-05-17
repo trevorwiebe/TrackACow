@@ -325,7 +325,11 @@ object ViewModelDomainModule {
                 firebaseDatabase,
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
             ),
-            readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(feedRepository)
+            readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
+                feedRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+            )
         )
     }
 }
