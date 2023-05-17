@@ -4,9 +4,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.local.FeedRepository
 import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 
 data class ReadFeedsByLotId(
@@ -14,7 +14,7 @@ data class ReadFeedsByLotId(
     private val firebaseDatabase: FirebaseDatabase,
     private val feedDatabaseString: String
 ){
-    @OptIn(FlowPreview::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(lotId: String): Flow<List<FeedModel>> {
         val localFeedFlow = feedRepository.getFeedsByLotId(lotId)
 
@@ -25,9 +25,10 @@ data class ReadFeedsByLotId(
 
         val feedCloudFlow = feedQuery.addQueryListValueEventListenerFlow(FeedModel::class.java)
 
-        return localFeedFlow
-            .flatMapConcat { localData ->
-                feedCloudFlow.onStart { emit(localData) }
+        return feedCloudFlow
+            .flatMapLatest { cloudData ->
+                feedRepository.insertOrUpdateFeedList(cloudData)
+                localFeedFlow.onStart { emit(cloudData) }
             }
     }
 }
