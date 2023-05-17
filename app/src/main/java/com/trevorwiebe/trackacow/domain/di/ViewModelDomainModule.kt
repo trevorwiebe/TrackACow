@@ -309,6 +309,7 @@ object ViewModelDomainModule {
     fun provideFeedUseCases(
         feedRepository: FeedRepository,
         feedRepositoryRemote: FeedRepositoryRemote,
+        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): FeedUseCases {
@@ -319,7 +320,11 @@ object ViewModelDomainModule {
                 getCloudDatabaseId,
                 context
             ),
-            readFeedsByLotId = ReadFeedsByLotId(feedRepository),
+            readFeedsByLotId = ReadFeedsByLotId(
+                feedRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+            ),
             readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(feedRepository)
         )
     }
