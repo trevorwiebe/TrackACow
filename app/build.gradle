@@ -14,7 +14,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 33
         versionCode 19
-        versionName "0.3.0"
+        versionName "0.5.0"
         flavorDimensions "default"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
