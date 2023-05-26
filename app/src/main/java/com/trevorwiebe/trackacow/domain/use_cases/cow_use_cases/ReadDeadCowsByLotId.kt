@@ -15,6 +15,8 @@ data class ReadDeadCowsByLotId(
     private val firebaseDatabase: FirebaseDatabase,
     private val databaseString: String
 ){
+
+    // TODO: fix issue where cloud data isn't save locally
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CowModel>> {
         val localFlow = cowRepository.getDeadCowsByLotId(lotId)

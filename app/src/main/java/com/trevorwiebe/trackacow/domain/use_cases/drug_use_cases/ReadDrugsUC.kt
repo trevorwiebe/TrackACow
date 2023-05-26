@@ -21,9 +21,10 @@ data class ReadDrugsUC(
         val drugDatabaseRef = firebaseDatabase.getReference(databaseString)
         val cloudFlow = drugDatabaseRef.addListValueEventListenerFlow(DrugModel::class.java)
 
-        return localFlow
-            .flatMapConcat { localData ->
-                cloudFlow.onStart { emit(localData) }
+        return cloudFlow
+            .flatMapConcat { cloudData ->
+                drugRepository.insertOrUpdateDrugList(cloudData)
+                localFlow.onStart { emit(cloudData) }
             }
     }
 }

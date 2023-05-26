@@ -15,6 +15,7 @@ data class ReadFeedsByLotIdAndDate(
     private val firebaseDatabase: FirebaseDatabase,
     private val feedDatabaseString: String
 ) {
+    // TODO: fix the issue in this class where the date filtering is applied to the local flow
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(lotId: String, startDate: Long, endDate: Long): Flow<List<FeedModel>> {
         val localFeedFlow = feedRepository.readFeedsByLotIdAndDate(lotId, startDate, endDate)
