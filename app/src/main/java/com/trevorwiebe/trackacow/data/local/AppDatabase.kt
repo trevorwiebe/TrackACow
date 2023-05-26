@@ -178,8 +178,8 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE call_new RENAME TO call")
 
                 // update cow table
-                database.execSQL("CREATE TABLE cow_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, isAlive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL)")
-                database.execSQL("INSERT INTO cow_new (primaryKey, isAlive, cowId, tagNumber, date, notes, lotId) SELECT primaryKey, isAlive, cowId, tagNumber, date, notes, lotId FROM Cow")
+                database.execSQL("CREATE TABLE cow_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL)")
+                database.execSQL("INSERT INTO cow_new (primaryKey, alive, cowId, tagNumber, date, notes, lotId) SELECT primaryKey, isAlive, cowId, tagNumber, date, notes, lotId FROM Cow")
                 database.execSQL("DROP TABLE Cow")
                 database.execSQL("ALTER TABLE cow_new RENAME TO cow")
 
@@ -234,7 +234,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE cache_call_new RENAME TO cache_call")
 
                 // cacheCow
-                database.execSQL("ALTER TABLE HoldingCow RENAME TO cache_cow")
+                database.execSQL("CREATE TABLE cache_cow_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO cache_cow_new (primaryKey, alive, cowId, tagNumber, date, notes, lotId, whatHappened) SELECT primaryKey, isAlive, cowId, tagNumber, date, notes, lotId, whatHappened FROM HoldingCow")
+                database.execSQL("DROP TABLE HoldingCow")
+                database.execSQL("ALTER TABLE cache_cow_new RENAME TO cache_cow")
 
                 // cacheDrug
                 database.execSQL("CREATE TABLE cache_drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULl, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL, whatHappened INTEGER NOT NULL)")

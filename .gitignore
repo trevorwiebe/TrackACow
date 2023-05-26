@@ -13,3 +13,4 @@ google-services.json
 release
 /.idea/deploymentTargetDropDown.xml
 /.idea/shelf/
+/app/apk/debug/output-metadata.json
