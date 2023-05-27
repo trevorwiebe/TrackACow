@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.sign_in
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,12 +19,14 @@ import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
 import android.view.View
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.trevorwiebe.trackacow.presentation.create_account.CreateAccountActivity
 import com.trevorwiebe.trackacow.presentation.main_activity.MainActivity
+import java.lang.Exception
 
 class SignInActivity : AppCompatActivity() {
 
@@ -39,8 +42,6 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        // clear FLAG_TRANSLUCENT_STATUS flag:
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         // finally change the color
@@ -88,11 +89,14 @@ class SignInActivity : AppCompatActivity() {
                             startActivity(intent)
                         } else {
                             mSigningIn.visibility = View.INVISIBLE
-                            // TODO: fix this issue where can't cast to FirebaseAuthException
-//                            val errorCode = (task.exception as FirebaseAuthException).errorCode
+                            val errorCode = try {
+                                (task.exception as FirebaseAuthException).errorCode
+                            } catch (e: Exception) {
+                                ERROR_UNKNOWN_ERROR
+                            }
                             val errorMessage = task.exception?.localizedMessage
                             val messageTitle = "Error signing in"
-                            showMessage(messageTitle, errorMessage, ERROR_UNKNOWN_ERROR)
+                            showMessage(messageTitle, errorMessage, errorCode)
                         }
                     }
             }
@@ -104,10 +108,11 @@ class SignInActivity : AppCompatActivity() {
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
         signInWithGoogle.setOnClickListener {
             mSigningInWithGoogle.visibility = View.VISIBLE
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            val signInWithGoogleIntent = mGoogleSignInClient.signInIntent
+            createAccountLauncher.launch(signInWithGoogleIntent)
         }
 
         forgotPassword.setOnClickListener {
@@ -155,28 +160,28 @@ class SignInActivity : AppCompatActivity() {
             }
             forgotPasswordDialog.show()
         }
-        // TODO: Need to fix this deprecation issue
+
         createAccount.setOnClickListener {
             val createAccountIntent = Intent(this@SignInActivity, CreateAccountActivity::class.java)
-            startActivityForResult(createAccountIntent, CREATE_ACCOUNT_CODE)
+            createAccountLauncher.launch(createAccountIntent)
         }
     }
 
-    // TODO: Need to fix this deprecation issue
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                fireBaseAuthWithGoogle(account)
-            } catch (e: ApiException) {
-                val errorMessage = e.localizedMessage
-                val errorCode = (task.exception as FirebaseAuthException).errorCode
-                showMessage("Error signing in", errorMessage, errorCode)
+    private var createAccountLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    fireBaseAuthWithGoogle(account)
+                } catch (e: ApiException) {
+                    val errorMessage = e.localizedMessage
+                    val errorCode = (task.exception as FirebaseAuthException).errorCode
+                    showMessage("Error signing in", errorMessage, errorCode)
+                }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+
 
     private fun fireBaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
@@ -226,13 +231,12 @@ class SignInActivity : AppCompatActivity() {
         mSigningInWithGoogle.visibility = View.INVISIBLE
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("finishAffinity()"))
     override fun onBackPressed() {
         finishAffinity()
     }
 
     companion object {
-        private const val RC_SIGN_IN = 477
-        private const val CREATE_ACCOUNT_CODE = 848
         const val NO_ERROR = "NO_ERROR"
         const val ERROR_WRONG_PASSWORD = "ERROR_WRONG_PASSWORD"
         const val ERROR_USER_MISMATCH = "ERROR_USER_MISMATCH"
@@ -247,11 +251,5 @@ class SignInActivity : AppCompatActivity() {
         const val ERROR_WEAK_PASSWORD = "ERROR_WEAK_PASSWORD"
         const val ERROR_MISSING_EMAIL = "ERROR_MISSING_EMAIL"
         const val ERROR_UNKNOWN_ERROR = "ERROR_UNKNOWN_ERROR"
-//        const val ERROR_INVALID_USER_TOKEN = "ERROR_INVALID_USER_TOKEN"
-//        const val ERROR_OPERATION_NOT_ALLOWED = "ERROR_OPERATION_NOT_ALLOWED"
-//        const val ERROR_USER_TOKEN_EXPIRED = "ERROR_USER_TOKEN_EXPIRED"
-//        const val ERROR_INVALID_CUSTOM_TOKEN = "ERROR_INVALID_CUSTOM_TOKEN"
-//        const val ERROR_CUSTOM_TOKEN_MISMATCH = "ERROR_CUSTOM_TOKEN_MISMATCH"
-//        const val ERROR_REQUIRES_RECENT_LOGIN = "ERROR_REQUIRES_RECENT_LOGIN"
     }
 }
