@@ -88,10 +88,11 @@ class SignInActivity : AppCompatActivity() {
                             startActivity(intent)
                         } else {
                             mSigningIn.visibility = View.INVISIBLE
-                            val errorCode = (task.exception as FirebaseAuthException).errorCode
+                            // TODO: fix this issue where can't cast to FirebaseAuthException
+//                            val errorCode = (task.exception as FirebaseAuthException).errorCode
                             val errorMessage = task.exception?.localizedMessage
                             val messageTitle = "Error signing in"
-                            showMessage(messageTitle, errorMessage, errorCode)
+                            showMessage(messageTitle, errorMessage, ERROR_UNKNOWN_ERROR)
                         }
                     }
             }
@@ -245,6 +246,7 @@ class SignInActivity : AppCompatActivity() {
         const val ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND"
         const val ERROR_WEAK_PASSWORD = "ERROR_WEAK_PASSWORD"
         const val ERROR_MISSING_EMAIL = "ERROR_MISSING_EMAIL"
+        const val ERROR_UNKNOWN_ERROR = "ERROR_UNKNOWN_ERROR"
 //        const val ERROR_INVALID_USER_TOKEN = "ERROR_INVALID_USER_TOKEN"
 //        const val ERROR_OPERATION_NOT_ALLOWED = "ERROR_OPERATION_NOT_ALLOWED"
 //        const val ERROR_USER_TOKEN_EXPIRED = "ERROR_USER_TOKEN_EXPIRED"
