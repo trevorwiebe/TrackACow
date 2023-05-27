@@ -1,25 +1,26 @@
 package com.trevorwiebe.trackacow.presentation.manage_pens
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import com.trevorwiebe.trackacow.presentation.fragment_medicate.PenRecyclerViewAdapter
 import android.os.Bundle
-import android.util.Log
 import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
 import android.view.View
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
-import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toPenModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
+import com.trevorwiebe.trackacow.presentation.add_edit_pen.AddEditPensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -89,78 +90,79 @@ class ManagePensActivity : AppCompatActivity(){
                 mPensRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val selectedPenAndLotModel = mPenAndLotList[position]
-
-                        Log.d("TAG", "onItemClick: $selectedPenAndLotModel")
-
-                        val dialogView = LayoutInflater.from(this@ManagePensActivity)
-                            .inflate(R.layout.dialog_add_new_pen, null)
-                        val editPenEditText =
-                            dialogView.findViewById<EditText>(R.id.dialog_add_new_pen_edit_text)
-                        editPenEditText.setText(selectedPenAndLotModel.penName)
-                        editPenEditText.setSelectAllOnFocus(true)
-                        editPenEditText.setSelection(selectedPenAndLotModel.penName.length)
-                        val editPen = AlertDialog.Builder(this@ManagePensActivity)
-                            .setTitle("Edit pen")
-                            .setView(dialogView)
-                            .setPositiveButton(resources.getString(R.string.update), null)
-                            .setNegativeButton(resources.getString(R.string.cancel), null)
-                            .setNeutralButton(resources.getString(R.string.delete), null)
-                            .create()
-
-                        editPen.setOnShowListener { dialog ->
-
-                            // Update PenModel
-                            val posBtn = editPen.getButton(AlertDialog.BUTTON_POSITIVE)
-                            posBtn.setOnClickListener {
-                                if (editPenEditText.length() == 0) {
-                                    editPenEditText.requestFocus()
-                                    editPenEditText.error =
-                                        resources.getString(R.string.please_fill_blank)
-                                } else {
-                                    val updatedText = editPenEditText.text.toString()
-                                    if (isPenNameAvailable(updatedText, mPenAndLotList)) {
-                                        selectedPenAndLotModel.penName = updatedText
-
-                                        managePensViewModel.onEvent(ManagePenEvents.OnPenUpdated(selectedPenAndLotModel.toPenModel()))
-
-                                        editPen.dismiss()
-                                    } else {
-                                        editPenEditText.requestFocus()
-                                        editPenEditText.error =
-                                            resources.getString(R.string.name_already_used)
-                                    }
-                                }
-                            }
-
-                            // Dismiss dialog
-                            val negButton = editPen.getButton(AlertDialog.BUTTON_NEGATIVE)
-                            negButton.setOnClickListener { dialog.dismiss() }
-
-                            // Delete PenModel
-                            val neuButton = editPen.getButton(AlertDialog.BUTTON_NEUTRAL)
-                            neuButton.setOnClickListener {
-
-                                if (selectedPenAndLotModel.lotCloudDatabaseId == null) {
-                                    managePensViewModel.onEvent(ManagePenEvents.OnPenDeleted(selectedPenAndLotModel.toPenModel()))
-                                    editPen.dismiss()
-                                } else {
-
-                                    val lotOfCowsInThisPen =
-                                        AlertDialog.Builder(this@ManagePensActivity)
-                                    lotOfCowsInThisPen.setTitle(
-                                        resources.getString(R.string.still_cows_title)
-                                    )
-                                    lotOfCowsInThisPen.setMessage(
-                                        resources.getString(R.string.still_cows_body)
-                                    )
-                                    lotOfCowsInThisPen.setPositiveButton(resources.getString(R.string.ok)) { dialog, which -> editPen.dismiss() }
-                                    lotOfCowsInThisPen.show()
-
-                                }
-                            }
-                        }
-                        editPen.show()
+                        val add_edit_pen_intent =
+                            Intent(this@ManagePensActivity, AddEditPensActivity::class.java)
+                        startActivity(add_edit_pen_intent)
+//                        val selectedPenAndLotModel = mPenAndLotList[position]
+//
+//                        val dialogView = LayoutInflater.from(this@ManagePensActivity)
+//                            .inflate(R.layout.dialog_add_new_pen, null)
+//                        val editPenEditText =
+//                            dialogView.findViewById<EditText>(R.id.dialog_add_new_pen_edit_text)
+//                        editPenEditText.setText(selectedPenAndLotModel.penName)
+//                        editPenEditText.setSelectAllOnFocus(true)
+//                        editPenEditText.setSelection(selectedPenAndLotModel.penName.length)
+//                        val editPen = AlertDialog.Builder(this@ManagePensActivity)
+//                            .setTitle("Edit pen")
+//                            .setView(dialogView)
+//                            .setPositiveButton(resources.getString(R.string.update), null)
+//                            .setNegativeButton(resources.getString(R.string.cancel), null)
+//                            .setNeutralButton(resources.getString(R.string.delete), null)
+//                            .create()
+//
+//                        editPen.setOnShowListener { dialog ->
+//
+//                            // Update PenModel
+//                            val posBtn = editPen.getButton(AlertDialog.BUTTON_POSITIVE)
+//                            posBtn.setOnClickListener {
+//                                if (editPenEditText.length() == 0) {
+//                                    editPenEditText.requestFocus()
+//                                    editPenEditText.error =
+//                                        resources.getString(R.string.please_fill_blank)
+//                                } else {
+//                                    val updatedText = editPenEditText.text.toString()
+//                                    if (isPenNameAvailable(updatedText, mPenAndLotList)) {
+//                                        selectedPenAndLotModel.penName = updatedText
+//
+//                                        managePensViewModel.onEvent(ManagePenEvents.OnPenUpdated(selectedPenAndLotModel.toPenModel()))
+//
+//                                        editPen.dismiss()
+//                                    } else {
+//                                        editPenEditText.requestFocus()
+//                                        editPenEditText.error =
+//                                            resources.getString(R.string.name_already_used)
+//                                    }
+//                                }
+//                            }
+//
+//                            // Dismiss dialog
+//                            val negButton = editPen.getButton(AlertDialog.BUTTON_NEGATIVE)
+//                            negButton.setOnClickListener { dialog.dismiss() }
+//
+//                            // Delete PenModel
+//                            val neuButton = editPen.getButton(AlertDialog.BUTTON_NEUTRAL)
+//                            neuButton.setOnClickListener {
+//
+//                                if (selectedPenAndLotModel.lotCloudDatabaseId == null) {
+//                                    managePensViewModel.onEvent(ManagePenEvents.OnPenDeleted(selectedPenAndLotModel.toPenModel()))
+//                                    editPen.dismiss()
+//                                } else {
+//
+//                                    val lotOfCowsInThisPen =
+//                                        AlertDialog.Builder(this@ManagePensActivity)
+//                                    lotOfCowsInThisPen.setTitle(
+//                                        resources.getString(R.string.still_cows_title)
+//                                    )
+//                                    lotOfCowsInThisPen.setMessage(
+//                                        resources.getString(R.string.still_cows_body)
+//                                    )
+//                                    lotOfCowsInThisPen.setPositiveButton(resources.getString(R.string.ok)) { dialog, which -> editPen.dismiss() }
+//                                    lotOfCowsInThisPen.show()
+//
+//                                }
+//                            }
+//                        }
+//                        editPen.show()
                     }
 
                     override fun onLongItemClick(view: View, position: Int) {}
@@ -168,15 +170,18 @@ class ManagePensActivity : AppCompatActivity(){
         )
 
         // TODO: fix issue where pen list does not update when pen is edited
-        lifecycleScope.launch{
-            managePensViewModel.uiState.collect{
-                mPenAndLotList = it.penList
-                mPenRecyclerViewAdapter!!.swapData(mPenAndLotList)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                managePensViewModel.uiState.collect {
 
-                if (mPenAndLotList.isNotEmpty()) {
-                    mEmptyTv.visibility = View.INVISIBLE
-                } else {
-                    mEmptyTv.visibility = View.VISIBLE
+                    mPenAndLotList = it.penList
+                    mPenRecyclerViewAdapter!!.swapData(mPenAndLotList)
+
+                    if (mPenAndLotList.isNotEmpty()) {
+                        mEmptyTv.visibility = View.INVISIBLE
+                    } else {
+                        mEmptyTv.visibility = View.VISIBLE
+                    }
                 }
             }
         }

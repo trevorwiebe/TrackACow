@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,18 +19,22 @@ class ManagePensViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ManagePensUiState())
     val uiState: StateFlow<ManagePensUiState> = _uiState.asStateFlow()
 
+    var readPensJob: Job? = null
+
     init {
         readPensAndLots()
     }
 
-    fun onEvent(events: ManagePenEvents){
-        when(events){
+    fun onEvent(events: ManagePenEvents) {
+        when (events) {
             is ManagePenEvents.OnPenSaved -> {
                 createPen(events.penModel)
             }
+
             is ManagePenEvents.OnPenDeleted -> {
                 deletePen(events.penModel)
             }
+
             is ManagePenEvents.OnPenUpdated -> {
                 updatePen(events.penModel)
             }
@@ -48,14 +53,15 @@ class ManagePensViewModel @Inject constructor(
         }
     }
 
-    private fun updatePen(penModel: PenModel){
+    private fun updatePen(penModel: PenModel) {
         viewModelScope.launch {
             penUseCases.updatePenUC(penModel)
         }
     }
 
-    private fun readPensAndLots(){
-        penUseCases.readPenAndLotModelIncludeEmptyPens()
+    private fun readPensAndLots() {
+        readPensJob?.cancel()
+        readPensJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
             .map { thisPenList ->
                 _uiState.update { uiState ->
                     uiState.copy(

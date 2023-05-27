@@ -35,8 +35,8 @@ interface PenDao {
     @Query("UPDATE Pen SET penName = :penName WHERE penCloudDatabaseId = :penId")
     fun updatePenNameById(penName: String, penId: String)
 
-    @Query("UPDATE Pen SET penName = :penName WHERE penPrimaryKey = :penPrimaryKey")
-    suspend fun updatePen(penName: String, penPrimaryKey: Int)
+    @Update()
+    suspend fun updatePen(penEntity: PenEntity)
 
     @Update()
     suspend fun updatePenList(penList: List<PenEntity>)
