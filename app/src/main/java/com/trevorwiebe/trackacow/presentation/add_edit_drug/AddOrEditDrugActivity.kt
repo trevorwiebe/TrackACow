@@ -83,8 +83,8 @@ class AddOrEditDrugActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        menuInflater.inflate(R.menu.edit_drug_menu, menu)
-        val deleteBtn = menu?.findItem(R.id.action_delete_drug)
+        menuInflater.inflate(R.menu.edit_delete_menu, menu)
+        val deleteBtn = menu?.findItem(R.id.action_delete)
         deleteBtn?.isVisible = mDrugModel != null
 
         return super.onCreateOptionsMenu(menu)
@@ -92,7 +92,7 @@ class AddOrEditDrugActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if (item.itemId == R.id.action_delete_drug) {
+        if (item.itemId == R.id.action_delete) {
             mAddOrEditDrugViewModel.onEvent(AddOrEditDrugUiEvent.OnDrugDeleted(mDrugModel!!))
             finish()
         }
