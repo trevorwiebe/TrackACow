@@ -1,7 +1,6 @@
 When updating a drug given for a specific cow, and returning to EditDrugGivenListActivity and EditMedicatedCowActivity
 Add code to save feeds to cloud
 Fix issue in Move where when lot is moved on top of another lot, it disappears from the app
-Fix issue in Move where when there is no pen, a gray bar shows up
 
 Confirm that CRUD works on all entities
     Call
