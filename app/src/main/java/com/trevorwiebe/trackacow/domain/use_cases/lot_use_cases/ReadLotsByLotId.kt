@@ -4,9 +4,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
 import com.trevorwiebe.trackacow.domain.utils.addSingleValueEventListenerFlow
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 
 data class ReadLotsByLotId(
@@ -14,7 +14,8 @@ data class ReadLotsByLotId(
     private val firebaseDatabase: FirebaseDatabase,
     private val lotDatabaseString: String
 ) {
-    @OptIn(FlowPreview::class)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(lotCloudDatabaseId: String): Flow<LotModel?> {
         val localFlow = lotRepository.readLotByLotId(lotCloudDatabaseId)
 
@@ -23,12 +24,11 @@ data class ReadLotsByLotId(
         )
         val lotCloudFlow = lotRef.addSingleValueEventListenerFlow(LotModel::class.java)
 
-        return localFlow
-            .flatMapConcat { localData ->
-                lotCloudFlow.onStart {
-                    if (localData != null) {
-                        emit(localData)
-                    }
+        return lotCloudFlow
+            .flatMapLatest { cloudData ->
+                lotRepository.insertOrUpdateLotList(listOf(cloudData))
+                localFlow.onStart {
+                    emit(cloudData)
                 }
             }
     }
