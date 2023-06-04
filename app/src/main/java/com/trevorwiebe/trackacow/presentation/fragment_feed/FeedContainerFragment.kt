@@ -15,10 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.R
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.tabs.TabLayout
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenViewPagerAdapter
-import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,13 +37,6 @@ class FeedContainerFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_feed, container, false)
         feedPenViewPager = view.findViewById(R.id.feed_pen_view_pager)
-        feedPenViewPager.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(i: Int, v: Float, i1: Int) {}
-            override fun onPageSelected(i: Int) {
-                Utility.saveLastFeedPen(mContext, i)
-            }
-            override fun onPageScrollStateChanged(i: Int) {}
-        })
         val tabs = view.findViewById<TabLayout>(R.id.feed_pen_tab_layout)
         tabs.setupWithViewPager(feedPenViewPager)
 
@@ -59,9 +50,6 @@ class FeedContainerFragment : Fragment() {
         feedPenViewPagerAdapter = fragmentManager?.let { FeedPenViewPagerAdapter(it, emptyList()) }
 
         feedPenViewPager.adapter = feedPenViewPagerAdapter
-        feedPenViewPager.viewTreeObserver.addOnGlobalLayoutListener {
-            feedPenViewPager.setCurrentItem(Utility.getLastFeedPen(mContext), false)
-        }
 
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
