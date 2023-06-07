@@ -103,14 +103,7 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-        if(newPosition == 1){
-            val lotShuffleObject = shuffleObjects[oldPosition]
-            shuffleObjects.removeAt(oldPosition)
-            shuffleObjects.add(newPosition, lotShuffleObject)
-            notifyItemMoved(oldPosition, newPosition)
-            Log.d(TAG, "onViewMoved: under merge and split lot")
-        }
-        if (newPosition > 1) {
+        if (newPosition >= 1) {
             val lotShuffleObject = shuffleObjects[oldPosition]
             val lotId = lotShuffleObject.id
             shuffleObjects.removeAt(oldPosition)
@@ -119,7 +112,7 @@ class ShufflePenAndLotsAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             val shuffleObjectNeighbors = getShuffleObjectsBeside(newPosition)
 
-            if(shuffleObjectNeighbors[0] != null && shuffleObjectNeighbors[0]!!.type == LOT_NAME) {
+            if (shuffleObjectNeighbors[0] != null && shuffleObjectNeighbors[0]!!.type == LOT_NAME) {
                 Log.d(TAG, "onViewMoved: two items under one pen (below lot)")
             }
 
