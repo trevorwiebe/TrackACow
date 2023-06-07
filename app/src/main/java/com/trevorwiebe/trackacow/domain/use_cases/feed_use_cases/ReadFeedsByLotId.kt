@@ -25,10 +25,9 @@ data class ReadFeedsByLotId(
 
         val feedCloudFlow = feedQuery.addQueryListValueEventListenerFlow(FeedModel::class.java)
 
-        return feedCloudFlow
-            .flatMapLatest { cloudData ->
-                feedRepository.insertOrUpdateFeedList(cloudData)
-                localFeedFlow.onStart { emit(cloudData) }
+        return localFeedFlow
+            .flatMapLatest { localData ->
+                feedCloudFlow.onStart { emit(localData) }
             }
     }
 }

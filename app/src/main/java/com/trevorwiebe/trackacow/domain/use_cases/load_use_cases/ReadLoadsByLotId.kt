@@ -23,10 +23,9 @@ data class ReadLoadsByLotId(
             .equalTo(lotId)
         val loadFlow = loadRef.addQueryListValueEventListenerFlow(LoadModel::class.java)
 
-        return loadFlow
-            .flatMapLatest { cloudData ->
-                loadRepository.insertOrUpdateLoadList(cloudData)
-                localFlow.onStart { emit(cloudData) }
+        return localFlow
+            .flatMapLatest { localData ->
+                loadFlow.onStart { emit(localData) }
             }
     }
 }

@@ -21,12 +21,10 @@ class ReadAllRationsUC(
         val rationRef = firebaseDatabase.getReference(databaseString)
         val rationCloudFlow = rationRef.addListValueEventListenerFlow(RationModel::class.java)
 
-        return rationCloudFlow
-            .flatMapLatest { cloudData ->
-                rationsRepository.insertOrUpdateRationList(cloudData)
-                localFlow.onStart {
-                    emit(cloudData)
-                }
+        return localFlow.flatMapLatest { localData ->
+            rationCloudFlow.onStart {
+                emit(localData)
             }
+        }
     }
 }

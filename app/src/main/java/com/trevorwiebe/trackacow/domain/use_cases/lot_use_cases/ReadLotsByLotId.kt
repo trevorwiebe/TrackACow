@@ -24,11 +24,12 @@ data class ReadLotsByLotId(
         )
         val lotCloudFlow = lotRef.addSingleValueEventListenerFlow(LotModel::class.java)
 
-        return lotCloudFlow
-            .flatMapLatest { cloudData ->
-                lotRepository.insertOrUpdateLotList(listOf(cloudData))
-                localFlow.onStart {
-                    emit(cloudData)
+        return localFlow
+            .flatMapLatest { localData ->
+                lotCloudFlow.onStart {
+                    if (localData != null) {
+                        emit(localData)
+                    }
                 }
             }
     }

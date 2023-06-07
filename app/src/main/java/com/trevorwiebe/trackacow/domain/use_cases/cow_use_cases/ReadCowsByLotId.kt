@@ -24,10 +24,9 @@ class ReadCowsByLotId(
             .equalTo(lotId)
         val cowCloudFlow = cowDatabaseRef.addQueryListValueEventListenerFlow(CowModel::class.java)
 
-        return cowCloudFlow
-            .flatMapLatest { cloudData ->
-                cowRepository.insertOrUpdateCowList(cloudData)
-                localFlow.onStart { emit(cloudData) }
+        return localFlow
+            .flatMapLatest { localData ->
+                cowCloudFlow.onStart { emit(localData) }
             }
     }
 }

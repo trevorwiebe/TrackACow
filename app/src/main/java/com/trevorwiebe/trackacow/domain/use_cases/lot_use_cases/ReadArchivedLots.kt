@@ -24,10 +24,9 @@ data class ReadArchivedLots(
             .equalTo(1.toDouble())
         val archivedLotFlow = archiveLotRef.addQueryListValueEventListenerFlow(LotModel::class.java)
 
-        return archivedLotFlow
-            .flatMapLatest { cloudData ->
-                lotRepository.insertOrUpdateLotList(cloudData)
-                localFlow.onStart { emit(cloudData) }
+        return localFlow
+            .flatMapLatest { localData ->
+                archivedLotFlow.onStart { emit(localData) }
             }
     }
 }

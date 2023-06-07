@@ -26,10 +26,9 @@ data class ReadLots(
 
         val lotCloudFlow = lotRef.addQueryListValueEventListenerFlow(LotModel::class.java)
 
-        return lotCloudFlow
-            .flatMapLatest { cloudData ->
-                lotRepository.insertOrUpdateLotList(cloudData)
-                localLotFlow.onStart { emit(cloudData) }
+        return localLotFlow
+            .flatMapLatest { localData ->
+                lotCloudFlow.onStart { emit(localData) }
             }
     }
 }
