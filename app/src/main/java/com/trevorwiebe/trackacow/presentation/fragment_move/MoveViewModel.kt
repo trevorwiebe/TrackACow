@@ -1,9 +1,7 @@
 package com.trevorwiebe.trackacow.presentation.fragment_move
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,15 +28,7 @@ class MoveViewModel @Inject constructor(
     fun onEvent(event: MoveUiEvents){
         when(event){
             is MoveUiEvents.OnItemShuffled -> {
-                updateLotWithNewPenId(event.lotModel)
-            }
-            is MoveUiEvents.OnDragStart -> {
-                readPenAndLotsJob?.cancel()
-                Log.d("TAG", "onEvent: here1")
-            }
-            is MoveUiEvents.OnDragStop -> {
-                readPensAndLots()
-                Log.d("TAG", "onEvent: here2")
+                updateLotWithNewPenId(event.lotId, event.penId)
             }
         }
     }
@@ -46,7 +36,6 @@ class MoveViewModel @Inject constructor(
     private fun readPensAndLots(){
         readPenAndLotsJob?.cancel()
         readPenAndLotsJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
-            .cancellable()
             .map { thisPenAndLotList ->
                 _uiState.update { uiState ->
                     uiState.copy(
@@ -57,15 +46,13 @@ class MoveViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun updateLotWithNewPenId(lotModel: LotModel){
-        viewModelScope.launch{
-            lotUseCases.updateLotWithNewPenIdUC(lotModel)
+    private fun updateLotWithNewPenId(lotId: String, penId: String) {
+        viewModelScope.launch {
+            lotUseCases.updateLotWithNewPenIdUC(lotId, penId)
         }
     }
 }
 
 sealed class MoveUiEvents{
-    data class OnItemShuffled(val lotModel: LotModel): MoveUiEvents()
-    object OnDragStart: MoveUiEvents()
-    object OnDragStop: MoveUiEvents()
+    data class OnItemShuffled(val lotId: String, val penId: String) : MoveUiEvents()
 }

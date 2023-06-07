@@ -45,16 +45,8 @@ class MoveFragment : Fragment() {
 
         mShuffleAdapter = ShufflePenAndLotsAdapter()
 
-        mShuffleAdapter.onItemShuffled { lotModel ->
-            moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotModel))
-        }
-
-        mShuffleAdapter.onDragStart {
-            moveViewModel.onEvent(MoveUiEvents.OnDragStart)
-        }
-
-        mShuffleAdapter.onDragStop {
-            moveViewModel.onEvent(MoveUiEvents.OnDragStop)
+        mShuffleAdapter.onItemShuffled { lotId, penId ->
+            moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotId, penId))
         }
 
         val dragHelper = DragHelper(mShuffleAdapter)

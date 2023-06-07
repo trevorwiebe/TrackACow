@@ -74,7 +74,7 @@
     <string name="move">Move</string>
     <string name="empty_move">No pens or lots found. \n \n This is where lots are moved from one pen to another.</string>
     <string name="merge">MERGE</string>
-    <string name="only_one_lot_per_pen">You can only have one lot in each pen. Reports will not be accurate</string>
+    <string name="merge_lot_btn_text">Merge Lots</string>
     <string name="reorder_lots">Reorder lots</string>
     <string name="drag_here_to_split">"Drag here to merge or split a lot"</string>
 
