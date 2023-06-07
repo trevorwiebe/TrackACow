@@ -1,24 +1,24 @@
 package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 
-import androidx.recyclerview.widget.RecyclerView
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import com.trevorwiebe.trackacow.R
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
 import android.os.Build.VERSION
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
+import com.trevorwiebe.trackacow.presentation.add_lot_and_load.AddLotAndLoad
 import com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container.FeedLotViewPagerContainer
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +66,9 @@ class FeedPenListFragment : Fragment() {
         mFeedPenRv.adapter = feedPenRecyclerViewAdapter
 
         mAddLotBtn.setOnClickListener {
-            Toast.makeText(context, "Not implemented yet", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, AddLotAndLoad::class.java)
+            intent.putExtra("pen_id", mLotModel.lotPenCloudDatabaseId)
+            startActivity(intent)
         }
 
         mFeedPenRv.addOnItemTouchListener(

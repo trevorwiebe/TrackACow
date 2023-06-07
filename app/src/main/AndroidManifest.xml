@@ -13,11 +13,18 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
-            android:parentActivityName=".presentation.manage_pens.ManagePensActivity"
-            android:label="@string/add_pen"
-            android:name=".presentation.add_edit_pen.AddEditPensActivity"
+            android:name=".presentation.add_lot_and_load.AddLotAndLoad"
+            android:label="Add Lot And Load"
+            android:parentActivityName=".presentation.main_activity.MainActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".presentation.add_edit_pen.AddEditPensActivity"
+            android:exported="false"
+            android:label="@string/add_pen"
+            android:parentActivityName=".presentation.manage_pens.ManagePensActivity" />
 
         <meta-data
             android:name="firebase_analytics_collection_enabled"

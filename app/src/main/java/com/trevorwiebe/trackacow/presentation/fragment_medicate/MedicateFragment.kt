@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.presentation.medicated_cows.MedicatedCowsActivity
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
-import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.add_lot_and_load.AddLotAndLoad
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -62,9 +62,19 @@ class MedicateFragment : Fragment() {
                 mPenRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val trackCowIntent = Intent(mContext, MedicatedCowsActivity::class.java)
-                        trackCowIntent.putExtra("penAndLotModel", mPenAndLotModelList[position])
-                        startActivity(trackCowIntent)
+                        val penAndLotModel = mPenAndLotModelList[position]
+                        if (penAndLotModel.lotCloudDatabaseId.isNullOrEmpty()) {
+                            val addLotAndLoadIntent = Intent(context, AddLotAndLoad::class.java)
+                            addLotAndLoadIntent.putExtra(
+                                "pen_id",
+                                penAndLotModel.penCloudDatabaseId
+                            )
+                            startActivity(addLotAndLoadIntent)
+                        } else {
+                            val trackCowIntent = Intent(context, MedicatedCowsActivity::class.java)
+                            trackCowIntent.putExtra("penAndLotModel", penAndLotModel)
+                            startActivity(trackCowIntent)
+                        }
                     }
 
                     override fun onLongItemClick(view: View, position: Int) {}
