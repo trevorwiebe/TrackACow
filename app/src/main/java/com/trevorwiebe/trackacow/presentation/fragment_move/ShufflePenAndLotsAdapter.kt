@@ -10,15 +10,16 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper.ActionCompletionContract
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.LotViewHolder
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.PenViewHolder
-import com.trevorwiebe.trackacow.presentation.fragment_move.utils.ShuffleObject
 
 class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
     ActionCompletionContract {
 
-    private var shuffleObjects: ArrayList<ShuffleObject> = ArrayList()
+    private var objectList: MutableList<Any> = mutableListOf()
     private lateinit var context: Context
     private lateinit var touchHelper: ItemTouchHelper
 
@@ -52,11 +53,12 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val shuffleObject = shuffleObjects[position]
-        when (shuffleObject.type) {
-            LOT_NAME -> {
-                val lotName = shuffleObject.name
+        val modelObject = objectList[position]
+        when (modelObject) {
+            is LotModel -> {
+                val lotName = modelObject.lotName
                 val lotViewHolder = holder as LotViewHolder
+                lotViewHolder.lotModel = modelObject
                 lotViewHolder.lotName.text = lotName
                 lotViewHolder.reorder.setOnTouchListener { v, event ->
                     if (event.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -65,8 +67,9 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
                     true
                 }
             }
-            PEN_NAME -> {
-                val penName = shuffleObject.name
+
+            is PenModel -> {
+                val penName = modelObject.penName
                 val penText = "Pen: $penName"
                 val penViewHolder = holder as PenViewHolder
                 penViewHolder.penName.text = penText
@@ -76,38 +79,40 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
     }
 
     override fun getItemCount(): Int {
-        return shuffleObjects.size
+        return objectList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        val shuffleObject = shuffleObjects[position]
-        return shuffleObject.type
+        val modelObject = objectList[position]
+        if (modelObject is LotModel) return LOT_NAME
+        return PEN_NAME
     }
 
-    fun setShuffleObjectList(shuffleObjects: MutableList<ShuffleObject>, context: Context) {
-        this.shuffleObjects = ArrayList(shuffleObjects)
+    fun setShuffleObjectList(objectList: MutableList<Any>, context: Context) {
+        this.objectList = objectList
         this.context = context
         notifyDataSetChanged()
     }
 
     override fun onViewMoved(oldPosition: Int, newPosition: Int, viewHolder: ViewHolder) {
         if (newPosition >= 1) {
-            val lotShuffleObject = shuffleObjects[oldPosition]
-            shuffleObjects.removeAt(oldPosition)
-            shuffleObjects.add(newPosition, lotShuffleObject)
+            val lotShuffleObject = objectList[oldPosition]
+            objectList.removeAt(oldPosition)
+            objectList.add(newPosition, lotShuffleObject)
             notifyItemMoved(oldPosition, newPosition)
         }
     }
 
     override fun onClearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
         val selectedLotPosition = viewHolder.adapterPosition
-        val lotId = shuffleObjects[selectedLotPosition].id
+        val lotModel = objectList[selectedLotPosition] as LotModel
+        val lotId = lotModel.lotCloudDatabaseId
         val shuffleObjectNeighbors = getShuffleObjectsBeside(selectedLotPosition)
 
-        if (shuffleObjectNeighbors[0]?.type == PEN_NAME && shuffleObjectNeighbors[1]?.type == PEN_NAME) {
-            val penId = shuffleObjectNeighbors[0]?.id
-            if (penId != null) {
-                onItemShuffledCallback(lotId, penId)
+        if (shuffleObjectNeighbors[0] is PenModel && shuffleObjectNeighbors[1] is PenModel) {
+            val penModel = shuffleObjectNeighbors[0] as PenModel
+            if (penModel.penCloudDatabaseId.isNullOrEmpty()) {
+                onItemShuffledCallback(lotId, penModel.penCloudDatabaseId!!)
             }
         }
         setMergeButtons(recyclerView)
@@ -117,11 +122,11 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
         this.touchHelper = touchHelper
     }
 
-    private fun getShuffleObjectsBeside(position: Int): List<ShuffleObject?> {
-        val topShuffleObject: ShuffleObject? =
-            if (position == 0) null else shuffleObjects[position - 1]
-        val bottomShuffleObject: ShuffleObject? =
-            if (position + 1 == shuffleObjects.size) null else shuffleObjects[position + 1]
+    private fun getShuffleObjectsBeside(position: Int): List<Any?> {
+        val topShuffleObject: Any? =
+            if (position == 0) null else objectList[position - 1]
+        val bottomShuffleObject: Any? =
+            if (position + 1 == objectList.size) null else objectList[position + 1]
         return listOf(topShuffleObject, bottomShuffleObject)
     }
 
@@ -134,13 +139,17 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
                 lastPenViewHolder = selectedViewHolder
                 lotViewHolderList.clear()
             } else if (selectedViewHolder is LotViewHolder) {
+
+                lotViewHolderList.add(selectedViewHolder)
+
                 // need to show a merge button
-                if (lotViewHolderList.isNotEmpty()) {
+                if (lotViewHolderList.size > 1) {
                     lastPenViewHolder?.mergeLotsBtn?.visibility = View.VISIBLE
+                    lastPenViewHolder?.setLotsToMerge(lotViewHolderList.map { it.lotModel })
                 } else {
                     lastPenViewHolder?.mergeLotsBtn?.visibility = View.INVISIBLE
+
                 }
-                lotViewHolderList.add(selectedViewHolder)
             }
         }
     }

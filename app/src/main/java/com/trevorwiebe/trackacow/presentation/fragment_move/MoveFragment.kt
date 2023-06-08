@@ -16,7 +16,8 @@ import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.trevorwiebe.trackacow.presentation.fragment_move.utils.ShuffleObject
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toPenModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -63,36 +64,27 @@ class MoveFragment : Fragment() {
 
                     val penAndLotList = it.penAndLotList
 
-                    val shuffleObjectsList: MutableList<ShuffleObject> = mutableListOf()
-                    
-                    for (r in penAndLotList.indices){
+                    val objectList: MutableList<Any> = mutableListOf()
+
+                    for (r in penAndLotList.indices) {
 
                         val penAndLotModel = penAndLotList[r]
 
-                        val penShuffleObject = ShuffleObject(
-                            ShufflePenAndLotsAdapter.PEN_NAME,
-                            penAndLotModel.penName,
-                            penAndLotModel.penCloudDatabaseId?:""
-                        )
+                        val penModel = penAndLotModel.toPenModel()
+                        objectList.add(penModel)
 
-                        shuffleObjectsList.add(penShuffleObject)
-
-                        if(!penAndLotModel.lotName.isNullOrEmpty()){
-                            val lotShuffleObject = ShuffleObject(
-                                ShufflePenAndLotsAdapter.LOT_NAME,
-                                penAndLotModel.lotName!!,
-                                penAndLotModel.lotCloudDatabaseId!!
-                            )
-                            shuffleObjectsList.add(lotShuffleObject)
+                        if (!penAndLotModel.lotName.isNullOrEmpty()) {
+                            val lotModel = penAndLotModel.toLotModel()
+                            objectList.add(lotModel)
                         }
                     }
 
-                    if (shuffleObjectsList.size == 0) {
+                    if (objectList.size == 0) {
                         mEmptyMoveList.visibility = View.VISIBLE
                     } else {
                         mEmptyMoveList.visibility = View.INVISIBLE
                     }
-                    mShuffleAdapter.setShuffleObjectList(shuffleObjectsList, mContext)
+                    mShuffleAdapter.setShuffleObjectList(objectList, mContext)
                 }
             }
         }
