@@ -54,6 +54,7 @@ class AddEditPensActivity : AppCompatActivity() {
                     mAddEditPenViewModel.onEvent(
                         AddEditPensEvent.OnPenUpdated(mPenAndLotModel!!.toPenModel())
                     )
+                    finish()
                 } else {
                     val penModel = PenModel(
                         0,
