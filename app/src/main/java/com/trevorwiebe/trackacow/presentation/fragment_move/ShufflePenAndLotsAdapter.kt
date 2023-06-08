@@ -111,7 +111,7 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
 
         if (shuffleObjectNeighbors[0] is PenModel && shuffleObjectNeighbors[1] is PenModel) {
             val penModel = shuffleObjectNeighbors[0] as PenModel
-            if (penModel.penCloudDatabaseId.isNullOrEmpty()) {
+            if (penModel.penCloudDatabaseId != "") {
                 onItemShuffledCallback(lotId, penModel.penCloudDatabaseId!!)
             }
         }
