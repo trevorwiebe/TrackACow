@@ -71,7 +71,7 @@
     <string name="empty_reports_list">This is where the reports for each of your lots will be.</string>
 
     Move Strings
-    <string name="move">Move</string>
+    <string name="move">Move/Merge</string>
     <string name="empty_move">No pens or lots found. \n \n This is where lots are moved from one pen to another.</string>
     <string name="merge">MERGE</string>
     <string name="merge_lot_btn_text">Merge Lots</string>
