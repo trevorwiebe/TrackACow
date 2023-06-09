@@ -50,6 +50,10 @@ class MoveFragment : Fragment() {
             moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotId, penId))
         }
 
+        mShuffleAdapter.onLotsMerged { lotModelList ->
+            moveViewModel.onEvent(MoveUiEvents.OnLotsMerged(lotModelList))
+        }
+
         val dragHelper = DragHelper(mShuffleAdapter)
         val itemTouchHelper = ItemTouchHelper(dragHelper)
         mShuffleAdapter.setTouchHelper(itemTouchHelper)
@@ -58,9 +62,9 @@ class MoveFragment : Fragment() {
 
         itemTouchHelper.attachToRecyclerView(mMoveRv)
 
-        lifecycleScope.launch{
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                moveViewModel.uiState.collect{
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                moveViewModel.uiState.collect {
 
                     val penAndLotList = it.penAndLotList
 

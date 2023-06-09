@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow.domain.repository.local
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import kotlinx.coroutines.flow.Flow
 
 interface CallRepository {
@@ -22,7 +21,7 @@ interface CallRepository {
 
     suspend fun updateCall(callModel: CallModel)
 
-    suspend fun updateCallsWithNewLot(savedLotModel: LotModel, deleteLotList: List<LotModel>)
+    suspend fun updateCallsWithNewLot(savedLotModelId: String, deleteLotIdList: List<String>)
 
     suspend fun deleteCall(callModel: CallModel)
 

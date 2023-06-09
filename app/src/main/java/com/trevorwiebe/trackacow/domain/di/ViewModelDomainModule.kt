@@ -193,6 +193,16 @@ object ViewModelDomainModule {
     fun provideLotUseCases(
         lotRepository: LotRepository,
         lotRepositoryRemote: LotRepositoryRemote,
+        callRepository: CallRepository,
+        callRepositoryRemote: CallRepositoryRemote,
+        cowRepository: CowRepository,
+        cowRepositoryRemote: CowRepositoryRemote,
+        drugsGivenRepository: DrugsGivenRepository,
+        drugsGivenRepositoryRemote: DrugsGivenRepositoryRemote,
+        feedRepository: FeedRepository,
+        feedRepositoryRemote: FeedRepositoryRemote,
+        loadRepository: LoadRepository,
+        loadRemoteRepository: LoadRemoteRepository,
         firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
@@ -221,7 +231,16 @@ object ViewModelDomainModule {
                 context
             ),
             updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context),
-            deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context)
+            deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context),
+            mergeLots = MergeLots(
+                lotRepository, lotRepositoryRemote,
+                callRepository, callRepositoryRemote,
+                cowRepository, cowRepositoryRemote,
+                drugsGivenRepository, drugsGivenRepositoryRemote,
+                feedRepository, feedRepositoryRemote,
+                loadRepository, loadRemoteRepository,
+                context
+            )
         )
     }
 

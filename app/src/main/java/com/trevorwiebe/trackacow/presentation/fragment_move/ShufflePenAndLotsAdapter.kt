@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
@@ -24,9 +25,14 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
     private lateinit var touchHelper: ItemTouchHelper
 
     private lateinit var onItemShuffledCallback: (lotId: String, penId: String) -> Unit
+    private lateinit var onLotsMerged: (lotIdList: List<String>) -> Unit
 
     fun onItemShuffled(callback: (lotId: String, penId: String) -> Unit) {
         onItemShuffledCallback = callback
+    }
+
+    fun onLotsMerged(callback: (lotIdList: List<String>) -> Unit) {
+        onLotsMerged = callback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,6 +80,20 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
                 val penViewHolder = holder as PenViewHolder
                 penViewHolder.penName.text = penText
                 penViewHolder.mergeLotsBtn.visibility = View.INVISIBLE
+                penViewHolder.mergeLotsBtn.setOnClickListener {
+                    val lotNameList =
+                        penViewHolder.lotsToMergeList.joinToString(", ") { it.lotName }
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle("Caution")
+                        .setMessage("Are you sure you want to merge these lots? - $lotNameList -  This action cannot be undone.")
+                        .setPositiveButton("Merge Lots") { dialog, which ->
+                            val lotIdList =
+                                penViewHolder.lotsToMergeList.map { it.lotCloudDatabaseId }
+                            onLotsMerged(lotIdList)
+                        }
+                        .setNegativeButton("Cancel") { _, _ -> }
+                        .show()
+                }
             }
         }
     }

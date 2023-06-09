@@ -26,9 +26,13 @@ class MoveViewModel @Inject constructor(
     }
 
     fun onEvent(event: MoveUiEvents){
-        when(event){
+        when (event) {
             is MoveUiEvents.OnItemShuffled -> {
                 updateLotWithNewPenId(event.lotId, event.penId)
+            }
+
+            is MoveUiEvents.OnLotsMerged -> {
+                mergeLots(event.lotIdList)
             }
         }
     }
@@ -51,8 +55,15 @@ class MoveViewModel @Inject constructor(
             lotUseCases.updateLotWithNewPenIdUC(lotId, penId)
         }
     }
+
+    private fun mergeLots(lotModelIdList: List<String>) {
+        viewModelScope.launch {
+            lotUseCases.mergeLots(lotModelIdList)
+        }
+    }
 }
 
 sealed class MoveUiEvents{
     data class OnItemShuffled(val lotId: String, val penId: String) : MoveUiEvents()
+    data class OnLotsMerged(val lotIdList: List<String>) : MoveUiEvents()
 }

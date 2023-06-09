@@ -50,8 +50,8 @@ interface LotDao {
     @Delete
     suspend fun deleteLot(lotEntity: LotEntity)
 
-    @Delete
-    suspend fun deleteLotList(lotList: List<LotEntity>)
+    @Query("DELETE FROM lot WHERE lotCloudDatabaseId IN (:lotIdList)")
+    suspend fun deleteLotList(lotIdList: List<String>)
 
     @Query("DELETE FROM lot")
     suspend fun deleteAllLots()

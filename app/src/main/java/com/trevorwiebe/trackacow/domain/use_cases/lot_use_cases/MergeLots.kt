@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
@@ -32,7 +31,7 @@ data class MergeLots(
     private val context: Application
 ) {
 
-    suspend operator fun invoke(lotModelList: List<LotModel>) {
+    suspend operator fun invoke(lotModelIdList: List<String>) {
 
         // TODO: update lots        local-X     remote      cache-
         // TODO: update Calls       local-X     remote-     cache-
@@ -41,14 +40,11 @@ data class MergeLots(
         // TODO: update feed        local-X     remote-     cache-
         // TODO: update loads       local-X     remote-     cache-
 
-        val lotToSave = lotModelList[0]
-        val lotListToDelete = lotModelList - lotToSave
+        val lotToSaveId = lotModelIdList[0]
+        val lotsToDeleteIds = lotModelIdList - lotToSaveId
 
-        val lotToSaveId = lotToSave.lotCloudDatabaseId
-        val lotsToDeleteIds = lotListToDelete.map { it.lotCloudDatabaseId }
-
-        lotRepository.deleteLotList(lotListToDelete)
-        callRepository.updateCallsWithNewLot(lotToSave, lotListToDelete)
+        lotRepository.deleteLotListById(lotsToDeleteIds)
+        callRepository.updateCallsWithNewLot(lotToSaveId, lotsToDeleteIds)
         cowRepository.updateCowsWithNewLot(lotToSaveId, lotsToDeleteIds)
         drugsGivenRepository.updateDrugsGivenWithNewLot(lotToSaveId, lotsToDeleteIds)
         feedRepository.updateFeedsWithNewLot(lotToSaveId, lotsToDeleteIds)
