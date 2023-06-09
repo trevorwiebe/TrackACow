@@ -36,6 +36,13 @@ data class CowRepositoryImpl(
         cowDao.updateCow(cowModel.toCowEntity())
     }
 
+    override suspend fun updateCowsWithNewLot(
+        lotIdToSave: String,
+        lotIdListToRemove: List<String>
+    ) {
+        cowDao.updateCowWithNewLotId(lotIdToSave, lotIdListToRemove)
+    }
+
     override suspend fun deleteCow(cowModel: CowModel) {
         cowDao.deleteCow(cowModel.toCowEntity())
     }

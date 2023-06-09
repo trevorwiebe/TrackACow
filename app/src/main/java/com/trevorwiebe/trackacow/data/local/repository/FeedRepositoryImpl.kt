@@ -33,9 +33,13 @@ class FeedRepositoryImpl(
         endDate: Long
     ): Flow<List<FeedModel>> {
         return feedDao.getFeedsByLotIdAndDate(lotId, startDate, endDate)
-                .map { feedList ->
-                    feedList.map { it.toFeedModel() }
-                }
+            .map { feedList ->
+                feedList.map { it.toFeedModel() }
+            }
+    }
+
+    override suspend fun updateFeedsWithNewLot(lotId: String, oldLotIds: List<String>) {
+        feedDao.updateFeedsWithNewLotId(lotId, oldLotIds)
     }
 
     override suspend fun deleteFeedList(feedModelList: List<FeedModel>) {

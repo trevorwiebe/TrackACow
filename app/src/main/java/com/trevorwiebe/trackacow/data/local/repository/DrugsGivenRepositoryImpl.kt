@@ -51,6 +51,10 @@ class DrugsGivenRepositoryImpl(
         drugsGivenDao.updateDrugGiven(drugGivenModel.toDrugGivenEntity())
     }
 
+    override suspend fun updateDrugsGivenWithNewLot(lotId: String, oldLotIds: List<String>) {
+        drugsGivenDao.updateDrugsGivenWithNewLotId(lotId, oldLotIds)
+    }
+
     override suspend fun deleteDrugsGivenByCowId(cowId: String) {
         drugsGivenDao.deleteDrugsGivenByCowId(cowId)
     }

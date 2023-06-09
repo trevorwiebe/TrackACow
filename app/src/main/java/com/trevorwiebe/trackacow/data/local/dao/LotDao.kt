@@ -50,6 +50,9 @@ interface LotDao {
     @Delete
     suspend fun deleteLot(lotEntity: LotEntity)
 
+    @Delete
+    suspend fun deleteLotList(lotList: List<LotEntity>)
+
     @Query("DELETE FROM lot")
     suspend fun deleteAllLots()
 

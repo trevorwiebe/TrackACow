@@ -9,6 +9,7 @@ import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -53,6 +54,16 @@ class CallRepositoryImpl(
         val callId: String? = callModel.callCloudDatabaseId
         if (callId.isNullOrEmpty()) return
         callDao.updateCallAmount(callModel.callAmount, callModel.callRationId, callId)
+    }
+
+    override suspend fun updateCallsWithNewLot(
+        savedLotModel: LotModel,
+        deleteLotList: List<LotModel>
+    ) {
+        callDao.updateCallsWithNewLotId(
+            savedLotModel.lotCloudDatabaseId,
+            deleteLotList.map { it.lotCloudDatabaseId }
+        )
     }
 
     override suspend fun deleteCall(callModel: CallModel) {

@@ -40,6 +40,9 @@ interface DrugsGivenDao {
     @Update
     suspend fun updateDrugGiven(drugsGivenEntity: DrugsGivenEntity)
 
+    @Query("UPDATE drugs_given SET drugsGivenLotId =:lotId WHERE drugsGivenLotId IN (:oldLotIds)")
+    suspend fun updateDrugsGivenWithNewLotId(lotId: String, oldLotIds: List<String>)
+
     @Update
     suspend fun updateDrugsGivenList(drugsGivenList: List<DrugsGivenEntity>)
 

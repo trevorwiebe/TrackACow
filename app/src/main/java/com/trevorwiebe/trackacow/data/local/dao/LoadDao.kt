@@ -33,6 +33,9 @@ interface LoadDao {
     @Update
     suspend fun updateLoadList(loadList: List<LoadEntity>)
 
+    @Query("UPDATE load SET lotId = :lotId WHERE lotId IN (:oldLotIds)")
+    suspend fun updateLoadWithNewLotId(lotId: String, oldLotIds: List<String>)
+
     @Delete
     suspend fun deleteLoad(loadEntity: LoadEntity)
 

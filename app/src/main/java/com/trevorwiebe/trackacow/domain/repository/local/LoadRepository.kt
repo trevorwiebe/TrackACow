@@ -14,6 +14,8 @@ interface LoadRepository {
 
     suspend fun updateLoad(loadModel: LoadModel)
 
+    suspend fun updateLoadWithNewLot(lotId: String, oldLotIdList: List<String>)
+
     suspend fun deleteLoad(loadModel: LoadModel)
 
     suspend fun deleteAllLoads()

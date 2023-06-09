@@ -71,6 +71,10 @@ class LotRepositoryImpl(
         lotDao.deleteLot(lotModel.toLotEntity())
     }
 
+    override suspend fun deleteLotList(lotModelList: List<LotModel>) {
+        lotDao.deleteLotList(lotModelList.map { it.toLotEntity() })
+    }
+
     override suspend fun deleteAllLots() {
         lotDao.deleteAllLots()
     }

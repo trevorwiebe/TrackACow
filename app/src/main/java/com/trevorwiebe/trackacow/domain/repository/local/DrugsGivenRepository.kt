@@ -18,6 +18,8 @@ interface DrugsGivenRepository {
 
     suspend fun editDrugsGiven(drugGivenModel: DrugGivenModel)
 
+    suspend fun updateDrugsGivenWithNewLot(lotId: String, oldLotIds: List<String>)
+
     suspend fun deleteDrugsGivenByCowId(cowId: String)
 
     suspend fun deleteDrugGiven(drugGivenModel: DrugGivenModel)

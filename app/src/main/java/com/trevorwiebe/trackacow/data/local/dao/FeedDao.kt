@@ -26,6 +26,9 @@ interface FeedDao {
     @Update
     suspend fun updateFeedEntity(feedEntity: FeedEntity)
 
+    @Query("UPDATE feed SET lotId = :lotId WHERE lotId IN (:oldLotIds)")
+    suspend fun updateFeedsWithNewLotId(lotId: String, oldLotIds: List<String>)
+
     @Update
     suspend fun updateFeedList(feedEntityList: List<FeedEntity>)
 

@@ -31,13 +31,17 @@ class LoadRepositoryImpl(
 
     override suspend fun updateLoad(loadModel: LoadModel) {
         loadDao.updateLoad(
-                loadModel.primaryKey,
-                loadModel.numberOfHead,
-                loadModel.date,
-                loadModel.description,
-                loadModel.lotId,
-                loadModel.loadId
+            loadModel.primaryKey,
+            loadModel.numberOfHead,
+            loadModel.date,
+            loadModel.description,
+            loadModel.lotId,
+            loadModel.loadId
         )
+    }
+
+    override suspend fun updateLoadWithNewLot(lotId: String, oldLotIdList: List<String>) {
+        loadDao.updateLoadWithNewLotId(lotId, oldLotIdList)
     }
 
     override suspend fun deleteLoad(loadModel: LoadModel) {

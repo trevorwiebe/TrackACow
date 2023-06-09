@@ -14,6 +14,8 @@ interface CowRepository {
 
     suspend fun updateCow(cowModel: CowModel)
 
+    suspend fun updateCowsWithNewLot(lotIdToSave: String, lotIdListToRemove: List<String>)
+
     suspend fun deleteCow(cowModel: CowModel)
 
     suspend fun deleteAllCows()

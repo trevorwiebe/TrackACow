@@ -16,6 +16,8 @@ interface FeedRepository {
         endDate: Long
     ): Flow<List<FeedModel>>
 
+    suspend fun updateFeedsWithNewLot(lotId: String, oldLotIds: List<String>)
+
     suspend fun deleteFeedList(feedModelList: List<FeedModel>)
 
     suspend fun deleteAllFeeds()

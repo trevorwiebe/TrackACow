@@ -25,6 +25,9 @@ interface CowDao {
     @Update
     suspend fun updateCow(cowEntity: CowEntity)
 
+    @Query("UPDATE cow SET lotId = :lotId WHERE lotId IN (:lotIdList)")
+    suspend fun updateCowWithNewLotId(lotId: String, lotIdList: List<String>)
+
     @Update
     suspend fun updateCowList(cowlist: List<CowEntity>)
 

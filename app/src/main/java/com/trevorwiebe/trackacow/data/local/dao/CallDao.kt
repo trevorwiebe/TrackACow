@@ -48,6 +48,9 @@ interface CallDao {
     )
     suspend fun updateCallAmount(callAmount: Int, rationId: Int?, callCloudId: String)
 
+    @Query("UPDATE call SET lotId = :lotId WHERE lotId IN (:oldLotIds)")
+    suspend fun updateCallsWithNewLotId(lotId: String, oldLotIds: List<String>)
+
     @Update
     suspend fun updateCallList(callList: List<CallEntity>)
 
