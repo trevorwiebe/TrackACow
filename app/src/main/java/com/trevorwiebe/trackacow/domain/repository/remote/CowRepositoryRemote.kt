@@ -8,4 +8,6 @@ interface CowRepositoryRemote {
 
     suspend fun deleteCowRemote(cowModel: CowModel)
 
+    suspend fun updateCowWithNewLotIdRemote(lotIdToSave: String, lotIdToDeleteList: List<String>)
+
 }

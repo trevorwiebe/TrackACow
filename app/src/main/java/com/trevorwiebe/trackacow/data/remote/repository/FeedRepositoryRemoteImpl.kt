@@ -1,6 +1,9 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 
@@ -23,6 +26,30 @@ class FeedRepositoryRemoteImpl(
         for (i in feedModelList.indices) {
             val feedModelId = feedModelList[i].id
             firebaseDatabase.getReference("$databasePath/$feedModelId").removeValue()
+        }
+    }
+
+    override suspend fun updateFeedWithNewLotIdRemote(
+        lotIdToSave: String,
+        lotIdsToDelete: List<String>
+    ) {
+        lotIdsToDelete.forEach { lotIdStr ->
+            val feedQuery =
+                firebaseDatabase.getReference(databasePath).orderByChild("lotId").equalTo(lotIdStr)
+            feedQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        val feedModel = it.getValue(FeedModel::class.java)
+                        val feedId = feedModel?.id
+                        if (feedId != null) {
+                            firebaseDatabase.getReference(databasePath).child(feedId).child("lotId")
+                                .setValue(lotIdToSave)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
         }
     }
 }

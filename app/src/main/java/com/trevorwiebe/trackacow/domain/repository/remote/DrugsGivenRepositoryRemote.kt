@@ -8,6 +8,11 @@ interface DrugsGivenRepositoryRemote {
 
     suspend fun editRemoteDrugsGiven(drugsGivenModel: DrugGivenModel)
 
+    suspend fun updateDrugsGivenWithNewLotIdRemote(
+        lotIdToSave: String,
+        lotIdListToDelete: List<String>
+    )
+
     suspend fun deleteRemoteDrugsGivenByCowId(cowId: String)
 
     suspend fun deleteRemoteDrugGivenByDrugGivenId(drugGivenId: String)

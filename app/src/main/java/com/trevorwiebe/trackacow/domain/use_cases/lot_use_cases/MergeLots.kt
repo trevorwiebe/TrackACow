@@ -33,12 +33,12 @@ data class MergeLots(
 
     suspend operator fun invoke(lotModelIdList: List<String>) {
 
-        // TODO: update lots        local-X     remote      cache-
-        // TODO: update Calls       local-X     remote-     cache-
-        // TODO: update cows        local-X     remote-     cache-
-        // TODO: update drugsGiven  local-X     remote-     cache-
-        // TODO: update feed        local-X     remote-     cache-
-        // TODO: update loads       local-X     remote-     cache-
+        // TODO: update lots        local-X     remote-X    cache-
+        // TODO: update Calls       local-X     remote-X    cache-
+        // TODO: update cows        local-X     remote-X    cache-
+        // TODO: update drugsGiven  local-X     remote-X    cache-
+        // TODO: update feed        local-X     remote-X    cache-
+        // TODO: update loads       local-X     remote-X    cache-
 
         val lotToSaveId = lotModelIdList[0]
         val lotsToDeleteIds = lotModelIdList - lotToSaveId
@@ -51,6 +51,15 @@ data class MergeLots(
         loadRepository.updateLoadWithNewLot(lotToSaveId, lotsToDeleteIds)
 
         if (Utility.haveNetworkConnection(context)) {
+            lotRepositoryRemote.deleteLotsByIdRemote(lotsToDeleteIds)
+            callRepositoryRemote.updateCallWithNewLotIdRemote(lotToSaveId, lotsToDeleteIds)
+            cowRepositoryRemote.updateCowWithNewLotIdRemote(lotToSaveId, lotsToDeleteIds)
+            drugsGivenRepositoryRemote.updateDrugsGivenWithNewLotIdRemote(
+                lotToSaveId,
+                lotsToDeleteIds
+            )
+            feedRepositoryRemote.updateFeedWithNewLotIdRemote(lotToSaveId, lotsToDeleteIds)
+            loadRemoteRepository.updateLoadWithNewLotIdRemote(lotToSaveId, lotsToDeleteIds)
         } else {
             Utility.setNewDataToUpload(context, true)
         }

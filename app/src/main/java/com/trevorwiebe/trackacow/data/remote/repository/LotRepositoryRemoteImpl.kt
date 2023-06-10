@@ -36,4 +36,10 @@ class LotRepositoryRemoteImpl(
         }
     }
 
+    override fun deleteLotsByIdRemote(lotIdList: List<String>) {
+        lotIdList.forEachIndexed { index, _ ->
+            firebaseDatabase.getReference(databasePath).child(lotIdList[index]).removeValue()
+        }
+    }
+
 }

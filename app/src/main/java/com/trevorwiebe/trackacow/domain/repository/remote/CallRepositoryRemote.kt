@@ -6,4 +6,6 @@ interface CallRepositoryRemote {
     suspend fun insertOrUpdateCallRemote(callModel: CallModel)
 
     suspend fun insertCallListRemote(callModelList: List<CallModel>)
+
+    suspend fun updateCallWithNewLotIdRemote(lotIdToSave: String, lotIdToDeleteList: List<String>)
 }

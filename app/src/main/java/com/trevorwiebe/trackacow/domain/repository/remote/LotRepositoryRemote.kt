@@ -12,4 +12,6 @@ interface LotRepositoryRemote {
 
     fun deleteLotRemote(lotModel: LotModel)
 
+    fun deleteLotsByIdRemote(lotIdList: List<String>)
+
 }

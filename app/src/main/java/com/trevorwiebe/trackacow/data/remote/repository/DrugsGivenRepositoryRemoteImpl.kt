@@ -26,6 +26,31 @@ class DrugsGivenRepositoryRemoteImpl(
         }
     }
 
+    override suspend fun updateDrugsGivenWithNewLotIdRemote(
+        lotIdToSave: String,
+        lotIdListToDelete: List<String>
+    ) {
+        lotIdListToDelete.forEach { lotIdStr ->
+            val drugsGivenQuery =
+                firebaseDatabase.getReference(databasePath).orderByChild("drugsGivenLotId")
+                    .equalTo(lotIdStr)
+            drugsGivenQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        val drugGivenModel = it.getValue(DrugGivenModel::class.java)
+                        val drugsGivenId = drugGivenModel?.drugsGivenId
+                        if (drugsGivenId != null) {
+                            firebaseDatabase.getReference(databasePath).child(drugsGivenId)
+                                .child("drugsGivenLotId").setValue(lotIdToSave)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+        }
+    }
+
     override suspend fun deleteRemoteDrugsGivenByCowId(cowId: String) {
         val fbQuery: Query = firebaseDatabase.getReference(databasePath)
             .orderByChild("drugsGivenCowId")

@@ -6,4 +6,6 @@ interface LoadRemoteRepository {
 
     fun insertOrUpdateRemoteLoad(loadModel: LoadModel)
     fun deleteRemoteLoad(loadModel: LoadModel)
+
+    suspend fun updateLoadWithNewLotIdRemote(lotIdToSave: String, lotIdsToDelete: List<String>)
 }
