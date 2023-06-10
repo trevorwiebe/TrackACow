@@ -27,6 +27,17 @@
             android:layout_width="0dp"
             android:layout_height="0dp" />
 
+        <TextView
+            android:id="@+id/two_lots_under_one_pen_error"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/orangeText"
+            android:text="You can't have more than one lot under one pen."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/merge_lots_btn"
             android:background="@drawable/accent_sign_in_btn"

@@ -79,7 +79,8 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
                 val penText = "Pen: $penName"
                 val penViewHolder = holder as PenViewHolder
                 penViewHolder.penName.text = penText
-                penViewHolder.mergeLotsBtn.visibility = View.INVISIBLE
+                penViewHolder.twoLotsUnderOnePen.visibility = View.INVISIBLE
+                penViewHolder.mergeLotsBtn.visibility = View.GONE
                 penViewHolder.mergeLotsBtn.setOnClickListener {
                     val lotNameList =
                         penViewHolder.lotsToMergeList.joinToString(", ") { it.lotName }
@@ -164,11 +165,12 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
 
                 // need to show a merge button
                 if (lotViewHolderList.size > 1) {
-                    lastPenViewHolder?.mergeLotsBtn?.visibility = View.VISIBLE
+                    lastPenViewHolder?.twoLotsUnderOnePen?.visibility = View.VISIBLE
+//                    lastPenViewHolder?.mergeLotsBtn?.visibility = View.VISIBLE
                     lastPenViewHolder?.setLotsToMerge(lotViewHolderList.map { it.lotModel })
                 } else {
-                    lastPenViewHolder?.mergeLotsBtn?.visibility = View.INVISIBLE
-
+//                    lastPenViewHolder?.mergeLotsBtn?.visibility = View.INVISIBLE
+                    lastPenViewHolder?.twoLotsUnderOnePen?.visibility = View.INVISIBLE
                 }
             }
         }
