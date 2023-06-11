@@ -32,6 +32,10 @@ data class CowRepositoryImpl(
         }
     }
 
+    override fun getCowByCowId(cowId: String): Flow<CowModel?> {
+        return cowDao.getCowByCowId(cowId).map { it?.toCowModel() }
+    }
+
     override suspend fun updateCow(cowModel: CowModel) {
         cowDao.updateCow(cowModel.toCowEntity())
     }

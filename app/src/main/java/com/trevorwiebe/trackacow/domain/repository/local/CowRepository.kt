@@ -12,6 +12,8 @@ interface CowRepository {
 
     fun getCowsByLotId(lotId: String): Flow<List<CowModel>>
 
+    fun getCowByCowId(cowId: String): Flow<CowModel?>
+
     suspend fun updateCow(cowModel: CowModel)
 
     suspend fun updateCowsWithNewLot(lotIdToSave: String, lotIdListToRemove: List<String>)

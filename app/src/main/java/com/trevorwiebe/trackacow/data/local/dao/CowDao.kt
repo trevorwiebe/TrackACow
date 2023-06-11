@@ -13,6 +13,9 @@ interface CowDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCowList(cowEntityList: List<CowEntity>): List<Long>
 
+    @Query("SELECT * FROM cow WHERE cowId = :cowId")
+    fun getCowByCowId(cowId: String): Flow<CowEntity?>
+
     @Query("SELECT * FROM Cow WHERE lotId = :lotId AND alive = 0")
     fun getDeadCowsByLotId(lotId: String): Flow<List<CowEntity>>
 

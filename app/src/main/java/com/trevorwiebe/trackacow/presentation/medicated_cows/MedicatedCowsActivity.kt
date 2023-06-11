@@ -88,7 +88,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
                             this@MedicatedCowsActivity,
                             EditMedicatedCowActivity::class.java
                         )
-                        editCowIntent.putExtra("cowUiModel", cowUiModel)
+                        editCowIntent.putExtra("cowId", cowUiModel.cowModel.cowId)
                         startActivity(editCowIntent)
                     }
 

@@ -52,7 +52,12 @@ object ViewModelDomainModule {
                 Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
             ),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
-            deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context)
+            deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context),
+            readCowByCowId = ReadCowByCowId(
+                cowRepository,
+                firebaseDatabase,
+                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+            )
         )
     }
 

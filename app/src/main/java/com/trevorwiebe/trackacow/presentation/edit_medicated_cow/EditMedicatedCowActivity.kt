@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow.presentation.edit_medicated_cow
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -14,21 +13,35 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.edit_drugs_given.EditDrugsGivenListActivity
-import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditMedicatedCowActivity : AppCompatActivity() {
 
-    private val editMedicatedCowViewModel: EditMedicatedCowViewModel by viewModels()
+    @Inject
+    lateinit var editMedicatedCowsViewModelFactory: EditMedicatedCowViewModel.EditMedicatedCowsViewModelFactory
 
-    private var mCowUiModel: CowUiModel? = null
+    private val editMedicatedCowViewModel: EditMedicatedCowViewModel by viewModels {
+        EditMedicatedCowViewModel.providesFactory(
+            assistedFactory = editMedicatedCowsViewModelFactory,
+            cowId = intent.getStringExtra("cowId") ?: ""
+        )
+    }
+
+    private var mSelectedCowId: String? = null
+    private var mCowModel: CowModel? = null
     private var mStartDatePicker: OnDateSetListener? = null
     private val mCalendar = Calendar.getInstance()
 
@@ -61,8 +74,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
                 mCalendar[Calendar.YEAR],
                 mCalendar[Calendar.MONTH],
                 mCalendar[Calendar.DAY_OF_MONTH]
-            )
-                .show()
+            ).show()
         }
         mStartDatePicker = OnDateSetListener { view, year, month, dayOfMonth ->
             mCalendar[Calendar.YEAR] = year
@@ -73,67 +85,76 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         mEditDrugsGiven.setOnClickListener {
             val editDrugsIntent =
                 Intent(this@EditMedicatedCowActivity, EditDrugsGivenListActivity::class.java)
-            editDrugsIntent.putExtra("cowModel", mCowUiModel)
+            editDrugsIntent.putExtra("cowId", mSelectedCowId)
             startActivity(editDrugsIntent)
         }
         mUpdateBtn.setOnClickListener {
-            val cowModel = mCowUiModel!!.cowModel
 
-            cowModel.tagNumber = mEditTagNumber.text.toString().toInt()
-            cowModel.date = mCalendar.timeInMillis
-            cowModel.notes = mEditNotes.text.toString()
-
-            editMedicatedCowViewModel.onEvent(EditMedicatedCowUiEvent.OnCowUpdate(cowModel))
+            if (mCowModel != null) {
+                mCowModel!!.tagNumber = mEditTagNumber.text.toString().toInt()
+                mCowModel!!.date = mCalendar.timeInMillis
+                mCowModel!!.notes = mEditNotes.text.toString()
+                editMedicatedCowViewModel.onEvent(EditMedicatedCowUiEvent.OnCowUpdate(mCowModel!!))
+            }
 
             finish()
         }
 
         mDeleteBtn.setOnClickListener {
-            val cowModel = mCowUiModel!!.cowModel
 
-            editMedicatedCowViewModel.onEvent(EditMedicatedCowUiEvent.OnCowDeleted(cowModel))
-            editMedicatedCowViewModel.onEvent(
-                EditMedicatedCowUiEvent.OnDrugsGivenByCowIdDeleted(
-                    cowModel.cowId
+            if (mCowModel != null && mSelectedCowId != null) {
+                editMedicatedCowViewModel.onEvent(
+                    EditMedicatedCowUiEvent.OnDrugsGivenByCowIdDeleted(
+                        mSelectedCowId!!
+                    )
                 )
-            )
-
-            finish()
+                editMedicatedCowViewModel.onEvent(EditMedicatedCowUiEvent.OnCowDeleted(mCowModel!!))
+                finish()
+            }
         }
 
-        @Suppress("DEPRECATION")
-        mCowUiModel = if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra("cowUiModel", CowUiModel::class.java)
-        } else {
-            intent.getParcelableExtra("cowUiModel")
+        mSelectedCowId = intent.getStringExtra("cowId")
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                editMedicatedCowViewModel.uiState.collect {
+                    mCowModel = it.cowModel
+
+                    val strTagNumber = mCowModel?.tagNumber.toString()
+                    title = "Cow $strTagNumber"
+
+                    mEditTagNumber.setText(strTagNumber)
+                    mEditDate.setText(Utility.convertMillisToDate(mCowModel?.date ?: 0))
+                    mEditNotes.setText(mCowModel?.notes)
+
+                    mCalendar.timeInMillis = mCowModel?.date ?: 0
+
+                    if (mCowModel?.alive == 1) {
+                        mCowIsDead.visibility = View.GONE
+                        mDrugLayout.visibility = View.VISIBLE
+                    } else {
+                        mCowIsDead.visibility = View.VISIBLE
+                        mDrugLayout.visibility = View.GONE
+                    }
+                }
+            }
         }
 
-        val cowModel = mCowUiModel!!.cowModel
-
-        val strTagNumber = cowModel.tagNumber.toString()
-        title = "Cow $strTagNumber"
-
-        mCalendar.timeInMillis = cowModel.date
-        mDrugsGiven.removeAllViews()
-
-        if (cowModel.alive == 1) {
-            mCowIsDead.visibility = View.GONE
-        } else {
-            mCowIsDead.visibility = View.VISIBLE
-            mDrugLayout.visibility = View.GONE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                editMedicatedCowViewModel.uiState.collect {
+                    val drugsList = it.drugsGivenList
+                    setDrugGivenLayout(drugsList)
+                }
+            }
         }
-
-        mEditTagNumber.setText(strTagNumber)
-        mEditDate.setText(Utility.convertMillisToDate(cowModel.date))
-        mEditNotes.setText(cowModel.notes)
-
-        setDrugGivenLayout(mCowUiModel!!.drugsGivenAndDrugModelList)
     }
 
     private fun setDrugGivenLayout(drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel>) {
         val scale = resources.displayMetrics.density
         val pixels16 = (16 * scale + 0.5f).toInt()
         val pixels8 = (8 * scale + 0.5f).toInt()
+        mDrugsGiven.removeAllViews()
         if (drugsGivenAndDrugModelList.isEmpty()) {
             val textView = TextView(this@EditMedicatedCowActivity)
             val textViewParams = LinearLayout.LayoutParams(
@@ -143,7 +164,6 @@ class EditMedicatedCowActivity : AppCompatActivity() {
             textViewParams.setMargins(pixels16, pixels8, pixels16, 0)
             textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
             textView.layoutParams = textViewParams
-            // TODO: put this string in resources
             textView.text = getString(R.string.no_drugs_given)
             mDrugsGiven.addView(textView)
         } else {
