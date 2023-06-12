@@ -26,9 +26,11 @@ interface DrugsGivenRepository {
 
     suspend fun deleteAllDrugsGiven()
 
+    suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>)
+
+    // cache functions
+
     suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel)
 
     suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>)
-
-    suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>)
 }

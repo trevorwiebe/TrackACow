@@ -9,8 +9,6 @@ interface PenRepository {
 
     suspend fun insertPen(penModel: PenModel): Long
 
-    suspend fun insertCachePen(cachePenModel: CachePenModel)
-
     fun readPens(): Flow<List<PenModel>>
 
     fun readPensAndLotsIncludeEmptyPens(): Flow<List<PenAndLotModel>>
@@ -26,4 +24,7 @@ interface PenRepository {
     suspend fun deleteAllPens()
 
     suspend fun insertOrUpdatePenList(penList: List<PenModel>)
+
+    // cache functions
+    suspend fun insertCachePen(cachePenModel: CachePenModel)
 }

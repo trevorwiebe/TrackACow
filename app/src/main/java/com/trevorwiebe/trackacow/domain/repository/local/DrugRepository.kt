@@ -19,4 +19,6 @@ interface DrugRepository {
     fun getDrugList(): Flow<List<DrugModel>>
 
     suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>)
+
+    // cache functions
 }

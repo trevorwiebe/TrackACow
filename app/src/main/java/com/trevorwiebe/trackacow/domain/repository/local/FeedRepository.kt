@@ -22,7 +22,8 @@ interface FeedRepository {
 
     suspend fun deleteAllFeeds()
 
-    suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)
-
     suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>)
+
+    // cache functions
+    suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)
 }
