@@ -60,3 +60,28 @@ fun CacheDrugGivenModel.toCacheDrugGivenEntity(): CacheDrugsGivenEntity {
         whatHappened = whatHappened
     )
 }
+
+fun CacheDrugGivenModel.toDrugGivenModel(): DrugGivenModel {
+    return DrugGivenModel(
+        drugsGivenPrimaryKey = primaryKey,
+        drugsGivenId = drugGivenId,
+        drugsGivenDrugId = drugId,
+        drugsGivenAmountGiven = amountGiven,
+        drugsGivenCowId = cowId,
+        drugsGivenLotId = lotId,
+        drugsGivenDate = date,
+    )
+}
+
+fun CacheDrugsGivenEntity.toCacheDrugGivenModel(): CacheDrugGivenModel {
+    return CacheDrugGivenModel(
+        primaryKey = primaryKey,
+        drugGivenId = drugGivenId,
+        drugId = drugId,
+        amountGiven = amountGiven,
+        cowId = cowId,
+        lotId = lotId,
+        date = date,
+        whatHappened = whatHappened
+    )
+}

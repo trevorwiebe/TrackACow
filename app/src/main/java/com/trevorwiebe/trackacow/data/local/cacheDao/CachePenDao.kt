@@ -9,4 +9,7 @@ interface CachePenDao {
     @Insert
     suspend fun insertCachePen(cachePenEntity: CachePenEntity)
 
+    @Query("SELECT * FROM cache_pen")
+    suspend fun getCachePens(): List<CachePenEntity>
+
 }

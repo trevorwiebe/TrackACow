@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLoadDao
 import com.trevorwiebe.trackacow.data.local.dao.LoadDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheLoadEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheLoadModel
 import com.trevorwiebe.trackacow.data.mapper.toLoadEntity
 import com.trevorwiebe.trackacow.data.mapper.toLoadModel
 import com.trevorwiebe.trackacow.domain.models.load.CacheLoadModel
@@ -54,6 +55,10 @@ class LoadRepositoryImpl(
 
     override suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>) {
         loadDao.insertOrUpdate(loadList.map { it.toLoadEntity() })
+    }
+
+    override suspend fun getCacheLoads(): List<CacheLoadModel> {
+        return cacheLoadDao.getCacheLoads().map { it.toCacheLoadModel() }
     }
 
 }

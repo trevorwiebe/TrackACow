@@ -54,3 +54,28 @@ fun CacheCowModel.toCacheCowEntity(): CacheCowEntity {
         whatHappened = whatHappened
     )
 }
+
+fun CacheCowModel.toCowModel(): CowModel {
+    return CowModel(
+        primaryKey = primaryKey,
+        alive = alive,
+        cowId = cowId,
+        tagNumber = tagNumber,
+        date = date,
+        notes = notes,
+        lotId = lotId,
+    )
+}
+
+fun CacheCowEntity.toCacheCowModel(): CacheCowModel {
+    return CacheCowModel(
+        primaryKey = primaryKey,
+        alive = alive,
+        cowId = cowId,
+        tagNumber = tagNumber,
+        date = date,
+        notes = notes,
+        lotId = lotId,
+        whatHappened = whatHappened
+    )
+}

@@ -12,4 +12,7 @@ interface CacheDrugsGivenDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCacheDrugGivenList(cacheDrugGivenList: List<CacheDrugsGivenEntity>)
 
+    @Query("SELECT * FROM cache_drugs_given")
+    suspend fun getCacheDrugGiven(): List<CacheDrugsGivenEntity>
+
 }

@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.domain.models.load.CacheLoadModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.repository.remote.LoadRemoteRepository
 
@@ -27,6 +28,10 @@ class LoadRemoteRepositoryImpl(
                 "$databasePath/${loadModel.loadId}"
             ).removeValue()
         }
+    }
+
+    override fun insertCacheLoadsRemote(loadList: List<CacheLoadModel>) {
+
     }
 
     override suspend fun updateLoadWithNewLotIdRemote(

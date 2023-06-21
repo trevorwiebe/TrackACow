@@ -26,4 +26,6 @@ interface FeedRepository {
 
     // cache functions
     suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)
+
+    suspend fun getCacheFeeds(): List<CacheFeedModel>
 }

@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                     if (it.cloudDatabaseMigrationInProgress) {
 
                     } else {
-
+                        mainViewModel.onEvent(MainUiEvent.CheckCache)
                     }
                 }
             }

@@ -4,8 +4,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.data.mapper.toCallModel
+import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 
 class CallRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
@@ -45,6 +48,22 @@ class CallRepositoryRemoteImpl(
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+        }
+    }
+
+    override suspend fun updateRemoteWithCacheCallList(cacheCallList: List<CacheCallModel>) {
+        if (cacheCallList.isNotEmpty()) {
+            cacheCallList.forEach { cacheCallModel ->
+                val cacheCallRef = firebaseDatabase.getReference(databasePath)
+                if (cacheCallModel.callCloudDatabaseId != null) {
+                    if (cacheCallModel.whatHappened == Constants.DELETE) {
+                        cacheCallRef.child(cacheCallModel.callCloudDatabaseId).removeValue()
+                    } else {
+                        val callModel = cacheCallModel.toCallModel()
+                        cacheCallRef.child(cacheCallModel.callCloudDatabaseId).setValue(callModel)
+                    }
+                }
+            }
         }
     }
 }

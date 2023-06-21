@@ -9,4 +9,7 @@ interface CacheCowDao {
     @Insert
     suspend fun insertCacheCow(cacheCowEntity: CacheCowEntity)
 
+    @Query("SELECT * FROM cache_cow")
+    suspend fun getCacheCows(): List<CacheCowEntity>
+
 }

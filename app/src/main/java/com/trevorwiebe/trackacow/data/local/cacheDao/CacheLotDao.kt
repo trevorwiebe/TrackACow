@@ -12,4 +12,7 @@ interface CacheLotDao {
     @Update
     fun updateHoldingLot(cacheLotEntity: CacheLotEntity)
 
+    @Query("SELECT * FROM cache_lot")
+    suspend fun getCacheLots(): List<CacheLotEntity>
+
 }

@@ -21,4 +21,8 @@ interface LoadRepository {
     suspend fun deleteAllLoads()
 
     suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>)
+
+    // cache functions
+
+    suspend fun getCacheLoads(): List<CacheLoadModel>
 }

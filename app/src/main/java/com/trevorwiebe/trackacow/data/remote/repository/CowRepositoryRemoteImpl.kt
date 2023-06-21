@@ -4,8 +4,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.data.mapper.toCowModel
+import com.trevorwiebe.trackacow.domain.models.cow.CacheCowModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 
 class CowRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
@@ -50,6 +53,20 @@ class CowRepositoryRemoteImpl(
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+        }
+    }
+
+    override suspend fun insertCacheCowsRemote(cacheCowModelList: List<CacheCowModel>) {
+        if (cacheCowModelList.isNotEmpty()) {
+            cacheCowModelList.forEach { cacheCowModel ->
+                val cacheCowRef = firebaseDatabase.getReference(databasePath)
+                if (cacheCowModel.whatHappened == Constants.DELETE) {
+                    cacheCowRef.child(cacheCowModel.cowId).removeValue()
+                } else {
+                    val cowModel = cacheCowModel.toCowModel()
+                    cacheCowRef.child(cacheCowModel.cowId).setValue(cowModel)
+                }
+            }
         }
     }
 

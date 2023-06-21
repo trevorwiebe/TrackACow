@@ -27,4 +27,6 @@ interface CowRepository {
     // cache functions
 
     suspend fun insertCacheCow(cacheCowModel: CacheCowModel)
+
+    suspend fun getCacheCows(): List<CacheCowModel>
 }

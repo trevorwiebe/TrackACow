@@ -9,4 +9,7 @@ interface CacheLoadDao {
     @Insert
     suspend fun insertCacheLoad(cacheLoadEntity: CacheLoadEntity?)
 
+    @Query("SELECT * FROM cache_load")
+    suspend fun getCacheLoads(): List<CacheLoadEntity>
+
 }

@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.dao.CallDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCallDao
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toCallAndRationModel
+import com.trevorwiebe.trackacow.data.mapper.toCacheCallModel
 import com.trevorwiebe.trackacow.data.mapper.toCallEntity
 import com.trevorwiebe.trackacow.data.mapper.toCallModel
 import com.trevorwiebe.trackacow.data.mapper.toHoldingCallEntity
@@ -72,6 +73,10 @@ class CallRepositoryImpl(
 
     override suspend fun insertCacheCall(cacheCallModel: CacheCallModel) {
         cacheCallDao.insertHoldingCall(cacheCallModel.toHoldingCallEntity())
+    }
+
+    override suspend fun getCacheCalls(): List<CacheCallModel> {
+        return cacheCallDao.getCacheCalls().map { it.toCacheCallModel() }
     }
 
     override suspend fun insertOrUpdateCallList(callList: List<CallModel>) {

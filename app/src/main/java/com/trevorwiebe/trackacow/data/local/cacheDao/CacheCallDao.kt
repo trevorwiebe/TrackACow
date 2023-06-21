@@ -7,4 +7,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
 interface CacheCallDao {
     @Insert
     suspend fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
+
+    @Query("SELECT * FROM cache_call")
+    suspend fun getCacheCalls(): List<CacheCallEntity>
 }

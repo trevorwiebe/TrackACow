@@ -12,6 +12,9 @@ interface CacheFeedDao {
     @Update
     suspend fun updateHoldingFeedEntity(cacheFeedEntity: CacheFeedEntity)
 
+    @Query("SELECT * FROM cache_feed")
+    suspend fun getCacheFeeds(): List<CacheFeedEntity>
+
     @Delete
     suspend fun deleteFeedEntity(cacheFeedEntity: CacheFeedEntity)
 

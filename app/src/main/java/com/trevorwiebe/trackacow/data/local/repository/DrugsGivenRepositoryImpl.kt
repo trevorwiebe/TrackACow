@@ -4,6 +4,7 @@ import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugsGivenDao
 import com.trevorwiebe.trackacow.data.local.dao.DrugsGivenDao
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toDrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenModel
 import com.trevorwiebe.trackacow.data.mapper.toDrugGivenEntity
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
@@ -75,6 +76,10 @@ class DrugsGivenRepositoryImpl(
         cacheDrugsGivenDao.insertCacheDrugGivenList(
             cacheDrugsGivenList.map { it.toCacheDrugGivenEntity() }
         )
+    }
+
+    override suspend fun getCacheDrugsGiven(): List<CacheDrugGivenModel> {
+        return cacheDrugsGivenDao.getCacheDrugGiven().map { it.toCacheDrugGivenModel() }
     }
 
     override suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>) {

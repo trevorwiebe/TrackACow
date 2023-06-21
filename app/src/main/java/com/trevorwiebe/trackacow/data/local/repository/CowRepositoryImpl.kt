@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheCowDao
 import com.trevorwiebe.trackacow.data.local.dao.CowDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheCowEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheCowModel
 import com.trevorwiebe.trackacow.data.mapper.toCowEntity
 import com.trevorwiebe.trackacow.data.mapper.toCowModel
 import com.trevorwiebe.trackacow.domain.models.cow.CacheCowModel
@@ -57,6 +58,10 @@ data class CowRepositoryImpl(
 
     override suspend fun insertCacheCow(cacheCowModel: CacheCowModel) {
         cacheCowDao.insertCacheCow(cacheCowModel.toCacheCowEntity())
+    }
+
+    override suspend fun getCacheCows(): List<CacheCowModel> {
+        return cacheCowDao.getCacheCows().map { it.toCacheCowModel() }
     }
 
     override suspend fun insertOrUpdateCowList(cowList: List<CowModel>) {

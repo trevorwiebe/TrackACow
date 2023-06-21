@@ -50,3 +50,15 @@ fun CacheLoadModel.toCacheLoadEntity(): CacheLoadEntity {
         whatHappened = whatHappened
     )
 }
+
+fun CacheLoadEntity.toCacheLoadModel(): CacheLoadModel {
+    return CacheLoadModel(
+        primaryKey = primaryKey,
+        numberOfHead = numberOfHead,
+        date = date,
+        description = description,
+        lotId = lotId,
+        loadId = loadId,
+        whatHappened = whatHappened
+    )
+}

@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.dao.RationDao
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheRationDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheRationEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheRationModel
 import com.trevorwiebe.trackacow.data.mapper.toRationEntity
 import com.trevorwiebe.trackacow.data.mapper.toRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.CacheRationModel
@@ -45,5 +46,9 @@ class RationRepositoryImpl(
 
     override suspend fun insertOrUpdateRationList(rationList: List<RationModel>) {
         rationDao.insertOrUpdateRationList(rationList.map { it.toRationEntity() })
+    }
+
+    override suspend fun getCacheRations(): List<CacheRationModel> {
+        return cacheRationDao.getCacheRations().map { it.toCacheRationModel() }
     }
 }

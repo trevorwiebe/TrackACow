@@ -32,4 +32,6 @@ interface LotRepository {
 
     // cache function
     suspend fun createCacheLot(cacheLotModel: CacheLotModel)
+
+    suspend fun getCacheLots(): List<CacheLotModel>
 }

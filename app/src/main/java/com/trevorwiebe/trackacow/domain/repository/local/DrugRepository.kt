@@ -21,4 +21,6 @@ interface DrugRepository {
     suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>)
 
     // cache functions
+
+    suspend fun getCacheDrugs(): List<CacheDrugModel>
 }

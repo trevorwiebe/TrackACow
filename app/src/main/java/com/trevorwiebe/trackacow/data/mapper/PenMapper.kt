@@ -46,8 +46,17 @@ fun PenModel.toCachePenModel(whatHappened: Int): CachePenModel {
     )
 }
 
-fun CachePenModel.toCachePenEntity(): CachePenEntity{
+fun CachePenModel.toCachePenEntity(): CachePenEntity {
     return CachePenEntity(
+        primaryKey = primaryKey,
+        penCloudDatabaseId = penCloudDatabaseId,
+        penName = penName,
+        whatHappened = whatHappened
+    )
+}
+
+fun CachePenEntity.toCachePenModel(): CachePenModel {
+    return CachePenModel(
         primaryKey = primaryKey,
         penCloudDatabaseId = penCloudDatabaseId,
         penName = penName,

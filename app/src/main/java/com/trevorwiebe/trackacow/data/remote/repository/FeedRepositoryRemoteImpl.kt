@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 
@@ -20,6 +21,10 @@ class FeedRepositoryRemoteImpl(
                 ).setValue(it)
             }
         }
+    }
+
+    override suspend fun insertCacheFeeds(feedModelList: List<CacheFeedModel>) {
+
     }
 
     override suspend fun deleteFeedRemoteList(feedModelList: List<FeedModel>) {

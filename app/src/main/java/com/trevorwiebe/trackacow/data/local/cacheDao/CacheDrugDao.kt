@@ -9,4 +9,8 @@ interface CacheDrugDao {
     @Insert
     suspend fun insertCacheDrug(cacheDrugEntity: CacheDrugEntity)
 
+    @Query("SELECT * FROM cache_drug")
+    suspend fun getCacheDrugs(): List<CacheDrugEntity>
+
+
 }

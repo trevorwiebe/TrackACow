@@ -66,3 +66,26 @@ fun CallModel.toHoldingCallModel(whatHappened: Int): CacheCallModel{
         whatHappened = whatHappened
     )
 }
+
+fun CacheCallModel.toCallModel(): CallModel {
+    return CallModel(
+        callPrimaryKey = callPrimaryKey,
+        callAmount = callAmount,
+        date = date,
+        lotId = lotId,
+        callRationId = callRationId,
+        callCloudDatabaseId = callCloudDatabaseId
+    )
+}
+
+fun CacheCallEntity.toCacheCallModel(): CacheCallModel {
+    return CacheCallModel(
+        callPrimaryKey = callPrimaryKey,
+        callAmount = callAmount,
+        date = date,
+        lotId = lotId,
+        callRationId = callRationId,
+        callCloudDatabaseId = callCloudDatabaseId,
+        whatHappened = whatHappened
+    )
+}

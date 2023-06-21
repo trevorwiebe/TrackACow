@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.domain.repository.remote
 
+import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 
 interface CallRepositoryRemote {
@@ -8,4 +9,6 @@ interface CallRepositoryRemote {
     suspend fun insertCallListRemote(callModelList: List<CallModel>)
 
     suspend fun updateCallWithNewLotIdRemote(lotIdToSave: String, lotIdToDeleteList: List<String>)
+
+    suspend fun updateRemoteWithCacheCallList(cacheCallList: List<CacheCallModel>)
 }

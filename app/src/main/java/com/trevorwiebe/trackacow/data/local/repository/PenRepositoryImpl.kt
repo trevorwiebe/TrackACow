@@ -4,6 +4,7 @@ import com.trevorwiebe.trackacow.data.local.cacheDao.CachePenDao
 import com.trevorwiebe.trackacow.data.local.dao.PenDao
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toPenAndLotModel
 import com.trevorwiebe.trackacow.data.mapper.toCachePenEntity
+import com.trevorwiebe.trackacow.data.mapper.toCachePenModel
 import com.trevorwiebe.trackacow.data.mapper.toPenEntity
 import com.trevorwiebe.trackacow.data.mapper.toPenModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
@@ -24,6 +25,10 @@ class PenRepositoryImpl(
 
     override suspend fun insertCachePen(cachePenModel: CachePenModel) {
         cachePenDao.insertCachePen(cachePenModel.toCachePenEntity())
+    }
+
+    override suspend fun getCachePens(): List<CachePenModel> {
+        return cachePenDao.getCachePens().map { it.toCachePenModel() }
     }
 
     override fun readPens(): Flow<List<PenModel>> {

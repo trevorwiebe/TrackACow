@@ -1,8 +1,11 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
 import com.google.firebase.database.*
+import com.trevorwiebe.trackacow.data.mapper.toDrugGivenModel
+import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.remote.DrugsGivenRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 
 class DrugsGivenRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
@@ -14,6 +17,22 @@ class DrugsGivenRepositoryRemoteImpl(
                 firebaseDatabase.getReference(
                     "$databasePath/${it.drugsGivenId}"
                 ).setValue(it)
+            }
+        }
+    }
+
+    override suspend fun insertCacheDrugsGiven(drugsGivenList: List<CacheDrugGivenModel>) {
+        if (drugsGivenList.isNotEmpty()) {
+            drugsGivenList.forEach { cacheDrugGivenModel ->
+                val cacheDrugRef = firebaseDatabase.getReference(databasePath)
+                if (cacheDrugGivenModel.drugGivenId != null) {
+                    if (cacheDrugGivenModel.whatHappened == Constants.DELETE) {
+                        cacheDrugRef.child(cacheDrugGivenModel.drugGivenId!!).removeValue()
+                    } else {
+                        val drugModel = cacheDrugGivenModel.toDrugGivenModel()
+                        cacheDrugRef.child(cacheDrugGivenModel.drugGivenId!!).setValue(drugModel)
+                    }
+                }
             }
         }
     }

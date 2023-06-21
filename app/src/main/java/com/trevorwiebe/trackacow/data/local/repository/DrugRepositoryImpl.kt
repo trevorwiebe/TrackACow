@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheDrugDao
 import com.trevorwiebe.trackacow.data.local.dao.DrugDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheDrugEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheDrugModel
 import com.trevorwiebe.trackacow.data.mapper.toDrugEntity
 import com.trevorwiebe.trackacow.data.mapper.toDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug.CacheDrugModel
@@ -44,6 +45,10 @@ class DrugRepositoryImpl(
 
     override suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>) {
         drugDao.insertOrUpdate(drugList.map { it.toDrugEntity() })
+    }
+
+    override suspend fun getCacheDrugs(): List<CacheDrugModel> {
+        return cacheDrugDao.getCacheDrugs().map { it.toCacheDrugModel() }
     }
 
 }

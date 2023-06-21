@@ -33,4 +33,6 @@ interface DrugsGivenRepository {
     suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel)
 
     suspend fun createCacheDrugsGivenList(cacheDrugsGivenList: List<CacheDrugGivenModel>)
+
+    suspend fun getCacheDrugsGiven(): List<CacheDrugGivenModel>
 }

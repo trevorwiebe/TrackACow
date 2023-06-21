@@ -18,6 +18,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
 import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
+import com.trevorwiebe.trackacow.domain.use_cases.UploadCache
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -179,20 +180,55 @@ object TrackACowDataModule {
     @Provides
     @Singleton
     fun provideInitiateCloudDatabaseMigration5to6(
-            firebaseFunctions: FirebaseFunctions
+        firebaseFunctions: FirebaseFunctions
     ): InitiateCloudDatabaseMigration5to6 {
         return InitiateCloudDatabaseMigration5to6(firebaseFunctions)
     }
 
     @Provides
     @Singleton
+    fun providesUploadCache(
+        callRepository: CallRepository,
+        callRepositoryRemote: CallRepositoryRemote,
+        cowRepository: CowRepository,
+        cowRepositoryRemote: CowRepositoryRemote,
+        drugsGivenRepository: DrugsGivenRepository,
+        drugsGivenRepositoryRemote: DrugsGivenRepositoryRemote,
+        drugRepository: DrugRepository,
+        drugRepositoryRemote: DrugRepositoryRemote,
+        feedRepository: FeedRepository,
+        feedRepositoryRemote: FeedRepositoryRemote,
+        loadRepository: LoadRepository,
+        loadRemoteRepository: LoadRemoteRepository,
+        lotRepository: LotRepository,
+        lotRepositoryRemote: LotRepositoryRemote,
+        penRepository: PenRepository,
+        penRepositoryRemote: PenRepositoryRemote,
+        rationsRepository: RationsRepository,
+        rationRepositoryRemote: RationRepositoryRemote
+    ): UploadCache {
+        return UploadCache(
+            callRepository, callRepositoryRemote,
+            cowRepository, cowRepositoryRemote,
+            drugRepository, drugRepositoryRemote,
+            drugsGivenRepository, drugsGivenRepositoryRemote,
+            feedRepository, feedRepositoryRemote,
+            loadRepository, loadRemoteRepository,
+            lotRepository, lotRepositoryRemote,
+            penRepository, penRepositoryRemote,
+            rationsRepository, rationRepositoryRemote
+        )
+    }
+
+    @Provides
+    @Singleton
     fun providesDeleteAllLocalData(
-            callRepository: CallRepository,
-            cowRepository: CowRepository,
-            drugRepository: DrugRepository,
-            drugsGivenRepository: DrugsGivenRepository,
-            feedRepository: FeedRepository,
-            loadRepository: LoadRepository,
+        callRepository: CallRepository,
+        cowRepository: CowRepository,
+        drugRepository: DrugRepository,
+        drugsGivenRepository: DrugsGivenRepository,
+        feedRepository: FeedRepository,
+        loadRepository: LoadRepository,
             lotRepository: LotRepository,
             penRepository: PenRepository,
             rationsRepository: RationsRepository

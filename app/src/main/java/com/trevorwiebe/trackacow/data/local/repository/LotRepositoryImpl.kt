@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheLotDao
 import com.trevorwiebe.trackacow.data.local.dao.LotDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheLotEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheLotModel
 import com.trevorwiebe.trackacow.data.mapper.toLotEntity
 import com.trevorwiebe.trackacow.data.mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.CacheLotModel
@@ -85,5 +86,9 @@ class LotRepositoryImpl(
 
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {
         cacheLotDao.insertCacheLot(cacheLotModel.toCacheLotEntity())
+    }
+
+    override suspend fun getCacheLots(): List<CacheLotModel> {
+        return cacheLotDao.getCacheLots().map { it.toCacheLotModel() }
     }
 }

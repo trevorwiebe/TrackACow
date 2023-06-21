@@ -23,7 +23,7 @@ fun DrugModel.toDrugEntity(): DrugEntity{
     )
 }
 
-fun CacheDrugModel.toCacheDrugEntity(): CacheDrugEntity{
+fun CacheDrugModel.toCacheDrugEntity(): CacheDrugEntity {
     return CacheDrugEntity(
         drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
@@ -33,7 +33,16 @@ fun CacheDrugModel.toCacheDrugEntity(): CacheDrugEntity{
     )
 }
 
-fun CacheDrugEntity.toCacheDrugModel(): CacheDrugModel{
+fun CacheDrugModel.toDrugModel(): DrugModel {
+    return DrugModel(
+        drugPrimaryKey = drugPrimaryKey,
+        defaultAmount = defaultAmount,
+        drugCloudDatabaseId = drugCloudDatabaseId,
+        drugName = drugName
+    )
+}
+
+fun CacheDrugEntity.toCacheDrugModel(): CacheDrugModel {
     return CacheDrugModel(
         drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,
@@ -43,7 +52,7 @@ fun CacheDrugEntity.toCacheDrugModel(): CacheDrugModel{
     )
 }
 
-fun DrugModel.toCacheDrugModel(whatHappened: Int): CacheDrugModel{
+fun DrugModel.toCacheDrugModel(whatHappened: Int): CacheDrugModel {
     return CacheDrugModel(
         drugPrimaryKey = drugPrimaryKey,
         defaultAmount = defaultAmount,

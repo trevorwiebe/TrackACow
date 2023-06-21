@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.repository
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheFeedDao
 import com.trevorwiebe.trackacow.data.local.dao.FeedDao
 import com.trevorwiebe.trackacow.data.mapper.toCacheFeedEntity
+import com.trevorwiebe.trackacow.data.mapper.toCacheFeedModel
 import com.trevorwiebe.trackacow.data.mapper.toFeedEntity
 import com.trevorwiebe.trackacow.data.mapper.toFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
@@ -53,6 +54,10 @@ class FeedRepositoryImpl(
 
     override suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>) {
         cacheFeedDao.insertHoldingFeedList(feedModelList.map { it.toCacheFeedEntity() })
+    }
+
+    override suspend fun getCacheFeeds(): List<CacheFeedModel> {
+        return cacheFeedDao.getCacheFeeds().map { it.toCacheFeedModel() }
     }
 
     override suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>) {
