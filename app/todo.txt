@@ -1,6 +1,7 @@
 When updating a drug given for a specific cow, and returning to EditDrugGivenListActivity and EditMedicatedCowActivity
 Fix bugs in feedDetailFragment when swiping on a date that doesn't exist, it doesn't let you know that doesn't exist.
 Fix bugs in feedDetailFragment where always can't update/add feeds
+Fix bug in MedicatedCows where drugs do not show up on freshly added cows when not on the network
 
 Confirm that CRUD works on all entities
     Call
