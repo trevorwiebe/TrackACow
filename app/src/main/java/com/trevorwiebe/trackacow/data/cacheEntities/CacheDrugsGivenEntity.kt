@@ -13,7 +13,7 @@ data class CacheDrugsGivenEntity (
     var drugId: String? = "",
     var amountGiven: Int = 0,
     var cowId: String? = "",
-    var lotId: String? = "",
+    var lotId: String = "",
     var date: Long = 0,
     var whatHappened: Int = 0
 )
