@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 object Constants {
 
-    val BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().currentUser!!.uid + "/"
+    val BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().currentUser?.uid + "/"
     const val DATABASE_STRING_RATIONS = "/rations"
     const val DATABASE_STRING_CALLS = "/call"
     const val DATABASE_STRING_PENS = "/pens"
