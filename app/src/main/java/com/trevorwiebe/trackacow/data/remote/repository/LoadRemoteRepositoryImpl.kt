@@ -4,9 +4,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.data.mapper.toLoadModel
 import com.trevorwiebe.trackacow.domain.models.load.CacheLoadModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.repository.remote.LoadRemoteRepository
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -51,7 +53,20 @@ class LoadRemoteRepositoryImpl(
     }
 
     override fun insertCacheLoadsRemote(loadList: List<CacheLoadModel>) {
-
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty() && loadList.isNotEmpty()) {
+            val loadRef = firebaseDatabase.getReference("/users/${userId}/loads")
+            loadList.forEach { cacheLoadModel ->
+                if (cacheLoadModel.loadId != null) {
+                    if (cacheLoadModel.whatHappened == Constants.DELETE) {
+                        loadRef.child(cacheLoadModel.loadId!!).removeValue()
+                    } else {
+                        val loadModel = cacheLoadModel.toLoadModel()
+                        loadRef.child(cacheLoadModel.loadId!!).setValue(loadModel)
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun updateLoadWithNewLotIdRemote(

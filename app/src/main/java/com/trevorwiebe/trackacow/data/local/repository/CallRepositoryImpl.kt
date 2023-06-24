@@ -79,6 +79,10 @@ class CallRepositoryImpl(
         return cacheCallDao.getCacheCalls().map { it.toCacheCallModel() }
     }
 
+    override suspend fun deleteCacheCalls() {
+        cacheCallDao.deleteCacheCalls()
+    }
+
     override suspend fun insertOrUpdateCallList(callList: List<CallModel>) {
         callDao.insertOrUpdate(callList.map { it.toCallEntity() })
     }

@@ -64,6 +64,10 @@ data class CowRepositoryImpl(
         return cacheCowDao.getCacheCows().map { it.toCacheCowModel() }
     }
 
+    override suspend fun deleteCacheCows() {
+        cacheCowDao.deleteCacheCows()
+    }
+
     override suspend fun insertOrUpdateCowList(cowList: List<CowModel>) {
         cowDao.insertOrUpdate(cowList.map { it.toCowEntity() })
     }

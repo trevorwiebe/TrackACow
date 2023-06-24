@@ -90,19 +90,16 @@ class CallRepositoryRemoteImpl(
 
     override suspend fun updateRemoteWithCacheCallList(cacheCallList: List<CacheCallModel>) {
         val userId = firebaseUserId.get().toString()
-        if (userId.isNotEmpty()) {
-            if (cacheCallList.isNotEmpty()) {
-                val databasePath = "/users/${userId}/call"
-                cacheCallList.forEach { cacheCallModel ->
-                    val cacheCallRef = firebaseDatabase.getReference(databasePath)
-                    if (cacheCallModel.callCloudDatabaseId != null) {
-                        if (cacheCallModel.whatHappened == Constants.DELETE) {
-                            cacheCallRef.child(cacheCallModel.callCloudDatabaseId).removeValue()
-                        } else {
-                            val callModel = cacheCallModel.toCallModel()
-                            cacheCallRef.child(cacheCallModel.callCloudDatabaseId)
-                                .setValue(callModel)
-                        }
+        if (userId.isNotEmpty() && cacheCallList.isNotEmpty()) {
+            val cacheCallRef = firebaseDatabase.getReference("/users/${userId}/call")
+            cacheCallList.forEach { cacheCallModel ->
+                if (cacheCallModel.callCloudDatabaseId != null) {
+                    if (cacheCallModel.whatHappened == Constants.DELETE) {
+                        cacheCallRef.child(cacheCallModel.callCloudDatabaseId).removeValue()
+                    } else {
+                        val callModel = cacheCallModel.toCallModel()
+                        cacheCallRef.child(cacheCallModel.callCloudDatabaseId)
+                            .setValue(callModel)
                     }
                 }
             }

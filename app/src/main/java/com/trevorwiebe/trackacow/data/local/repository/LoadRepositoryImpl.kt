@@ -61,4 +61,8 @@ class LoadRepositoryImpl(
         return cacheLoadDao.getCacheLoads().map { it.toCacheLoadModel() }
     }
 
+    override suspend fun deleteCacheLoads() {
+        cacheLoadDao.deleteCacheLoads()
+    }
+
 }

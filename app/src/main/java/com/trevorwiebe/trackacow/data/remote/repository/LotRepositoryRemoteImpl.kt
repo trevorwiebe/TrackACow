@@ -1,10 +1,12 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
 import com.google.firebase.database.FirebaseDatabase
+import com.trevorwiebe.trackacow.data.mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.CacheLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
 import com.trevorwiebe.trackacow.domain.utils.addSingleValueEventListenerFlow
 import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
@@ -37,7 +39,18 @@ class LotRepositoryRemoteImpl(
     }
 
     override fun insertCacheLotRemote(lotList: List<CacheLotModel>) {
-
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty() && lotList.isNotEmpty()) {
+            val lotRef = firebaseDatabase.getReference("/users/${userId}/cattleLot")
+            lotList.forEach { cacheLotModel ->
+                if (cacheLotModel.whatHappened == Constants.DELETE) {
+                    lotRef.child(cacheLotModel.lotCloudDatabaseId).removeValue()
+                } else {
+                    val lotModel = cacheLotModel.toLotModel()
+                    lotRef.child(cacheLotModel.lotCloudDatabaseId).setValue(lotModel)
+                }
+            }
+        }
     }
 
     override fun insertAndUpdateLotRemote(lotModel: LotModel) {

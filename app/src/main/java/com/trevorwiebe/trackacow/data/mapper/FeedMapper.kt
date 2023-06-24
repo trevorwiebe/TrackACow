@@ -47,7 +47,7 @@ fun CacheFeedEntity.toCacheFeedModel(): CacheFeedModel{
     )
 }
 
-fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity{
+fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity {
     return CacheFeedEntity(
         primaryKey = primaryKey,
         feed = feed,
@@ -55,5 +55,15 @@ fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity{
         id = id,
         lotId = lotId,
         whatHappened = whatHappened
+    )
+}
+
+fun CacheFeedModel.toFeedModel(): FeedModel {
+    return FeedModel(
+        primaryKey = primaryKey,
+        feed = feed,
+        date = date,
+        id = id,
+        lotId = lotId
     )
 }

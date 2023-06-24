@@ -82,6 +82,10 @@ class DrugsGivenRepositoryImpl(
         return cacheDrugsGivenDao.getCacheDrugGiven().map { it.toCacheDrugGivenModel() }
     }
 
+    override suspend fun deleteCacheDrugsGiven() {
+        cacheDrugsGivenDao.deleteCacheDrugGiven()
+    }
+
     override suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>) {
         drugsGivenDao.insertOrUpdate(drugGivenList.map { it.toDrugGivenEntity() })
     }

@@ -15,4 +15,6 @@ interface CacheDrugsGivenDao {
     @Query("SELECT * FROM cache_drugs_given")
     suspend fun getCacheDrugGiven(): List<CacheDrugsGivenEntity>
 
+    @Query("DELETE FROM cache_drugs_given")
+    suspend fun deleteCacheDrugGiven()
 }

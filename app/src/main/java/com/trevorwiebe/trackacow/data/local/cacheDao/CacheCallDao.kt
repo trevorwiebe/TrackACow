@@ -10,4 +10,7 @@ interface CacheCallDao {
 
     @Query("SELECT * FROM cache_call")
     suspend fun getCacheCalls(): List<CacheCallEntity>
+
+    @Query("DELETE FROM cache_call")
+    suspend fun deleteCacheCalls()
 }

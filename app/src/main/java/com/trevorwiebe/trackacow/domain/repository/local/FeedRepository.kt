@@ -28,4 +28,6 @@ interface FeedRepository {
     suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)
 
     suspend fun getCacheFeeds(): List<CacheFeedModel>
+
+    suspend fun deleteCacheFeeds()
 }

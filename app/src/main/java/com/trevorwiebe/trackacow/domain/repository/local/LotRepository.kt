@@ -34,4 +34,6 @@ interface LotRepository {
     suspend fun createCacheLot(cacheLotModel: CacheLotModel)
 
     suspend fun getCacheLots(): List<CacheLotModel>
+
+    suspend fun deleteCacheLots()
 }

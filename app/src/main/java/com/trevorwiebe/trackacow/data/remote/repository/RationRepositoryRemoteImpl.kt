@@ -1,9 +1,11 @@
 package com.trevorwiebe.trackacow.data.remote.repository
 
 import com.google.firebase.database.FirebaseDatabase
+import com.trevorwiebe.trackacow.data.mapper.toRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.CacheRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.addListValueEventListenerFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -32,7 +34,18 @@ class RationRepositoryRemoteImpl(
     }
 
     override suspend fun insertCacheRationRemote(rationList: List<CacheRationModel>) {
-
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty() && rationList.isNotEmpty()) {
+            rationList.forEach { cacheRationModel ->
+                val cacheRationRef = firebaseDatabase.getReference("/users/${userId}/rations")
+                if (cacheRationModel.whatHappened == Constants.DELETE) {
+                    cacheRationRef.child(cacheRationModel.rationCloudDatabaseId).removeValue()
+                } else {
+                    val rationModel = cacheRationModel.toRationModel()
+                    cacheRationRef.child(rationModel.rationCloudDatabaseId).setValue(rationModel)
+                }
+            }
+        }
     }
 
     override fun readAllRations(): Flow<List<RationModel>> {

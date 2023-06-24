@@ -4,9 +4,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.data.mapper.toFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -31,7 +33,18 @@ class FeedRepositoryRemoteImpl(
     }
 
     override suspend fun insertCacheFeeds(feedModelList: List<CacheFeedModel>) {
-
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty() && feedModelList.isNotEmpty()) {
+            val feedRef = firebaseDatabase.getReference("/users/${userId}/feed")
+            feedModelList.forEach { cacheFeedModel ->
+                if (cacheFeedModel.whatHappened == Constants.DELETE) {
+                    feedRef.child(cacheFeedModel.id).removeValue()
+                } else {
+                    val feedModel = cacheFeedModel.toFeedModel()
+                    feedRef.child(cacheFeedModel.id).setValue(feedModel)
+                }
+            }
+        }
     }
 
     override fun readFeedsByLotId(lotId: String): Flow<List<FeedModel>> {

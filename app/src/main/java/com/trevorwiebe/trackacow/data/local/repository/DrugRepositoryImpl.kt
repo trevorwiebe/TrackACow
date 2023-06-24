@@ -51,4 +51,8 @@ class DrugRepositoryImpl(
         return cacheDrugDao.getCacheDrugs().map { it.toCacheDrugModel() }
     }
 
+    override suspend fun deleteCacheDrugs() {
+        cacheDrugDao.deleteCacheDrugs()
+    }
+
 }

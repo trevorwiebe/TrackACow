@@ -12,5 +12,7 @@ interface CacheDrugDao {
     @Query("SELECT * FROM cache_drug")
     suspend fun getCacheDrugs(): List<CacheDrugEntity>
 
+    @Query("DELETE FROM cache_drug")
+    suspend fun deleteCacheDrugs()
 
 }

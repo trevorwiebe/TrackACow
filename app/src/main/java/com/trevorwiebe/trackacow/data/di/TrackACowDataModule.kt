@@ -205,7 +205,8 @@ object TrackACowDataModule {
         penRepository: PenRepository,
         penRepositoryRemote: PenRepositoryRemote,
         rationsRepository: RationsRepository,
-        rationRepositoryRemote: RationRepositoryRemote
+        rationRepositoryRemote: RationRepositoryRemote,
+        context: Application
     ): UploadCache {
         return UploadCache(
             callRepository, callRepositoryRemote,
@@ -216,7 +217,8 @@ object TrackACowDataModule {
             loadRepository, loadRemoteRepository,
             lotRepository, lotRepositoryRemote,
             penRepository, penRepositoryRemote,
-            rationsRepository, rationRepositoryRemote
+            rationsRepository, rationRepositoryRemote,
+            context
         )
     }
 

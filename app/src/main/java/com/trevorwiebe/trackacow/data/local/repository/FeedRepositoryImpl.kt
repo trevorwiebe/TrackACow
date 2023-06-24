@@ -60,6 +60,10 @@ class FeedRepositoryImpl(
         return cacheFeedDao.getCacheFeeds().map { it.toCacheFeedModel() }
     }
 
+    override suspend fun deleteCacheFeeds() {
+        cacheFeedDao.deleteCacheDrugs()
+    }
+
     override suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>) {
         feedDao.insertOrUpdate(feedList.map { it.toFeedEntity() })
     }

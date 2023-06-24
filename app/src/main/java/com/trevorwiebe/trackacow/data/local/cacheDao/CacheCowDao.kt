@@ -12,4 +12,7 @@ interface CacheCowDao {
     @Query("SELECT * FROM cache_cow")
     suspend fun getCacheCows(): List<CacheCowEntity>
 
+    @Query("DELETE FROM cache_cow")
+    suspend fun deleteCacheCows()
+
 }

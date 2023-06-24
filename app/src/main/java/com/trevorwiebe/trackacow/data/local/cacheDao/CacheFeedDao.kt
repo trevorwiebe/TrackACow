@@ -18,4 +18,7 @@ interface CacheFeedDao {
     @Delete
     suspend fun deleteFeedEntity(cacheFeedEntity: CacheFeedEntity)
 
+    @Query("DELETE FROM cache_feed")
+    suspend fun deleteCacheDrugs()
+
 }

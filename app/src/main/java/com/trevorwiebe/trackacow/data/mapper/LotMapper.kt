@@ -61,8 +61,8 @@ fun CacheLotModel.toCacheLotEntity(): CacheLotEntity {
     )
 }
 
-fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
-    return CacheLotModel(
+fun CacheLotModel.toLotModel(): LotModel {
+    return LotModel(
         lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
@@ -71,13 +71,12 @@ fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel{
         date = date,
         archived = archived,
         dateArchived = dateArchived,
-        lotPenCloudDatabaseId = lotPenCloudDatabaseId,
-        whatHappened = whatHappened
+        lotPenCloudDatabaseId = lotPenCloudDatabaseId
     )
 }
 
-fun LotEntity.toCacheLotEntity(whatHappened: Int): CacheLotEntity{
-    return CacheLotEntity(
+fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel {
+    return CacheLotModel(
         lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,

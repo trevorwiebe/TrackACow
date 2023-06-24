@@ -47,3 +47,11 @@ fun CacheRationModel.toCacheRationEntity(): CacheRationEntity {
         whatHappened = whatHappened
     )
 }
+
+fun CacheRationModel.toRationModel(): RationModel {
+    return RationModel(
+        rationPrimaryKey = rationPrimaryKey,
+        rationCloudDatabaseId = rationCloudDatabaseId,
+        rationName = rationName
+    )
+}

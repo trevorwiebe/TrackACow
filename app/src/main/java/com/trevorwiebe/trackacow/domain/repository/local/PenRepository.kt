@@ -29,4 +29,6 @@ interface PenRepository {
     suspend fun insertCachePen(cachePenModel: CachePenModel)
 
     suspend fun getCachePens(): List<CachePenModel>
+
+    suspend fun deleteCachePens()
 }

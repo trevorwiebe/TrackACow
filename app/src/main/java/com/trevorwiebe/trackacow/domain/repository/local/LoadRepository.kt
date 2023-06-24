@@ -25,4 +25,6 @@ interface LoadRepository {
     // cache functions
 
     suspend fun getCacheLoads(): List<CacheLoadModel>
+
+    suspend fun deleteCacheLoads()
 }

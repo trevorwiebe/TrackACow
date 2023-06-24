@@ -51,4 +51,8 @@ class RationRepositoryImpl(
     override suspend fun getCacheRations(): List<CacheRationModel> {
         return cacheRationDao.getCacheRations().map { it.toCacheRationModel() }
     }
+
+    override suspend fun deleteCacheRations() {
+        cacheRationDao.deleteCacheRations()
+    }
 }

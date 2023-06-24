@@ -23,4 +23,6 @@ interface DrugRepository {
     // cache functions
 
     suspend fun getCacheDrugs(): List<CacheDrugModel>
+
+    suspend fun deleteCacheDrugs()
 }

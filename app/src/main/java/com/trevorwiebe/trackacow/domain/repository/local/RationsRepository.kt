@@ -23,4 +23,6 @@ interface RationsRepository {
     // cache functions
 
     suspend fun getCacheRations(): List<CacheRationModel>
+
+    suspend fun deleteCacheRations()
 }

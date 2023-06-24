@@ -19,9 +19,9 @@ interface CacheRationDao {
     @Delete
     suspend fun deleteHoldingRation(cacheRationEntity: CacheRationEntity)
 
-    @Query("DELETE FROM cache_ration")
-    suspend fun deleteHoldingRationTable()
-
     @Query("SELECT * FROM cache_ration")
     suspend fun getCacheRations(): List<CacheRationEntity>
+
+    @Query("DELETE FROM cache_ration")
+    suspend fun deleteCacheRations()
 }

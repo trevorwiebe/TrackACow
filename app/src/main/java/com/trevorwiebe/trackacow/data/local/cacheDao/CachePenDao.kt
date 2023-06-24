@@ -12,4 +12,7 @@ interface CachePenDao {
     @Query("SELECT * FROM cache_pen")
     suspend fun getCachePens(): List<CachePenEntity>
 
+    @Query("DELETE FROM cache_pen")
+    suspend fun deleteCachePens()
+
 }

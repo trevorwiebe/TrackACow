@@ -15,4 +15,7 @@ interface CacheLotDao {
     @Query("SELECT * FROM cache_lot")
     suspend fun getCacheLots(): List<CacheLotEntity>
 
+    @Query("DELETE FROM cache_lot")
+    suspend fun deleteCacheLots()
+
 }

@@ -91,4 +91,8 @@ class LotRepositoryImpl(
     override suspend fun getCacheLots(): List<CacheLotModel> {
         return cacheLotDao.getCacheLots().map { it.toCacheLotModel() }
     }
+
+    override suspend fun deleteCacheLots() {
+        cacheLotDao.deleteCacheLots()
+    }
 }

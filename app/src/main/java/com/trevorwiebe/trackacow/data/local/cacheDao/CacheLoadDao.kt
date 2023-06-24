@@ -12,4 +12,7 @@ interface CacheLoadDao {
     @Query("SELECT * FROM cache_load")
     suspend fun getCacheLoads(): List<CacheLoadEntity>
 
+    @Query("DELETE FROM cache_load")
+    suspend fun deleteCacheLoads()
+
 }

@@ -31,6 +31,10 @@ class PenRepositoryImpl(
         return cachePenDao.getCachePens().map { it.toCachePenModel() }
     }
 
+    override suspend fun deleteCachePens() {
+        cachePenDao.deleteCachePens()
+    }
+
     override fun readPens(): Flow<List<PenModel>> {
         return penDao.getPenList().map { returnedPenList ->
             returnedPenList.map {

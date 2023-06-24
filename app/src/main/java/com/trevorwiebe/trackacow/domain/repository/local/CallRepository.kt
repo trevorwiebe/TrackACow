@@ -33,4 +33,6 @@ interface CallRepository {
     suspend fun insertCacheCall(cacheCallModel: CacheCallModel)
 
     suspend fun getCacheCalls(): List<CacheCallModel>
+
+    suspend fun deleteCacheCalls()
 }

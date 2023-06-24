@@ -51,6 +51,17 @@ fun CacheLoadModel.toCacheLoadEntity(): CacheLoadEntity {
     )
 }
 
+fun CacheLoadModel.toLoadModel(): LoadModel {
+    return LoadModel(
+        primaryKey = primaryKey,
+        numberOfHead = numberOfHead,
+        date = date,
+        description = description,
+        lotId = lotId,
+        loadId = loadId
+    )
+}
+
 fun CacheLoadEntity.toCacheLoadModel(): CacheLoadModel {
     return CacheLoadModel(
         primaryKey = primaryKey,

@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.domain.use_cases
 
+import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
@@ -18,6 +19,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.LoadRemoteRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.PenRepositoryRemote
 import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.Utility
 
 class UploadCache(
     private val callRepository: CallRepository,
@@ -38,43 +40,46 @@ class UploadCache(
     private val penRepositoryRemote: PenRepositoryRemote,
     private val rationRepository: RationsRepository,
     private val rationRepositoryRemote: RationRepositoryRemote,
+    private val context: Application
 ) {
     suspend operator fun invoke() {
 
         val cacheCalls = callRepository.getCacheCalls()
         callRepositoryRemote.updateRemoteWithCacheCallList(cacheCalls)
+        callRepository.deleteCacheCalls()
 
         val cacheCows = cowRepository.getCacheCows()
-        if (cacheCows.isNotEmpty())
-            cowRepositoryRemote.insertCacheCowsRemote(cacheCows)
+        cowRepositoryRemote.insertCacheCowsRemote(cacheCows)
+        cowRepository.deleteCacheCows()
 
         val cacheDrugs = drugRepository.getCacheDrugs()
-        if (cacheDrugs.isNotEmpty())
-            drugRepositoryRemote.insertCacheDrugs(cacheDrugs)
+        drugRepositoryRemote.insertCacheDrugs(cacheDrugs)
+        drugRepository.getCacheDrugs()
 
         val cacheDrugsGiven = drugsGivenRepository.getCacheDrugsGiven()
-        if (cacheDrugsGiven.isNotEmpty())
-            drugsGivenRepositoryRemote.insertCacheDrugsGiven(cacheDrugsGiven)
+        drugsGivenRepositoryRemote.insertCacheDrugsGiven(cacheDrugsGiven)
+        drugsGivenRepository.deleteCacheDrugsGiven()
 
         val cacheFeeds = feedRepository.getCacheFeeds()
-        if (cacheFeeds.isNotEmpty())
-            feedRepositoryRemote.insertCacheFeeds(cacheFeeds)
+        feedRepositoryRemote.insertCacheFeeds(cacheFeeds)
+        feedRepository.deleteCacheFeeds()
 
         val cacheLoads = loadRepository.getCacheLoads()
-        if (cacheLoads.isNotEmpty())
-            loadRemoteRepository.insertCacheLoadsRemote(cacheLoads)
+        loadRemoteRepository.insertCacheLoadsRemote(cacheLoads)
+        loadRepository.deleteCacheLoads()
 
         val cacheLots = lotRepository.getCacheLots()
-        if (cacheLots.isNotEmpty())
-            lotRepositoryRemote.insertCacheLotRemote(cacheLots)
+        lotRepositoryRemote.insertCacheLotRemote(cacheLots)
+        lotRepository.deleteCacheLots()
 
         val cachePens = penRepository.getCachePens()
-        if (cachePens.isNotEmpty())
-            penRepositoryRemote.insertCachePenRemote(cachePens)
+        penRepositoryRemote.insertCachePenRemote(cachePens)
+        penRepository.deleteCachePens()
 
         val cacheRations = rationRepository.getCacheRations()
-        if (cacheRations.isNotEmpty())
-            rationRepositoryRemote.insertCacheRationRemote(cacheRations)
+        rationRepositoryRemote.insertCacheRationRemote(cacheRations)
+        rationRepository.deleteCacheRations()
 
+        Utility.setNewDataToUpload(context, false)
     }
 }
