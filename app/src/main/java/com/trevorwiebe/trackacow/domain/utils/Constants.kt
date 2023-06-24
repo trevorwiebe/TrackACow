@@ -1,30 +1,8 @@
 package com.trevorwiebe.trackacow.domain.utils
 
-import com.google.firebase.auth.FirebaseAuth
 
 object Constants {
 
-    val BASE_REFERENCE_STRING = "/users/" + FirebaseAuth.getInstance().currentUser?.uid + "/"
-    const val DATABASE_STRING_RATIONS = "/rations"
-    const val DATABASE_STRING_CALLS = "/call"
-    const val DATABASE_STRING_PENS = "/pens"
-    const val DATABASE_STRING_LOT = "/cattleLot"
-    const val DATABASE_STRING_DRUGS = "drugs/"
-    const val DATABASE_STRING_FEEDS = "/feed"
-    const val DATABASE_STRING_LOAD = "/loads"
-    const val DATABASE_STRING_DRUGS_GIVEN = "drugsGiven"
-    const val DATABASE_STRING_COW = "/cows"
-    const val DATABASE_STRING_USER = "/user"
-    const val FREE_TRIAL = 0
-    const val MONTHLY_SUBSCRIPTION = 1
-    const val ANNUAL_SUBSCRIPTION = 2
-    const val CANCELED = 6
-    const val FOREVER_FREE_USER = 7
-    const val SUCCESS = 1
-    const val NO_NETWORK_CONNECTION = 2
-    const val ERROR_FETCHING_DATA_FROM_CLOUD = 3
-    const val ERROR_PUSHING_DATA_TO_CLOUD = 4
-    const val ERROR_ACTIVITY_DESTROYED_BEFORE_LOADED = 5
     const val MEDICATE = 1
     const val FEED = 2
     const val MOVE = 3
@@ -36,11 +14,6 @@ object Constants {
     const val DELETE = 3
     const val LOT = 1
     const val ARCHIVE = 2
-
-    /* time drug report types */
-    const val DAY_DRUG_REPORT = 1
-    const val WEEK_DRUG_REPORT = 2
-    const val MONTH_DRUG_REPORT = 3
 
     // Preference keys
     const val NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name"

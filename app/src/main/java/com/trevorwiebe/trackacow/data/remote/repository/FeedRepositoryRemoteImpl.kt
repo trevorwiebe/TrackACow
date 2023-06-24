@@ -7,18 +7,25 @@ import com.google.firebase.database.ValueEventListener
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import javax.inject.Provider
 
 class FeedRepositoryRemoteImpl(
     val firebaseDatabase: FirebaseDatabase,
-    private val databasePath: String
+    val firebaseUserId: Provider<String>
 ) : FeedRepositoryRemote {
 
     override suspend fun insertOrUpdateFeedRemoteList(feedModelList: List<FeedModel>) {
-        feedModelList.forEach {
-            if (it.id.isNotEmpty()) {
-                firebaseDatabase.getReference(
-                    "$databasePath/${it.id}"
-                ).setValue(it)
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty()) {
+            feedModelList.forEach {
+                if (it.id.isNotEmpty()) {
+                    firebaseDatabase.getReference(
+                        "/users/${userId}/feed/${it.id}"
+                    ).setValue(it)
+                }
             }
         }
     }
@@ -27,10 +34,26 @@ class FeedRepositoryRemoteImpl(
 
     }
 
+    override fun readFeedsByLotId(lotId: String): Flow<List<FeedModel>> {
+        val userId = firebaseUserId.get().toString()
+        return if (userId.isNotEmpty()) {
+            val feedQuery = firebaseDatabase
+                .getReference("/users/${userId}/feed")
+                .orderByChild("lotId")
+                .equalTo(lotId)
+            feedQuery.addQueryListValueEventListenerFlow(FeedModel::class.java)
+        } else {
+            emptyFlow()
+        }
+    }
+
     override suspend fun deleteFeedRemoteList(feedModelList: List<FeedModel>) {
-        for (i in feedModelList.indices) {
-            val feedModelId = feedModelList[i].id
-            firebaseDatabase.getReference("$databasePath/$feedModelId").removeValue()
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty()) {
+            for (i in feedModelList.indices) {
+                val feedModelId = feedModelList[i].id
+                firebaseDatabase.getReference("/users/${userId}/feed/$feedModelId").removeValue()
+            }
         }
     }
 
@@ -38,23 +61,31 @@ class FeedRepositoryRemoteImpl(
         lotIdToSave: String,
         lotIdsToDelete: List<String>
     ) {
-        lotIdsToDelete.forEach { lotIdStr ->
-            val feedQuery =
-                firebaseDatabase.getReference(databasePath).orderByChild("lotId").equalTo(lotIdStr)
-            feedQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach {
-                        val feedModel = it.getValue(FeedModel::class.java)
-                        val feedId = feedModel?.id
-                        if (feedId != null) {
-                            firebaseDatabase.getReference(databasePath).child(feedId).child("lotId")
-                                .setValue(lotIdToSave)
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty()) {
+            val databasePath = "/users/${userId}/feed"
+            lotIdsToDelete.forEach { lotIdStr ->
+                val feedQuery =
+                    firebaseDatabase
+                        .getReference(databasePath)
+                        .orderByChild("lotId")
+                        .equalTo(lotIdStr)
+                feedQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach {
+                            val feedModel = it.getValue(FeedModel::class.java)
+                            val feedId = feedModel?.id
+                            if (feedId != null) {
+                                firebaseDatabase.getReference(databasePath).child(feedId)
+                                    .child("lotId")
+                                    .setValue(lotIdToSave)
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
         }
     }
 }

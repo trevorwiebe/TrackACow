@@ -1,30 +1,25 @@
 package com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases
 
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
-import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
+import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import javax.inject.Provider
 
 data class ReadDeadCowsByLotId(
     private val cowRepository: CowRepository,
-    private val firebaseDatabase: FirebaseDatabase,
-    private val databaseString: String
+    private val cowRepositoryRemote: CowRepositoryRemote,
 ){
 
     // TODO: fix issue where cloud data isn't save locally
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CowModel>> {
         val localFlow = cowRepository.getDeadCowsByLotId(lotId)
-        val cowRef = firebaseDatabase
-            .getReference(databaseString)
-            .orderByChild("lotId")
-            .equalTo(lotId)
-        val cowFlow = cowRef.addQueryListValueEventListenerFlow(CowModel::class.java)
+        val cowFlow = cowRepositoryRemote.readCowsByLotId(lotId)
         return localFlow
             .flatMapConcat { localData ->
                 cowFlow

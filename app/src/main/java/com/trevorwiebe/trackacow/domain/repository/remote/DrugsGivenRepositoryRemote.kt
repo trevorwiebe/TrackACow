@@ -1,11 +1,18 @@
 package com.trevorwiebe.trackacow.domain.repository.remote
 
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
+import kotlinx.coroutines.flow.Flow
 
 interface DrugsGivenRepositoryRemote {
 
     suspend fun createDrugsGivenListRemote(drugsGivenList: List<DrugGivenModel>)
+
+    fun readDrugsGivenAndDrugsByLotIdRemote(lotId: String): Flow<Pair<List<DrugModel>, List<DrugGivenModel>>>
+
+    fun readDrugsGivenAndDrugsByCowIdRemote(cowId: String): Flow<Pair<List<DrugModel>, List<DrugGivenModel>>>
 
     suspend fun insertCacheDrugsGiven(drugsGivenList: List<CacheDrugGivenModel>)
 

@@ -1,9 +1,8 @@
 package com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases
 
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
-import com.trevorwiebe.trackacow.domain.utils.addSingleValueEventListenerFlow
+import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -11,22 +10,18 @@ import kotlinx.coroutines.flow.onStart
 
 data class ReadLotsByLotId(
     private val lotRepository: LotRepository,
-    private val firebaseDatabase: FirebaseDatabase,
-    private val lotDatabaseString: String
+    private val lotRepositoryRemote: LotRepositoryRemote
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(lotCloudDatabaseId: String): Flow<LotModel?> {
-        val localFlow = lotRepository.readLotByLotId(lotCloudDatabaseId)
 
-        val lotRef = firebaseDatabase.getReference(
-            "$lotDatabaseString/$lotCloudDatabaseId"
-        )
-        val lotCloudFlow = lotRef.addSingleValueEventListenerFlow(LotModel::class.java)
+        val localLotFlow = lotRepository.readLotByLotId(lotCloudDatabaseId)
+        val cloudLotFlow = lotRepositoryRemote.readLotByLotId(lotCloudDatabaseId)
 
-        return localFlow
+        return localLotFlow
             .flatMapLatest { localData ->
-                lotCloudFlow.onStart {
+                cloudLotFlow.onStart {
                     if (localData != null) {
                         emit(localData)
                     }

@@ -19,7 +19,6 @@ import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelIncludeEmptyPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +34,6 @@ object ViewModelDomainModule {
     fun provideCowUseCases(
         cowRepository: CowRepository,
         cowRepositoryRemote: CowRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): CowUseCases {
@@ -43,20 +41,17 @@ object ViewModelDomainModule {
             createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
             readDeadCowsByLotId = ReadDeadCowsByLotId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             ),
             readCowsByLotId = ReadCowsByLotId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             ),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
             deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context),
             readCowByCowId = ReadCowByCowId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             )
         )
     }
@@ -66,9 +61,8 @@ object ViewModelDomainModule {
     fun provideRationUseCases(
         rationsRepository: RationsRepository,
         rationsRepositoryRemote: RationRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
-        context: Application
+        context: Application,
     ): RationUseCases {
         return RationUseCases(
             createRationUC = CreateRationUC(
@@ -79,8 +73,7 @@ object ViewModelDomainModule {
             ),
             readAllRationsUC = ReadAllRationsUC(
                 rationsRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                rationsRepositoryRemote
             ),
             updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
             deleteRationByIdUC = DeleteRationByIdUC(
@@ -105,16 +98,12 @@ object ViewModelDomainModule {
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(
                 rationsRepository,
                 callRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                callRepositoryRemote
             ),
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
                 rationsRepository,
                 callRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                callRepositoryRemote
             ),
             createCallUC = CreateCallUC(
                 callRepository,
@@ -144,8 +133,7 @@ object ViewModelDomainModule {
             ),
             readLoadsByLotId = ReadLoadsByLotId(
                 loadRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOAD
+                loadRemoteRepository
             ),
             updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(
@@ -163,7 +151,7 @@ object ViewModelDomainModule {
         penRepository: PenRepository,
         lotRepository: LotRepository,
         penRepositoryRemote: PenRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
+        lotRepositoryRemote: LotRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): PenUseCases {
@@ -171,16 +159,12 @@ object ViewModelDomainModule {
             readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(
                 penRepository,
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(
                 penRepository,
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             createPenUC = CreatePenUC(
                 penRepository,
@@ -208,7 +192,6 @@ object ViewModelDomainModule {
         feedRepositoryRemote: FeedRepositoryRemote,
         loadRepository: LoadRepository,
         loadRemoteRepository: LoadRemoteRepository,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases {
@@ -216,18 +199,15 @@ object ViewModelDomainModule {
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readLots = ReadLots(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             readArchivedLots = ReadArchivedLots(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             readLotsByLotId = ReadLotsByLotId(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
@@ -255,14 +235,12 @@ object ViewModelDomainModule {
         drugRepository: DrugRepository,
         drugRepositoryRemote: DrugRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
-        firebaseDatabase: FirebaseDatabase,
         context: Application
     ): DrugUseCases{
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS
+                drugRepositoryRemote
             ),
             createDrug = CreateDrug(
                 drugRepository,
@@ -281,7 +259,6 @@ object ViewModelDomainModule {
         drugRepository: DrugRepository,
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): DrugsGivenUseCases {
@@ -292,16 +269,12 @@ object ViewModelDomainModule {
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
                 drugsGivenRepository,
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
                 drugRepository,
                 drugsGivenRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
                 drugsGivenRepository,
@@ -311,9 +284,7 @@ object ViewModelDomainModule {
             readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
                 drugsGivenRepository,
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             deleteDrugGivenByDrugGivenId = DeleteDrugGivenByDrugGivenId(
                 drugsGivenRepository,
@@ -333,7 +304,6 @@ object ViewModelDomainModule {
     fun provideFeedUseCases(
         feedRepository: FeedRepository,
         feedRepositoryRemote: FeedRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): FeedUseCases {
@@ -346,13 +316,11 @@ object ViewModelDomainModule {
             ),
             readFeedsByLotId = ReadFeedsByLotId(
                 feedRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+                feedRepositoryRemote
             ),
             readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
                 feedRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+                feedRepositoryRemote
             )
         )
     }

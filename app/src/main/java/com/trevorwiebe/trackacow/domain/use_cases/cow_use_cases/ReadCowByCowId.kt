@@ -1,26 +1,23 @@
 package com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases
 
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
-import com.trevorwiebe.trackacow.domain.utils.addSingleValueEventListenerFlow
+import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
+import javax.inject.Provider
 
 class ReadCowByCowId(
     private val cowRepository: CowRepository,
-    private val firebaseDatabase: FirebaseDatabase,
-    private val databaseString: String
+    private val cowRepositoryRemote: CowRepositoryRemote
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(cowId: String): Flow<CowModel?> {
         val localFlow = cowRepository.getCowByCowId(cowId)
-        val cowRef = firebaseDatabase.getReference(
-            "$databaseString/$cowId"
-        )
-        val cowCloudFlow = cowRef.addSingleValueEventListenerFlow(CowModel::class.java)
+        val cowCloudFlow = cowRepositoryRemote.readCowByCowIdRemote(cowId)
 
         return localFlow
             .flatMapLatest { localData ->

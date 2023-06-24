@@ -1,13 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases
 
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.data.mapper.toDrugGivenAndDrug
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
-import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
+import com.trevorwiebe.trackacow.domain.repository.remote.DrugsGivenRepositoryRemote
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -17,35 +16,25 @@ import kotlinx.coroutines.flow.onStart
 class ReadDrugsGivenAndDrugsByLotId(
     private val drugsGivenRepository: DrugsGivenRepository,
     private val drugRepository: DrugRepository,
-    private val firebaseDatabase: FirebaseDatabase,
-    private val drugDatabaseString: String,
-    private val drugsGivenDatabaseString: String
+    private val drugsGivenRepositoryRemote: DrugsGivenRepositoryRemote
 ) {
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<DrugsGivenAndDrugModel>> {
-        val localFlow = drugsGivenRepository.getDrugsGivenAndDrugs(lotId)
+        val localDrugsGivenFlow = drugsGivenRepository.getDrugsGivenAndDrugs(lotId)
+        val cloudDrugsGivenFlow =
+            drugsGivenRepositoryRemote.readDrugsGivenAndDrugsByLotIdRemote(lotId)
 
-        val drugRef = firebaseDatabase.getReference(drugDatabaseString)
-        val drugsGivenRef = firebaseDatabase
-            .getReference(drugsGivenDatabaseString)
-            .orderByChild("drugsGivenLotId")
-            .equalTo(lotId)
-
-        return localFlow
+        return localDrugsGivenFlow
             .flatMapConcat { localData ->
-                combineQueryDatabaseNodes(
-                    drugRef,
-                    drugsGivenRef,
-                    DrugModel::class.java,
-                    DrugGivenModel::class.java
-                ).flatMapConcat { pair ->
-                    drugRepository.insertOrUpdateDrugList(pair.first)
-                    drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
-                    flow {
-                        val combinedList = combineDrugList(pair.first, pair.second)
-                        emit(combinedList)
-                    }
-                }.onStart { emit(localData) }
+                cloudDrugsGivenFlow
+                    .flatMapConcat { pair ->
+                        drugRepository.insertOrUpdateDrugList(pair.first)
+                        drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
+                        flow {
+                            val combinedList = combineDrugList(pair.first, pair.second)
+                            emit(combinedList)
+                        }
+                    }.onStart { emit(localData) }
             }
     }
 

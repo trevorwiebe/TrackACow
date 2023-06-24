@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
@@ -19,7 +18,6 @@ import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.ReadPenAndLotModelIncludeEmptyPens
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.*
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,28 +34,24 @@ object ActivityDomainModule {
     fun provideCowUseCases(
         cowRepository: CowRepository,
         cowRepositoryRemote: CowRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
-        context: Application
+        context: Application,
     ): CowUseCases {
         return CowUseCases(
             createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
             readDeadCowsByLotId = ReadDeadCowsByLotId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             ),
             readCowsByLotId = ReadCowsByLotId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             ),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
             deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context),
             readCowByCowId = ReadCowByCowId(
                 cowRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_COW
+                cowRepositoryRemote
             )
         )
     }
@@ -67,9 +61,8 @@ object ActivityDomainModule {
     fun provideRationUseCases(
         rationsRepository: RationsRepository,
         rationsRepositoryRemote: RationRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
-        context: Application
+        context: Application,
     ): RationUseCases {
         return RationUseCases(
             createRationUC = CreateRationUC(
@@ -80,8 +73,7 @@ object ActivityDomainModule {
             ),
             readAllRationsUC = ReadAllRationsUC(
                 rationsRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                rationsRepositoryRemote
             ),
             updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
             deleteRationByIdUC = DeleteRationByIdUC(
@@ -98,7 +90,6 @@ object ActivityDomainModule {
         rationsRepository: RationsRepository,
         callRepository: CallRepository,
         callRepositoryRemote: CallRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): CallUseCases {
@@ -106,16 +97,12 @@ object ActivityDomainModule {
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(
                 rationsRepository,
                 callRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                callRepositoryRemote
             ),
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
                 rationsRepository,
                 callRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_CALLS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_RATIONS
+                callRepositoryRemote
             ),
             createCallUC = CreateCallUC(
                 callRepository,
@@ -132,25 +119,21 @@ object ActivityDomainModule {
     fun providePenUseCases(
         penRepository: PenRepository,
         lotRepository: LotRepository,
+        lotRepositoryRemote: LotRepositoryRemote,
         penRepositoryRemote: PenRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
-        firebaseDatabase: FirebaseDatabase,
         context: Application
     ): PenUseCases {
         return PenUseCases(
             readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(
                 penRepository,
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(
                 penRepository,
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_PENS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             createPenUC = CreatePenUC(
                 penRepository,
@@ -178,7 +161,6 @@ object ActivityDomainModule {
         feedRepositoryRemote: FeedRepositoryRemote,
         loadRepository: LoadRepository,
         loadRemoteRepository: LoadRemoteRepository,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LotUseCases{
@@ -186,18 +168,15 @@ object ActivityDomainModule {
             createLot = CreateLot(lotRepository, lotRepositoryRemote, getCloudDatabaseId, context),
             readArchivedLots = ReadArchivedLots(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote,
             ),
             readLots = ReadLots(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             readLotsByLotId = ReadLotsByLotId(
                 lotRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOT
+                lotRepositoryRemote
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
@@ -224,7 +203,6 @@ object ActivityDomainModule {
     fun provideLoadUseCases(
         loadRepository: LoadRepository,
         loadRemoteRepository: LoadRemoteRepository,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LoadUseCases{
@@ -237,8 +215,7 @@ object ActivityDomainModule {
             ),
             readLoadsByLotId = ReadLoadsByLotId(
                 loadRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_LOAD
+                loadRemoteRepository
             ),
             updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(
@@ -255,7 +232,6 @@ object ActivityDomainModule {
     fun provideFeedUseCases(
         feedRepository: FeedRepository,
         feedRepositoryRemote: FeedRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): FeedUseCases {
@@ -268,13 +244,11 @@ object ActivityDomainModule {
             ),
             readFeedsByLotId = ReadFeedsByLotId(
                 feedRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+                feedRepositoryRemote
             ),
             readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
                 feedRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_FEEDS
+                feedRepositoryRemote
             )
         )
     }
@@ -285,14 +259,12 @@ object ActivityDomainModule {
         drugRepository: DrugRepository,
         drugRepositoryRemote: DrugRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
-        firebaseDatabase: FirebaseDatabase,
         context: Application
     ): DrugUseCases {
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS
+                drugRepositoryRemote
             ),
             createDrug = CreateDrug(
                 drugRepository,
@@ -311,7 +283,6 @@ object ActivityDomainModule {
         drugRepository: DrugRepository,
         drugsGivenRepository: DrugsGivenRepository,
         drugsGivenRemoteRepository: DrugsGivenRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): DrugsGivenUseCases{
@@ -325,16 +296,12 @@ object ActivityDomainModule {
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
                 drugsGivenRepository,
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
                 drugRepository,
                 drugsGivenRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
                 drugsGivenRepository,
@@ -344,9 +311,7 @@ object ActivityDomainModule {
             readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
                 drugsGivenRepository,
                 drugRepository,
-                firebaseDatabase,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS,
-                Constants.BASE_REFERENCE_STRING + Constants.DATABASE_STRING_DRUGS_GIVEN
+                drugsGivenRemoteRepository
             ),
             deleteDrugGivenByDrugGivenId = DeleteDrugGivenByDrugGivenId(
                 drugsGivenRepository,

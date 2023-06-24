@@ -1,15 +1,21 @@
 package com.trevorwiebe.trackacow.domain.use_cases
 
 import com.google.firebase.database.FirebaseDatabase
-import com.trevorwiebe.trackacow.domain.utils.Constants
+import javax.inject.Provider
 
 class GetCloudDatabaseId(
-    val databaseReference: FirebaseDatabase
+    private val databaseReference: FirebaseDatabase,
+    private val firebaseUserId: Provider<String>
 ) {
-    operator fun invoke(stringIfNull: String): String{
-        return databaseReference
-            .getReference(Constants.BASE_REFERENCE_STRING)
-            .push()
-            .key ?: stringIfNull
+    operator fun invoke(stringIfNull: String): String {
+        val userId = firebaseUserId.get().toString()
+        return if (userId.isNotEmpty()) {
+            databaseReference
+                .getReference("users/${userId}")
+                .push()
+                .key ?: stringIfNull
+        } else {
+            stringIfNull
+        }
     }
 }
