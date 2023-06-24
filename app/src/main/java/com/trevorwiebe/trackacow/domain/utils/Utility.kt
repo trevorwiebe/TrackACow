@@ -90,17 +90,26 @@ object Utility {
     @JvmStatic
     fun setNewDataToUpload(context: Context, isThereNewData: Boolean) {
         val sharedPreferences =
-            context.getSharedPreferences(Constants.NEW_DATA_TO_UPLOAD_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(
+                context.getString(R.string.new_data_to_upload_name),
+                Context.MODE_PRIVATE
+            )
         val editor = sharedPreferences.edit()
-        editor.putBoolean(Constants.NEW_DATA_TO_UPLOAD_KEY, isThereNewData)
+        editor.putBoolean(context.getString(R.string.new_data_to_upload_key), isThereNewData)
         editor.apply()
     }
 
     @JvmStatic
     fun isThereNewDataToUpload(context: Context): Boolean {
         val sharedPreferences =
-            context.getSharedPreferences(Constants.NEW_DATA_TO_UPLOAD_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean(Constants.NEW_DATA_TO_UPLOAD_KEY, false)
+            context.getSharedPreferences(
+                context.getString(R.string.new_data_to_upload_name),
+                Context.MODE_PRIVATE
+            )
+        return sharedPreferences.getBoolean(
+            context.getString(R.string.new_data_to_upload_key),
+            false
+        )
     }
 
     @JvmStatic

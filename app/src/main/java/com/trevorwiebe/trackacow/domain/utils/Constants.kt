@@ -15,10 +15,6 @@ object Constants {
     const val LOT = 1
     const val ARCHIVE = 2
 
-    // Preference keys
-    const val NEW_DATA_TO_UPLOAD_NAME = "new_data_to_upload_name"
-    const val NEW_DATA_TO_UPLOAD_KEY = "new_data_to_upload_key"
-
     // Drug report types
     const val YESTERDAY = 1
     const val MONTH = 2
