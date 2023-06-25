@@ -18,18 +18,12 @@ data class ReadFeedsByLotIdAndDate(
         val localFeedFlow = feedRepository.readFeedsByLotIdAndDate(lotId, startDate, endDate)
         val cloudFeedFlow = feedRepositoryRemote.readFeedsByLotId(lotId)
 
-//        val feedQuery = firebaseDatabase
-//            .getReference(feedDatabaseString)
-//            .orderByChild("lotId")
-//            .equalTo(lotId)
-//
-//        val feedCloudFlow = feedQuery.addQueryListValueEventListenerFlow(FeedModel::class.java)
-
         return localFeedFlow
             .flatMapLatest { localData ->
                 cloudFeedFlow
-                    .map {
-                        it.filter { feedModel ->
+                    .map { feedList ->
+                        feedRepository.insertOrUpdateFeedList(feedList)
+                        feedList.filter { feedModel ->
                             feedModel.date in startDate..endDate
                         }
                     }

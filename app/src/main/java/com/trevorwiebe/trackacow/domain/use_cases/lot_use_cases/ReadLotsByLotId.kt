@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadLotsByLotId(
@@ -25,6 +26,10 @@ data class ReadLotsByLotId(
                     if (localData != null) {
                         emit(localData)
                     }
+                }.map { lotModel ->
+                    val lotList = listOf(lotModel)
+                    lotRepository.insertOrUpdateLotList(lotList)
+                    lotModel
                 }
             }
     }

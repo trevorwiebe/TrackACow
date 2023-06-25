@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.LoadRemoteRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadLoadsByLotId(
@@ -20,7 +21,12 @@ data class ReadLoadsByLotId(
 
         return localFlow
             .flatMapLatest { localData ->
-                cloudLoadFlow.onStart { emit(localData) }
+                cloudLoadFlow.onStart {
+                    emit(localData)
+                }.map { loadList ->
+                    loadRepository.insertOrUpdateLoadList(loadList)
+                    loadList
+                }
             }
     }
 }

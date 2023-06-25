@@ -6,8 +6,8 @@ import com.trevorwiebe.trackacow.domain.repository.remote.RationRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import javax.inject.Provider
 
 class ReadAllRationsUC(
     private val rationsRepository: RationsRepository,
@@ -21,6 +21,9 @@ class ReadAllRationsUC(
         return localFlow.flatMapLatest { localData ->
             rationCloudFlow.onStart {
                 emit(localData)
+            }.map { rationList ->
+                rationsRepository.insertOrUpdateRationList(rationList)
+                rationList
             }
         }
     }

@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadFeedsByLotId(
@@ -20,7 +21,12 @@ data class ReadFeedsByLotId(
 
         return localFeedFlow
             .flatMapLatest { localData ->
-                cloudFeedFlow.onStart { emit(localData) }
+                cloudFeedFlow.onStart {
+                    emit(localData)
+                }.map { feedList ->
+                    feedRepository.insertOrUpdateFeedList(feedList)
+                    feedList
+                }
             }
     }
 }

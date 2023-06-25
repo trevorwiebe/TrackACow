@@ -8,27 +8,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import javax.inject.Provider
 
 data class ReadDeadCowsByLotId(
     private val cowRepository: CowRepository,
     private val cowRepositoryRemote: CowRepositoryRemote,
 ){
 
-    // TODO: fix issue where cloud data isn't save locally
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CowModel>> {
-        val localFlow = cowRepository.getDeadCowsByLotId(lotId)
-        val cowFlow = cowRepositoryRemote.readCowsByLotId(lotId)
-        return localFlow
+        val localCowFlow = cowRepository.getDeadCowsByLotId(lotId)
+        val cloudCowFlow = cowRepositoryRemote.readCowsByLotId(lotId)
+        return localCowFlow
             .flatMapConcat { localData ->
-                cowFlow
-                    .map { cowList ->
-                        cowList.filter {
-                            it.alive == 0
-                        }
+                cloudCowFlow.map { cowList ->
+                    cowRepository.insertOrUpdateCowList(cowList)
+                    cowList.filter {
+                        it.alive == 0
                     }
-                    .onStart { emit(localData) }
+                }.onStart {
+                    emit(localData)
+                }
             }
     }
 }

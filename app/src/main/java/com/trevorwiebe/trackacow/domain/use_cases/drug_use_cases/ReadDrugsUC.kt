@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.DrugRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadDrugsUC(
@@ -20,7 +21,12 @@ data class ReadDrugsUC(
 
         return localDrugFlow
             .flatMapLatest { localData ->
-                cloudDrugFlow.onStart { emit(localData) }
+                cloudDrugFlow.onStart {
+                    emit(localData)
+                }.map { drugList ->
+                    drugRepository.insertOrUpdateDrugList(drugList)
+                    drugList
+                }
             }
     }
 }

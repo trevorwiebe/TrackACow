@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 class ReadCowsByLotId(
@@ -20,7 +21,12 @@ class ReadCowsByLotId(
 
         return localFlow
             .flatMapLatest { localData ->
-                cowCloudFlow.onStart { emit(localData) }
+                cowCloudFlow.onStart {
+                    emit(localData)
+                }.map { cowModelList ->
+                    cowRepository.insertOrUpdateCowList(cowModelList)
+                    cowModelList
+                }
             }
     }
 }
