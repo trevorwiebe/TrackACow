@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                     if (it.cloudDatabaseMigrationInProgress) {
 
                     } else {
-                        mainViewModel.onEvent(MainUiEvent.CheckCache)
+
                     }
                 }
             }
@@ -155,6 +155,10 @@ class MainActivity : AppCompatActivity() {
             true
         )
 
+        // Check data cache and upload if network is available and data is present
+        mainViewModel.onEvent(MainUiEvent.CheckCache)
+
+        // Check if app is on required version
         checkIfAppIsOnRequiredVersion()
     }
 
