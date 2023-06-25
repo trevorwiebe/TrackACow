@@ -25,12 +25,6 @@ class ReadPenAndLotModelExcludeEmptyPens(
         val localFlow = penRepository.readPensAndLotsExcludeEmptyPens()
         val cloudFlow = lotRepositoryRemote.readPenAndLotsIncludeEmptyPens()
 
-//        val penRef = firebaseDatabase.getReference(penDatabaseString)
-//        val lotRef = firebaseDatabase
-//            .getReference(lotDatabaseString)
-//            .orderByChild("archived")
-//            .equalTo(0.toDouble())
-
         return localFlow
             .flatMapConcat { localData ->
                 cloudFlow
