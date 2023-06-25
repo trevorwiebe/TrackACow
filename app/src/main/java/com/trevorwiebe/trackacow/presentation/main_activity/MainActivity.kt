@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.database.DataSnapshot
@@ -86,13 +87,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val migrationAlertDialog = MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle("Please wait")
+            .setMessage("Updating cloud database to new version")
+            .setCancelable(false)
+            .create()
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mainViewModel.uiState.collect {
                     if (it.cloudDatabaseMigrationInProgress) {
-
+                        migrationAlertDialog.show()
                     } else {
-
+                        migrationAlertDialog.hide()
                     }
                 }
             }
