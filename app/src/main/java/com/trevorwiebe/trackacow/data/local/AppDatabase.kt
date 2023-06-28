@@ -246,7 +246,10 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE cache_drug_new RENAME TO cache_drug")
 
                 // cacheDrugsGiven
-                database.execSQL("ALTER TABLE HoldingDrugsGiven RENAME TO cache_drugs_given")
+                database.execSQL("CREATE TABLE cache_drugs_given_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugGivenId TEXT, drugId TEXT, amountGiven INTEGER NOT NULL, cowId TEXT, lotId TEXT NOT NULL, date INTEGER NOT NULL, whatHappened INTEGER NOT NULL )")
+                database.execSQL("INSERT INTO cache_drugs_given_new (primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date, whatHappened) SELECT primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date, whatHappened FROM HoldingDrugsGiven")
+                database.execSQL("DROP TABLE HoldingDrugsGiven")
+                database.execSQL("ALTER TABLE cache_drugs_given_new RENAME TO cache_drugs_given")
 
                 // cacheFeed
                 database.execSQL("CREATE TABLE feed_cache_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
@@ -258,7 +261,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE holdingLoad RENAME TO cache_load")
 
                 // cacheLot
-                database.execSQL("CREATE TABLE cache_lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT, whatHappened INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE cache_lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER NOT NULL, lotPenCloudDatabaseId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
                 database.execSQL("INSERT INTO cache_lot_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId, whatHappened FROM holdingLot")
                 database.execSQL("DROP TABLE holdingLot")
                 database.execSQL("ALTER TABLE cache_lot_new RENAME TO cache_lot")
