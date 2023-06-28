@@ -56,10 +56,10 @@ class ReadPenAndLotModelExcludeEmptyPens(
         }
         result.sortWith(object : Comparator<PenAndLotModel> {
             override fun compare(p0: PenAndLotModel, p1: PenAndLotModel): Int {
-                if (p0.penName.toInt() > p1.penName.toInt()) {
+                if (p0.penName > p1.penName) {
                     return 1
                 }
-                if (p0.penName.toInt() == p1.penName.toInt()) {
+                if (p0.penName == p1.penName) {
                     return 0
                 }
                 return -1
