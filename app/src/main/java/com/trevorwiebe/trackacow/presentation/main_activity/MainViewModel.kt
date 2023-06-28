@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.presentation.main_activity
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
@@ -56,6 +57,7 @@ class MainViewModel @Inject constructor(
         _uiState.update { it.copy(cloudDatabaseMigrationInProgress = true) }
         initiateCloudDatabaseMigration5to6.invoke(appVersion)
             .continueWith { task ->
+                Log.d("TAG", "migrateDatabase: ${task.result?.data}")
                 _uiState.update { it.copy(cloudDatabaseMigrationInProgress = false) }
             }
     }
