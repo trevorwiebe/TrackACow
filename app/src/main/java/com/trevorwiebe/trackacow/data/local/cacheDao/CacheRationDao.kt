@@ -3,6 +3,7 @@ package com.trevorwiebe.trackacow.data.local.cacheDao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.trevorwiebe.trackacow.data.cacheEntities.CacheRationEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CacheRationDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHoldingRation(cacheRationEntity: CacheRationEntity)
 
     @Query("SELECT * FROM cache_ration")

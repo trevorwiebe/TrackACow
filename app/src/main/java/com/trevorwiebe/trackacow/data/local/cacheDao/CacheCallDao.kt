@@ -5,7 +5,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCallEntity
 
 @Dao
 interface CacheCallDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHoldingCall(cacheCallEntity: CacheCallEntity)
 
     @Query("SELECT * FROM cache_call")

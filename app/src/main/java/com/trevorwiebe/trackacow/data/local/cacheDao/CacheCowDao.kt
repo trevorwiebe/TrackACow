@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheCowEntity
 @Dao
 interface CacheCowDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCacheCow(cacheCowEntity: CacheCowEntity)
 
     @Query("SELECT * FROM cache_cow")

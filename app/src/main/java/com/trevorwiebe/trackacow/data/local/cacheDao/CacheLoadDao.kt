@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CacheLoadEntity
 @Dao
 interface CacheLoadDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCacheLoad(cacheLoadEntity: CacheLoadEntity?)
 
     @Query("SELECT * FROM cache_load")

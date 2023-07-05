@@ -6,7 +6,7 @@ import com.trevorwiebe.trackacow.data.cacheEntities.CachePenEntity
 @Dao
 interface CachePenDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCachePen(cachePenEntity: CachePenEntity)
 
     @Query("SELECT * FROM cache_pen")

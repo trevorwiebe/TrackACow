@@ -40,13 +40,11 @@ import com.trevorwiebe.trackacow.presentation.sign_in.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     // TODO: fix bug where when new user signs in, it shows the migrating database dialog
-    // TODO: fix bug where when updating an object that is already in cache db, it crashes because of the UNIQUE constraint failed
 
     private val mainViewModel: MainViewModel by viewModels()
 
