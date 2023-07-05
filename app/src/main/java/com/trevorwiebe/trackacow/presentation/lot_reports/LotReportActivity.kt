@@ -36,9 +36,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LotReportActivity : AppCompatActivity() {
-
-    // TODO: fix padding variance between drug report and feed report button
-    // TODO: fix issue in cattle received rv where there is no space between 'Date' and the date
+    
     // TODO: fix issue where when archiving lot while offline, the UNIQUE constraint in the cache_lot db causes it to crash
 
     private var mTotalHeadInt = 0

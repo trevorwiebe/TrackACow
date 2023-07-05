@@ -33,7 +33,7 @@ class ViewCattleListAdapter : RecyclerView.Adapter<ViewCattleViewHolder>() {
 
         val (_, headAdded, date, notes) = loadModels[i]
 
-        val strDate = context.getString(R.string.date) + Utility.convertMillisToDate(date)
+        val strDate = context.getString(R.string.date) + ": " + Utility.convertMillisToDate(date)
         val strHeadAddedStr = "Head added: " + numberFormat.format(headAdded.toLong())
         viewCattleViewHolder.mHeadAdded.text = strHeadAddedStr
         viewCattleViewHolder.mDate.text = strDate
