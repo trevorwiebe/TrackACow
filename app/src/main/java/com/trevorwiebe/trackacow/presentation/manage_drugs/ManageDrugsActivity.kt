@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ManageDrugsActivity : AppCompatActivity() {
 
+    // TODO: fix bug where when offline, new drugs added don't show up until you navigate back and to
+
     private var mManageDrugRecyclerViewAdapter: ManageDrugRecyclerViewAdapter? = null
     private var mDrugList: List<DrugModel> = emptyList()
 

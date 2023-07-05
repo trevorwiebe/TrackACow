@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -38,9 +39,14 @@ import com.trevorwiebe.trackacow.presentation.fragment_report.ReportsFragment
 import com.trevorwiebe.trackacow.presentation.sign_in.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    // TODO: fix bug where when new user signs in, it shows the migrating database dialog
+    // TODO: fix bug where when updating an object that is already in cache db, it crashes because of the UNIQUE constraint failed
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -70,9 +76,13 @@ class MainActivity : AppCompatActivity() {
         })
 
         if (BuildConfig.DEBUG) {
-            mFirebaseAuth.useEmulator("10.0.2.2", 9099)
-            val firebaseDatabase = FirebaseDatabase.getInstance()
-            firebaseDatabase.useEmulator("10.0.2.2", 9000)
+            try {
+                mFirebaseAuth.useEmulator("10.0.2.2", 9099)
+                val firebaseDatabase = FirebaseDatabase.getInstance()
+                firebaseDatabase.useEmulator("10.0.2.2", 9000)
+            } catch (e: Exception) {
+                Log.e("MainActivity", "onCreate: Cannot start emulator", e)
+            }
         }
 
         mAuthListener = AuthStateListener { firebaseAuth: FirebaseAuth ->

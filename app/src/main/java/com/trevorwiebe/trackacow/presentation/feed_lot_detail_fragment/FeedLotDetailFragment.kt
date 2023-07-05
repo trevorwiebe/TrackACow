@@ -43,6 +43,13 @@ private const val pen_ui_date_param = "pen_ui_date_param"
 @AndroidEntryPoint
 class FeedLotDetailFragment : Fragment() {
 
+    // TODO: fix bug where when offline the rations don't show up unless you have just looked at them in 'More'
+    // While this bug is happening, no input can be accepted, leading me to think there is a loop somewhere.
+
+    // TODO: fix bug where when offline and data is saved, the button doesn't change to "update"
+    // TODO: update the code to gray the button out when there are no changes to save
+
+
     private lateinit var mRationModelList: List<RationModel>
     private var mPenAndLotModel: PenAndLotModel? = null
     private var mCallAndRationModel: CallAndRationModel? = null

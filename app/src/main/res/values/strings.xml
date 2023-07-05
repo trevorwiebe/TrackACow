@@ -20,6 +20,7 @@
     <string name="notes_more">Memo: %1$s</string>
 
     Work Fragment Strings
+    <!-- TODO update work FAB verbiage -->
     <string name="work">Treat</string>
     <string name="treat_a_cow">Treat a cow</string>
     <string name="work_no_cattle_in_this_pen">No cattle in this Pen, Tap to add a Lot.</string>
