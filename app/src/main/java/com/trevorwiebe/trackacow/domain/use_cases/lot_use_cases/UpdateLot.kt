@@ -8,18 +8,18 @@ import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
 
-data class UpdateLotWithLotId(
+data class UpdateLot(
     private val lotRepository: LotRepository,
     private val lotRepositoryRemote: LotRepositoryRemote,
     private val context: Application
 ) {
-    suspend operator fun invoke(lotModel: LotModel){
-        
+    suspend operator fun invoke(lotModel: LotModel) {
+
         lotRepository.updateLot(lotModel)
 
-        if(Utility.haveNetworkConnection(context)){
+        if (Utility.haveNetworkConnection(context)) {
             lotRepositoryRemote.insertAndUpdateLotRemote(lotModel)
-        }else{
+        } else {
             Utility.setNewDataToUpload(context, true)
             lotRepository.createCacheLot(lotModel.toCacheLotModel(Constants.INSERT_UPDATE))
         }

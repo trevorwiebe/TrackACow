@@ -23,7 +23,7 @@ class EditLotViewModel @Inject constructor(
 
     private fun updateLotByLotId(lotModel: LotModel){
         viewModelScope.launch {
-            lotUseCases.updateLotWithLotId(lotModel)
+            lotUseCases.updateLot(lotModel)
         }
     }
 }

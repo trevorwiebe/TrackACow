@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.presentation.fragment_move
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +29,7 @@ class MoveViewModel @Inject constructor(
     fun onEvent(event: MoveUiEvents){
         when (event) {
             is MoveUiEvents.OnItemShuffled -> {
-                updateLotWithNewPenId(event.lotId, event.penId)
+                updateLotWithNewPenId(event.lotModel)
             }
 
             is MoveUiEvents.OnLotsMerged -> {
@@ -50,9 +51,9 @@ class MoveViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun updateLotWithNewPenId(lotId: String, penId: String) {
+    private fun updateLotWithNewPenId(lotModel: LotModel) {
         viewModelScope.launch {
-            lotUseCases.updateLotWithNewPenIdUC(lotId, penId)
+            lotUseCases.updateLot(lotModel)
         }
     }
 
@@ -64,6 +65,6 @@ class MoveViewModel @Inject constructor(
 }
 
 sealed class MoveUiEvents{
-    data class OnItemShuffled(val lotId: String, val penId: String) : MoveUiEvents()
+    data class OnItemShuffled(val lotModel: LotModel) : MoveUiEvents()
     data class OnLotsMerged(val lotIdList: List<String>) : MoveUiEvents()
 }

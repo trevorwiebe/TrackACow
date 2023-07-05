@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.domain.di
 
 import android.app.Application
-import com.google.firebase.database.FirebaseDatabase
 import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
@@ -90,7 +89,6 @@ object ViewModelDomainModule {
         rationsRepository: RationsRepository,
         callRepository: CallRepository,
         callRepositoryRemote: CallRepositoryRemote,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): CallUseCases {
@@ -120,7 +118,6 @@ object ViewModelDomainModule {
     fun provideLoadUseCases(
         loadRepository: LoadRepository,
         loadRemoteRepository: LoadRemoteRepository,
-        firebaseDatabase: FirebaseDatabase,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
     ): LoadUseCases {
@@ -210,12 +207,7 @@ object ViewModelDomainModule {
                 lotRepositoryRemote
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
-            updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
-                lotRepository,
-                lotRepositoryRemote,
-                context
-            ),
-            updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context),
+            updateLot = UpdateLot(lotRepository, lotRepositoryRemote, context),
             deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context),
             mergeLots = MergeLots(
                 lotRepository, lotRepositoryRemote,

@@ -179,12 +179,7 @@ object ActivityDomainModule {
                 lotRepositoryRemote
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
-            updateLotWithNewPenIdUC = UpdateLotWithNewPenIdUC(
-                lotRepository,
-                lotRepositoryRemote,
-                context
-            ),
-            updateLotWithLotId = UpdateLotWithLotId(lotRepository, lotRepositoryRemote, context),
+            updateLot = UpdateLot(lotRepository, lotRepositoryRemote, context),
             deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context),
             mergeLots = MergeLots(
                 lotRepository, lotRepositoryRemote,

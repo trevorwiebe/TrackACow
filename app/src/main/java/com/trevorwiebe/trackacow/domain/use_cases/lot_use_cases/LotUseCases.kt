@@ -7,7 +7,6 @@ data class LotUseCases(
     val readLotsByLotId: ReadLotsByLotId,
     val archiveLot: ArchiveLot,
     val mergeLots: MergeLots,
-    val updateLotWithNewPenIdUC: UpdateLotWithNewPenIdUC,
-    val updateLotWithLotId: UpdateLotWithLotId,
+    val updateLot: UpdateLot,
     val deleteLot: DeleteLot
 )

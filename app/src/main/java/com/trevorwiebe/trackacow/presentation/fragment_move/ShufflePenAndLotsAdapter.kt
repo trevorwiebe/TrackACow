@@ -24,10 +24,10 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
     private lateinit var context: Context
     private lateinit var touchHelper: ItemTouchHelper
 
-    private lateinit var onItemShuffledCallback: (lotId: String, penId: String) -> Unit
+    private lateinit var onItemShuffledCallback: (lotModel: LotModel) -> Unit
     private lateinit var onLotsMerged: (lotIdList: List<String>) -> Unit
 
-    fun onItemShuffled(callback: (lotId: String, penId: String) -> Unit) {
+    fun onItemShuffled(callback: (lotModel: LotModel) -> Unit) {
         onItemShuffledCallback = callback
     }
 
@@ -127,13 +127,13 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
     override fun onClearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
         val selectedLotPosition = viewHolder.adapterPosition
         val lotModel = objectList[selectedLotPosition] as LotModel
-        val lotId = lotModel.lotCloudDatabaseId
         val shuffleObjectNeighbors = getShuffleObjectsBeside(selectedLotPosition)
 
         if (shuffleObjectNeighbors[0] is PenModel && shuffleObjectNeighbors[1] is PenModel) {
             val penModel = shuffleObjectNeighbors[0] as PenModel
             if (penModel.penCloudDatabaseId != "") {
-                onItemShuffledCallback(lotId, penModel.penCloudDatabaseId!!)
+                lotModel.lotPenCloudDatabaseId = penModel.penCloudDatabaseId ?: ""
+                onItemShuffledCallback(lotModel)
             }
         }
         setMergeButtons(recyclerView)

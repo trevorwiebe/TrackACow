@@ -46,8 +46,8 @@ class MoveFragment : Fragment() {
 
         mShuffleAdapter = ShufflePenAndLotsAdapter()
 
-        mShuffleAdapter.onItemShuffled { lotId, penId ->
-            moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotId, penId))
+        mShuffleAdapter.onItemShuffled { lotModel ->
+            moveViewModel.onEvent(MoveUiEvents.OnItemShuffled(lotModel))
         }
 
         mShuffleAdapter.onLotsMerged { lotModelList ->
