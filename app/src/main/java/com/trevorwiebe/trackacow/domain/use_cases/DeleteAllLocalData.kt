@@ -14,17 +14,24 @@ class DeleteAllLocalData(
         private val rationRepository: RationsRepository
 ) {
 
-    // TODO: add code to delete cache databases too
-
     suspend operator fun invoke() {
         callRepository.deleteAllCalls()
+        callRepository.deleteCacheCalls()
         cowRepository.deleteAllCows()
+        cowRepository.deleteCacheCows()
         drugRepository.deleteAllDrugs()
+        drugRepository.deleteCacheDrugs()
         drugsGivenRepository.deleteAllDrugsGiven()
+        drugsGivenRepository.deleteCacheDrugsGiven()
         feedRepository.deleteAllFeeds()
+        feedRepository.deleteCacheFeeds()
         loadRepository.deleteAllLoads()
+        loadRepository.deleteCacheLoads()
         lotRepository.deleteAllLots()
+        lotRepository.deleteCacheLots()
         penRepository.deleteAllPens()
+        penRepository.deleteCachePens()
         rationRepository.deleteAllRations()
+        rationRepository.deleteCacheRations()
     }
 }
