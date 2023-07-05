@@ -7,59 +7,71 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.google.firebase.auth.FirebaseAuth
 import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.domain.utils.Utility.haveNetworkConnection
 import com.trevorwiebe.trackacow.domain.utils.Utility.isThereNewDataToUpload
 import com.trevorwiebe.trackacow.domain.utils.Utility.setLastSync
 import com.trevorwiebe.trackacow.domain.utils.Utility.setNewDataToUpload
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var mContext: Context
-    private var mBackingUpData: AlertDialog.Builder? = null
+
+    private val settingsFragmentViewModel: SettingsFragmentViewModel by viewModels()
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
 
-        val accountNamePref = findPreference<Preference>("account_name")
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val name = user.displayName
-            val email = user.email
-            val accountName = "$name, $email"
-            if (accountNamePref != null) {
-                accountNamePref.summary = accountName
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                settingsFragmentViewModel.uiState.collect {
+                    val firebaseUser = it.firebaseUser
+                    val accountNamePref = findPreference<Preference>("account_name")
+                    if (firebaseUser != null) {
+                        val name = firebaseUser.displayName
+                        val email = firebaseUser.email
+                        val accountName = "$name, $email"
+                        if (accountNamePref != null) {
+                            accountNamePref.summary = accountName
+                        }
+                    }
+                }
             }
         }
 
         val signOutPref = findPreference<Preference>("sign_out")
         if (signOutPref != null) {
             signOutPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                if (isThereNewDataToUpload(mContext)) {
-                    val thereIsDataDialog: AlertDialog.Builder = AlertDialog.Builder(
-                        context
-                    )
-                    thereIsDataDialog.setPositiveButton(
-                        "Backup and sign out"
-                    ) { _, _ ->
-                        setNewDataToUpload(requireContext(), false)
-                        mBackingUpData = AlertDialog.Builder(context)
-                        val dialogLoadingLayout: View = LayoutInflater.from(context)
-                            .inflate(R.layout.dialog_inserting_data_to_cloud, null)
-                        mBackingUpData!!.setView(dialogLoadingLayout)
-                        mBackingUpData!!.show()
-                        // TODO implement this
+                if (isThereNewDataToUpload(mContext) && haveNetworkConnection(mContext)) {
+                    val thereIsDataDialog: AlertDialog.Builder = AlertDialog.Builder(mContext)
+                    thereIsDataDialog.setPositiveButton("Backup and sign out") { _, _ ->
+                        settingsFragmentViewModel.onEvent(SettingsFragmentEvent.OnUploadCache)
+                        signOut()
                     }
-                    thereIsDataDialog.setNeutralButton(
-                        "Sign out anyway"
-                    ) { _, _ -> signOut() }
-                    thereIsDataDialog.setTitle("Information will be lost")
-                    thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save you data. You must have an internet connection prior to backing up.")
+                    thereIsDataDialog.setNeutralButton("Sign out anyway") { _, _ ->
+                        signOut()
+                    }
+                    thereIsDataDialog.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Backup to cloud to save your data. You must have an internet connection prior to backing up.")
                     thereIsDataDialog.show()
+                } else if (isThereNewDataToUpload(mContext)) {
+                    val networkRequired: AlertDialog.Builder = AlertDialog.Builder(mContext)
+                    networkRequired.setMessage("There is information that hasn't been saved to the cloud.  Signing out will delete this data.  Please connect to the network and backup to cloud to save your data.")
+                    networkRequired.setPositiveButton("Cancel") { _, _ ->
+
+                    }
+                    networkRequired.setNeutralButton("Sign out anyway") { _, _ ->
+                        signOut()
+                    }
+                    networkRequired.show()
                 } else {
                     signOut()
                 }
@@ -114,12 +126,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun signOut() {
-        FirebaseAuth.getInstance().signOut()
+        settingsFragmentViewModel.onEvent(SettingsFragmentEvent.OnSignOut)
+        setNewDataToUpload((mContext), false)
+        setLastSync((mContext), 0)
         if (activity != null) {
             requireActivity().finish()
         }
-        // TODO: see if need to add delete all data code here
-        setNewDataToUpload((mContext), false)
-        setLastSync((mContext), 0)
     }
 }
