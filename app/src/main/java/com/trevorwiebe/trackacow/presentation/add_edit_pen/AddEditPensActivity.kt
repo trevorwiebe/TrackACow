@@ -24,8 +24,6 @@ class AddEditPensActivity : AppCompatActivity() {
 
     var mPenAndLotModel: PenAndLotModel? = null
 
-    // TODO: fix bug where can only add number chars in pen name
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_pens)
