@@ -41,7 +41,7 @@
             app:fab_colorPressed="@color/mini_fab3"
             app:fab_icon="@drawable/ic_add_circle_outline_white_24dp"
             app:fab_size="mini"
-            app:fab_title="Add cattle" />
+            app:fab_title="@string/add_cattle" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
             app:fab_colorPressed="@color/mini_fab1"
             app:fab_icon="@drawable/ic_drugs_white_24dp"
             app:fab_size="mini"
-            app:fab_title="@string/treat_a_cow" />
+            app:fab_title="@string/treat" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
