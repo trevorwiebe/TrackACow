@@ -10,7 +10,6 @@ class FeedLotDetailViewPagerAdapter(activity: AppCompatActivity) : FragmentState
 
     private var penAndLotList: List<PenAndLotModel> = emptyList()
     private var rationList: ArrayList<RationModel> = ArrayList()
-    private var lastUsedRationId: Int = -1
     private var penUiDate: Long = -1
 
     override fun getItemCount(): Int {
@@ -21,19 +20,16 @@ class FeedLotDetailViewPagerAdapter(activity: AppCompatActivity) : FragmentState
         FeedLotDetailFragment.newInstance(
             penAndLotList[position],
             rationList,
-            lastUsedRationId,
             penUiDate
         )
 
     fun setLotData(
         newPenAndLotModelList: List<PenAndLotModel>,
         newRationList: List<RationModel>,
-        newLastUsedRationId: Int,
         newPenUiDate: Long
     ) {
         this.penAndLotList = newPenAndLotModelList
         this.rationList = ArrayList(newRationList)
-        this.lastUsedRationId = newLastUsedRationId
         this.penUiDate = newPenUiDate
         notifyDataSetChanged()
     }

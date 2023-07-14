@@ -37,14 +37,10 @@ import kotlin.collections.ArrayList
 
 private const val pen_and_lot_param = "pen_and_lot_param"
 private const val ration_list_param = "ration_list_param"
-private const val last_used_ration_param = "last_used_ration_param"
 private const val pen_ui_date_param = "pen_ui_date_param"
 
 @AndroidEntryPoint
 class FeedLotDetailFragment : Fragment() {
-
-    // TODO: fix bug where when offline the rations don't show up unless you have just looked at them in 'More'
-    // While this bug is happening, no input can be accepted, leading me to think there is a loop somewhere.
 
     // TODO: fix bug where when offline and data is saved, the button doesn't change to "update"
     // TODO: update the code to gray the button out when there are no changes to save
@@ -122,8 +118,6 @@ class FeedLotDetailFragment : Fragment() {
         mTotalFed = view.findViewById(R.id.pen_total_fed)
         mLeftToFeed = view.findViewById(R.id.pen_left_to_feed)
 
-//        setSaveButtonStatus(false, "Saved")
-
         mSaveBtn.setOnClickListener {
             if (mCallET.length() == 0 || mCallET.text.toString() == "0") {
                 mCallET.requestFocus()
@@ -156,8 +150,6 @@ class FeedLotDetailFragment : Fragment() {
                         mOriginalFeedModelList
                     )
                 )
-
-//                setSaveButtonStatus(false, "Saved")
                 mTotalFed.requestFocus()
 
             }
@@ -176,24 +168,19 @@ class FeedLotDetailFragment : Fragment() {
                 mSelectedRation = mRationModelList[position]
                 if (++check > 1 && mSelectedRation != null) {
                     Utility.saveLastUsedRation(mContext, mSelectedRation!!.rationPrimaryKey)
-//                    setSaveButtonStatus(true, "Save")
                 }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        var check2 = 0
         mCallET.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(text_entered: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateReports()
             }
-
             override fun afterTextChanged(text_entered: Editable?) {
-                if (++check2 > 1 && (text_entered.toString() != mCallAndRationModel?.callAmount.toString())) {
-//                    setSaveButtonStatus(true, "Save")
-                }
+
             }
         })
 
@@ -213,7 +200,6 @@ class FeedLotDetailFragment : Fragment() {
                     if (mShouldAddNewFeedEditText) {
                         addFeedEditText(null, mContext)
                     }
-//                    setSaveButtonStatus(true, "Save")
                 }
                 updateReports()
             }
@@ -231,7 +217,7 @@ class FeedLotDetailFragment : Fragment() {
                     if (mCallAndRationModel == null) {
                         mCallET.setText("0")
                         mCallET.tag = ""
-                        mSaveBtn.setText(getString(R.string.save))
+                        mSaveBtn.text = getString(R.string.save)
                         mRationSpinner.setSelection(mRationModelList
                             .indexOfFirst { rationModel ->
                                 rationModel.rationPrimaryKey == Utility.getLastUsedRation(
@@ -241,13 +227,22 @@ class FeedLotDetailFragment : Fragment() {
                     } else {
                         mCallET.setText(mCallAndRationModel?.callAmount.toString())
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
-                        mSaveBtn.setText(getString(R.string.update))
-                        mRationSpinner.setSelection(mRationModelList
-                            .indexOfFirst { rationModel ->
-                                rationModel.rationPrimaryKey == (
-                                        mCallAndRationModel?.rationPrimaryKey ?: 0
+                        mSaveBtn.text = getString(R.string.update)
+
+                        var rationSelection = mRationModelList.indexOfFirst { rationModel ->
+                            rationModel.rationPrimaryKey == (mCallAndRationModel?.rationPrimaryKey)
+                        }
+
+                        if (rationSelection == -1) {
+                            rationSelection = mRationModelList
+                                    .indexOfFirst { rationModel ->
+                                        rationModel.rationPrimaryKey == Utility.getLastUsedRation(
+                                                mContext
                                         )
-                            })
+                                    }
+                        }
+
+                        mRationSpinner.setSelection(rationSelection)
                     }
                 }
             }
@@ -288,13 +283,13 @@ class FeedLotDetailFragment : Fragment() {
         fun newInstance(
             newPenAndLotModel: PenAndLotModel,
             rationList: ArrayList<RationModel>,
-            lastUsedRationId: Int,
+//            lastUsedRationId: Int,
             penUiDate: Long
         ) = FeedLotDetailFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(pen_and_lot_param, newPenAndLotModel)
                 putParcelableArrayList(ration_list_param, rationList)
-                putInt(last_used_ration_param, lastUsedRationId)
+//                putInt(last_used_ration_param, lastUsedRationId)
                 putLong(pen_ui_date_param, penUiDate)
             }
         }
@@ -373,7 +368,6 @@ class FeedLotDetailFragment : Fragment() {
                 ) {
                     i -= 1
                     mFeedAgainLayout.removeView(v)
-//                    setSaveButtonStatus(true, "Save")
                 }
                 i++
             }

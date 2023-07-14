@@ -1,10 +1,10 @@
 package com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
-import com.trevorwiebe.trackacow.domain.preferences.AppPreferences
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +16,6 @@ import javax.inject.Inject
 class FeedLotViewPagerContainerViewModel @Inject constructor(
     private val penUseCases: PenUseCases,
     private val rationUseCases: RationUseCases,
-    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FeedLotViewPagerContainerUiState())
@@ -28,10 +27,6 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
     init {
         getPenAndLotModelsExcludeEmptyPens()
         getRationList()
-
-        _uiState.update {
-            it.copy(lastUsedRation = getLastUsedRationId())
-        }
     }
 
     private fun getPenAndLotModelsExcludeEmptyPens() {
@@ -51,22 +46,18 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
         rationJob?.cancel()
         rationJob = rationUseCases.readAllRationsUC()
             .map { thisRationList ->
+                Log.d("TAG", "getRationList: $thisRationList")
                 _uiState.update {
                     it.copy(
-                        rationList = thisRationList
+                            rationList = thisRationList
                     )
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-    private fun getLastUsedRationId(): Int {
-        return appPreferences.getLastUsedRation(AppPreferences.KEY_LAST_USED_RATION)
     }
 }
 
 data class FeedLotViewPagerContainerUiState(
     val penAndLotList: List<PenAndLotModel> = emptyList(),
     val rationList: List<RationModel> = emptyList(),
-    val lastUsedRation: Int = -1
 )

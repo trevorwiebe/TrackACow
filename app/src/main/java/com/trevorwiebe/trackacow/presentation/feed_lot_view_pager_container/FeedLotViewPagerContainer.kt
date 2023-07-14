@@ -51,12 +51,15 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
                 mFeedLotViewPagerContainerViewModel.uiState.collect {
 
                     penAndLotModelList = it.penAndLotList
-                    feedLotDetailViewPagerAdapter.setLotData(
-                        penAndLotModelList,
-                        it.rationList,
-                        it.lastUsedRation,
-                        mFeedPenUiModelDate
-                    )
+                    val rationList = it.rationList
+
+                    if (penAndLotModelList.isNotEmpty() && rationList.isNotEmpty()) {
+                        feedLotDetailViewPagerAdapter.setLotData(
+                                penAndLotModelList,
+                                rationList,
+                                mFeedPenUiModelDate
+                        )
+                    }
 
                     if (penAndLotModelList.isNotEmpty()) {
                         val position = penAndLotModelList.indexOfFirst { penAndLotModel ->
