@@ -120,7 +120,7 @@ object TrackACowDataModule {
 
                 // update drugsGiven table
                 database.execSQL("DROP TABLE DrugsGiven")
-                database.execSQL("CREATE TABLE drugs_given (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE drugs_given (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT NOT NULL, drugsGivenDate INTEGER NOT NULL)")
 
                 // update feed table
                 database.execSQL("DROP TABLE feed")

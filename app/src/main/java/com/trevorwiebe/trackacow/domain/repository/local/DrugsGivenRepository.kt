@@ -20,7 +20,7 @@ interface DrugsGivenRepository {
 
     suspend fun updateDrugsGivenWithNewLot(lotId: String, oldLotIds: List<String>)
 
-    suspend fun deleteDrugsGivenByCowId(cowId: String)
+    suspend fun deleteDrugsGivenByCowIdTransaction(cowId: String): List<DrugGivenModel>
 
     suspend fun deleteDrugGiven(drugGivenModel: DrugGivenModel)
 

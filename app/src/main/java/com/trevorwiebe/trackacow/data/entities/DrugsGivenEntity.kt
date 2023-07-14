@@ -13,6 +13,6 @@ data class DrugsGivenEntity (
         var drugsGivenDrugId: String? = "",
         var drugsGivenAmountGiven: Int = 0,
         var drugsGivenCowId: String? = "",
-        var drugsGivenLotId: String? = "",
+        var drugsGivenLotId: String = "",
         var drugsGivenDate: Long = 0
 )

@@ -6,6 +6,7 @@ import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toDrugsGivenAndDrug
 import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenEntity
 import com.trevorwiebe.trackacow.data.mapper.toCacheDrugGivenModel
 import com.trevorwiebe.trackacow.data.mapper.toDrugGivenEntity
+import com.trevorwiebe.trackacow.data.mapper.toDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
@@ -56,8 +57,9 @@ class DrugsGivenRepositoryImpl(
         drugsGivenDao.updateDrugsGivenWithNewLotId(lotId, oldLotIds)
     }
 
-    override suspend fun deleteDrugsGivenByCowId(cowId: String) {
-        drugsGivenDao.deleteDrugsGivenByCowId(cowId)
+    override suspend fun deleteDrugsGivenByCowIdTransaction(cowId: String): List<DrugGivenModel> {
+        return drugsGivenDao.deleteDrugsGivenByCowIdTransaction(cowId)
+                .map { it.toDrugGivenModel() }
     }
 
     override suspend fun deleteDrugGiven(drugGivenModel: DrugGivenModel) {

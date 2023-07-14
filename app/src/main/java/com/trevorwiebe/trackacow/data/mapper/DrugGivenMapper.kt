@@ -7,16 +7,28 @@ import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.CacheDrugGivenModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 
+fun DrugsGivenEntity.toDrugGivenModel(): DrugGivenModel {
+    return DrugGivenModel(
+            drugsGivenPrimaryKey = drugsGivenPrimaryKey,
+            drugsGivenId = drugsGivenId,
+            drugsGivenDrugId = drugsGivenDrugId,
+            drugsGivenAmountGiven = drugsGivenAmountGiven,
+            drugsGivenCowId = drugsGivenCowId,
+            drugsGivenLotId = drugsGivenLotId,
+            drugsGivenDate = drugsGivenDate,
+    )
+}
+
 fun DrugGivenModel.toCacheDrugGivenModel(whatHappened: Int): CacheDrugGivenModel {
     return CacheDrugGivenModel(
-        primaryKey = drugsGivenPrimaryKey,
-        drugGivenId = drugsGivenId,
-        drugId = drugsGivenDrugId,
-        amountGiven = drugsGivenAmountGiven,
-        cowId = drugsGivenCowId,
-        lotId = drugsGivenLotId,
-        date = drugsGivenDate,
-        whatHappened = whatHappened
+            primaryKey = drugsGivenPrimaryKey,
+            drugGivenId = drugsGivenId,
+            drugId = drugsGivenDrugId,
+            amountGiven = drugsGivenAmountGiven,
+            cowId = drugsGivenCowId,
+            lotId = drugsGivenLotId,
+            date = drugsGivenDate,
+            whatHappened = whatHappened
     )
 }
 

@@ -34,6 +34,9 @@ interface DrugsGivenDao {
     )
     fun getDrugsGivenAndDrugByCowId(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugEntity>>
 
+    @Query("SELECT * FROM drugs_given WHERE drugsGivenCowId = :cowId")
+    suspend fun getDrugsGivenByCowId(cowId: String): List<DrugsGivenEntity>
+
     @Query("DELETE FROM drugs_given WHERE drugsGivenCowId = :cowId")
     suspend fun deleteDrugsGivenByCowId(cowId: String)
 
@@ -60,6 +63,13 @@ interface DrugsGivenDao {
             if (insertResult[i] == -1L) updateList.add(drugsGivenList[i])
         }
         if (updateList.isNotEmpty()) updateDrugsGivenList(drugsGivenList)
+    }
+
+    @Transaction
+    suspend fun deleteDrugsGivenByCowIdTransaction(cowId: String): List<DrugsGivenEntity> {
+        val drugsGivenList = getDrugsGivenByCowId(cowId)
+        deleteDrugsGivenByCowId(cowId)
+        return drugsGivenList
     }
 
 }
