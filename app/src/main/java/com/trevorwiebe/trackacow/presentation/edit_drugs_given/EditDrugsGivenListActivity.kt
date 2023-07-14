@@ -5,16 +5,23 @@ import android.os.Build.VERSION
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
+import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.add_drugs_given_to_specific_cow.AddDrugsGivenToSpecificCowActivity
 import com.trevorwiebe.trackacow.presentation.edit_drugs_given_to_specific.EditDrugsGivenToSpecificCowActivity
-import com.trevorwiebe.trackacow.presentation.medicated_cows.ui.CowUiModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditDrugsGivenListActivity : AppCompatActivity() {
@@ -24,21 +31,34 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
     private lateinit var mAddNewDrugGiven: FloatingActionButton
 
     private lateinit var drugsGivenRecyclerViewAdapter: DrugsGivenRecyclerViewAdapter
-    private var mCowUiModel: CowUiModel? = null
+    private var mCowModel: CowModel? = null
+    private var mDrugsGivenList = emptyList<DrugsGivenAndDrugModel>()
+
+    @Inject
+    lateinit var editDrugsGivenListViewModelFactory: EditDrugsGivenListViewModel.EditDrugsGivenListViewModelFactory
+
+    @Suppress("DEPRECATION")
+    private val editDrugsGivenListViewModel: EditDrugsGivenListViewModel by viewModels {
+        EditDrugsGivenListViewModel.providesFactory(
+                assistedFactory = editDrugsGivenListViewModelFactory,
+                cowId = if (VERSION.SDK_INT >= 33) {
+                    intent.getParcelableExtra("cowModel", CowModel::class.java)
+                } else {
+                    intent.getParcelableExtra("cowModel")
+                }?.cowId ?: ""
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_drugs_given)
 
         @Suppress("DEPRECATION")
-        mCowUiModel = if (VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra("cowModel", CowUiModel::class.java)
+        mCowModel = if (VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra("cowModel", CowModel::class.java)
         } else {
             intent.getParcelableExtra("cowModel")
         }
-
-        val drugsGivenAndDrugModelList = mCowUiModel?.drugsGivenAndDrugModelList ?: emptyList()
-        val cowModel = mCowUiModel?.cowModel
 
         mNoDrugsGiven = findViewById(R.id.edit_drugs_no_drugs_given)
         mAddNewDrugGiven = findViewById(R.id.edit_drugs_add_new_drug)
@@ -53,12 +73,12 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
                 mDrugsGivenRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val drugsGivenAndDrugModel = drugsGivenAndDrugModelList[position]
+                        val drugsGivenAndDrugModel = mDrugsGivenList[position]
                         val editDrugIntent = Intent(
-                            this@EditDrugsGivenListActivity,
-                            EditDrugsGivenToSpecificCowActivity::class.java
+                                this@EditDrugsGivenListActivity,
+                                EditDrugsGivenToSpecificCowActivity::class.java
                         )
-                        editDrugIntent.putExtra("cowModel", cowModel)
+                        editDrugIntent.putExtra("cowModel", mCowModel)
                         editDrugIntent.putExtra("drugGivenAndDrugModel", drugsGivenAndDrugModel)
                         startActivity(editDrugIntent)
                     }
@@ -69,21 +89,30 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
 
         mAddNewDrugGiven.setOnClickListener {
             val addNewDrugIntent =
-                Intent(
-                    this@EditDrugsGivenListActivity,
-                    AddDrugsGivenToSpecificCowActivity::class.java
-                )
-            addNewDrugIntent.putExtra("cowModel", cowModel)
+                    Intent(
+                            this@EditDrugsGivenListActivity,
+                            AddDrugsGivenToSpecificCowActivity::class.java
+                    )
+            addNewDrugIntent.putExtra("cowModel", mCowModel)
             startActivity(addNewDrugIntent)
         }
 
-        if (drugsGivenAndDrugModelList.isEmpty()) {
-            mNoDrugsGiven.visibility = View.VISIBLE
-            mDrugsGivenRv.visibility = View.INVISIBLE
-        } else {
-            mNoDrugsGiven.visibility = View.INVISIBLE
-            mDrugsGivenRv.visibility = View.VISIBLE
-            drugsGivenRecyclerViewAdapter.swapData(drugsGivenAndDrugModelList)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                editDrugsGivenListViewModel.uiState.collect {
+
+                    mDrugsGivenList = it.drugsGivenList
+
+                    if (mDrugsGivenList.isEmpty()) {
+                        mNoDrugsGiven.visibility = View.VISIBLE
+                        mDrugsGivenRv.visibility = View.INVISIBLE
+                    } else {
+                        mNoDrugsGiven.visibility = View.INVISIBLE
+                        mDrugsGivenRv.visibility = View.VISIBLE
+                        drugsGivenRecyclerViewAdapter.swapData(mDrugsGivenList)
+                    }
+                }
+            }
         }
     }
 

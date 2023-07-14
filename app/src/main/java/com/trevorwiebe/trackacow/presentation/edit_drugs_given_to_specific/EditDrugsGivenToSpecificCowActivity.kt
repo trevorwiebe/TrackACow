@@ -40,9 +40,7 @@ class EditDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra("cowModel")
         }
-
-        // TODO: fix issue where data isn't loaded from db, instead comes from intent
-
+        
         @Suppress("DEPRECATION")
         mDrugGivenAndDrug = if (VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("drugGivenAndDrugModel", DrugsGivenAndDrugModel::class.java)
