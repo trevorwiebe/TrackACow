@@ -32,56 +32,115 @@ object TrackACowDataModule {
     @Provides
     @Singleton
     fun provideAppDatabase(app: Application): AppDatabase {
+        val migration1to2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
+                // create the load tables
+                database.execSQL("CREATE TABLE load (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, numberOfHead INTEGER NOT NULL, date INTEGER NOT NULL, description TEXT, lotId TEXT, loadId TEXT)")
+                database.execSQL("CREATE TABLE holdingLoad (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, numberOfHead INTEGER NOT NULL, date INTEGER NOT NULL, description TEXT, lotId TEXT, loadId TEXT, whatHappened INTEGER NOT NULL)")
+                // insert the relevant data from the lot table and archiveLot table into the load tables
+                database.execSQL("INSERT INTO load (numberOfHead, date, lotId, loadId) SELECT totalHead, date, lotId, lotId FROM lot")
+                database.execSQL("INSERT INTO holdingLoad (numberOfHead, date, lotId, loadId, whatHappened) SELECT totalHead, date, lotId, lotId, 1 FROM lot")
+                database.execSQL("INSERT INTO load (numberOfHead, date, lotId, loadId) SELECT totalHead, dateStarted, lotId, lotId FROM archivedLot")
+                database.execSQL("INSERT INTO holdingLoad (numberOfHead, date, lotId, loadId, whatHappened) SELECT totalHead, dateStarted, lotId, lotId, 1 FROM archivedLot")
+
+                // create new lot tables
+                database.execSQL("CREATE TABLE lot_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotId TEXT, customerName TEXT, notes TEXT, date INTEGER NOT NULL, penId TEXT)")
+                database.execSQL("CREATE TABLE holdingLot_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotId TEXT, customerName TEXT, notes TEXT, date INTEGER NOT NULL, penId TEXT, whatHappened INTEGER NOT NULL)")
+                // insert the needed data from the old lot tables into the new lot tables
+                database.execSQL("INSERT INTO lot_new (lotName, lotId, customerName, notes, date, penId) SELECT lotName, lotId, customerName, notes, date, penId FROM lot")
+                database.execSQL("INSERT INTO holdingLot_new (lotName, lotId, customerName, notes, date, penId, whatHappened) SELECT lotName, lotId, customerName, notes, date, penId, whatHappened FROM holdingLot")
+                // delete the old lot tables
+                database.execSQL("DROP TABLE lot")
+                database.execSQL("DROP TABLE holdingLot")
+                // rename the new lot tables to the old names
+                database.execSQL("ALTER TABLE lot_new RENAME TO lot")
+                database.execSQL("ALTER TABLE holdingLot_new RENAME TO holdingLot")
+
+                // create new archive lot tables
+                database.execSQL("CREATE TABLE archivedLot_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotId TEXT, customerName TEXT, notes TEXT, dateStarted INTEGER NOT NULL, dateEnded INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE holdingArchivedLot_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT, lotId TEXT, customerName TEXT, notes TEXT, dateStarted INTEGER NOT NULL, dateEnded INTEGER NOT NULL, whatHappened INTEGER NOT NULL)")
+                // insert the needed data from the old archiveLot tables into the new archivedLot tables
+                database.execSQL("INSERT INTO archivedLot_new (lotName, lotId, customerName, notes, dateStarted, dateEnded) SELECT lotName, lotId, customerName, notes, dateStarted, dateEnded FROM archivedLot")
+                database.execSQL("INSERT INTO holdingArchivedLot_new (lotName, lotId, customerName, notes, dateStarted, dateEnded, whatHappened) SELECT lotName, lotId, customerName, notes, dateStarted, dateEnded, whatHappened FROM holdingArchivedLot")
+                // delete the old lot tables
+                database.execSQL("DROP TABLE archivedLot")
+                database.execSQL("DROP TABLE holdingArchivedLot")
+                // rename the new archiveLot tables to the old names
+                database.execSQL("ALTER TABLE archivedLot_new RENAME TO archivedLot")
+                database.execSQL("ALTER TABLE holdingArchivedLot_new RENAME TO holdingArchivedLot")
+
+                // create the user tables
+                database.execSQL("CREATE TABLE user (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, dateCreated INTEGER NOT NULL, accountType INTEGER NOT NULL, name TEXT, email TEXT, renewalDate INTEGER NOT NULL, uid TEXT)")
+                database.execSQL("CREATE TABLE holdingUser (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, dateCreated INTEGER NOT NULL, accountType INTEGER NOT NULL, name TEXT, email TEXT, renewalDate INTEGER NOT NULL, uid TEXT, whatHappened INTEGER NOT NULL)")
+            }
+        }
+        val migration2to3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
+                // create new drugGiven tables
+                database.execSQL("CREATE TABLE DrugsGiven_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugGivenId TEXT, drugId TEXT, amountGiven INTEGER NOT NULL, cowId TEXT, lotId TEXT, date INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE HoldingDrugsGiven_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugGivenId TEXT, drugId TEXT, amountGiven INTEGER NOT NULL, cowId TEXT, lotId TEXT, date INTEGER NOT NULL, whatHappened INTEGER NOT NULL)")
+                // insert the old data into the new table
+                database.execSQL("INSERT INTO DrugsGiven_new (drugGivenId, drugId, amountGiven, cowId, lotId, date) SELECT drugGiveId, drugId, amountGiven, cowId, lotId, 0 FROM DrugsGiven")
+                database.execSQL("INSERT INTO HoldingDrugsGiven_new (drugGivenId, drugId, amountGiven, cowId, lotId, date, whatHappened) SELECT drugGiveId, drugId, amountGiven, cowId, lotId, 0, 1 FROM DrugsGiven")
+                // delete the old drugGiven tables
+                database.execSQL("DROP TABLE DrugsGiven")
+                database.execSQL("DROP TABLE HoldingDrugsGiven")
+                // rename the new drugGiven tables to the old names
+                database.execSQL("ALTER TABLE DrugsGiven_new RENAME TO DrugsGiven")
+                database.execSQL("ALTER TABLE HoldingDrugsGiven_new RENAME TO HoldingDrugsGiven")
+            }
+        }
+        val migration3to4: Migration = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {}
+        }
+        val migration4to5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DROP TABLE call")
+                database.execSQL("CREATE TABLE call (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT)")
+                database.execSQL("CREATE TABLE holdingCall (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT, whatHappened INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE holdingFeed (primaryKey Integer NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT, lotId TEXT, whatHappened INTEGER NOT NULL)")
+            }
+        }
         val migration5to6: Migration = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
 
                 // update call table
-                database.execSQL("CREATE TABLE call_new (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, callRationId INTEGER, callCloudDatabaseId TEXT)")
-                database.execSQL("INSERT INTO call_new (callPrimaryKey, callAmount, date, lotId, callRationId, callCloudDatabaseId) SELECT primaryKey, callAmount, date, lotId, NULL, id FROM call")
                 database.execSQL("DROP TABLE call")
-                database.execSQL("ALTER TABLE call_new RENAME TO call")
+                database.execSQL("CREATE TABLE call (callPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, callAmount INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, callRationId INTEGER, callCloudDatabaseId TEXT)")
 
                 // update cow table
-                database.execSQL("CREATE TABLE cow_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL)")
-                database.execSQL("INSERT INTO cow_new (primaryKey, alive, cowId, tagNumber, date, notes, lotId) SELECT primaryKey, isAlive, cowId, tagNumber, date, notes, lotId FROM Cow")
                 database.execSQL("DROP TABLE Cow")
-                database.execSQL("ALTER TABLE cow_new RENAME TO cow")
+                database.execSQL("CREATE TABLE cow (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, cowId TEXT NOT NULL, tagNumber INTEGER NOT NULL, date INTEGER NOT NULL, notes TEXT, lotId TEXT NOT NULL)")
 
                 // update drug table
-                database.execSQL("CREATE TABLE drug_new (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULL, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL)")
-                database.execSQL("INSERT INTO drug_new (drugPrimaryKey, defaultAmount, drugCloudDatabaseId, drugName) SELECT primaryKey, defaultAmount, drugId, drugName FROM Drug")
                 database.execSQL("DROP TABLE Drug")
-                database.execSQL("ALTER TABLE drug_new RENAME TO drug")
+                database.execSQL("CREATE TABLE drug (drugPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, defaultAmount INTEGER NOT NULL, drugCloudDatabaseId TEXT NOT NULL, drugName TEXT NOT NULL)")
 
                 // update drugsGiven table
-                database.execSQL("CREATE TABLE drugsGiven_new (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
-                database.execSQL("INSERT INTO drugsGiven_new (drugsGivenPrimaryKey, drugsGivenId, drugsGivenDrugId, drugsGivenAmountGiven, drugsGivenCowId, drugsGivenLotId, drugsGivenDate) SELECT primaryKey, drugGivenId, drugId, amountGiven, cowId, lotId, date FROM DrugsGiven")
                 database.execSQL("DROP TABLE DrugsGiven")
-                database.execSQL("ALTER TABLE drugsGiven_new RENAME TO drugs_given")
+                database.execSQL("CREATE TABLE drugsGiven (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
 
                 // update feed table
-                database.execSQL("CREATE TABLE feed_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL)")
-                database.execSQL("INSERT INTO feed_new (primaryKey, feed, date, id, lotId) SELECT primaryKey, feed, date, id, lotId FROM feed")
                 database.execSQL("DROP TABLE feed")
-                database.execSQL("ALTER TABLE feed_new RENAME TO feed")
+                database.execSQL("CREATE TABLE feed (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL)")
 
                 // update load table
+                // don't need to update load
 
                 // update lot table
-                database.execSQL("CREATE TABLE lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER NOT NULL, lotPenCloudDatabaseId TEXT NOT NULL)")
-                database.execSQL("INSERT INTO lot_new(lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT primaryKey, lotName, lotId, customerName, notes, date, 0, 0, penId FROM lot")
                 database.execSQL("DROP TABLE lot")
-                database.execSQL("ALTER TABLE lot_new RENAME TO lot")
+                database.execSQL("CREATE TABLE lot (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT NOT NULL)")
 
+                // TODO: Fix issue with archive migration
                 // save archives to lot table
-                database.execSQL("INSERT INTO lot (lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '' FROM archivedLot")
+                database.execSQL("INSERT INTO lot (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT 0, lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '' FROM archivedLot")
                 database.execSQL("DROP TABLE archivedLot")
 
                 // update pen table
-                database.execSQL("CREATE TABLE pen_new (penPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL)")
-                database.execSQL("INSERT INTO pen_new(penPrimaryKey, penCloudDatabaseId, penName) SELECT primaryKey, penId, penName FROM Pen")
                 database.execSQL("DROP TABLE Pen")
-                database.execSQL("ALTER TABLE pen_new RENAME TO pen")
+                database.execSQL("CREATE TABLE pen (penPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, penCloudDatabaseId TEXT, penName TEXT NOT NULL)")
 
                 // create ration table
                 database.execSQL("CREATE TABLE ration (rationPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, rationCloudDatabaseId TEXT NOT NULL, rationName TEXT NOT NULL)")
@@ -131,7 +190,7 @@ object TrackACowDataModule {
                 database.execSQL("ALTER TABLE cache_lot_new RENAME TO cache_lot")
 
                 // save cacheArchivedLot to cacheLot table
-                database.execSQL("INSERT INTO cache_lot (lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '', whatHappened FROM holdingArchivedLot")
+                database.execSQL("INSERT INTO cache_lot (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT 0, lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '', whatHappened FROM holdingArchivedLot")
                 database.execSQL("DROP TABLE holdingArchivedLot")
 
                 // cachePen
@@ -150,6 +209,10 @@ object TrackACowDataModule {
         }
         return Room
                 .databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
+                .addMigrations(migration1to2)
+                .addMigrations(migration2to3)
+                .addMigrations(migration3to4)
+                .addMigrations(migration4to5)
                 .addMigrations(migration5to6)
                 .build()
     }
