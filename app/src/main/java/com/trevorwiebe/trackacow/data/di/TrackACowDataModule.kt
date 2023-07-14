@@ -131,7 +131,7 @@ object TrackACowDataModule {
 
                 // update lot table
                 database.execSQL("DROP TABLE lot")
-                database.execSQL("CREATE TABLE lot (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT NOT NULL)")
+                database.execSQL("CREATE TABLE lot (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER NOT NULL, lotPenCloudDatabaseId TEXT NOT NULL)")
 
                 // drop archiveLot table
                 database.execSQL("DROP TABLE archivedLot")
