@@ -44,8 +44,6 @@ import java.lang.Exception
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    // TODO: fix bug where when new user signs in, it shows the migrating database dialog
-
     private val mainViewModel: MainViewModel by viewModels()
 
     private var mAuthListener: AuthStateListener? = null
@@ -215,7 +213,9 @@ class MainActivity : AppCompatActivity() {
                         mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration(appVersionCode))
                     }
                 } else {
-                    mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration(appVersionCode))
+                    // Since there is no version save in cloud,
+                    // just set cloud to current version
+                    appVersionRef.setValue(appVersion)
                 }
             }
 
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(firstUrl))
                 startActivity(browserIntent)
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 val secondIntent = Intent(Intent.ACTION_VIEW, Uri.parse(secondUrl))
                 startActivity(secondIntent)
             }
