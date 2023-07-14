@@ -120,7 +120,7 @@ object TrackACowDataModule {
 
                 // update drugsGiven table
                 database.execSQL("DROP TABLE DrugsGiven")
-                database.execSQL("CREATE TABLE drugsGiven (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE drugs_given (drugsGivenPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, drugsGivenId TEXT, drugsGivenDrugId TEXT, drugsGivenAmountGiven INTEGER NOT NULL, drugsGivenCowId TEXT, drugsGivenLotId TEXT, drugsGivenDate INTEGER NOT NULL)")
 
                 // update feed table
                 database.execSQL("DROP TABLE feed")
@@ -133,9 +133,7 @@ object TrackACowDataModule {
                 database.execSQL("DROP TABLE lot")
                 database.execSQL("CREATE TABLE lot (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER, lotPenCloudDatabaseId TEXT NOT NULL)")
 
-                // TODO: Fix issue with archive migration
-                // save archives to lot table
-                database.execSQL("INSERT INTO lot (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT 0, lotName, lotId, customerName, notes, dateStarted, 1, dateEnded, '' FROM archivedLot")
+                // drop archiveLot table
                 database.execSQL("DROP TABLE archivedLot")
 
                 // update pen table
