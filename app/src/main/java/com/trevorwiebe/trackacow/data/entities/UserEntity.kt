@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "user")
 data class UserEntity (
     @PrimaryKey(autoGenerate = true)
-    // TODO add this to database migration local and cloud
     var primaryKey: Int = 0,
     var accountType: Int = 0,
     var dateCreated: Long = 0,
