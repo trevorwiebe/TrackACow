@@ -214,34 +214,25 @@ class FeedLotDetailFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 feedLotDetailFragmentViewModel.uiState.collect {
                     mCallAndRationModel = it.callModel
+
+                    var rationSelection = mRationModelList.indexOfFirst { rationModel ->
+                        rationModel.rationPrimaryKey == (mCallAndRationModel?.rationPrimaryKey)
+                    }
+                    if (rationSelection == -1)
+                        rationSelection = mRationModelList.indexOfFirst { rationModel ->
+                            rationModel.rationPrimaryKey == Utility.getLastUsedRation(mContext)
+                        }
+                    if (rationSelection == -1) rationSelection = 0
+
                     if (mCallAndRationModel == null) {
                         mCallET.setText("0")
                         mCallET.tag = ""
                         mSaveBtn.text = getString(R.string.save)
-                        mRationSpinner.setSelection(mRationModelList
-                            .indexOfFirst { rationModel ->
-                                rationModel.rationPrimaryKey == Utility.getLastUsedRation(
-                                    mContext
-                                )
-                            })
+                        mRationSpinner.setSelection(rationSelection)
                     } else {
                         mCallET.setText(mCallAndRationModel?.callAmount.toString())
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
                         mSaveBtn.text = getString(R.string.update)
-
-                        var rationSelection = mRationModelList.indexOfFirst { rationModel ->
-                            rationModel.rationPrimaryKey == (mCallAndRationModel?.rationPrimaryKey)
-                        }
-
-                        if (rationSelection == -1) {
-                            rationSelection = mRationModelList
-                                    .indexOfFirst { rationModel ->
-                                        rationModel.rationPrimaryKey == Utility.getLastUsedRation(
-                                                mContext
-                                        )
-                                    }
-                        }
-
                         mRationSpinner.setSelection(rationSelection)
                     }
                 }
