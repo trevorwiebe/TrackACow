@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MoveFragment : Fragment() {
 
+    // TODO: fix bug where can't move lot to last pen
+
     private lateinit var mMoveRv: RecyclerView
     private lateinit var mEmptyMoveList: TextView
 

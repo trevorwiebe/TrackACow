@@ -53,6 +53,7 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
                     penAndLotModelList = it.penAndLotList
                     val rationList = it.rationList
 
+                    // TODO: fix bug where when no rations saved it doesn't show
                     if (penAndLotModelList.isNotEmpty() && rationList.isNotEmpty()) {
                         feedLotDetailViewPagerAdapter.setLotData(
                                 penAndLotModelList,
