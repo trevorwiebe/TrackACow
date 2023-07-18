@@ -150,6 +150,7 @@
     <string name="empty_ration_list">No saved rations. \n \n Please add one to use full functionality.</string>
     <string name="ration_name">Ration Name</string>
     <string name="ration_saved">Ration Saved</string>
+    <string name="add_ration_txt">Please add a ration to use this feature</string>
 
     Archives
     <string name="empty_archive_list">No lots have been archived.</string>

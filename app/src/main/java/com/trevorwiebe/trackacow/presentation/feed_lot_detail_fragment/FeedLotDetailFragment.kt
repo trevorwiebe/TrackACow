@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.presentation.feed_lot_detail_fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -27,6 +28,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Utility
+import com.trevorwiebe.trackacow.presentation.add_or_edit_rations.AddOrEditRation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -60,6 +62,8 @@ class FeedLotDetailFragment : Fragment() {
     private lateinit var mTotalFed: TextView
     private lateinit var mLeftToFeed: TextView
     private lateinit var mSaveBtn: Button
+    private lateinit var mAddRationBtn: Button
+    private lateinit var mAddRationTxt: TextView
 
     private var mFeedAgainNumber = 0
     private var isLoadingMore = false
@@ -117,6 +121,8 @@ class FeedLotDetailFragment : Fragment() {
         mFeedAgainLayout = view.findViewById(R.id.feed_again_layout)
         mTotalFed = view.findViewById(R.id.pen_total_fed)
         mLeftToFeed = view.findViewById(R.id.pen_left_to_feed)
+        mAddRationBtn = view.findViewById(R.id.feed_add_ration_btn)
+        mAddRationTxt = view.findViewById(R.id.feed_add_ration_txt)
 
         mSaveBtn.setOnClickListener {
             if (mCallET.length() == 0 || mCallET.text.toString() == "0") {
@@ -145,9 +151,9 @@ class FeedLotDetailFragment : Fragment() {
 
                 feedLotDetailFragmentViewModel.onEvent(
                     FeedLotDetailFragmentEvents.OnSave(
-                        callModel,
-                        feedModelsFromLayout,
-                        mOriginalFeedModelList
+                            callModel,
+                            feedModelsFromLayout,
+                            mOriginalFeedModelList
                     )
                 )
                 mTotalFed.requestFocus()
@@ -155,11 +161,15 @@ class FeedLotDetailFragment : Fragment() {
             }
         }
 
+        mAddRationBtn.setOnClickListener {
+            startActivity(Intent(mContext, AddOrEditRation::class.java))
+        }
+
         val rationsList: List<String> = mRationModelList.map { it.rationName }
         mRationSpinnerAdapter = ArrayAdapter(
-            view.context,
-            android.R.layout.simple_spinner_dropdown_item,
-            rationsList
+                view.context,
+                android.R.layout.simple_spinner_dropdown_item,
+                rationsList
         )
         mRationSpinner.adapter = mRationSpinnerAdapter
         var check = 0
@@ -225,7 +235,6 @@ class FeedLotDetailFragment : Fragment() {
                     if (rationSelection == -1) rationSelection = 0
 
                     if (mCallAndRationModel == null) {
-                        mCallET.setText("0")
                         mCallET.tag = ""
                         mSaveBtn.text = getString(R.string.save)
                         mRationSpinner.setSelection(rationSelection)
@@ -269,13 +278,24 @@ class FeedLotDetailFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (mRationModelList.isNotEmpty()) {
+            mAddRationTxt.visibility = View.GONE
+            mAddRationBtn.visibility = View.GONE
+        } else {
+            mAddRationBtn.visibility = View.VISIBLE
+            mAddRationBtn.visibility = View.VISIBLE
+        }
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(
-            newPenAndLotModel: PenAndLotModel,
-            rationList: ArrayList<RationModel>,
+                newPenAndLotModel: PenAndLotModel,
+                rationList: ArrayList<RationModel>,
 //            lastUsedRationId: Int,
-            penUiDate: Long
+                penUiDate: Long
         ) = FeedLotDetailFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(pen_and_lot_param, newPenAndLotModel)
