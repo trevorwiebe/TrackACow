@@ -20,6 +20,9 @@ fun <T, U> combineDatabaseNodes(
     val list1 = mutableListOf<T>()
     val list2 = mutableListOf<U>()
 
+    var value1Returned = false
+    var value2Returned = false
+
     val listener1 = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             list1.clear()
@@ -29,7 +32,10 @@ fun <T, U> combineDatabaseNodes(
                     list1.add(object1)
                 }
             }
-            trySend(Pair(list1, list2))
+            value1Returned = true
+            if (value2Returned) {
+                trySend(Pair(list1, list2))
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -47,7 +53,10 @@ fun <T, U> combineDatabaseNodes(
                     list2.add(object2)
                 }
             }
-            trySend(Pair(list1, list2))
+            value2Returned = true
+            if (value1Returned) {
+                trySend(Pair(list1, list2))
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -59,6 +68,8 @@ fun <T, U> combineDatabaseNodes(
     awaitClose {
         reference1.removeEventListener(listener1)
         reference2.removeEventListener(listener2)
+        value1Returned = false
+        value2Returned = false
     }
 }
 
@@ -72,6 +83,9 @@ fun <T, U> combineQueryDatabaseNodes(
     val list1 = mutableListOf<T>()
     val list2 = mutableListOf<U>()
 
+    var value1Returned = false
+    var value2Returned = false
+
     val listener1 = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             list1.clear()
@@ -81,7 +95,10 @@ fun <T, U> combineQueryDatabaseNodes(
                     list1.add(object1)
                 }
             }
-            trySend(Pair(list1, list2))
+            value1Returned = true
+            if (value1Returned && value2Returned) {
+                trySend(Pair(list1, list2))
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -99,7 +116,10 @@ fun <T, U> combineQueryDatabaseNodes(
                     list2.add(object2)
                 }
             }
-            trySend(Pair(list1, list2))
+            value2Returned = true
+            if (value1Returned && value2Returned) {
+                trySend(Pair(list1, list2))
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -111,5 +131,7 @@ fun <T, U> combineQueryDatabaseNodes(
     awaitClose {
         reference1.removeEventListener(listener1)
         reference2.removeEventListener(listener2)
+        value1Returned = false
+        value2Returned = false
     }
 }

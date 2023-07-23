@@ -44,8 +44,9 @@ object ActivityDomainModule {
                 cowRepositoryRemote
             ),
             readCowsByLotId = ReadCowsByLotId(
-                cowRepository,
-                cowRepositoryRemote
+                    cowRepository,
+                    cowRepositoryRemote,
+                    context
             ),
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
             deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context),
@@ -289,9 +290,10 @@ object ActivityDomainModule {
                 context
             ),
             readDrugsGivenAndDrugsByLotId = ReadDrugsGivenAndDrugsByLotId(
-                drugsGivenRepository,
-                drugRepository,
-                drugsGivenRemoteRepository
+                    drugsGivenRepository,
+                    drugRepository,
+                    drugsGivenRemoteRepository,
+                    context
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
                 drugRepository,
