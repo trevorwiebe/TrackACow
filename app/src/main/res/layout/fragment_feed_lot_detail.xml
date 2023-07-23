@@ -50,6 +50,7 @@
                         android:layout_marginBottom="16dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@android:color/black"
+                        android:text="@string/_0"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -77,6 +78,7 @@
                         android:layout_marginBottom="16dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@android:color/black"
+                        android:text="@string/_0"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -127,6 +129,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
+                    android:visibility="gone"
                     android:textColor="@color/orangeText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -137,6 +140,7 @@
                     android:text="@string/add_ration"
                     android:layout_gravity="end"
                     android:textColor="@android:color/white"
+                    android:visibility="gone"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:layout_marginBottom="16dp"

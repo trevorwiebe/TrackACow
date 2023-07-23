@@ -3,17 +3,13 @@ package com.trevorwiebe.trackacow.presentation.add_or_edit_rations
 import android.os.Build.VERSION
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
-import com.trevorwiebe.trackacow.domain.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +19,7 @@ class AddOrEditRation : AppCompatActivity() {
     private lateinit var cancelRationBtn: Button
     private lateinit var addRationTV: TextInputEditText
 
+    private var mRationAdded: Int = 0
     private var mRation: RationModel? = null
 
     private val addOrEditViewModel: AddOrEditViewModel by viewModels()
@@ -76,10 +73,19 @@ class AddOrEditRation : AppCompatActivity() {
                     val rationModel = RationModel(0, "", rationText.toString())
                     addOrEditViewModel.onEvent(AddOrEditRationsEvents.OnRationAdded(rationModel))
                     addRationTV.setText("")
+                    mRationAdded = 1
                 }
             }
         }
-        cancelRationBtn.setOnClickListener{ finish() }
+        cancelRationBtn.setOnClickListener {
+            setResult(mRationAdded)
+            finish()
+        }
+    }
+
+    override fun finish() {
+        setResult(mRationAdded)
+        super.finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

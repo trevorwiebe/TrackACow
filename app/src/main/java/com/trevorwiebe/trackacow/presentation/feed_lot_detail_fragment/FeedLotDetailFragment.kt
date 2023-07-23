@@ -48,13 +48,12 @@ class FeedLotDetailFragment : Fragment() {
     // TODO: update the code to gray the button out when there are no changes to save
 
 
-    private lateinit var mRationModelList: List<RationModel>
+    private var mRationModelList: List<RationModel> = emptyList()
     private var mPenAndLotModel: PenAndLotModel? = null
     private var mCallAndRationModel: CallAndRationModel? = null
     private var mPenUiDate: Long = -1
     private var mOriginalFeedModelList: List<FeedModel> = emptyList()
     private lateinit var mRationSpinner: Spinner
-    private lateinit var mRationSpinnerAdapter: ArrayAdapter<String>
     private var mSelectedRation: RationModel? = null
     private lateinit var mCallET: TextInputEditText
     private lateinit var mFeedFirst: TextInputEditText
@@ -85,13 +84,6 @@ class FeedLotDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            @Suppress("DEPRECATION")
-            val rationList = if (Build.VERSION.SDK_INT >= 33) {
-                it.getParcelableArrayList(ration_list_param, RationModel::class.java)
-            } else {
-                it.getParcelableArrayList(ration_list_param)
-            }
-            mRationModelList = rationList?.toList() ?: emptyList()
             @Suppress("DEPRECATION")
             mPenAndLotModel = if (Build.VERSION.SDK_INT >= 33) {
                 it.getParcelable(pen_and_lot_param, PenAndLotModel::class.java)
@@ -162,16 +154,10 @@ class FeedLotDetailFragment : Fragment() {
         }
 
         mAddRationBtn.setOnClickListener {
-            startActivity(Intent(mContext, AddOrEditRation::class.java))
+            val addRationIntent = Intent(mContext, AddOrEditRation::class.java)
+            startActivity(addRationIntent)
         }
 
-        val rationsList: List<String> = mRationModelList.map { it.rationName }
-        mRationSpinnerAdapter = ArrayAdapter(
-                view.context,
-                android.R.layout.simple_spinner_dropdown_item,
-                rationsList
-        )
-        mRationSpinner.adapter = mRationSpinnerAdapter
         var check = 0
         mRationSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
@@ -225,24 +211,13 @@ class FeedLotDetailFragment : Fragment() {
                 feedLotDetailFragmentViewModel.uiState.collect {
                     mCallAndRationModel = it.callModel
 
-                    var rationSelection = mRationModelList.indexOfFirst { rationModel ->
-                        rationModel.rationPrimaryKey == (mCallAndRationModel?.rationPrimaryKey)
-                    }
-                    if (rationSelection == -1)
-                        rationSelection = mRationModelList.indexOfFirst { rationModel ->
-                            rationModel.rationPrimaryKey == Utility.getLastUsedRation(mContext)
-                        }
-                    if (rationSelection == -1) rationSelection = 0
-
                     if (mCallAndRationModel == null) {
                         mCallET.tag = ""
                         mSaveBtn.text = getString(R.string.save)
-                        mRationSpinner.setSelection(rationSelection)
                     } else {
                         mCallET.setText(mCallAndRationModel?.callAmount.toString())
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
                         mSaveBtn.text = getString(R.string.update)
-                        mRationSpinner.setSelection(rationSelection)
                     }
                 }
             }
@@ -275,18 +250,45 @@ class FeedLotDetailFragment : Fragment() {
             }
         }
 
-        return view
-    }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                feedLotDetailFragmentViewModel.uiState.collect { uiState ->
 
-    override fun onResume() {
-        super.onResume()
-        if (mRationModelList.isNotEmpty()) {
-            mAddRationTxt.visibility = View.GONE
-            mAddRationBtn.visibility = View.GONE
-        } else {
-            mAddRationBtn.visibility = View.VISIBLE
-            mAddRationBtn.visibility = View.VISIBLE
+                    mRationModelList = uiState.rationList
+
+                    if (mRationModelList.isNotEmpty()) {
+
+                        var rationSelection = mRationModelList.indexOfFirst { rationModel ->
+                            rationModel.rationPrimaryKey == (mCallAndRationModel?.rationPrimaryKey)
+                        }
+                        if (rationSelection == -1)
+                            rationSelection = mRationModelList.indexOfFirst { rationModel ->
+                                rationModel.rationPrimaryKey == Utility.getLastUsedRation(mContext)
+                            }
+                        if (rationSelection == -1) rationSelection = 0
+
+                        val rationNameList = mRationModelList.map { it.rationName }
+
+                        val newRationSpinnerAdapter = ArrayAdapter(
+                                view.context,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                rationNameList
+                        )
+
+                        mRationSpinner.adapter = newRationSpinnerAdapter
+                        mRationSpinner.setSelection(rationSelection)
+
+                        mAddRationTxt.visibility = View.GONE
+                        mAddRationBtn.visibility = View.GONE
+                    } else {
+                        mAddRationTxt.visibility = View.VISIBLE
+                        mAddRationBtn.visibility = View.VISIBLE
+                    }
+                }
+            }
         }
+
+        return view
     }
 
     companion object {
@@ -294,13 +296,11 @@ class FeedLotDetailFragment : Fragment() {
         fun newInstance(
                 newPenAndLotModel: PenAndLotModel,
                 rationList: ArrayList<RationModel>,
-//            lastUsedRationId: Int,
                 penUiDate: Long
         ) = FeedLotDetailFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(pen_and_lot_param, newPenAndLotModel)
                 putParcelableArrayList(ration_list_param, rationList)
-//                putInt(last_used_ration_param, lastUsedRationId)
                 putLong(pen_ui_date_param, penUiDate)
             }
         }

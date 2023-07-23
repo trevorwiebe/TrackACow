@@ -9,9 +9,11 @@ import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,10 +25,11 @@ private const val pen_and_lot_param = "pen_and_lot_param"
 private const val pen_ui_date_param = "pen_ui_date_param"
 
 class FeedLotDetailFragmentViewModel @AssistedInject constructor(
-    private val callUseCases: CallUseCases,
-    private val feedUseCases: FeedUseCases,
-    private val calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
-    @Assisted defaultArgs: Bundle? = null
+        private val callUseCases: CallUseCases,
+        private val feedUseCases: FeedUseCases,
+        private val rationUseCases: RationUseCases,
+        private val calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
+        @Assisted defaultArgs: Bundle? = null
 ) : ViewModel() {
 
     private var readCallByLotIdAndDateJob: Job? = null
@@ -37,12 +40,15 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         fun create(defaultArgs: Bundle?): FeedLotDetailFragmentViewModel
     }
 
+    init {
+        readRations()
+    }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun providesFactory(
-            assistedFactory: FeedLotDetailFragmentViewModelFactory,
-            defaultArgs: Bundle?
+                assistedFactory: FeedLotDetailFragmentViewModelFactory,
+                defaultArgs: Bundle?
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(defaultArgs) as T
@@ -73,10 +79,14 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         when (event) {
             is FeedLotDetailFragmentEvents.OnSave -> {
                 createOrUpdateCallandFeeds(
-                    event.callModel,
-                    event.feedModelList,
-                    event.originalFeedModelList
+                        event.callModel,
+                        event.feedModelList,
+                        event.originalFeedModelList
                 )
+            }
+
+            is FeedLotDetailFragmentEvents.OnRationsLoaded -> {
+                readRations()
             }
         }
     }
@@ -98,20 +108,30 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     private fun readFeedsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long) {
         readFeedsByLotIdAndDateJob?.cancel()
         readFeedsByLotIdAndDateJob = feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate)
-            .map { thisFeedList ->
-                _uiState.update {
-                    it.copy(
-                        feedList = thisFeedList
-                    )
+                .map { thisFeedList ->
+                    _uiState.update {
+                        it.copy(
+                                feedList = thisFeedList
+                        )
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(viewModelScope)
+    }
+
+    private fun readRations() {
+        rationUseCases.readAllRationsUC()
+                .map { feedRationList ->
+                    _uiState.update {
+                        it.copy(rationList = feedRationList)
+                    }
+                }
+                .launchIn(viewModelScope)
     }
 
     private fun createOrUpdateCallandFeeds(
-        callModel: CallModel,
-        feedModelList: List<FeedModel>,
-        originalFeedModelList: List<FeedModel>
+            callModel: CallModel,
+            feedModelList: List<FeedModel>,
+            originalFeedModelList: List<FeedModel>
     ) {
         viewModelScope.launch {
             if (callModel.callCloudDatabaseId.isNullOrEmpty()) {
@@ -125,14 +145,17 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
 }
 
 data class FeedLotDetailFragmentUiState(
-    val callModel: CallAndRationModel? = null,
-    val feedList: List<FeedModel> = emptyList()
+        val callModel: CallAndRationModel? = null,
+        val feedList: List<FeedModel> = emptyList(),
+        val rationList: List<RationModel> = emptyList()
 )
 
 sealed class FeedLotDetailFragmentEvents {
     data class OnSave(
-        val callModel: CallModel,
-        val feedModelList: List<FeedModel>,
-        val originalFeedModelList: List<FeedModel>
+            val callModel: CallModel,
+            val feedModelList: List<FeedModel>,
+            val originalFeedModelList: List<FeedModel>
     ) : FeedLotDetailFragmentEvents()
+
+    object OnRationsLoaded : FeedLotDetailFragmentEvents()
 }
