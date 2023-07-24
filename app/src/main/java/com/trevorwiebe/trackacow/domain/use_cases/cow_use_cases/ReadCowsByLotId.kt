@@ -22,8 +22,8 @@ class ReadCowsByLotId(
         val localFlow = cowRepository.getCowsByLotId(lotId)
         val cowCloudFlow = cowRepositoryRemote.readCowsByLotId(lotId)
 
-        if (Utility.haveNetworkConnection(context)) {
-            return localFlow
+        return if (Utility.haveNetworkConnection(context)) {
+            localFlow
                     .flatMapConcat { localData ->
                         cowCloudFlow.onStart {
                             emit(localData)
@@ -33,7 +33,7 @@ class ReadCowsByLotId(
                         }
                     }
         } else {
-            return localFlow
+            localFlow
         }
 
     }

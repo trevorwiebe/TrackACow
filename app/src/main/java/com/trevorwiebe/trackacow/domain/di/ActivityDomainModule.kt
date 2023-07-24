@@ -40,8 +40,9 @@ object ActivityDomainModule {
         return CowUseCases(
             createCow = CreateCow(cowRepository, cowRepositoryRemote, getCloudDatabaseId, context),
             readDeadCowsByLotId = ReadDeadCowsByLotId(
-                cowRepository,
-                cowRepositoryRemote
+                    cowRepository,
+                    cowRepositoryRemote,
+                    context
             ),
             readCowsByLotId = ReadCowsByLotId(
                     cowRepository,
@@ -51,8 +52,9 @@ object ActivityDomainModule {
             updateCow = UpdateCow(cowRepository, cowRepositoryRemote, context),
             deleteCow = DeleteCow(cowRepository, cowRepositoryRemote, context),
             readCowByCowId = ReadCowByCowId(
-                cowRepository,
-                cowRepositoryRemote
+                    cowRepository,
+                    cowRepositoryRemote,
+                    context
             )
         )
     }
@@ -73,8 +75,9 @@ object ActivityDomainModule {
                 context
             ),
             readAllRationsUC = ReadAllRationsUC(
-                rationsRepository,
-                rationsRepositoryRemote
+                    rationsRepository,
+                    rationsRepositoryRemote,
+                    context
             ),
             updateRationUC = UpdateRationUC(rationsRepository, rationsRepositoryRemote, context),
             deleteRationByIdUC = DeleteRationByIdUC(
@@ -96,14 +99,16 @@ object ActivityDomainModule {
     ): CallUseCases {
         return CallUseCases(
             readCallsByLotIdAndDateUC = ReadCallByLotIdAndDateUC(
-                rationsRepository,
-                callRepository,
-                callRepositoryRemote
+                    rationsRepository,
+                    callRepository,
+                    callRepositoryRemote,
+                    context
             ),
             readCallsAndRationsByLotId = ReadCallsAndRationsByLotIdUC(
-                rationsRepository,
-                callRepository,
-                callRepositoryRemote
+                    rationsRepository,
+                    callRepository,
+                    callRepositoryRemote,
+                    context
             ),
             createCallUC = CreateCallUC(
                 callRepository,
@@ -127,14 +132,16 @@ object ActivityDomainModule {
     ): PenUseCases {
         return PenUseCases(
             readPenAndLotModelIncludeEmptyPens = ReadPenAndLotModelIncludeEmptyPens(
-                penRepository,
-                lotRepository,
-                lotRepositoryRemote
+                    penRepository,
+                    lotRepository,
+                    lotRepositoryRemote,
+                    context
             ),
             readPenAndLotModelExcludeEmptyPens = ReadPenAndLotModelExcludeEmptyPens(
-                penRepository,
-                lotRepository,
-                lotRepositoryRemote
+                    penRepository,
+                    lotRepository,
+                    lotRepositoryRemote,
+                    context
             ),
             createPenUC = CreatePenUC(
                 penRepository,
@@ -170,14 +177,17 @@ object ActivityDomainModule {
             readArchivedLots = ReadArchivedLots(
                 lotRepository,
                 lotRepositoryRemote,
+                    context
             ),
             readLots = ReadLots(
-                lotRepository,
-                lotRepositoryRemote
+                    lotRepository,
+                    lotRepositoryRemote,
+                    context
             ),
             readLotsByLotId = ReadLotsByLotId(
-                lotRepository,
-                lotRepositoryRemote
+                    lotRepository,
+                    lotRepositoryRemote,
+                    context
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLot = UpdateLot(lotRepository, lotRepositoryRemote, context),
@@ -210,8 +220,9 @@ object ActivityDomainModule {
                 context
             ),
             readLoadsByLotId = ReadLoadsByLotId(
-                loadRepository,
-                loadRemoteRepository
+                    loadRepository,
+                    loadRemoteRepository,
+                    context
             ),
             updateLoad = UpdateLoad(loadRepository, loadRemoteRepository, context),
             deleteLoad = DeleteLoad(
@@ -239,12 +250,14 @@ object ActivityDomainModule {
                 context
             ),
             readFeedsByLotId = ReadFeedsByLotId(
-                feedRepository,
-                feedRepositoryRemote
+                    feedRepository,
+                    feedRepositoryRemote,
+                    context
             ),
             readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
-                feedRepository,
-                feedRepositoryRemote
+                    feedRepository,
+                    feedRepositoryRemote,
+                    context
             )
         )
     }
@@ -259,8 +272,9 @@ object ActivityDomainModule {
     ): DrugUseCases {
         return DrugUseCases(
             readDrugsUC = ReadDrugsUC(
-                drugRepository,
-                drugRepositoryRemote
+                    drugRepository,
+                    drugRepositoryRemote,
+                    context
             ),
             createDrug = CreateDrug(
                 drugRepository,
@@ -296,9 +310,10 @@ object ActivityDomainModule {
                     context
             ),
             readDrugsGivenAndDrugsByLotIdAndDate = ReadDrugsGivenAndDrugsByLotIdAndDate(
-                drugRepository,
-                drugsGivenRepository,
-                drugsGivenRemoteRepository
+                    drugRepository,
+                    drugsGivenRepository,
+                    drugsGivenRemoteRepository,
+                    context
             ),
             deleteDrugsGivenByCowId = DeleteDrugsGivenByCowId(
                 drugsGivenRepository,
@@ -306,9 +321,10 @@ object ActivityDomainModule {
                 context
             ),
             readDrugsGivenAndDrugsByCowId = ReadDrugsGivenAndDrugsByCowId(
-                drugsGivenRepository,
-                drugRepository,
-                drugsGivenRemoteRepository
+                    drugsGivenRepository,
+                    drugRepository,
+                    drugsGivenRemoteRepository,
+                    context
             ),
             deleteDrugGivenByDrugGivenId = DeleteDrugGivenByDrugGivenId(
                 drugsGivenRepository,
