@@ -34,7 +34,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/orangeText"
-            android:text="You can't have more than one lot under one pen."
+            android:text="@string/only_one_lot_under_one_pen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
