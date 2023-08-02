@@ -8,7 +8,6 @@
     tools:context=".presentation.add_lot_and_load.AddLotAndLoad">
 
     <ScrollView
-        android:id="@+id/pen_idle"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

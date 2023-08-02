@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">Feedlot Management</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
@@ -15,8 +11,6 @@
     <string name="generic_error">An unknown error occurred</string>
     <string name="date">Date</string>
     <string name="memo">Memo</string>
-    <string name="name_already_used">Name already used</string>
-    <string name="ok">OK</string>
     <string name="notes_more">Memo: %1$s</string>
 
     Work Fragment Strings
@@ -58,13 +52,12 @@
     <string name="today">Today</string>
     <string name="_0">0</string>
     <string name="amount_fed">Amount Fed</string>
-    <string name="saved">Saved</string>
+    <string name="add_a_lot">Add a Lot</string>
 
     Feed Reports
     <string name="feed_reports">Feed Reports</string>
     <string name="ration">Ration</string>
     <string name="no_feed_in_this_date_range">No feed in this date range</string>
-    <string name="feed_lot">Feed lot</string>
 
     Report Strings
     <string name="reports">Reports</string>
@@ -73,10 +66,8 @@
     Move Strings
     <string name="move">Move</string>
     <string name="empty_move">No pens or lots found. \n \n This is where lots are moved from one pen to another.</string>
-    <string name="merge">MERGE</string>
     <string name="merge_lot_btn_text">Merge Lots</string>
     <string name="reorder_lots">Reorder lots</string>
-    <string name="drag_here_to_split">"Drag here to merge or split a lot"</string>
     <string name="only_one_lot_under_one_pen">Only one lot can be under one pen.</string>
 
     Lots
@@ -126,8 +117,6 @@
     <string name="empty_pen_list">No saved pens. \n \n Please add one to use full functionality.</string>
     <string name="pen_name">Pen Name</string>
     <string name="pen">Pen:</string>
-    <string name="still_cows_title">There are cows in this pen</string>
-    <string name="still_cows_body">You can\'t delete this pen when there are still cows in it.  Move or archive the lot of cows to continue with deletion.</string>
 
     Manage Drugs
     <string name="add_drug">Add drug</string>
@@ -136,21 +125,16 @@
     <string name="add_drugs_first">You need to add some drugs first. Go to the navigation drawer and select Drugs</string>
     <string name="drug_name">Drug name</string>
     <string name="default_amount_given">Default amount given</string>
-    <string name="update_drug">Update Drug</string>
     <string name="no_drugs_given">No drugs given</string>
     <string name="amount_given">Amount Given</string>
-    <string name="back">Back</string>
-    <string name="forward">Forward</string>
     <string name="default_given">Default given:</string>
     <string name="edit_cow_title">Edit drug given to cow %1$s</string>
 
     Manage Rations
     <string name="add_ration">Add Ration</string>
     <string name="edit_ration">Edit Ration</string>
-    <string name="update_ration">Update Ration</string>
     <string name="empty_ration_list">No saved rations. \n \n Please add one to use full functionality.</string>
     <string name="ration_name">Ration Name</string>
-    <string name="ration_saved">Ration Saved</string>
     <string name="add_ration_txt">Please add a ration to use this feature</string>
 
     Archives
@@ -169,16 +153,10 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_in_with_google">Sign In with Google</string>
     <string name="create_an_account">Create an account</string>
-    <string name="backing_up_data">Backing up data…</string>
 
     Utility Strings
-    <string name="save_pen_id_key" translatable="false">save_pen_id</string>
-    <string name="save_pen_id_name" translatable="false">save_pen_id_name</string>
     <string name="save_ration_id_key" translatable="false">save_ration_id_key</string>
     <string name="save_ration_id_name" translatable="false">save_ration_id_name</string>
-    <string name="save_cow_id_key" translatable="false">save_cow_id_key</string>
-    <string name="save_cow_id_name" translatable="false">save_cow_id_name</string>
-    <string name="sync_notif_channel_id" translatable="false">sync_notif_channel_id</string>
     <string name="last_used_screen_name" translatable="false">last_used_screen_name</string>
     <string name="last_used_screen_key" translatable="false">last_used_screen_key</string>
     <string name="last_sync_name" translatable="false">last_sync_name</string>
@@ -189,11 +167,8 @@
     <string name="last_used_feed_pen_key" translatable="false">last_used_feed_pen_key</string>
     <string name="new_data_to_upload_name" translatable="false">new_data_to_upload_name</string>
     <string name="new_data_to_upload_key" translatable="false">new_data_to_upload_key</string>
-    <string name="should_show_welcome_screen_name" translatable="false">should_show_welcome_screen_name</string>
-    <string name="should_show_welcome_screen_key" translatable="false">should_show_welcome_screen_key</string>
     <string name="contact_developer_uri" translatable="false">mailto:app@trackacow.net</string>
     <string name="privacy_policy_url" translatable="false">https://trackacow.net/privacypolicy.html</string>
-    <string name="manage_sub_url" translatable="false">https://trackacow.net/subscription.html</string>
     <string name="could_not_find_this_tag">Could not find this tag</string>
 
 </resources>

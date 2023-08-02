@@ -8,27 +8,18 @@
 
     <color name="colorAccentSemiTrans">#D90d47a1</color>
 
-    <color name="welcome_orange">#DD2C00</color>
-    <color name="welcome_blue">#0097A7</color>
-    <color name="welcome_purple">#7B1FA2</color>
-    <color name="welcome_green">#388E3C</color>
-
     <color name="mini_fab1">#1565C0</color>
     <color name="mini_fab2">#1976D2</color>
     <color name="mini_fab3">#1E88E5</color>
 
     <color name="eight_percent_transparent">#CC000000</color>
-    <color name="twenty_percent_transparent">#33000000</color>
 
     <color name="redText">#E57373</color>
     <color name="orangeText">#FFA726</color>
     <color name="greenText">#AED581</color>
 
-    <color name="yellow">#FFB300</color>
-
     <color name="lightGray">#EEEEEE</color>
 
     <color name="light_gray">#d1d1d1</color>
-    <color name="light_gray2">#f5f5f5</color>
 
 </resources>

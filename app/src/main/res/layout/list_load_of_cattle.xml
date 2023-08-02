@@ -10,7 +10,6 @@
     <LinearLayout
         android:orientation="horizontal"
         android:weightSum="2"
-        android:id="@+id/item_head_date_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -46,7 +45,6 @@
         android:layout_height="wrap_content" />
 
     <View
-        android:id="@+id/item_report_divider"
         android:layout_marginTop="16dp"
         android:background="@android:color/darker_gray"
         android:layout_width="match_parent"

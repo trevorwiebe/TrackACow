@@ -37,7 +37,6 @@
 
                         <RelativeLayout
                             android:orientation="horizontal"
-                            android:id="@+id/cow_already_treated_drugs_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 

@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/feed_filter_box_layout"
         android:orientation="vertical"
         android:layout_marginBottom="8dp"
         android:layout_width="match_parent"
@@ -161,7 +160,6 @@
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/no_feed_given_report_tv"
         android:text="@string/no_feed_in_this_date_range"
         android:layout_margin="16dp"
         android:textSize="16sp"
