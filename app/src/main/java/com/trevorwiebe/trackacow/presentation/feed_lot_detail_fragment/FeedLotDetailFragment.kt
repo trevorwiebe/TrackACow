@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.feed_lot_detail_fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -11,9 +12,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -35,7 +38,7 @@ import java.text.NumberFormat
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
+
 
 private const val pen_and_lot_param = "pen_and_lot_param"
 private const val ration_list_param = "ration_list_param"
@@ -43,10 +46,6 @@ private const val pen_ui_date_param = "pen_ui_date_param"
 
 @AndroidEntryPoint
 class FeedLotDetailFragment : Fragment() {
-
-    // TODO: fix bug where when offline and data is saved, the button doesn't change to "update"
-    // TODO: update the code to gray the button out when there are no changes to save
-
 
     private var mRationModelList: List<RationModel> = emptyList()
     private var mPenAndLotModel: PenAndLotModel? = null
@@ -116,6 +115,14 @@ class FeedLotDetailFragment : Fragment() {
         mAddRationBtn = view.findViewById(R.id.feed_add_ration_btn)
         mAddRationTxt = view.findViewById(R.id.feed_add_ration_txt)
 
+        // code to allow spinner to gain focus
+        mRationSpinner.isFocusable = true
+        mRationSpinner.isFocusableInTouchMode = true
+        mRationSpinner.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus)
+                this@FeedLotDetailFragment.mRationSpinner.performClick()
+        }
+
         mSaveBtn.setOnClickListener {
             if (mCallET.length() == 0 || mCallET.text.toString() == "0") {
                 mCallET.requestFocus()
@@ -123,7 +130,7 @@ class FeedLotDetailFragment : Fragment() {
             } else {
 
                 // code for updating the call entity
-                val callAmount = mCallET.text.toString().toInt()
+                val callAmount = numberFormatter.parse(mCallET.text.toString())?.toInt() ?: 0
 
                 val c = Calendar.getInstance()
                 c.timeInMillis = mPenUiDate
@@ -143,12 +150,18 @@ class FeedLotDetailFragment : Fragment() {
 
                 feedLotDetailFragmentViewModel.onEvent(
                     FeedLotDetailFragmentEvents.OnSave(
-                            callModel,
-                            feedModelsFromLayout,
-                            mOriginalFeedModelList
+                        callModel,
+                        feedModelsFromLayout,
+                        mOriginalFeedModelList
                     )
                 )
                 mTotalFed.requestFocus()
+
+                setSaveButtonStatus(false)
+
+                val imm =
+                    requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
 
             }
         }
@@ -158,11 +171,11 @@ class FeedLotDetailFragment : Fragment() {
             startActivity(addRationIntent)
         }
 
-        var check = 0
         mRationSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 mSelectedRation = mRationModelList[position]
-                if (++check > 1 && mSelectedRation != null) {
+                if (mRationSpinner.hasFocus()) {
+                    setSaveButtonStatus(true)
                     Utility.saveLastUsedRation(mContext, mSelectedRation!!.rationPrimaryKey)
                 }
             }
@@ -172,34 +185,32 @@ class FeedLotDetailFragment : Fragment() {
 
         mCallET.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(text_entered: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(textEntered: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 updateReports()
+                if (mCallET.hasFocus()) setSaveButtonStatus(true)
             }
-            override fun afterTextChanged(text_entered: Editable?) {
 
-            }
+            override fun afterTextChanged(textEntered: Editable?) {}
         })
 
         mFeedTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {
-
-            }
-
+            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(
-                text_entered: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
+                textEntered: CharSequence, start: Int, before: Int, count: Int
             ) {
-                if (text_entered.isNotEmpty()) {
+                if (textEntered.isNotEmpty()) {
                     mShouldAddNewFeedEditText = shouldAddAnotherEditText()
                     if (mShouldAddNewFeedEditText) {
                         addFeedEditText(null, mContext)
                     }
                 }
                 updateReports()
+                feedViewsFromLayout.forEach {
+                    if (it.hasFocus()) {
+                        setSaveButtonStatus(true)
+                    }
+                }
             }
-
             override fun afterTextChanged(p0: Editable?) {}
         }
 
@@ -213,11 +224,9 @@ class FeedLotDetailFragment : Fragment() {
 
                     if (mCallAndRationModel == null) {
                         mCallET.tag = ""
-                        mSaveBtn.text = getString(R.string.save)
                     } else {
-                        mCallET.setText(mCallAndRationModel?.callAmount.toString())
+                        mCallET.setText(numberFormatter.format(mCallAndRationModel?.callAmount))
                         mCallET.tag = mCallAndRationModel?.callCloudDatabaseId ?: ""
-                        mSaveBtn.text = getString(R.string.update)
                     }
                 }
             }
@@ -379,6 +388,7 @@ class FeedLotDetailFragment : Fragment() {
                 ) {
                     i -= 1
                     mFeedAgainLayout.removeView(v)
+                    setSaveButtonStatus(true)
                 }
                 i++
             }
@@ -439,46 +449,38 @@ class FeedLotDetailFragment : Fragment() {
             return feedModelList
         }
 
-    private val feedsFromLayout: ArrayList<Int>
+    private val feedViewsFromLayout: ArrayList<TextInputEditText>
         get() {
-            val feedIntList = ArrayList<Int>()
-            var firstText = mFeedFirst.text.toString()
-            if (firstText.isEmpty()) {
-                firstText = "0"
-            }
-            feedIntList.add(numberFormatter.parse(firstText)?.toInt() ?: 0)
+            val feedList = ArrayList<TextInputEditText>()
+            feedList.add(mFeedFirst)
             for (i in 0 until mFeedAgainLayout.childCount) {
                 val v = mFeedAgainLayout.getChildAt(i)
                 val linearLayout = v as LinearLayout
                 val textLayout = linearLayout.getChildAt(0)
                 val textInputLayout = textLayout as TextInputLayout
-                val text = textInputLayout.editText!!.text.toString()
-                if (text.isNotEmpty()) {
-                    try {
-                        val amountFed = numberFormatter.parse(text)?.toInt() ?: 0
-                        feedIntList.add(amountFed)
-                    } catch (e: ParseException) {
-                        Log.e("TAG", "getFeedsFromLayout: ", e)
-                    }
-                }
+                val text = textInputLayout.editText as TextInputEditText
+                feedList.add(text)
             }
-            return feedIntList
+            return feedList
         }
 
-//    private fun setSaveButtonStatus(active: Boolean, buttonText: String) {
-//        mSaveBtn.isClickable = active
-//        if (active) {
-//            mSaveBtn.text = buttonText
-//            mSaveBtn.background = ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn)
-//        } else {
-//            mSaveBtn.text = buttonText
-//            mSaveBtn.background =
-//                ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn_deactivated)
-//        }
-//    }
+    private fun setSaveButtonStatus(active: Boolean) {
+        mSaveBtn.isClickable = active
+        if (active) {
+            mSaveBtn.background = ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn)
+        } else {
+            mSaveBtn.background =
+                ContextCompat.getDrawable(mContext, R.drawable.accent_sign_in_btn_deactivated)
+        }
+    }
 
     private fun updateReports() {
         var sum = 0
+        val feedsFromLayout = feedViewsFromLayout.map {
+            var text: String = it.text.toString()
+            if (text.isEmpty()) text = "0"
+            numberFormatter.parse(text)?.toInt() ?: 0
+        }
         for (i in feedsFromLayout) sum += i
         val totalFedStr = numberFormatter.format(sum.toLong())
         mTotalFed.text = totalFedStr
