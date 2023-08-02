@@ -25,6 +25,7 @@ class CreateAndUpdateFeedList(
         ) {
 
             val feedListToCreate: MutableList<FeedModel> = mutableListOf()
+            val feedListToUpdate: MutableList<FeedModel> = mutableListOf()
             newFeedList.forEach { feedModel ->
                 // iterate through newFeedList and see if any new feedModels are added
                 if (!originalFeedList.contains(feedModel)) {
@@ -35,20 +36,23 @@ class CreateAndUpdateFeedList(
                         feedModel.id = getCloudDatabaseId.invoke("")
 
                         feedListToCreate.add(feedModel)
+                    } else {
+                        feedListToUpdate.add(feedModel)
                     }
                 }
             }
 
             val feedListToDelete: MutableList<FeedModel> = mutableListOf()
+            val feedListUpdateIds = feedListToUpdate.map { it.id }
             originalFeedList.forEach { oldFeedModel ->
 
-                if (!newFeedList.contains(oldFeedModel)) {
+                if (!newFeedList.contains(oldFeedModel) && !feedListUpdateIds.contains(oldFeedModel.id)) {
                     // need to delete these feed models
                     feedListToDelete.add(oldFeedModel)
                 }
             }
 
-            // Add or Delete feed list from local DB
+            // Add, update or Delete feed list from local DB
             if (feedListToCreate.isNotEmpty()) {
                 val idList = feedRepository.createOrUpdateFeedList(feedListToCreate)
                 feedListToCreate.forEachIndexed { index, feedModel ->
@@ -58,23 +62,25 @@ class CreateAndUpdateFeedList(
                     feedListToCreate[index] = updatedFeedModel
                 }
             }
-
-            if (feedListToDelete.isNotEmpty())
-                feedRepository.deleteFeedList(feedListToDelete)
+            feedRepository.createOrUpdateFeedList(feedListToCreate)
+            feedRepository.deleteFeedList(feedListToDelete)
 
             if (Utility.haveNetworkConnection(context)) {
                 feedRepositoryRemote.insertOrUpdateFeedRemoteList(feedListToCreate)
+                feedRepositoryRemote.insertOrUpdateFeedRemoteList(feedListToUpdate)
                 feedRepositoryRemote.deleteFeedRemoteList(feedListToDelete)
             } else {
                 Utility.setNewDataToUpload(context, true)
                 feedRepository.createCacheFeedList(feedListToCreate.map {
                     it.toCacheFeedModel(Constants.INSERT_UPDATE)
                 })
+                feedRepository.createCacheFeedList(feedListToUpdate.map {
+                    it.toCacheFeedModel(Constants.INSERT_UPDATE)
+                })
                 feedRepository.createCacheFeedList(feedListToDelete.map {
                     it.toCacheFeedModel(Constants.DELETE)
                 })
             }
-
         }
     }
 }
