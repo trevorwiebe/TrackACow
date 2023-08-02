@@ -129,7 +129,7 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
         val lotModel = objectList[selectedLotPosition] as LotModel
         val shuffleObjectNeighbors = getShuffleObjectsBeside(selectedLotPosition)
 
-        if (shuffleObjectNeighbors[0] is PenModel && shuffleObjectNeighbors[1] is PenModel) {
+        if (shuffleObjectNeighbors[0] is PenModel && (shuffleObjectNeighbors[1] is PenModel || shuffleObjectNeighbors[1] == null)) {
             val penModel = shuffleObjectNeighbors[0] as PenModel
             if (penModel.penCloudDatabaseId != "") {
                 lotModel.lotPenCloudDatabaseId = penModel.penCloudDatabaseId ?: ""
