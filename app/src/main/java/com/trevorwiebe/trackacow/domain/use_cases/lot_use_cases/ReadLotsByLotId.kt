@@ -17,6 +17,8 @@ data class ReadLotsByLotId(
         private val context: Application
 ) {
 
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotCloudDatabaseId: String): Flow<LotModel?> {
 

@@ -22,12 +22,14 @@ class ReadDrugsGivenAndDrugsByLotIdAndDate(
         private val context: Application
 ) {
 
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String, startDate: Long, endDate: Long):
             Flow<List<DrugsGivenAndDrugModel>> {
 
         val localFlow =
-                drugsGivenRepository.getDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
+            drugsGivenRepository.getDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
 
         // firebase can't filter by more than on variable, so re-using this function
         val cloudDrugGivenFlow =

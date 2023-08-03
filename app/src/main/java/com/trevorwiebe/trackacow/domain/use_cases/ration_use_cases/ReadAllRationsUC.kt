@@ -16,6 +16,9 @@ class ReadAllRationsUC(
         private val rationRepositoryRemote: RationRepositoryRemote,
         private val context: Application
 ) {
+
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(): Flow<List<RationModel>> {
         val localFlow = rationsRepository.getRations()

@@ -16,6 +16,9 @@ data class ReadFeedsByLotIdAndDate(
         private val feedRepositoryRemote: FeedRepositoryRemote,
         private val context: Application
 ) {
+
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String, startDate: Long, endDate: Long): Flow<List<FeedModel>> {
         val localFeedFlow = feedRepository.readFeedsByLotIdAndDate(lotId, startDate, endDate)
@@ -24,7 +27,7 @@ data class ReadFeedsByLotIdAndDate(
         return if (Utility.haveNetworkConnection(context)) {
             localFeedFlow.flatMapConcat { localData ->
                 cloudFeedFlow
-                        .map { feedList ->
+                    .map { feedList ->
                             feedRepository.insertOrUpdateFeedList(feedList)
                             feedList.filter { feedModel ->
                                 feedModel.date in startDate..endDate

@@ -17,6 +17,8 @@ data class ReadArchivedLots(
         private val context: Application
 ) {
 
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(): Flow<List<LotModel>> {
         val localFlow = lotRepository.readArchivedLots()

@@ -17,6 +17,8 @@ data class ReadDeadCowsByLotId(
         private val context: Application
 ){
 
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CowModel>> {
         val localCowFlow = cowRepository.getDeadCowsByLotId(lotId)

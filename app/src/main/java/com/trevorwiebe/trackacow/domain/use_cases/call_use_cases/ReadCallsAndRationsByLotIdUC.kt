@@ -21,6 +21,9 @@ data class ReadCallsAndRationsByLotIdUC(
         private val callRepositoryRemote: CallRepositoryRemote,
         private val context: Application
 ){
+
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CallAndRationModel>> {
         val localCallAndRationFlow = callRepository.getCallsAndRationByLotId(lotId)

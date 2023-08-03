@@ -17,6 +17,8 @@ class ReadCowsByLotId(
         private val context: Application
 ) {
 
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(lotId: String): Flow<List<CowModel>> {
         val localFlow = cowRepository.getCowsByLotId(lotId)
@@ -24,8 +26,8 @@ class ReadCowsByLotId(
 
         return if (Utility.haveNetworkConnection(context)) {
             localFlow
-                    .flatMapConcat { localData ->
-                        cowCloudFlow.onStart {
+                .flatMapConcat { localData ->
+                    cowCloudFlow.onStart {
                             emit(localData)
                         }.map { cowModelList ->
                             cowRepository.insertOrUpdateCowList(cowModelList)

@@ -21,12 +21,15 @@ class ReadDrugsGivenAndDrugsByCowId(
         private val drugsGivenRepositoryRemote: DrugsGivenRepositoryRemote,
         private val context: Application
 ) {
+
+    // TODO: update this with data source identification
+
     @OptIn(FlowPreview::class)
     operator fun invoke(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugModel>> {
 
         val localDrugFlow = drugsGivenRepository.getDrugsGivenAndDrugsByCowId(cowIdList)
         val cloudDrugFlow =
-                drugsGivenRepositoryRemote.readDrugsGivenAndDrugsByCowIdRemote(cowIdList[0])
+            drugsGivenRepositoryRemote.readDrugsGivenAndDrugsByCowIdRemote(cowIdList[0])
 
         return if (Utility.haveNetworkConnection(context)) {
             localDrugFlow.flatMapConcat { localData ->
