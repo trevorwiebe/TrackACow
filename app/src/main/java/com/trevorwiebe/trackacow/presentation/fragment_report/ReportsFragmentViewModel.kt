@@ -2,18 +2,17 @@ package com.trevorwiebe.trackacow.presentation.fragment_report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ReportsFragmentViewModel @Inject constructor(
     private val lotUseCases: LotUseCases
 ): ViewModel() {
-
-    private var getLotsJob: Job? = null
 
     private val _uiState = MutableStateFlow(ReportsUiState())
     val uiState: StateFlow<ReportsUiState> = _uiState.asStateFlow()
@@ -22,17 +21,20 @@ class ReportsFragmentViewModel @Inject constructor(
         getLots()
     }
 
-    private fun getLots(){
-        getLotsJob?.cancel()
-        getLotsJob = lotUseCases.readLots()
-            .map { thisLotList ->
+    private fun getLots() {
+        val dataFlow = lotUseCases.readLots().dataFlow
+        viewModelScope.launch {
+            dataFlow.collect { (lotList, source) ->
                 _uiState.update {
                     it.copy(
-                        lotList = thisLotList
+                        lotList = lotList as List<LotModel>,
+                        dataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+
+        _uiState.update { it.copy(isFetchingFromCloud = lotUseCases.readLots().isFetchingFromCloud) }
     }
 
 }
