@@ -11,6 +11,7 @@ import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -44,7 +45,6 @@ class MedicateACowViewModel @AssistedInject constructor(
         }
     }
 
-    private var readDrugs: Job? = null
     private var drugsGivenByCows: Job? = null
 
     private val _uiState = MutableStateFlow(MedicateACowUiState())
@@ -68,14 +68,23 @@ class MedicateACowViewModel @AssistedInject constructor(
     }
 
     private fun readDrugs() {
-        readDrugs?.cancel()
-        readDrugs = drugUseCases.readDrugsUC()
-            .map { thisDrugList ->
-                _uiState.update {
-                    it.copy(drugList = thisDrugList)
+
+        val dataFlow = drugUseCases.readDrugsUC().dataFlow
+        viewModelScope.launch {
+            dataFlow.collect { (drugList, source) ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        drugList = drugList as List<DrugModel>,
+                        drugDataSource = source
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+
+        val isFetchingFromCloud = drugUseCases.readDrugsUC().isFetchingFromCloud
+        _uiState.update { uiState ->
+            uiState.copy(isFetchingDrugsFromCloud = isFetchingFromCloud)
+        }
     }
 
     private fun readCowsByLotId(lotId: String) {
@@ -121,6 +130,8 @@ class MedicateACowViewModel @AssistedInject constructor(
 
 data class MedicateACowUiState(
     val drugList: List<DrugModel> = emptyList(),
+    val isFetchingDrugsFromCloud: Boolean = false,
+    val drugDataSource: DataSource = DataSource.Local,
     val cowFoundList: List<CowModel> = emptyList(),
     val medicatedCowList: List<CowModel> = emptyList(),
     val drugAndDrugGivenListForFoundCows: List<DrugsGivenAndDrugModel> = emptyList()

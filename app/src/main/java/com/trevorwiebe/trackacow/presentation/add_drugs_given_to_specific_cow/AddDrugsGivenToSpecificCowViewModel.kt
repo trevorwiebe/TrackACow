@@ -6,8 +6,8 @@ import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.DrugUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,8 +25,6 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddDrugsGivenToSpecificCowUiState())
     val uiState: StateFlow<AddDrugsGivenToSpecificCowUiState> = _uiState.asStateFlow()
 
-    private var drugsJob: Job? = null
-
     fun onEvent(event: AddDrugsGivenToSpecificCowEvent) {
         when (event) {
             is AddDrugsGivenToSpecificCowEvent.OnDrugListCreated -> {
@@ -36,16 +34,21 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
     }
 
     private fun readDrugs() {
-        drugsJob?.cancel()
-        drugsJob = drugsUseCases.readDrugsUC()
-            .map { thisDrugList ->
-                _uiState.update {
-                    it.copy(
-                        drugsList = thisDrugList
+        val dataFlow = drugsUseCases.readDrugsUC().dataFlow
+        viewModelScope.launch {
+            dataFlow.collect { (drugList, source) ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        drugsList = drugList as List<DrugModel>,
+                        dataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+
+        _uiState.update { uiState ->
+            uiState.copy(isFetchingFromCloud = drugsUseCases.readDrugsUC().isFetchingFromCloud)
+        }
     }
 
     private fun createDrugList(drugGivenList: List<DrugGivenModel>) {
@@ -57,7 +60,9 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
 }
 
 data class AddDrugsGivenToSpecificCowUiState(
-    val drugsList: List<DrugModel> = emptyList()
+    val drugsList: List<DrugModel> = emptyList(),
+    val dataSource: DataSource = DataSource.Local,
+    val isFetchingFromCloud: Boolean = false
 )
 
 sealed class AddDrugsGivenToSpecificCowEvent {

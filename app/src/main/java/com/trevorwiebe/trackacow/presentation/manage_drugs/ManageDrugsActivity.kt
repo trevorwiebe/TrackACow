@@ -16,7 +16,9 @@ import com.trevorwiebe.trackacow.presentation.add_edit_drug.AddOrEditDrugActivit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,18 +32,21 @@ class ManageDrugsActivity : AppCompatActivity() {
 
     private val mManageDrugsViewModel: ManageDrugsViewModel by viewModels()
 
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mManageDrugRv: RecyclerView
     private lateinit var mDrugEmptyList: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_manage_drugs)
+
+        mProgressBar = findViewById(R.id.manage_drugs_loading)
         mDrugEmptyList = findViewById(R.id.drug_list_empty)
 
         val addNewDrugFab = findViewById<FloatingActionButton>(R.id.add_new_drug)
         addNewDrugFab.setOnClickListener {
-            val addNewDrugIntent = Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
+            val addNewDrugIntent =
+                Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
             startActivity(addNewDrugIntent)
         }
 
@@ -55,17 +60,26 @@ class ManageDrugsActivity : AppCompatActivity() {
                 mManageDrugRv,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-                        val editDrugIntent = Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
+                        val editDrugIntent =
+                            Intent(this@ManageDrugsActivity, AddOrEditDrugActivity::class.java)
                         editDrugIntent.putExtra("drugObject", mDrugList[position])
                         startActivity(editDrugIntent)
                     }
+
                     override fun onLongItemClick(view: View, position: Int) {}
                 })
         )
 
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                mManageDrugsViewModel.uiState.collect{
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mManageDrugsViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
+
                     mDrugList = it.drugList
 
                     if (mDrugList.isEmpty()) {
