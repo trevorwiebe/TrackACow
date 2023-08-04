@@ -13,6 +13,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 class MedicatedCowsViewModel @AssistedInject constructor(
@@ -40,7 +41,6 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         }
     }
 
-    private var cowJob: Job? = null
     private var drugsJob: Job? = null
 
     private var drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel> = mutableListOf()
@@ -68,18 +68,21 @@ class MedicatedCowsViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readCowsByLotId(lotId: String) {
-        cowJob?.cancel()
-        cowJob = cowUseCases.readCowsByLotId(lotId)
-            .map { thisCowList ->
-                cowList = thisCowList
-                _uiState.update {
-                    it.copy(
-                        cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, cowList)
+        val dataFlow = cowUseCases.readCowsByLotId(lotId).dataFlow
+        viewModelScope.launch {
+            dataFlow.collect { (thisCowList, source) ->
+                cowList = thisCowList as List<CowModel>
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, cowList),
+                        cowDataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+        _uiState.update { it.copy(isFetchingCowFromCloud = cowUseCases.readCowsByLotId(lotId).isFetchingFromCloud) }
     }
 
     private fun buildCowUiModelList(

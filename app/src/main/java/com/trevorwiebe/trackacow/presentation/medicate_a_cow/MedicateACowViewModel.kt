@@ -67,8 +67,8 @@ class MedicateACowViewModel @AssistedInject constructor(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugs() {
-
         val dataFlow = drugUseCases.readDrugsUC().dataFlow
         viewModelScope.launch {
             dataFlow.collect { (drugList, source) ->
@@ -80,21 +80,23 @@ class MedicateACowViewModel @AssistedInject constructor(
                 }
             }
         }
-
-        val isFetchingFromCloud = drugUseCases.readDrugsUC().isFetchingFromCloud
-        _uiState.update { uiState ->
-            uiState.copy(isFetchingDrugsFromCloud = isFetchingFromCloud)
-        }
+        _uiState.update { it.copy(isFetchingDrugsFromCloud = drugUseCases.readDrugsUC().isFetchingFromCloud) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readCowsByLotId(lotId: String) {
-        cowUseCases.readCowsByLotId(lotId)
-            .map { thisCowList ->
-                _uiState.update {
-                    it.copy(medicatedCowList = thisCowList)
+        val dataFlow = cowUseCases.readCowsByLotId(lotId).dataFlow
+        viewModelScope.launch {
+            dataFlow.collect { (cowList, source) ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        medicatedCowList = cowList as List<CowModel>,
+                        cowDataSource = source
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+        _uiState.update { it.copy(isFetchingCowsFromCloud = cowUseCases.readCowsByLotId(lotId).isFetchingFromCloud) }
     }
 
     private fun updateStateWithCowFoundList(cowList: List<CowModel>) {
@@ -134,6 +136,8 @@ data class MedicateACowUiState(
     val drugDataSource: DataSource = DataSource.Local,
     val cowFoundList: List<CowModel> = emptyList(),
     val medicatedCowList: List<CowModel> = emptyList(),
+    val isFetchingCowsFromCloud: Boolean = false,
+    val cowDataSource: DataSource = DataSource.Local,
     val drugAndDrugGivenListForFoundCows: List<DrugsGivenAndDrugModel> = emptyList()
 )
 

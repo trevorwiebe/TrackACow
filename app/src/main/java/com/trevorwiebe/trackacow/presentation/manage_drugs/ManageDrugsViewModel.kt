@@ -22,6 +22,7 @@ class ManageDrugsViewModel @Inject constructor(
         getDrugList()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getDrugList() {
 
         val dataFlow = drugUseCases.readDrugsUC().dataFlow
