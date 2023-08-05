@@ -32,24 +32,24 @@ class CowRepositoryRemoteImpl(
 
     override fun readCowByCowIdRemote(cowId: String): Flow<CowModel?> {
         val userId = firebaseUserId.get().toString()
-        if (userId.isNotEmpty()) {
+        return if (userId.isNotEmpty()) {
             val firebaseRef = firebaseDatabase.getReference("/users/$userId/cows/$cowId")
-            return firebaseRef.addSingleValueEventListenerFlow(CowModel::class.java)
+            firebaseRef.addSingleValueEventListenerFlow(CowModel::class.java)
         } else {
-            return emptyFlow()
+            emptyFlow()
         }
     }
 
     override fun readCowsByLotId(lotId: String): Flow<List<CowModel>> {
         val userId = firebaseUserId.get().toString()
-        if (userId.isNotEmpty()) {
+        return if (userId.isNotEmpty()) {
             val cowQuery = firebaseDatabase
                 .getReference("/users/$userId/cows")
                 .orderByChild("lotId")
                 .equalTo(lotId)
-            return cowQuery.addQueryListValueEventListenerFlow(CowModel::class.java)
+            cowQuery.addQueryListValueEventListenerFlow(CowModel::class.java)
         } else {
-            return emptyFlow()
+            emptyFlow()
         }
     }
 
