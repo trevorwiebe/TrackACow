@@ -4,7 +4,7 @@ import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.DrugRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.DataSource
-import com.trevorwiebe.trackacow.domain.utils.IdentifiedFlowReturn
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flatMapConcat
@@ -17,7 +17,7 @@ data class ReadDrugsUC(
         private val context: Application
 ){
     @OptIn(FlowPreview::class)
-    operator fun invoke(): IdentifiedFlowReturn {
+    operator fun invoke(): SourceIdentifiedListFlow {
 
         val localDrugFlow = drugRepository.getDrugList()
             .map { drugList -> drugList to DataSource.Local }
@@ -39,7 +39,7 @@ data class ReadDrugsUC(
             localDrugFlow
         }
 
-        return IdentifiedFlowReturn(resultFlow, isFetchingFromCloud)
+        return SourceIdentifiedListFlow(resultFlow, isFetchingFromCloud)
 
     }
 }

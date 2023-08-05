@@ -4,7 +4,7 @@ import android.app.Application
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.DataSource
-import com.trevorwiebe.trackacow.domain.utils.IdentifiedFlowReturn
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flatMapConcat
@@ -18,7 +18,7 @@ class ReadCowsByLotId(
 ) {
 
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String): IdentifiedFlowReturn {
+    operator fun invoke(lotId: String): SourceIdentifiedListFlow {
 
         val localFlow = cowRepository.getCowsByLotId(lotId)
             .map { cowList -> cowList to DataSource.Local }
@@ -40,6 +40,6 @@ class ReadCowsByLotId(
             localFlow
         }
 
-        return IdentifiedFlowReturn(resultsFlow, isFetchingFromCloud)
+        return SourceIdentifiedListFlow(resultsFlow, isFetchingFromCloud)
     }
 }
