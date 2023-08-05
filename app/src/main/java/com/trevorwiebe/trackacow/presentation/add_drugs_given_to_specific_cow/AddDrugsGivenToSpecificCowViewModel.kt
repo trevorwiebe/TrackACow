@@ -33,6 +33,7 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugs() {
         val dataFlow = drugsUseCases.readDrugsUC().dataFlow
         viewModelScope.launch {

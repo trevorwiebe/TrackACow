@@ -27,12 +27,12 @@ data class ReadDrugsUC(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultFlow = if (isFetchingFromCloud) {
-            localDrugFlow.flatMapConcat { (localData, _) ->
+            localDrugFlow.flatMapConcat { (localData, source) ->
                 cloudDrugFlow.onStart {
-                    emit(localData to DataSource.Cloud)
-                }.map { (drugList, _) ->
+                    emit(localData to source)
+                }.map { (drugList, source) ->
                     drugRepository.insertOrUpdateDrugList(drugList)
-                    drugList to DataSource.Cloud
+                    drugList to source
                 }
             }
         } else {

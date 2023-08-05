@@ -25,21 +25,18 @@ class ManageDrugsViewModel @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     private fun getDrugList() {
 
-        val dataFlow = drugUseCases.readDrugsUC().dataFlow
+        val readDrugsUC = drugUseCases.readDrugsUC()
+
         viewModelScope.launch {
-            dataFlow.collect { (drugList, source) ->
+            readDrugsUC.dataFlow.collect { (drugList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
                         drugList = drugList as List<DrugModel>,
-                        dataSource = source
+                        dataSource = source,
+                        isFetchingFromCloud = readDrugsUC.isFetchingFromCloud
                     )
                 }
             }
-        }
-
-        val isFetchingFromCloud = drugUseCases.readDrugsUC().isFetchingFromCloud
-        _uiState.update { uiState ->
-            uiState.copy(isFetchingFromCloud = isFetchingFromCloud)
         }
     }
 

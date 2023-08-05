@@ -28,12 +28,12 @@ class ReadCowsByLotId(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localFlow.flatMapConcat { (localData, _) ->
+            localFlow.flatMapConcat { (localData, source) ->
                 cowCloudFlow.onStart {
-                    emit(localData to DataSource.Cloud)
-                }.map { (cowModelList, _) ->
+                    emit(localData to source)
+                }.map { (cowModelList, source) ->
                     cowRepository.insertOrUpdateCowList(cowModelList)
-                    cowModelList to DataSource.Cloud
+                    cowModelList to source
                 }
             }
         } else {

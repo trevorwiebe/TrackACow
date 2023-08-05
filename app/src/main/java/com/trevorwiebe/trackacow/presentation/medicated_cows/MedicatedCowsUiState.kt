@@ -9,6 +9,4 @@ data class MedicatedCowsUiState(
     val cowDataSource: DataSource = DataSource.Local,
     val isFetchingCowFromCloud: Boolean = false,
     val selectedLot: LotModel? = null,
-    val lotDataSource: DataSource = DataSource.Local,
-    val isFetchingLotFromCloud: Boolean = false
 )

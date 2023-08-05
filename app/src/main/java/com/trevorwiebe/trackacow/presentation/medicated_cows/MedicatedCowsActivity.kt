@@ -22,9 +22,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.addLotModel
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.presentation.add_load_of_cattle.AddLoadOfCattleActivity
 import com.trevorwiebe.trackacow.presentation.edit_lot.EditLotActivity
 import com.trevorwiebe.trackacow.presentation.edit_medicated_cow.EditMedicatedCowActivity
@@ -45,6 +47,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
     private lateinit var mCowUiModelList: List<CowUiModel>
     private lateinit var mFilteredCowUiModelList: List<CowUiModel>
 
+    private lateinit var mProgressIndicator: LinearProgressIndicator
     private lateinit var mNoMedicatedCows: TextView
     private lateinit var mSearchView: SearchView
     private lateinit var mMedicatedCows: RecyclerView
@@ -70,6 +73,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medicated_cows)
 
+        mProgressIndicator = findViewById(R.id.medicated_cow_progress_indicator)
         mMedicateACowFabMenu = findViewById(R.id.floating_action_btn_menu)
         mNoMedicatedCows = findViewById(R.id.no_medicated_cows_tv)
         mResultsNotFound = findViewById(R.id.result_not_found)
@@ -109,6 +113,12 @@ class MedicatedCowsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 medicatedCowsViewModel.uiState.collect {
+
+                    if (it.isFetchingCowFromCloud && it.cowDataSource == DataSource.Local) {
+                        mProgressIndicator.visibility = View.VISIBLE
+                    } else {
+                        mProgressIndicator.visibility = View.GONE
+                    }
 
                     mCowUiModelList =
                         if (it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList

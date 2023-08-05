@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".presentation.medicated_cows.MedicatedCowsActivity">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/medicated_cow_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="@color/colorAccent" />
+
     <TextView
         android:id="@+id/no_medicated_cows_tv"
         android:layout_width="match_parent"
