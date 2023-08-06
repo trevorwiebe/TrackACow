@@ -59,13 +59,14 @@ class MarkACowDeadViewModel @AssistedInject constructor(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDeadCowsByLotId(lotId: String) {
         deadCowJob?.cancel()
-        deadCowJob = cowUseCases.readDeadCowsByLotId(lotId)
-            .map { thisDeadCowList ->
+        deadCowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
+            .map { (thisDeadCowList, _) ->
                 _uiState.update {
                     it.copy(
-                        deadCowList = thisDeadCowList
+                        deadCowList = thisDeadCowList as List<CowModel>
                     )
                 }
             }

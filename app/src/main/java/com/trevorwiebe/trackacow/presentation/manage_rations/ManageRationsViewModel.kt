@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.presentation.manage_rations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,12 +23,13 @@ class ManageRationsViewModel @Inject constructor(
         loadRations()
     }
 
-    private fun loadRations(){
+    @Suppress("UNCHECKED_CAST")
+    private fun loadRations() {
         loadRationsJob?.cancel()
-        loadRationsJob = rationUseCases.readAllRationsUC()
-            .map { listFromDB ->
+        loadRationsJob = rationUseCases.readAllRationsUC().dataFlow
+            .map { (listFromDB, source) ->
                 _uiState.update { uiState ->
-                    uiState.copy(rationsList = listFromDB)
+                    uiState.copy(rationsList = listFromDB as List<RationModel>)
                 }
             }
             .launchIn(viewModelScope)

@@ -1,12 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.load_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.repository.local.LoadRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.LoadRemoteRepository
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -17,25 +17,29 @@ data class ReadLoadsByLotId(
         private val context: Application
 ){
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String): Flow<List<LoadModel>> {
+    operator fun invoke(lotId: String): SourceIdentifiedListFlow {
 
         val localFlow = loadRepository.readLoadsByLotId(lotId)
+            .map { loadList -> loadList to DataSource.Local }
         val cloudLoadFlow = loadRemoteRepository.readLoadsByLotId(lotId)
+            .map { loadList -> loadList to DataSource.Cloud }
 
-        return if (Utility.haveNetworkConnection(context)) {
-            localFlow.flatMapConcat { localData ->
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
+
+        val resultsFlow = if (isFetchingFromCloud) {
+            localFlow.flatMapConcat { (localData, source) ->
                 cloudLoadFlow.onStart {
-                    emit(localData)
-                }.map { loadList ->
+                    emit(localData to source)
+                }.map { (loadList, source) ->
                     loadRepository.insertOrUpdateLoadList(loadList)
-                    loadList
+                    loadList to source
                 }
             }
         } else {
             localFlow
         }
+
+        return SourceIdentifiedListFlow(resultsFlow, isFetchingFromCloud)
     }
 }

@@ -73,10 +73,10 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
 
     private fun readCow(cowId: String) {
         cowJob?.cancel()
-        cowJob = cowUseCases.readCowByCowId(cowId)
-            .map { thisCowModel ->
+        cowJob = cowUseCases.readCowByCowId(cowId).dataFlow
+            .map { (thisCowModel, source) ->
                 _uiState.update {
-                    it.copy(cowModel = thisCowModel)
+                    it.copy(cowModel = thisCowModel as CowModel)
                 }
             }
             .launchIn(viewModelScope)

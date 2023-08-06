@@ -208,6 +208,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
     }
 
     /* private methods */
+    @Suppress("UNUSED_PARAMETER")
     fun medicateCow(view: View?) {
         mMedicateACowFabMenu.collapse()
         val medicateCowIntent = Intent(this@MedicatedCowsActivity, MedicateACowActivity::class.java)
@@ -215,6 +216,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
         startActivity(medicateCowIntent)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun markACowDead(view: View?) {
         mMedicateACowFabMenu.collapse()
         val markCowDeadIntent = Intent(this@MedicatedCowsActivity, MarkACowDeadActivity::class.java)
@@ -222,6 +224,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
         startActivity(markCowDeadIntent)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun addCattle(view: View?) {
         mMedicateACowFabMenu.collapse()
         val addLoadOfCattle =

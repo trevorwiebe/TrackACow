@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
@@ -83,11 +84,10 @@ class LotReportViewModel @AssistedInject constructor(
     private fun readLotByLotId(lotCloudDatabaseId: String) {
         Log.d("TAG", "readLotByLotId: $lotCloudDatabaseId")
         lotJob?.cancel()
-        lotJob = lotUseCases.readLotsByLotId(lotCloudDatabaseId)
-            .map { thisLotModel ->
-                Log.d("TAG", "readLotByLotId: $thisLotModel")
+        lotJob = lotUseCases.readLotsByLotId(lotCloudDatabaseId).dataFlow
+            .map { (thisLotModel, source) ->
                 _uiState.update {
-                    it.copy(lotModel = thisLotModel)
+                    it.copy(lotModel = thisLotModel as LotModel)
                 }
             }
             .launchIn(viewModelScope)
@@ -105,33 +105,37 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun readLoadsByLotId(lotId: String){
+    @Suppress("UNCHECKED_CAST")
+    private fun readLoadsByLotId(lotId: String) {
         loadJob?.cancel()
-        loadJob = loadUseCases.readLoadsByLotId(lotId)
-            .map { thisLoadList ->
+        loadJob = loadUseCases.readLoadsByLotId(lotId).dataFlow
+            .map { (thisLoadList, source) ->
                 _uiState.update {
-                    it.copy(loadList = thisLoadList)
+                    it.copy(loadList = thisLoadList as List<LoadModel>)
                 }
             }
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDeadCowsByLotId(lotId: String) {
         cowJob?.cancel()
-        cowJob = cowUseCases.readDeadCowsByLotId(lotId)
-            .map { thisDeadCowList ->
+        cowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
+            .map { (thisDeadCowList, _) ->
                 _uiState.update {
-                    it.copy(deadCowList = thisDeadCowList)
+                    it.copy(deadCowList = thisDeadCowList as List<CowModel>)
                 }
             }
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readFeedsByLotId(lotId: String) {
         feedJob?.cancel()
-        feedJob = feedUseCases.readFeedsByLotId(lotId)
-            .map { thisFeedList ->
-                val amount = numberFormat.format(thisFeedList.sumOf { it.feed })
+        feedJob = feedUseCases.readFeedsByLotId(lotId).dataFlow
+            .map { (thisFeedList, source) ->
+                val feedList = thisFeedList as List<FeedModel>
+                val amount = numberFormat.format(feedList.sumOf { it.feed })
                 _uiState.update {
                     it.copy(feedAmount = amount)
                 }

@@ -1,12 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -17,26 +17,31 @@ data class ReadDeadCowsByLotId(
         private val context: Application
 ){
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String): Flow<List<CowModel>> {
+    operator fun invoke(lotId: String): SourceIdentifiedListFlow {
         val localCowFlow = cowRepository.getDeadCowsByLotId(lotId)
-        val cloudCowFlow = cowRepositoryRemote.readCowsByLotId(lotId)
+            .map { cowList -> cowList to DataSource.Local }
+        val cowCloudFlow = cowRepositoryRemote.readCowsByLotId(lotId)
+            .map { cowList -> cowList to DataSource.Cloud }
 
-        return if (Utility.haveNetworkConnection(context)) {
-            localCowFlow.flatMapConcat { localData ->
-                cloudCowFlow.map { cowList ->
-                    cowRepository.insertOrUpdateCowList(cowList)
-                    cowList.filter {
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
+
+        val resultsFlow = if (isFetchingFromCloud) {
+            localCowFlow.flatMapConcat { (localData, source) ->
+                cowCloudFlow.onStart {
+                    emit(localData to source)
+                }.map { (cowModelList, source) ->
+                    cowRepository.insertOrUpdateCowList(cowModelList)
+                    cowModelList.filter {
                         it.alive == 0
                     }
-                }.onStart {
-                    emit(localData)
+                    cowModelList to source
                 }
             }
         } else {
             localCowFlow
         }
+
+        return SourceIdentifiedListFlow(resultsFlow, isFetchingFromCloud)
     }
 }

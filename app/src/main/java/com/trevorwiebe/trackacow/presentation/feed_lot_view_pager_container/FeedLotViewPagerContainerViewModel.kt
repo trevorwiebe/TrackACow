@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
@@ -42,14 +41,14 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getRationList() {
         rationJob?.cancel()
-        rationJob = rationUseCases.readAllRationsUC()
-            .map { thisRationList ->
-                Log.d("TAG", "getRationList: $thisRationList")
+        rationJob = rationUseCases.readAllRationsUC().dataFlow
+            .map { (thisRationList, _) ->
                 _uiState.update {
                     it.copy(
-                            rationList = thisRationList
+                        rationList = thisRationList as List<RationModel>
                     )
                 }
             }

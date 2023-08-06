@@ -105,27 +105,30 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
                 .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readFeedsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long) {
         readFeedsByLotIdAndDateJob?.cancel()
-        readFeedsByLotIdAndDateJob = feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate)
-                .map { thisFeedList ->
+        readFeedsByLotIdAndDateJob =
+            feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate).dataFlow
+                .map { (thisFeedList, source) ->
                     _uiState.update {
                         it.copy(
-                                feedList = thisFeedList
+                            feedList = thisFeedList as List<FeedModel>
                         )
                     }
                 }
                 .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readRations() {
-        rationUseCases.readAllRationsUC()
-                .map { feedRationList ->
-                    _uiState.update {
-                        it.copy(rationList = feedRationList)
-                    }
+        rationUseCases.readAllRationsUC().dataFlow
+            .map { (feedRationList, _) ->
+                _uiState.update {
+                    it.copy(rationList = feedRationList as List<RationModel>)
                 }
-                .launchIn(viewModelScope)
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun createOrUpdateCallandFeeds(

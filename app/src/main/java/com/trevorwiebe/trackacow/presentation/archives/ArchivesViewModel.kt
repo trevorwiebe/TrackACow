@@ -23,13 +23,14 @@ class ArchivesViewModel @Inject constructor(
 
     private var archivedLotJob: Job? = null
 
+    @Suppress("UNCHECKED_CAST")
     private fun readArchivedLots() {
         archivedLotJob?.cancel()
-        archivedLotJob = lotUseCases.readArchivedLots()
-            .map { thisArchivedLotList ->
+        archivedLotJob = lotUseCases.readArchivedLots().dataFlow
+            .map { (thisArchivedLotList, source) ->
                 _uiState.update {
                     it.copy(
-                        archivedLotList = thisArchivedLotList
+                        archivedLotList = thisArchivedLotList as List<LotModel>
                     )
                 }
             }

@@ -60,17 +60,22 @@ class FeedPenListViewModel @AssistedInject constructor(
         readCallsJob = callUseCases.readCallsAndRationsByLotId(lotId ?: "")
             .map { callList ->
                 mCallList = callList
-                readFeedsByLotId(lotDate, lotId?:"")
+                readFeedsByLotId(lotDate, lotId ?: "")
             }
             .launchIn(viewModelScope)
     }
 
-    private fun readFeedsByLotId(lotDate: Long, lotId: String){
-        feedUseCases.readFeedsByLotId(lotId)
-            .map { feedList ->
+    @Suppress("UNCHECKED_CAST")
+    private fun readFeedsByLotId(lotDate: Long, lotId: String) {
+        feedUseCases.readFeedsByLotId(lotId).dataFlow
+            .map { (feedList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        feedPenUiList = buildFeedList(lotDate, mCallList, feedList),
+                        feedPenUiList = buildFeedList(
+                            lotDate,
+                            mCallList,
+                            feedList as List<FeedModel>
+                        ),
                         isLoading = false
                     )
                 }

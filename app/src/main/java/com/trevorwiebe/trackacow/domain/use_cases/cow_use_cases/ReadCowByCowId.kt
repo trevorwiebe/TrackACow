@@ -1,12 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases
 
 import android.app.Application
-import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.repository.local.CowRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CowRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedSingleFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -17,27 +17,31 @@ class ReadCowByCowId(
         private val context: Application
 ) {
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(cowId: String): Flow<CowModel?> {
+    operator fun invoke(cowId: String): SourceIdentifiedSingleFlow {
         val localFlow = cowRepository.getCowByCowId(cowId)
+            .map { cow -> cow to DataSource.Local }
         val cowCloudFlow = cowRepositoryRemote.readCowByCowIdRemote(cowId)
+            .map { cow -> cow to DataSource.Cloud }
 
-        if (Utility.haveNetworkConnection(context)) {
-            return localFlow.flatMapConcat { localData ->
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
+
+        val resultsFlow = if (isFetchingFromCloud) {
+            localFlow.flatMapConcat { (localData, source) ->
                 cowCloudFlow.onStart {
-                    emit(localData)
-                }.map { cowModel ->
+                    emit(localData to source)
+                }.map { (cowModel, source) ->
                     if (cowModel != null) {
                         val cowList = listOf(cowModel)
                         cowRepository.insertOrUpdateCowList(cowList)
                     }
-                    cowModel
+                    cowModel to source
                 }
             }
         } else {
-            return localFlow
+            localFlow
         }
+
+        return SourceIdentifiedSingleFlow(resultsFlow, isFetchingFromCloud)
     }
 }

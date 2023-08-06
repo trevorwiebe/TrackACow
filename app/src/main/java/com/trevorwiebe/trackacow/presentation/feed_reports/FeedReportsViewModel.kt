@@ -51,24 +51,26 @@ class FeedReportsViewModel @AssistedInject constructor(
         getRations()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
-        feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate)
-            .map { thisFeedList ->
+        feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate).dataFlow
+            .map { (thisFeedList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        feedList = thisFeedList
+                        feedList = thisFeedList as List<FeedModel>
                     )
                 }
             }
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getRations() {
-        rationUseCases.readAllRationsUC()
-            .map { thisRationList ->
+        rationUseCases.readAllRationsUC().dataFlow
+            .map { (thisRationList, _) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        rationList = thisRationList
+                        rationList = thisRationList as List<RationModel>
                     )
                 }
             }
