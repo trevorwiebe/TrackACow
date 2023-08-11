@@ -8,11 +8,13 @@ import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadCallsAndRationsByLotIdUC(
@@ -22,27 +24,30 @@ data class ReadCallsAndRationsByLotIdUC(
         private val context: Application
 ){
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String): Flow<List<CallAndRationModel>> {
+    operator fun invoke(lotId: String): SourceIdentifiedListFlow {
         val localCallAndRationFlow = callRepository.getCallsAndRationByLotId(lotId)
+            .map { call -> call to DataSource.Local }
         val cloudCallAndRationFlow = callRepositoryRemote.readCallAndRationByLotIdRemote(lotId)
+            .map { call -> call to DataSource.Cloud }
 
-        if (Utility.haveNetworkConnection(context)) {
-            return localCallAndRationFlow.flatMapConcat { localData ->
-                cloudCallAndRationFlow.flatMapConcat { pair ->
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
+        val dataResult = if (isFetchingFromCloud) {
+            localCallAndRationFlow.flatMapConcat { (localData, source) ->
+                cloudCallAndRationFlow.flatMapConcat { (pair, source) ->
                     rationRepository.insertOrUpdateRationList(pair.first)
                     callRepository.insertOrUpdateCallList(pair.second)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)
-                        emit(combinedList)
+                        emit(combinedList to source)
                     }
-                }.onStart { emit(localData) }
+                }.onStart { emit(localData to source) }
             }
         } else {
-            return localCallAndRationFlow
+            localCallAndRationFlow
         }
+
+        return SourceIdentifiedListFlow(dataResult, isFetchingFromCloud)
     }
 
     private fun combineList(

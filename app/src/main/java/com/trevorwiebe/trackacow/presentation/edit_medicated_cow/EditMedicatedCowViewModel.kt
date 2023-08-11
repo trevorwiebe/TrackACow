@@ -82,12 +82,13 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenByCowId(cowId: String) {
         drugJob?.cancel()
-        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId))
-            .map { thisDrugList ->
+        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId)).dataFlow
+            .map { (thisDrugList, source) ->
                 _uiState.update {
-                    it.copy(drugsGivenList = thisDrugList)
+                    it.copy(drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>)
                 }
             }
             .launchIn(viewModelScope)

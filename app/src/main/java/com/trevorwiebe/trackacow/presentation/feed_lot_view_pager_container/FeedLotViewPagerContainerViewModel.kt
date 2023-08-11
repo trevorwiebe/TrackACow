@@ -28,13 +28,14 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
         getRationList()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getPenAndLotModelsExcludeEmptyPens() {
         penAndLotModelsJob?.cancel()
-        penAndLotModelsJob = penUseCases.readPenAndLotModelExcludeEmptyPens()
-            .map { thisPenAndLotList ->
+        penAndLotModelsJob = penUseCases.readPenAndLotModelExcludeEmptyPens().dataFlow
+            .map { (thisPenAndLotList, source) ->
                 _uiState.update {
                     it.copy(
-                        penAndLotList = thisPenAndLotList
+                        penAndLotList = thisPenAndLotList as List<PenAndLotModel>
                     )
                 }
             }

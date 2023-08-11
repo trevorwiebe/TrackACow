@@ -59,13 +59,14 @@ class ManagePensViewModel @Inject constructor(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readPensAndLots() {
         readPensJob?.cancel()
-        readPensJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
-            .map { thisPenList ->
+        readPensJob = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
+            .map { (thisPenList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penList = thisPenList
+                        penList = thisPenList as List<PenAndLotModel>
                     )
                 }
             }

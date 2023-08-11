@@ -32,15 +32,20 @@ class DrugsGivenViewModel @Inject constructor(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getDrugsGivenByDates(lotId: String, startDate: Long, endDate: Long) {
         drugsGivenJob?.cancel()
         drugsGivenJob =
-            drugsGivenUseCases.readDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
-                .map { thisDrugsAndDrugsModelList ->
+            drugsGivenUseCases.readDrugsGivenAndDrugsByLotIdAndDate(
+                lotId,
+                startDate,
+                endDate
+            ).dataFlow
+                .map { (thisDrugsAndDrugsModelList, source) ->
                     _uiState.update {
                         it.copy(
                             drugsGivenAndDrugList = calculateDrugsGiven.invoke(
-                                thisDrugsAndDrugsModelList
+                                thisDrugsAndDrugsModelList as List<DrugsGivenAndDrugModel>
                             )
                         )
                     }

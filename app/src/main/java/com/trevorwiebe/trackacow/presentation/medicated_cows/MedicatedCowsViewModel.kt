@@ -54,11 +54,13 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         readCowsByLotId(lotId)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugsAndDrugsGivenByLotId(lotId: String) {
         drugsJob?.cancel()
-        drugsJob = drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotId)
-            .map { thisDrugsGivenAndDrugModelList ->
-                drugsGivenAndDrugModelList = thisDrugsGivenAndDrugModelList
+        drugsJob = drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotId).dataFlow
+            .map { (thisDrugsGivenAndDrugModelList, source) ->
+                drugsGivenAndDrugModelList =
+                    thisDrugsGivenAndDrugModelList as List<DrugsGivenAndDrugModel>
                 _uiState.update {
                     it.copy(
                         cowUiModelList = buildCowUiModelList(drugsGivenAndDrugModelList, cowList)

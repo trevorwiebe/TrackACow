@@ -8,11 +8,13 @@ import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.DrugsGivenRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 class ReadDrugsGivenAndDrugsByLotIdAndDate(
@@ -22,35 +24,37 @@ class ReadDrugsGivenAndDrugsByLotIdAndDate(
         private val context: Application
 ) {
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String, startDate: Long, endDate: Long):
-            Flow<List<DrugsGivenAndDrugModel>> {
+    operator fun invoke(lotId: String, startDate: Long, endDate: Long): SourceIdentifiedListFlow {
 
-        val localFlow =
-            drugsGivenRepository.getDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
+        val localFlow = drugsGivenRepository
+            .getDrugsGivenAndDrugsByLotIdAndDate(lotId, startDate, endDate)
+            .map { drugGiven -> drugGiven to DataSource.Local }
 
         // firebase can't filter by more than on variable, so re-using this function
-        val cloudDrugGivenFlow =
-                drugsGivenRepositoryRemote.readDrugsGivenAndDrugsByLotIdRemote(lotId)
+        val cloudDrugGivenFlow = drugsGivenRepositoryRemote
+            .readDrugsGivenAndDrugsByLotIdRemote(lotId)
+            .map { drugGiven -> drugGiven to DataSource.Cloud }
 
-        return if (Utility.haveNetworkConnection(context)) {
-            localFlow.flatMapConcat { localData ->
-                cloudDrugGivenFlow.flatMapConcat { pair ->
+        val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
+
+        val flowResult = if (isFetchingFromCloud) {
+            localFlow.flatMapConcat { (localData, source) ->
+                cloudDrugGivenFlow.flatMapConcat { (pair, source) ->
                     drugRepository.insertOrUpdateDrugList(pair.first)
                     drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
                     flow {
                         val combinedList =
-                                combineDrugList(pair.first, pair.second, startDate, endDate)
-                        emit(combinedList)
+                            combineDrugList(pair.first, pair.second, startDate, endDate)
+                        emit(combinedList to source)
                     }
-                }.onStart { emit(localData) }
+                }.onStart { emit(localData to source) }
             }
         } else {
             localFlow
         }
 
+        return SourceIdentifiedListFlow(flowResult, isFetchingFromCloud)
     }
 
     private fun combineDrugList(

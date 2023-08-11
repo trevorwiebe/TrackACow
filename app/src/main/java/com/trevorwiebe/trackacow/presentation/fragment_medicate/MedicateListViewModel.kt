@@ -23,14 +23,15 @@ class MedicateListViewModel @Inject constructor(
 
     private var getPenAndLotJobs: Job? = null
 
-    private fun getPensAndLots(){
+    @Suppress("UNCHECKED_CAST")
+    private fun getPensAndLots() {
         _uiState.update { it.copy(isLoading = true) }
         getPenAndLotJobs?.cancel()
-        getPenAndLotJobs = penUseCases.readPenAndLotModelIncludeEmptyPens()
-            .map { thisPenAndLotList ->
+        getPenAndLotJobs = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
+            .map { (thisPenAndLotList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penAndLotModelList = thisPenAndLotList,
+                        penAndLotModelList = thisPenAndLotList as List<PenAndLotModel>,
                         isLoading = false
                     )
                 }

@@ -25,11 +25,11 @@ private const val pen_and_lot_param = "pen_and_lot_param"
 private const val pen_ui_date_param = "pen_ui_date_param"
 
 class FeedLotDetailFragmentViewModel @AssistedInject constructor(
-        private val callUseCases: CallUseCases,
-        private val feedUseCases: FeedUseCases,
-        private val rationUseCases: RationUseCases,
-        private val calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
-        @Assisted defaultArgs: Bundle? = null
+    private val callUseCases: CallUseCases,
+    private val feedUseCases: FeedUseCases,
+    private val rationUseCases: RationUseCases,
+    calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
+    @Assisted defaultArgs: Bundle? = null
 ) : ViewModel() {
 
     private var readCallByLotIdAndDateJob: Job? = null
@@ -94,12 +94,14 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     private fun readCallByLotIdAndDate(lotId: String, dateStart: Long, dateEnd: Long) {
         readCallByLotIdAndDateJob?.cancel()
         readCallByLotIdAndDateJob =
-            callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd)
-                .map { receivedCallModel ->
-                    _uiState.update { uiState ->
-                        uiState.copy(
-                            callModel = receivedCallModel
-                        )
+            callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd).dataFlow
+                .map { (receivedCallModel, source) ->
+                    if (receivedCallModel != null) {
+                        _uiState.update { uiState ->
+                            uiState.copy(
+                                callModel = receivedCallModel as CallAndRationModel
+                            )
+                        }
                     }
                 }
                 .launchIn(viewModelScope)

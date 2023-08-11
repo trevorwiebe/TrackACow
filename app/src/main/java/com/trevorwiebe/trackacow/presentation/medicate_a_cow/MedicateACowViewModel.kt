@@ -99,6 +99,7 @@ class MedicateACowViewModel @AssistedInject constructor(
         _uiState.update { it.copy(isFetchingCowsFromCloud = cowUseCases.readCowsByLotId(lotId).isFetchingFromCloud) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun updateStateWithCowFoundList(cowList: List<CowModel>) {
         _uiState.update {
             it.copy(cowFoundList = cowList)
@@ -106,10 +107,10 @@ class MedicateACowViewModel @AssistedInject constructor(
         if (cowList.isNotEmpty()) {
             val cowIdList = cowList.map { it.cowId }
             drugsGivenByCows?.cancel()
-            drugsGivenByCows = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(cowIdList)
-                .map { thisDrugAndDrugGivenList ->
+            drugsGivenByCows = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(cowIdList).dataFlow
+                .map { (thisDrugAndDrugGivenList, source) ->
                     _uiState.update {
-                        it.copy(drugAndDrugGivenListForFoundCows = thisDrugAndDrugGivenList)
+                        it.copy(drugAndDrugGivenListForFoundCows = thisDrugAndDrugGivenList as List<DrugsGivenAndDrugModel>)
                     }
                 }
                 .launchIn(viewModelScope)

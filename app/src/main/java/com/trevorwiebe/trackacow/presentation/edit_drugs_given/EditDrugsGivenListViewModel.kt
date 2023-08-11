@@ -49,15 +49,16 @@ class EditDrugsGivenListViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(EditDrugsGivenListUiState())
     val uiState: StateFlow<EditDrugsGivenListUiState> = _uiState.asStateFlow()
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenByCowId(cowId: String) {
         drugJob?.cancel()
-        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId))
-                .map { thisDrugList ->
-                    _uiState.update {
-                        it.copy(drugsGivenList = thisDrugList)
-                    }
+        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId)).dataFlow
+            .map { (thisDrugList, source) ->
+                _uiState.update {
+                    it.copy(drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>)
                 }
-                .launchIn(viewModelScope)
+            }
+            .launchIn(viewModelScope)
     }
 
     data class EditDrugsGivenListUiState(

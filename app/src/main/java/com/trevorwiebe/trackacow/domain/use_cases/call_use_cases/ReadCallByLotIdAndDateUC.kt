@@ -8,11 +8,13 @@ import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedSingleFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadCallByLotIdAndDateUC(
@@ -22,29 +24,32 @@ data class ReadCallByLotIdAndDateUC(
         private val context: Application
 ){
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String, dateStart: Long, dateEnd: Long): Flow<CallAndRationModel?> {
+    operator fun invoke(lotId: String, dateStart: Long, dateEnd: Long): SourceIdentifiedSingleFlow {
 
         val localCallAndRationFlow = callRepository.getCallByLotIdAndDate(lotId, dateStart, dateEnd)
+            .map { call -> call to DataSource.Local }
         val cloudCallAndRationFlow = callRepositoryRemote.readCallAndRationByLotIdRemote(lotId)
+            .map { call -> call to DataSource.Cloud }
 
-        if (Utility.haveNetworkConnection(context)) {
-            return localCallAndRationFlow.flatMapConcat { localData ->
-                cloudCallAndRationFlow.flatMapConcat { pair ->
+        val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
+        val flowResult = if (isFetchingFromCloud) {
+            localCallAndRationFlow.flatMapConcat { (localData, source) ->
+                cloudCallAndRationFlow.flatMapConcat { (pair, source) ->
                     rationRepository.insertOrUpdateRationList(pair.first)
                     callRepository.insertOrUpdateCallList(pair.second)
                     flow {
                         val callAndRationModel =
-                                getCallAndRationModel(pair.first, pair.second, dateStart, dateEnd)
-                        emit(callAndRationModel)
+                            getCallAndRationModel(pair.first, pair.second, dateStart, dateEnd)
+                        emit(callAndRationModel to source)
                     }
-                }.onStart { emit(localData) }
+                }.onStart { emit(localData to source) }
             }
         } else {
-            return localCallAndRationFlow
+            localCallAndRationFlow
         }
+
+        return SourceIdentifiedSingleFlow(flowResult, isFetchingFromCloud)
     }
 
     private fun getCallAndRationModel(

@@ -2,6 +2,7 @@ package com.trevorwiebe.trackacow.presentation.fragment_move
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
@@ -38,13 +39,14 @@ class MoveViewModel @Inject constructor(
         }
     }
 
-    private fun readPensAndLots(){
+    @Suppress("UNCHECKED_CAST")
+    private fun readPensAndLots() {
         readPenAndLotsJob?.cancel()
-        readPenAndLotsJob = penUseCases.readPenAndLotModelIncludeEmptyPens()
-            .map { thisPenAndLotList ->
+        readPenAndLotsJob = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
+            .map { (thisPenAndLotList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penAndLotList = thisPenAndLotList
+                        penAndLotList = thisPenAndLotList as List<PenAndLotModel>
                     )
                 }
             }

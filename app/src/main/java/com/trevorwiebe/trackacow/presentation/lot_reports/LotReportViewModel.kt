@@ -93,13 +93,18 @@ class LotReportViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId: String){
         drugsGivenJob?.cancel()
         drugsGivenJob = drugsGivenUseCases
-            .readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId)
-            .map { drugsGivenAndDrugList ->
+            .readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId).dataFlow
+            .map { (drugsGivenAndDrugList, source) ->
                 _uiState.update {
-                    it.copy(drugsGivenAndDrugList = calculateDrugsGiven.invoke(drugsGivenAndDrugList))
+                    it.copy(
+                        drugsGivenAndDrugList = calculateDrugsGiven.invoke(
+                            drugsGivenAndDrugList as List<DrugsGivenAndDrugModel>
+                        )
+                    )
                 }
             }
             .launchIn(viewModelScope)

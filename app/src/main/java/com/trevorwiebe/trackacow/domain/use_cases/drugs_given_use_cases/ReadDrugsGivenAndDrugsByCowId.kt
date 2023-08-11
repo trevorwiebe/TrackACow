@@ -8,11 +8,13 @@ import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
 import com.trevorwiebe.trackacow.domain.repository.local.DrugRepository
 import com.trevorwiebe.trackacow.domain.repository.local.DrugsGivenRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.DrugsGivenRepositoryRemote
+import com.trevorwiebe.trackacow.domain.utils.DataSource
+import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedListFlow
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 class ReadDrugsGivenAndDrugsByCowId(
@@ -22,30 +24,32 @@ class ReadDrugsGivenAndDrugsByCowId(
         private val context: Application
 ) {
 
-    // TODO: update this with data source identification
-
     @OptIn(FlowPreview::class)
-    operator fun invoke(cowIdList: List<String>): Flow<List<DrugsGivenAndDrugModel>> {
+    operator fun invoke(cowIdList: List<String>): SourceIdentifiedListFlow {
 
         val localDrugFlow = drugsGivenRepository.getDrugsGivenAndDrugsByCowId(cowIdList)
-        val cloudDrugFlow =
-            drugsGivenRepositoryRemote.readDrugsGivenAndDrugsByCowIdRemote(cowIdList[0])
+            .map { drugGiven -> drugGiven to DataSource.Local }
+        val cloudDrugFlow = drugsGivenRepositoryRemote
+            .readDrugsGivenAndDrugsByCowIdRemote(cowIdList[0])
+            .map { drugGiven -> drugGiven to DataSource.Cloud }
 
-        return if (Utility.haveNetworkConnection(context)) {
-            localDrugFlow.flatMapConcat { localData ->
-                cloudDrugFlow.flatMapConcat { pair ->
+        val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
+
+        val flowResult = if (isFetchingFromCloud) {
+            localDrugFlow.flatMapConcat { (localData, source) ->
+                cloudDrugFlow.flatMapConcat { (pair, source) ->
                     drugRepository.insertOrUpdateDrugList(pair.first)
                     drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
                     flow {
                         val combinedList = combineDrugList(pair.first, pair.second)
-                        emit(combinedList)
+                        emit(combinedList to source)
                     }
-                }.onStart { emit(localData) }
+                }.onStart { emit(localData to source) }
             }
         } else {
             localDrugFlow
         }
-
+        return SourceIdentifiedListFlow(flowResult, isFetchingFromCloud)
     }
 
     private fun combineDrugList(
