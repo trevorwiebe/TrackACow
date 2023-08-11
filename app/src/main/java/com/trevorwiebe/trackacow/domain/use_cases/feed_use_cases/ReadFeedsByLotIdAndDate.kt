@@ -34,8 +34,7 @@ data class ReadFeedsByLotIdAndDate(
                     feedRepository.insertOrUpdateFeedList(feedList)
                     feedList.filter { feedModel ->
                         feedModel.date in startDate..endDate
-                    }
-                    feedList to source
+                    } to source
                 }
             }
         } else {
