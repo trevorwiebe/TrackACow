@@ -114,6 +114,8 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mAddDrugsGivenToSpecificCowViewModel.uiState.collect {
 
+                    mDrugLayout.removeAllViews()
+
                     mDrugList = it.drugsList.toMutableList()
                     for (x in mDrugList.indices) {
                         val drugEntity = mDrugList[x]
@@ -142,7 +144,6 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         val defaultAmountStr = defaultAmount.toString()
         val scale = resources.displayMetrics.density
         val pixels24 = (24 * scale + 0.5f).toInt()
-        val pixels16 = (16 * scale + 0.5f).toInt()
         val pixels8 = (8 * scale + 0.5f).toInt()
         val cardView = CardView(this)
         val cardViewParams = LinearLayout.LayoutParams(
