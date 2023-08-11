@@ -41,14 +41,12 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
                 _uiState.update { uiState ->
                     uiState.copy(
                         drugsList = drugList as List<DrugModel>,
-                        dataSource = source
+                        dataSource = source,
+                        isFetchingFromCloud =
+                        drugsUseCases.readDrugsUC().isFetchingFromCloud
                     )
                 }
             }
-        }
-
-        _uiState.update { uiState ->
-            uiState.copy(isFetchingFromCloud = drugsUseCases.readDrugsUC().isFetchingFromCloud)
         }
     }
 
