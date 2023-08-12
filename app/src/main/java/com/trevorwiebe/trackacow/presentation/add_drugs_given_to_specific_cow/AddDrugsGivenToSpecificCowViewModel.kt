@@ -33,7 +33,6 @@ class AddDrugsGivenToSpecificCowViewModel @Inject constructor(
         }
     }
 
-    // TODO: Add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDrugs() {
         val dataFlow = drugsUseCases.readDrugsUC().dataFlow

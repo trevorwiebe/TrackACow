@@ -7,6 +7,13 @@
     android:windowSoftInputMode="adjustResize"
     tools:context=".presentation.add_drugs_given_to_specific_cow.AddDrugsGivenToSpecificCowActivity">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/add_drug_specific_cow_progress_indicator"
+        app:indicatorColor="@color/colorAccent"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

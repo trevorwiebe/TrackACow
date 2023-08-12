@@ -15,11 +15,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.drug.DrugModel
 import com.trevorwiebe.trackacow.domain.models.drug_given.DrugGivenModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -35,6 +37,7 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
     private lateinit var mNoDrugs: TextView
     private lateinit var mCancelButton: Button
     private lateinit var mSaveButton: Button
+    private lateinit var mProgressIndicator: LinearProgressIndicator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,7 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         mNoDrugs = findViewById(R.id.no_drugs_added_to_specific_cow)
         mCancelButton = findViewById(R.id.add_drug_cancel_button)
         mSaveButton = findViewById(R.id.add_drug_save_button)
+        mProgressIndicator = findViewById(R.id.add_drug_specific_cow_progress_indicator)
         mCancelButton.setOnClickListener {
             setResult(RESULT_CANCELED)
             finish()
@@ -113,6 +117,12 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mAddDrugsGivenToSpecificCowViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressIndicator.visibility = View.VISIBLE
+                    } else {
+                        mProgressIndicator.visibility = View.GONE
+                    }
 
                     mDrugLayout.removeAllViews()
 
