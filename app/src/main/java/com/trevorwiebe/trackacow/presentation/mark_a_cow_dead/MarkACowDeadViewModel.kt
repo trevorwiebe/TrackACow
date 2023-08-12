@@ -59,11 +59,12 @@ class MarkACowDeadViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDeadCowsByLotId(lotId: String) {
         deadCowJob?.cancel()
         deadCowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
-            .map { (thisDeadCowList, _) ->
+            .map { (thisDeadCowList, source) ->
                 _uiState.update {
                     it.copy(
                         deadCowList = thisDeadCowList as List<CowModel>

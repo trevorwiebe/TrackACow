@@ -81,8 +81,8 @@ class LotReportViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: add progress bar
     private fun readLotByLotId(lotCloudDatabaseId: String) {
-        Log.d("TAG", "readLotByLotId: $lotCloudDatabaseId")
         lotJob?.cancel()
         lotJob = lotUseCases.readLotsByLotId(lotCloudDatabaseId).dataFlow
             .map { (thisLotModel, source) ->
@@ -126,7 +126,7 @@ class LotReportViewModel @AssistedInject constructor(
     private fun readDeadCowsByLotId(lotId: String) {
         cowJob?.cancel()
         cowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
-            .map { (thisDeadCowList, _) ->
+            .map { (thisDeadCowList, source) ->
                 _uiState.update {
                     it.copy(deadCowList = thisDeadCowList as List<CowModel>)
                 }

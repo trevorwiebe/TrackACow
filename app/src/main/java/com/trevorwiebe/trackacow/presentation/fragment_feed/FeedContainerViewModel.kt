@@ -23,6 +23,7 @@ class FeedContainerViewModel @Inject constructor(
         getPenAndLotModels()
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getPenAndLotModels() {
         _uiState.update { it.copy(isLoading = true) }

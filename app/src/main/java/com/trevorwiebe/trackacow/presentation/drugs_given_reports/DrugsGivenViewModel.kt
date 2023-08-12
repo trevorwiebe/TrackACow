@@ -32,6 +32,7 @@ class DrugsGivenViewModel @Inject constructor(
         }
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getDrugsGivenByDates(lotId: String, startDate: Long, endDate: Long) {
         drugsGivenJob?.cancel()

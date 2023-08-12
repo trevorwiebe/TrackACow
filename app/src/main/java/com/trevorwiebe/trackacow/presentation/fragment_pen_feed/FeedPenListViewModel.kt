@@ -54,6 +54,8 @@ class FeedPenListViewModel @AssistedInject constructor(
         readCallsAndRationsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
     }
 
+    // TODO: add progress bar
+
     @Suppress("UNCHECKED_CAST")
     private fun readCallsAndRationsByLotId(lotDate: Long, lotId: String?) {
         _uiState.update { it.copy(isLoading = true) }

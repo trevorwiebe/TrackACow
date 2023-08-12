@@ -59,6 +59,7 @@ class FeedReportsViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getRationAndFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
         feedUseCases.readFeedsAndRationsTotalsByLotIdAndDate(lotId, startDate, endDate).dataFlow
@@ -72,10 +73,11 @@ class FeedReportsViewModel @AssistedInject constructor(
                 .launchIn(viewModelScope)
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getRations() {
         rationUseCases.readAllRationsUC().dataFlow
-            .map { (thisRationList, _) ->
+            .map { (thisRationList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
                         rationList = thisRationList as List<RationModel>

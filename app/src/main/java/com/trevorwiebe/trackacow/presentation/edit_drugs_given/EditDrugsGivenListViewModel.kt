@@ -49,6 +49,7 @@ class EditDrugsGivenListViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(EditDrugsGivenListUiState())
     val uiState: StateFlow<EditDrugsGivenListUiState> = _uiState.asStateFlow()
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenByCowId(cowId: String) {
         drugJob?.cancel()

@@ -67,6 +67,7 @@ class MedicateACowViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: update this
     @Suppress("UNCHECKED_CAST")
     private fun readDrugs() {
         val dataFlow = drugUseCases.readDrugsUC().dataFlow

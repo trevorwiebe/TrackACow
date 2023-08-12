@@ -71,6 +71,8 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: add progress bar
+
     private fun readCow(cowId: String) {
         cowJob?.cancel()
         cowJob = cowUseCases.readCowByCowId(cowId).dataFlow

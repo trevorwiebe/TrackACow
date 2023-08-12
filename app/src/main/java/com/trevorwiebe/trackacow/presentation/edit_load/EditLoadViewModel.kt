@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.edit_load
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
@@ -17,7 +16,6 @@ class EditLoadViewModel @Inject constructor(
     fun onEvent(event: EditLoadUiEvent){
         when(event){
             is EditLoadUiEvent.OnLoadUpdated -> {
-                Log.d("TAG", "onEvent: here")
                 updateLoad(event.loadModel)
             }
             is EditLoadUiEvent.OnLoadDeleted -> {

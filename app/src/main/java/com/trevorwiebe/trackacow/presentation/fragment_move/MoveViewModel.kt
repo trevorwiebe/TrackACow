@@ -39,6 +39,7 @@ class MoveViewModel @Inject constructor(
         }
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readPensAndLots() {
         readPenAndLotsJob?.cancel()

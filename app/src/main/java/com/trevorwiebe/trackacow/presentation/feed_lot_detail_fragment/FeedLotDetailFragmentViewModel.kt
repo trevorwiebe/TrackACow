@@ -91,6 +91,8 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         }
     }
 
+    // TODO: add progress bar
+
     private fun readCallByLotIdAndDate(lotId: String, dateStart: Long, dateEnd: Long) {
         readCallByLotIdAndDateJob?.cancel()
         readCallByLotIdAndDateJob =

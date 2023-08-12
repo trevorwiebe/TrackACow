@@ -28,6 +28,8 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
         getRationList()
     }
 
+    // TODO: add progress bar
+
     @Suppress("UNCHECKED_CAST")
     private fun getPenAndLotModelsExcludeEmptyPens() {
         penAndLotModelsJob?.cancel()

@@ -21,6 +21,7 @@ class ReportsFragmentViewModel @Inject constructor(
         getLots()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getLots() {
         val dataFlow = lotUseCases.readLots().dataFlow
         viewModelScope.launch {

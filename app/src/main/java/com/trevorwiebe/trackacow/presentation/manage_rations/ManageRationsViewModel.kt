@@ -23,6 +23,7 @@ class ManageRationsViewModel @Inject constructor(
         loadRations()
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun loadRations() {
         loadRationsJob?.cancel()

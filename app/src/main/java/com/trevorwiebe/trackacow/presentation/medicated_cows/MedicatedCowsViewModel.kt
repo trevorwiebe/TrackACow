@@ -54,6 +54,7 @@ class MedicatedCowsViewModel @AssistedInject constructor(
         readCowsByLotId(lotId)
     }
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDrugsAndDrugsGivenByLotId(lotId: String) {
         drugsJob?.cancel()

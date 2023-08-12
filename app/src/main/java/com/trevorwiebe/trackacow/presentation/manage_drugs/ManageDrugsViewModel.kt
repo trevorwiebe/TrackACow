@@ -22,6 +22,8 @@ class ManageDrugsViewModel @Inject constructor(
         getDrugList()
     }
 
+    // TODO: make sure this works
+
     @Suppress("UNCHECKED_CAST")
     private fun getDrugList() {
 

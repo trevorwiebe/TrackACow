@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
         _uiState.update { it.copy(cloudDatabaseMigrationInProgress = true) }
         initiateCloudDatabaseMigration5to6.invoke(appVersion)
             .continueWith { task ->
-                Log.d("TAG", "migrateDatabase: ${task.result?.data}")
+                // TODO: add error handling here
                 _uiState.update { it.copy(cloudDatabaseMigrationInProgress = false) }
             }
     }

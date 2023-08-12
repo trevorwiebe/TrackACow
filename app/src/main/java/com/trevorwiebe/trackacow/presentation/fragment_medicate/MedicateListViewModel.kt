@@ -23,6 +23,7 @@ class MedicateListViewModel @Inject constructor(
 
     private var getPenAndLotJobs: Job? = null
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getPensAndLots() {
         _uiState.update { it.copy(isLoading = true) }

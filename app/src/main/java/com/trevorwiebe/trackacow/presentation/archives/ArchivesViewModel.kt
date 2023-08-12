@@ -23,6 +23,7 @@ class ArchivesViewModel @Inject constructor(
 
     private var archivedLotJob: Job? = null
 
+    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readArchivedLots() {
         archivedLotJob?.cancel()
