@@ -12,8 +12,8 @@ import androidx.core.content.ContextCompat
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 
 class PenRecyclerViewAdapter(
-    var mPenAndLotModel: List<PenAndLotModel>,
-    var mShouldShowLots: Boolean = true,
+    private var mPenAndLotModel: List<PenAndLotModel>,
+    private var mShouldShowLots: Boolean = true,
     private val mContext: Context
 ) : RecyclerView.Adapter<PenRecyclerViewAdapter.PenViewHolder>() {
 

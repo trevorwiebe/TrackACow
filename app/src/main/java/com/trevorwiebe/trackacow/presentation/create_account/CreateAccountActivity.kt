@@ -114,7 +114,7 @@ class CreateAccountActivity : AppCompatActivity() {
         mCreateAccountWithGoogleBtn.setOnClickListener { openGoogleSignInForResult() }
     }
 
-    var signInActivity = registerForActivityResult(
+    private var signInActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {

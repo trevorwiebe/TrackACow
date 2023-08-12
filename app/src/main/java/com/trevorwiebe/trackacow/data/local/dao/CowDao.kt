@@ -34,7 +34,7 @@ interface CowDao {
     @Update
     suspend fun updateCowList(cowlist: List<CowEntity>)
 
-    @Delete()
+    @Delete
     suspend fun deleteCow(cowEntity: CowEntity)
 
     @Query("DELETE FROM cow")

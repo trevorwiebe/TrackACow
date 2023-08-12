@@ -175,7 +175,7 @@ object Utility {
         }
     }
 
-    fun clearTimes(c: Calendar): Calendar {
+    private fun clearTimes(c: Calendar): Calendar {
         c[Calendar.HOUR_OF_DAY] = 0
         c[Calendar.MINUTE] = 0
         c[Calendar.SECOND] = 0

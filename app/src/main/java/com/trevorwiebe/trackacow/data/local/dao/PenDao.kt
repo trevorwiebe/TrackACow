@@ -35,10 +35,10 @@ interface PenDao {
     @Query("UPDATE Pen SET penName = :penName WHERE penCloudDatabaseId = :penId")
     fun updatePenNameById(penName: String, penId: String)
 
-    @Update()
+    @Update
     suspend fun updatePen(penEntity: PenEntity)
 
-    @Update()
+    @Update
     suspend fun updatePenList(penList: List<PenEntity>)
 
     @Query("DELETE FROM Pen")

@@ -10,7 +10,7 @@ import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 
 class PenViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var penName: TextView
-    var reorder: ImageView
+    private var reorder: ImageView
     var twoLotsUnderOnePen: TextView
     var mergeLotsBtn: Button
 

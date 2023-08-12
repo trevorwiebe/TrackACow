@@ -18,7 +18,7 @@ class ItemClickListener(
         fun onLongItemClick(view: View, position: Int)
     }
 
-    var mGestureDetector: GestureDetector
+    private var mGestureDetector: GestureDetector
 
     init {
         mGestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {

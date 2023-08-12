@@ -59,8 +59,7 @@ class ShufflePenAndLotsAdapter : RecyclerView.Adapter<ViewHolder>(),
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val modelObject = objectList[position]
-        when (modelObject) {
+        when (val modelObject = objectList[position]) {
             is LotModel -> {
                 val lotName = modelObject.lotName
                 val lotViewHolder = holder as LotViewHolder

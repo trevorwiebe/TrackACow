@@ -21,7 +21,7 @@ class MoveViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MoveUiState())
     val uiState: StateFlow<MoveUiState> = _uiState.asStateFlow()
 
-    var readPenAndLotsJob: Job? = null
+    private var readPenAndLotsJob: Job? = null
 
     init {
         readPensAndLots()

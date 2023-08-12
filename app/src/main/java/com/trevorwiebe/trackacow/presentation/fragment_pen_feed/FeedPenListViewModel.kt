@@ -104,12 +104,12 @@ class FeedPenListViewModel @AssistedInject constructor(
             val dayEnd = currentDateList[1]
 
             val callAndRationModel = callList.find {
-                it.date >= dayStart && it.date <= dayEnd
+                it.date in dayStart..dayEnd
             } ?: CallAndRationModel(0, 0, 0, "", 0, "", 0, "", "")
             val feedPenListUiModel = FeedPenListUiModel(
                 date = dateToChange,
                 callAndRationModel = callAndRationModel,
-                feedList = feedList.filter { it.date >= dayStart && it.date <= dayEnd }
+                feedList = feedList.filter { it.date in dayStart..dayEnd }
             )
 
             feedPenUiModelList.add(feedPenListUiModel)

@@ -44,7 +44,7 @@ interface LotDao {
         date: Long
     )
 
-    @Update()
+    @Update
     suspend fun updateLotList(lotList: List<LotEntity>)
 
     @Delete

@@ -12,7 +12,7 @@ import com.trevorwiebe.trackacow.presentation.archives.ArchiveRvAdapter.ArchiveV
 
 class ArchiveRvAdapter : RecyclerView.Adapter<ArchiveViewHolder>() {
 
-    var archivedLotEntities: List<LotModel> = emptyList()
+    private var archivedLotEntities: List<LotModel> = emptyList()
 
     override fun getItemCount(): Int {
         return archivedLotEntities.size

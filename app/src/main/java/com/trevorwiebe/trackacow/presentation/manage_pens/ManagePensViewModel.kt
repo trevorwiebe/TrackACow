@@ -19,7 +19,7 @@ class ManagePensViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ManagePensUiState())
     val uiState: StateFlow<ManagePensUiState> = _uiState.asStateFlow()
 
-    var readPensJob: Job? = null
+    private var readPensJob: Job? = null
 
     init {
         readPensAndLots()

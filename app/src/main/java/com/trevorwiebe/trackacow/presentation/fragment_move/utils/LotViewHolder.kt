@@ -10,7 +10,7 @@ import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 class LotViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var lotName: TextView
     var reorder: ImageView
-    var lotMoveViewBottom: View
+    private var lotMoveViewBottom: View
     lateinit var lotModel: LotModel
 
     init {

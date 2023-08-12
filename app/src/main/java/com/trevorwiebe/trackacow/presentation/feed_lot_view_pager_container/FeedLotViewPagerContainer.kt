@@ -22,7 +22,7 @@ class FeedLotViewPagerContainer : AppCompatActivity() {
 
     var penAndLotModelList: List<PenAndLotModel> = emptyList()
     var mFeedPenUiModelDate: Long = -1
-    var mLotId: String = ""
+    private var mLotId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
