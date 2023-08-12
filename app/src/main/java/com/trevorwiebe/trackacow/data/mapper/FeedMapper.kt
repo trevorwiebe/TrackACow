@@ -11,7 +11,8 @@ fun FeedEntity.toFeedModel(): FeedModel{
         feed = feed,
         date = date,
         id = id,
-        lotId = lotId
+        lotId = lotId,
+        rationCloudId = rationCloudId
     )
 }
 
@@ -21,7 +22,8 @@ fun FeedModel.toFeedEntity(): FeedEntity{
         feed = feed,
         date = date,
         id = id,
-        lotId = lotId
+        lotId = lotId,
+        rationCloudId = rationCloudId
     )
 }
 
@@ -32,6 +34,7 @@ fun FeedModel.toCacheFeedModel(whatHappened: Int): CacheFeedModel{
         date = date,
         id = id,
         lotId = lotId,
+        rationCloudId = rationCloudId,
         whatHappened = whatHappened
     )
 }
@@ -43,6 +46,7 @@ fun CacheFeedEntity.toCacheFeedModel(): CacheFeedModel{
         date = date,
         id = id,
         lotId = lotId,
+        rationCloudId = rationCloudId,
         whatHappened = whatHappened
     )
 }
@@ -54,6 +58,7 @@ fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity {
         date = date,
         id = id,
         lotId = lotId,
+        rationCloudId = rationCloudId,
         whatHappened = whatHappened
     )
 }
@@ -64,6 +69,7 @@ fun CacheFeedModel.toFeedModel(): FeedModel {
         feed = feed,
         date = date,
         id = id,
+        rationCloudId = rationCloudId,
         lotId = lotId
     )
 }

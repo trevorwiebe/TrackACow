@@ -124,7 +124,7 @@ object TrackACowDataModule {
 
                 // update feed table
                 database.execSQL("DROP TABLE feed")
-                database.execSQL("CREATE TABLE feed (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL)")
+                database.execSQL("CREATE TABLE feed (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, rationCloudId TEXT, lotId TEXT NOT NULL)")
 
                 // update load table
                 // don't need to update load
@@ -173,7 +173,7 @@ object TrackACowDataModule {
                 database.execSQL("ALTER TABLE cache_drugs_given_new RENAME TO cache_drugs_given")
 
                 // cacheFeed
-                database.execSQL("CREATE TABLE feed_cache_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("CREATE TABLE feed_cache_new (primaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feed INTEGER NOT NULL, date INTEGER NOT NULL, id TEXT NOT NULL, lotId TEXT NOT NULL, rationCloudId TEXT, whatHappened INTEGER NOT NULL)")
                 database.execSQL("INSERT INTO feed_cache_new (primaryKey, feed, date, id, lotId, whatHappened) SELECT primaryKey, feed, date, id, lotId, whatHappened FROM holdingFeed")
                 database.execSQL("DROP TABLE holdingFeed")
                 database.execSQL("ALTER TABLE feed_cache_new RENAME TO cache_feed")

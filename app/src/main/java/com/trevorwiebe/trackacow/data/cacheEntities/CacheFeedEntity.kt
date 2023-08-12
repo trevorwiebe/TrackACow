@@ -13,5 +13,6 @@ class CacheFeedEntity (
     var date: Long = 0,
     var id: String = "",
     var lotId: String = "",
+    var rationCloudId: String? = "",
     var whatHappened: Int = 0
 )

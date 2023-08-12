@@ -12,5 +12,6 @@ class FeedEntity (
     var feed: Int = 0,
     var date: Long = 0,
     var id: String = "",
-    var lotId: String = ""
+    var lotId: String = "",
+    var rationCloudId: String? = ""
 )

@@ -9,5 +9,6 @@ data class FeedModel(
     var feed: Int = 0,
     var date: Long = 0,
     var id: String = "",
+    var rationCloudId: String? = "",
     var lotId: String = ""
 ) : Parcelable
