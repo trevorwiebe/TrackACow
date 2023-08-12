@@ -51,6 +51,14 @@ class FeedReportsViewModel @AssistedInject constructor(
         getRations()
     }
 
+    fun onEvent(event: FeedReportsUiEvent) {
+        when (event) {
+            is FeedReportsUiEvent.OnDateSelected -> {
+                getFeedListByDateAndLotId(event.lotId, event.startDate, event.endDate)
+            }
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun getFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
         feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate).dataFlow
@@ -77,6 +85,11 @@ class FeedReportsViewModel @AssistedInject constructor(
             .launchIn(viewModelScope)
     }
 
+}
+
+sealed class FeedReportsUiEvent {
+    data class OnDateSelected(val lotId: String, val startDate: Long, val endDate: Long) :
+        FeedReportsUiEvent()
 }
 
 data class FeedReportsUiState(

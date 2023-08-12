@@ -131,7 +131,7 @@ class LotReportActivity : AppCompatActivity() {
 
         mFeedReportsBtn.setOnClickListener {
             val feedReports = Intent(this@LotReportActivity, FeedReportsActivity::class.java)
-            feedReports.putExtra("lotId", mLotId)
+            feedReports.putExtra("lotModel", mSelectedLotModel)
             startActivity(feedReports)
         }
 
@@ -140,6 +140,7 @@ class LotReportActivity : AppCompatActivity() {
                 lotReportViewModel.uiState.collect { lotReportUiState ->
 
                     mSelectedLotModel = lotReportUiState.lotModel
+                    mLotId = mSelectedLotModel?.lotCloudDatabaseId
 
                     title = mSelectedLotModel?.lotName ?: ""
                     mCustomerName.text = mSelectedLotModel?.customerName ?: ""

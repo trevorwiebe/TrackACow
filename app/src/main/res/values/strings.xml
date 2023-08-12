@@ -59,6 +59,7 @@
     Feed Reports
     <string name="feed_reports">Feed Reports</string>
     <string name="ration">Ration</string>
+    <string name="ration_caps">RATION</string>
     <string name="no_feed_in_this_date_range">No feed in this date range</string>
 
     Report Strings
