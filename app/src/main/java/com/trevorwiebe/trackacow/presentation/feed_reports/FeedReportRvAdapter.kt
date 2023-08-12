@@ -6,17 +6,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.R
-import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
+import java.text.NumberFormat
+import java.util.*
 
 class FeedReportRvAdapter :
     RecyclerView.Adapter<FeedReportRvAdapter.FeedReportViewHolder>() {
 
-    private var feedList: List<FeedModel> = emptyList()
+    private var numberFormat = NumberFormat.getInstance(Locale.getDefault())
+    private var feedList: List<FeedAndRationModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedReportViewHolder {
         val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.list_feed_report_item, parent, false)
+                .from(parent.context)
+                .inflate(R.layout.list_feed_report_item, parent, false)
         return FeedReportViewHolder(view)
     }
 
@@ -25,10 +28,11 @@ class FeedReportRvAdapter :
     }
 
     override fun onBindViewHolder(holder: FeedReportViewHolder, position: Int) {
-        holder.amount.text = feedList[position].feed.toString()
+        holder.amount.text = numberFormat.format(feedList[position].feed)
+        holder.ration.text = feedList[position].rationName.toString()
     }
 
-    fun setFeedList(feedList: List<FeedModel>){
+    fun setFeedList(feedList: List<FeedAndRationModel>) {
         this.feedList = feedList
         notifyDataSetChanged()
     }

@@ -425,6 +425,7 @@ class FeedLotDetailFragment : Fragment() {
                 firstFeedModel.id = mFeedFirst.tag?.toString() ?: ""
                 firstFeedModel.date = mPenUiDate
                 firstFeedModel.primaryKey = firstFeedKey as Int
+                firstFeedModel.rationCloudId = mSelectedRation?.rationCloudDatabaseId
                 firstFeedModel.lotId = mPenAndLotModel?.lotCloudDatabaseId ?: ""
                 feedModelList.add(firstFeedModel)
             }
@@ -440,6 +441,7 @@ class FeedLotDetailFragment : Fragment() {
                     feedModel.primaryKey = feedKey as Int
                     feedModel.feed = numberFormatter.parse(amountTextView.toString())?.toInt() ?: 0
                     feedModel.date = mPenUiDate
+                    feedModel.rationCloudId = mSelectedRation?.rationCloudDatabaseId
                     feedModel.lotId = mPenAndLotModel?.lotCloudDatabaseId ?: ""
                     feedModel.id = feedId
                     feedModelList.add(feedModel)

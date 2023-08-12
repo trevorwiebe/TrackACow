@@ -3,7 +3,7 @@ package com.trevorwiebe.trackacow.presentation.feed_reports
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
@@ -46,7 +46,7 @@ class FeedReportsViewModel @AssistedInject constructor(
         val currentTime = System.currentTimeMillis()
         val monthAgo = currentTime - monthInMillis
 
-        getFeedListByDateAndLotId(lotId, monthAgo, currentTime)
+        getRationAndFeedListByDateAndLotId(lotId, monthAgo, currentTime)
 
         getRations()
     }
@@ -54,22 +54,22 @@ class FeedReportsViewModel @AssistedInject constructor(
     fun onEvent(event: FeedReportsUiEvent) {
         when (event) {
             is FeedReportsUiEvent.OnDateSelected -> {
-                getFeedListByDateAndLotId(event.lotId, event.startDate, event.endDate)
+                getRationAndFeedListByDateAndLotId(event.lotId, event.startDate, event.endDate)
             }
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
-        feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate).dataFlow
-            .map { (thisFeedList, source) ->
-                _uiState.update { uiState ->
-                    uiState.copy(
-                        feedList = thisFeedList as List<FeedModel>
-                    )
+    private fun getRationAndFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
+        feedUseCases.readFeedsAndRationsTotalsByLotIdAndDate(lotId, startDate, endDate).dataFlow
+                .map { (thisFeedList, source) ->
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                                feedList = thisFeedList as List<FeedAndRationModel>
+                        )
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(viewModelScope)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -93,6 +93,6 @@ sealed class FeedReportsUiEvent {
 }
 
 data class FeedReportsUiState(
-    val feedList: List<FeedModel> = emptyList(),
-    val rationList: List<RationModel> = emptyList()
+        val feedList: List<FeedAndRationModel> = emptyList(),
+        val rationList: List<RationModel> = emptyList()
 )

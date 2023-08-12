@@ -10,6 +10,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.drug_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.*
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.CreateAndUpdateFeedList
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsAndRationsTotalsByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotIdAndDate
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.ReadFeedsByLotId
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.*
@@ -316,22 +317,27 @@ object ViewModelDomainModule {
         context: Application
     ): FeedUseCases {
         return FeedUseCases(
-            createAndUpdateFeedList = CreateAndUpdateFeedList(
-                feedRepository,
-                feedRepositoryRemote,
-                getCloudDatabaseId,
-                context
-            ),
-            readFeedsByLotId = ReadFeedsByLotId(
-                    feedRepository,
-                    feedRepositoryRemote,
-                    context
-            ),
-            readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
-                    feedRepository,
-                    feedRepositoryRemote,
-                    context
-            )
+                createAndUpdateFeedList = CreateAndUpdateFeedList(
+                        feedRepository,
+                        feedRepositoryRemote,
+                        getCloudDatabaseId,
+                        context
+                ),
+                readFeedsByLotId = ReadFeedsByLotId(
+                        feedRepository,
+                        feedRepositoryRemote,
+                        context
+                ),
+                readFeedsByLotIdAndDate = ReadFeedsByLotIdAndDate(
+                        feedRepository,
+                        feedRepositoryRemote,
+                        context
+                ),
+                readFeedsAndRationsTotalsByLotIdAndDate = ReadFeedsAndRationsTotalsByLotIdAndDate(
+                        feedRepository,
+                        feedRepositoryRemote,
+                        context
+                )
         )
     }
 }

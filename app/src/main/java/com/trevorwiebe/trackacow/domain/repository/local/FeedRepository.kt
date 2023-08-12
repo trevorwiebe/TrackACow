@@ -1,5 +1,6 @@
 package com.trevorwiebe.trackacow.domain.repository.local
 
+import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import kotlinx.coroutines.flow.Flow
@@ -11,10 +12,16 @@ interface FeedRepository {
     fun getFeedsByLotId(lotId: String): Flow<List<FeedModel>>
 
     fun readFeedsByLotIdAndDate(
-        lotId: String,
-        startDate: Long,
-        endDate: Long
+            lotId: String,
+            startDate: Long,
+            endDate: Long
     ): Flow<List<FeedModel>>
+
+    fun readFeedsAndRationTotalByLotIdAndDate(
+            lotId: String,
+            startDate: Long,
+            endDate: Long
+    ): Flow<List<FeedAndRationModel>>
 
     suspend fun updateFeedsWithNewLot(lotId: String, oldLotIds: List<String>)
 

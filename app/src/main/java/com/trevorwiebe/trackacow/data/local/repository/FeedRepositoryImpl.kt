@@ -2,10 +2,12 @@ package com.trevorwiebe.trackacow.data.local.repository
 
 import com.trevorwiebe.trackacow.data.local.cacheDao.CacheFeedDao
 import com.trevorwiebe.trackacow.data.local.dao.FeedDao
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toFeedAndRationModel
 import com.trevorwiebe.trackacow.data.mapper.toCacheFeedEntity
 import com.trevorwiebe.trackacow.data.mapper.toCacheFeedModel
 import com.trevorwiebe.trackacow.data.mapper.toFeedEntity
 import com.trevorwiebe.trackacow.data.mapper.toFeedModel
+import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.repository.local.FeedRepository
@@ -29,14 +31,21 @@ class FeedRepositoryImpl(
     }
 
     override fun readFeedsByLotIdAndDate(
-        lotId: String,
-        startDate: Long,
-        endDate: Long
+            lotId: String,
+            startDate: Long,
+            endDate: Long
     ): Flow<List<FeedModel>> {
         return feedDao.getFeedsByLotIdAndDate(lotId, startDate, endDate)
-            .map { feedList ->
-                feedList.map { it.toFeedModel() }
-            }
+                .map { feedList ->
+                    feedList.map { it.toFeedModel() }
+                }
+    }
+
+    override fun readFeedsAndRationTotalByLotIdAndDate(lotId: String, startDate: Long, endDate: Long): Flow<List<FeedAndRationModel>> {
+        return feedDao.getFeedsAndRationsTotalsByLotIdAndDate(lotId, startDate, endDate)
+                .map { feedList ->
+                    feedList.map { it.toFeedAndRationModel() }
+                }
     }
 
     override suspend fun updateFeedsWithNewLot(lotId: String, oldLotIds: List<String>) {
