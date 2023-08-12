@@ -11,9 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.lot_reports.LotReportActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,7 @@ class ArchivesActivity : AppCompatActivity() {
     private val archiveRvAdapter = ArchiveRvAdapter()
     private var archivedLotModels: List<LotModel> = emptyList()
     private lateinit var mNoArchives: TextView
+    private lateinit var mProgressIndicator: LinearProgressIndicator
 
     private val mArchivesViewModel: ArchivesViewModel by viewModels()
 
@@ -33,6 +36,7 @@ class ArchivesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_archives)
 
         mNoArchives = findViewById(R.id.no_archives)
+        mProgressIndicator = findViewById(R.id.archives_progress_indicator)
         val archiveRv = findViewById<RecyclerView>(R.id.archive_rv)
         archiveRv.layoutManager = LinearLayoutManager(this)
         archiveRv.adapter = archiveRvAdapter
@@ -61,6 +65,13 @@ class ArchivesActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mArchivesViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressIndicator.visibility = View.VISIBLE
+                    } else {
+                        mProgressIndicator.visibility = View.GONE
+                    }
+
                     archivedLotModels = it.archivedLotList
 
                     if (archivedLotModels.isEmpty()) {
