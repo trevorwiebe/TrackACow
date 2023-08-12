@@ -23,5 +23,4 @@ object Constants {
 
     // Manage Ration Type
     const val ADD_RATION = 1
-    const val EDIT_RATION = 2
 }

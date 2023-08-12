@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddLotAndLoadViewModel @Inject constructor(
     val lotUseCases: LotUseCases,
-    val loadUseCases: LoadUseCases
+    private val loadUseCases: LoadUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddLotAndLoadState())

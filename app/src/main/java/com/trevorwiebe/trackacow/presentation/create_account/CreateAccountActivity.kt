@@ -7,7 +7,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -84,8 +83,8 @@ class CreateAccountActivity : AppCompatActivity() {
                                     .setDisplayName(name)
                                     .build()
                                 user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener { update_task ->
-                                        if (update_task.isSuccessful) {
+                                    .addOnCompleteListener { updateTask ->
+                                        if (updateTask.isSuccessful) {
                                             val intent = Intent(
                                                 this@CreateAccountActivity,
                                                 MainActivity::class.java
@@ -95,7 +94,7 @@ class CreateAccountActivity : AppCompatActivity() {
                                             startActivity(intent)
                                         } else {
                                             val errorMessage =
-                                                update_task.exception?.localizedMessage
+                                                updateTask.exception?.localizedMessage
                                             showMessage(
                                                 "Could not set name to account",
                                                 errorMessage
@@ -115,7 +114,7 @@ class CreateAccountActivity : AppCompatActivity() {
         mCreateAccountWithGoogleBtn.setOnClickListener { openGoogleSignInForResult() }
     }
 
-    var signInActivity = registerForActivityResult<Intent, ActivityResult>(
+    var signInActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {

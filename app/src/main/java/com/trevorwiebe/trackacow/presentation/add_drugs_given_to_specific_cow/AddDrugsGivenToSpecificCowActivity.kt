@@ -205,7 +205,7 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         linearLayout.addView(cardView)
     }
 
-    var cardViewClickListener = View.OnClickListener { v ->
+    private var cardViewClickListener = View.OnClickListener { v ->
         val cardViewTag = v.tag.toString()
         val drugId = cardViewTag.split("#".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()[0]
@@ -213,18 +213,19 @@ class AddDrugsGivenToSpecificCowActivity : AppCompatActivity() {
         val checkBox = linearLayout.findViewWithTag<CheckBox>("$drugId#checkBox")
         checkBox.isChecked = !checkBox.isChecked
     }
-    var checkedChangeListener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-        val linearLayout = buttonView.parent as LinearLayout
-        val cardView = linearLayout.parent as CardView
-        if (isChecked) {
-            cardView.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    this,
-                    R.color.colorAccentVeryLight
+    private var checkedChangeListener =
+        CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            val linearLayout = buttonView.parent as LinearLayout
+            val cardView = linearLayout.parent as CardView
+            if (isChecked) {
+                cardView.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.colorAccentVeryLight
+                    )
                 )
-            )
-        } else {
-            cardView.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
+            } else {
+                cardView.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
+            }
         }
-    }
 }

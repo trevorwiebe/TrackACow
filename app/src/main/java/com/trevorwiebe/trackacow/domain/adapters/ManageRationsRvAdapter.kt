@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
-class ManageRationsRvAdapter() :
+class ManageRationsRvAdapter :
     RecyclerView.Adapter<ManageRationsRvAdapter.ManageRationViewHolder>() {
 
     private var rationsList: List<RationModel> = emptyList()

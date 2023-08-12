@@ -96,7 +96,7 @@ fun <T, U> combineQueryDatabaseNodes(
                 }
             }
             value1Returned = true
-            if (value1Returned && value2Returned) {
+            if (value2Returned) {
                 trySend(Pair(list1, list2))
             }
         }
@@ -117,7 +117,7 @@ fun <T, U> combineQueryDatabaseNodes(
                 }
             }
             value2Returned = true
-            if (value1Returned && value2Returned) {
+            if (value1Returned) {
                 trySend(Pair(list1, list2))
             }
         }

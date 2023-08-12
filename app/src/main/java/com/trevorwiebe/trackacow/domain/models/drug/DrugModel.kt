@@ -1,8 +1,7 @@
 package com.trevorwiebe.trackacow.domain.models.drug
 
 import android.os.Parcelable
-import com.trevorwiebe.trackacow.domain.use_cases.GetCloudDatabaseId
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DrugModel (

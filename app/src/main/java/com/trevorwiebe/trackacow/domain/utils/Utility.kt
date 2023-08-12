@@ -184,18 +184,22 @@ object Utility {
     }
 
     fun getFragmentIdFromResourceID(id: Int): Int {
-        return if (id == R.id.action_medicate) Constants.MEDICATE
-        else if (id == R.id.action_feed) Constants.FEED
-        else if (id == R.id.action_reports) Constants.REPORTS
-        else if (id == R.id.action_more) Constants.MORE
-        else Constants.MOVE
+        return when (id) {
+            R.id.action_medicate -> Constants.MEDICATE
+            R.id.action_feed -> Constants.FEED
+            R.id.action_reports -> Constants.REPORTS
+            R.id.action_more -> Constants.MORE
+            else -> Constants.MOVE
+        }
     }
 
     fun getResourceIdFromFragmentId(id: Int): Int {
-        return if (id == Constants.MEDICATE) R.id.action_medicate
-        else if (id == Constants.FEED) R.id.action_feed
-        else if (id == Constants.REPORTS) R.id.action_reports
-        else if (id == Constants.MORE) R.id.action_more
-        else Constants.MOVE
+        return when (id) {
+            R.id.action_medicate -> Constants.MEDICATE
+            R.id.action_feed -> Constants.FEED
+            R.id.action_reports -> Constants.REPORTS
+            R.id.action_more -> Constants.MORE
+            else -> Constants.MOVE
+        }
     }
 }

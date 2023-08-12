@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_upload_data"
         android:icon="@drawable/ic_baseline_cloud_upload_24"
-        android:title="Data to upload"
+        android:title="@string/data_to_upload"
         app:showAsAction="ifRoom" />
 
 </menu>

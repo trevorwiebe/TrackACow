@@ -1,7 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.feed_reports
 
-import android.icu.number.LocalizedNumberFormatter
-import android.icu.number.NumberFormatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 
-class FeedReportRvAdapter() :
-    RecyclerView.Adapter<FeedReportRvAdapter.FeedReportViewHolder> (){
+class FeedReportRvAdapter :
+    RecyclerView.Adapter<FeedReportRvAdapter.FeedReportViewHolder>() {
 
     private var feedList: List<FeedModel> = emptyList()
 

@@ -9,7 +9,7 @@ import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.presentation.drugs_given_reports.TimeDrugRvAdapter.DayViewHolder
 
-class TimeDrugRvAdapter() : RecyclerView.Adapter<DayViewHolder>() {
+class TimeDrugRvAdapter : RecyclerView.Adapter<DayViewHolder>() {
 
     private var drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList()
 

@@ -22,7 +22,7 @@ class AddEditPensActivity : AppCompatActivity() {
 
     private val mAddEditPenViewModel: AddEditPensViewModel by viewModels()
 
-    var mPenAndLotModel: PenAndLotModel? = null
+    private var mPenAndLotModel: PenAndLotModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

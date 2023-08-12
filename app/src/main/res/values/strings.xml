@@ -41,6 +41,8 @@
     </plurals>
     <string name="this_cow_has_been_medicated">This cow has been medicated</string>
     <string name="cow_is_dead_and_medicated">This cow is dead and has been medicated</string>
+    <string name="data_to_upload">Data to Upload</string>
+    <string name="edit">Edit</string>
 
     Feed Fragment Strings
     <string name="feed">Feed</string>

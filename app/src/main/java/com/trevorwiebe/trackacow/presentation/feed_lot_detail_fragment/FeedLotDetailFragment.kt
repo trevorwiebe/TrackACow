@@ -40,9 +40,9 @@ import java.util.*
 import javax.inject.Inject
 
 
-private const val pen_and_lot_param = "pen_and_lot_param"
-private const val ration_list_param = "ration_list_param"
-private const val pen_ui_date_param = "pen_ui_date_param"
+private const val penAndLotParam = "pen_and_lot_param"
+private const val rationListParam = "ration_list_param"
+private const val penUiDateParam = "pen_ui_date_param"
 
 @AndroidEntryPoint
 class FeedLotDetailFragment : Fragment() {
@@ -85,11 +85,11 @@ class FeedLotDetailFragment : Fragment() {
         arguments?.let {
             @Suppress("DEPRECATION")
             mPenAndLotModel = if (Build.VERSION.SDK_INT >= 33) {
-                it.getParcelable(pen_and_lot_param, PenAndLotModel::class.java)
+                it.getParcelable(penAndLotParam, PenAndLotModel::class.java)
             } else {
-                it.getParcelable(pen_and_lot_param)
+                it.getParcelable(penAndLotParam)
             }
-            mPenUiDate = it.getLong(pen_ui_date_param)
+            mPenUiDate = it.getLong(penUiDateParam)
         }
     }
 
@@ -308,9 +308,9 @@ class FeedLotDetailFragment : Fragment() {
                 penUiDate: Long
         ) = FeedLotDetailFragment().apply {
             arguments = Bundle().apply {
-                putParcelable(pen_and_lot_param, newPenAndLotModel)
-                putParcelableArrayList(ration_list_param, rationList)
-                putLong(pen_ui_date_param, penUiDate)
+                putParcelable(penAndLotParam, newPenAndLotModel)
+                putParcelableArrayList(rationListParam, rationList)
+                putLong(penUiDateParam, penUiDate)
             }
         }
     }

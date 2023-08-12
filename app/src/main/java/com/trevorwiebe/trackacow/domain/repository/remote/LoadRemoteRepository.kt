@@ -2,7 +2,6 @@ package com.trevorwiebe.trackacow.domain.repository.remote
 
 import com.trevorwiebe.trackacow.domain.models.load.CacheLoadModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
-import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import kotlinx.coroutines.flow.Flow
 
 interface LoadRemoteRepository {

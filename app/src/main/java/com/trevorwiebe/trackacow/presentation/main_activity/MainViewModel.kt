@@ -27,10 +27,6 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
-    init {
-
-    }
-
     fun onEvent(event: MainUiEvent) {
         when (event) {
             is MainUiEvent.OnInitiateCloudDatabaseMigration -> {

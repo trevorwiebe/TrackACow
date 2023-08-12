@@ -16,17 +16,3 @@ fun CallAndRationEntity.toCallAndRationModel(): CallAndRationModel{
         rationName = rationName
     )
 }
-
-fun CallAndRationModel.toCallAndRationEntity(): CallAndRationEntity{
-    return CallAndRationEntity(
-        callPrimaryKey = callPrimaryKey,
-        callAmount  = callAmount,
-        date = date,
-        lotId = lotId,
-        callRationId = callRationId,
-        callCloudDatabaseId = callCloudDatabaseId,
-        rationPrimaryKey = rationPrimaryKey,
-        rationCloudDatabaseId = rationCloudDatabaseId,
-        rationName = rationName
-    )
-}

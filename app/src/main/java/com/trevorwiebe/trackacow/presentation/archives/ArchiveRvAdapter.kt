@@ -27,7 +27,7 @@ class ArchiveRvAdapter : RecyclerView.Adapter<ArchiveViewHolder>() {
     override fun onBindViewHolder(archiveViewHolder: ArchiveViewHolder, i: Int) {
         val archivedLotEntity = archivedLotEntities[i]
         val name = archivedLotEntity.lotName
-        val date = archivedLotEntity.dateArchived!!
+        val date = archivedLotEntity.dateArchived
         val strDate = Utility.convertMillisToDate(date)
         archiveViewHolder.mArchiveLotName.text = name
         val dateString = "Archived: $strDate"

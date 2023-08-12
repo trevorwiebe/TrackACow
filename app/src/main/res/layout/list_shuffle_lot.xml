@@ -23,6 +23,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_reorder_gray_24dp"
+        android:contentDescription="@string/reorder_lots"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

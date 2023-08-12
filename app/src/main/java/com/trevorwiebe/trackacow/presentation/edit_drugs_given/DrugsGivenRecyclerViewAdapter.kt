@@ -11,7 +11,7 @@ import com.trevorwiebe.trackacow.presentation.edit_drugs_given.DrugsGivenRecycle
 import java.text.NumberFormat
 import java.util.*
 
-class DrugsGivenRecyclerViewAdapter() : RecyclerView.Adapter<DrugsGivenViewHolder>() {
+class DrugsGivenRecyclerViewAdapter : RecyclerView.Adapter<DrugsGivenViewHolder>() {
 
     private val format = NumberFormat.getInstance(Locale.getDefault())
     private var drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList()
