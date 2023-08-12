@@ -38,6 +38,7 @@ class FeedReportsActivity : AppCompatActivity() {
 
     private var mStartCalender = Calendar.getInstance()
     private var mEndCalender = Calendar.getInstance()
+    private var mDateCriteriaType = Constants.ALL
 
     @Inject
     lateinit var feedReportsViewModelFactory: FeedReportsViewModel.FeedReportsViewModelFactory
@@ -66,9 +67,6 @@ class FeedReportsActivity : AppCompatActivity() {
         mQuickAll = findViewById(R.id.quick_feed_all)
         mNoFeed = findViewById(R.id.feed_no_feeds)
 
-        mStartBtn.text = Utility.convertMillisToDate(System.currentTimeMillis())
-        mEndBtn.text = Utility.convertMillisToDate(System.currentTimeMillis())
-
         @Suppress("DEPRECATION")
         val lotModel = if (Build.VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("lotModel", LotModel::class.java)
@@ -76,6 +74,36 @@ class FeedReportsActivity : AppCompatActivity() {
             intent.getParcelableExtra("lotModel")
         }
         val lotId = lotModel?.lotCloudDatabaseId ?: ""
+
+        title = "Feed Reports: ${lotModel?.lotName}"
+
+        if (savedInstanceState != null) {
+            val startDate = savedInstanceState.getLong("startLong")
+            val endDate = savedInstanceState.getLong("endLong")
+            mStartCalender.timeInMillis = startDate
+            mEndCalender.timeInMillis = endDate
+            mStartBtn.text = Utility.convertMillisToDate(startDate)
+            mEndBtn.text = Utility.convertMillisToDate(endDate)
+            mDateCriteriaType = savedInstanceState.getInt("dateCriteriaType")
+            setSelectedButton(mDateCriteriaType)
+        } else {
+            val millisInDay: Long = 86400000
+            val today = System.currentTimeMillis()
+            val yesterday = today - millisInDay
+            mStartCalender.timeInMillis = yesterday
+            mEndCalender.timeInMillis = System.currentTimeMillis()
+            val startLong = mStartCalender.timeInMillis
+            val endLong = mEndCalender.timeInMillis
+            mStartBtn.text = Utility.convertMillisToDate(startLong)
+            mEndBtn.text = Utility.convertMillisToDate(endLong)
+            setSelectedButton(Constants.YESTERDAY)
+
+            feedReportViewModel.onEvent(
+                FeedReportsUiEvent.OnDateSelected(
+                    lotId, startLong, endLong
+                )
+            )
+        }
 
         val startDatePicker = OnDateSetListener { view, year, month, dayOfMonth ->
             mStartCalender[Calendar.YEAR] = year
@@ -160,18 +188,25 @@ class FeedReportsActivity : AppCompatActivity() {
 
         mQuickAll.setOnClickListener {
             if (lotModel != null) {
-                val lotStart = lotModel.date
+
+                mStartCalender.timeInMillis = lotModel.date
+                mStartCalender.set(Calendar.MILLISECOND, 0)
+                mStartCalender.set(Calendar.SECOND, 0)
+                mStartCalender.set(Calendar.MINUTE, 0)
+                mStartCalender.set(Calendar.HOUR, 0)
+
+                val startDate = mStartCalender.timeInMillis
                 val endDate = System.currentTimeMillis()
 
-                mStartCalender.timeInMillis = lotStart
                 mEndCalender.timeInMillis = endDate
-                mStartBtn.text = Utility.convertMillisToDate(lotStart)
+
+                mStartBtn.text = Utility.convertMillisToDate(startDate)
                 mEndBtn.text = Utility.convertMillisToDate(endDate)
 
                 feedReportViewModel.onEvent(
                     FeedReportsUiEvent.OnDateSelected(
                         lotId,
-                        lotStart,
+                        startDate,
                         endDate
                     )
                 )
@@ -216,7 +251,15 @@ class FeedReportsActivity : AppCompatActivity() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong("startLong", mStartCalender.timeInMillis)
+        outState.putLong("endLong", mEndCalender.timeInMillis)
+        outState.putInt("dateCriteriaType", mDateCriteriaType)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun setSelectedButton(reportType: Int) {
+        mDateCriteriaType = reportType
         when (reportType) {
             Constants.YESTERDAY -> {
                 mQuickLast24Hrs.background =
