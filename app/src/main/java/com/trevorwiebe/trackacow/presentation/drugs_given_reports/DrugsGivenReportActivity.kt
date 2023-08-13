@@ -16,9 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -36,6 +38,7 @@ class DrugsGivenReportActivity : AppCompatActivity() {
     private lateinit var mEndDatePicker: OnDateSetListener
     private lateinit var mNoDrugsGivenTv: TextView
     private lateinit var mDrugsReportRV: RecyclerView
+    private lateinit var mProgressIndicator: LinearProgressIndicator
     private lateinit var mStartDateButton: Button
     private lateinit var mEndDateButton: Button
     private lateinit var mLast24HRs: Button
@@ -54,11 +57,13 @@ class DrugsGivenReportActivity : AppCompatActivity() {
         mQuickMonth = findViewById(R.id.quick_month)
         mQuickAll = findViewById(R.id.quick_all)
         mNoDrugsGivenTv = findViewById(R.id.no_drugs_given_report_tv)
+        mProgressIndicator = findViewById(R.id.drugs_given_report_progress_indicator)
         mDrugsReportRV = findViewById(R.id.drug_report_rv)
         mDrugsReportRV.layoutManager = LinearLayoutManager(this)
         timeDrugRvAdapter = TimeDrugRvAdapter()
         mDrugsReportRV.adapter = timeDrugRvAdapter
 
+        @Suppress("DEPRECATION")
         mLotModel = if (VERSION.SDK_INT >= 33) {
             intent.getParcelableExtra("lotModel", LotModel::class.java)
         } else {
@@ -221,6 +226,12 @@ class DrugsGivenReportActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 drugsGivenViewModel.uiState.collect { drugsGivenUiState ->
+
+                    if (drugsGivenUiState.isFetchingFromCloud && drugsGivenUiState.dataSource == DataSource.Local) {
+                        mProgressIndicator.visibility = View.VISIBLE
+                    } else {
+                        mProgressIndicator.visibility = View.GONE
+                    }
 
                     if (drugsGivenUiState.drugsGivenAndDrugList.isEmpty()) {
                         mNoDrugsGivenTv.visibility = View.VISIBLE

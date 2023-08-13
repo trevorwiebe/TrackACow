@@ -38,6 +38,7 @@ class ReadDrugsGivenAndDrugsByLotIdAndDate(
 
         val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
 
+        // TODO: fix the issue where only local db is returned
         val flowResult = if (isFetchingFromCloud) {
             localFlow.flatMapConcat { (localData, source) ->
                 cloudDrugGivenFlow.flatMapConcat { (pair, source) ->

@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,8 +19,6 @@ class DrugsGivenViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(DrugsGivenUiState())
     val uiState: StateFlow<DrugsGivenUiState> = _uiState.asStateFlow()
-
-    private var drugsGivenJob: Job? = null
 
     fun onEvent(event: DrugsGivenUiEvent) {
         when (event) {
@@ -32,31 +31,31 @@ class DrugsGivenViewModel @Inject constructor(
         }
     }
 
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getDrugsGivenByDates(lotId: String, startDate: Long, endDate: Long) {
-        drugsGivenJob?.cancel()
-        drugsGivenJob =
-            drugsGivenUseCases.readDrugsGivenAndDrugsByLotIdAndDate(
-                lotId,
-                startDate,
-                endDate
-            ).dataFlow
-                .map { (thisDrugsAndDrugsModelList, source) ->
-                    _uiState.update {
-                        it.copy(
-                            drugsGivenAndDrugList = calculateDrugsGiven.invoke(
-                                thisDrugsAndDrugsModelList as List<DrugsGivenAndDrugModel>
-                            )
-                        )
-                    }
+        val drugsGiven = drugsGivenUseCases.readDrugsGivenAndDrugsByLotIdAndDate(
+            lotId, startDate, endDate
+        )
+        viewModelScope.launch {
+            drugsGiven.dataFlow.map { (thisDrugsAndDrugsModelList, source) ->
+                _uiState.update {
+                    it.copy(
+                        drugsGivenAndDrugList = calculateDrugsGiven.invoke(
+                            thisDrugsAndDrugsModelList as List<DrugsGivenAndDrugModel>
+                        ),
+                        isFetchingFromCloud = drugsGiven.isFetchingFromCloud,
+                        dataSource = source
+                    )
                 }
-                .launchIn(viewModelScope)
+            }
+        }
     }
 }
 
 data class DrugsGivenUiState(
-    val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList()
+    val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList(),
+    val isFetchingFromCloud: Boolean = false,
+    val dataSource: DataSource = DataSource.Local
 )
 
 sealed class DrugsGivenUiEvent {
