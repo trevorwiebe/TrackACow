@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,10 +17,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.edit_drugs_given.EditDrugsGivenListActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +49,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
     private val mCalendar = Calendar.getInstance()
 
     private lateinit var mCowIsDead: CardView
+    private lateinit var mProgressIndicator: LinearProgressIndicator
     private lateinit var mEditTagNumber: TextInputEditText
     private lateinit var mEditDate: TextInputEditText
     private lateinit var mEditNotes: TextInputEditText
@@ -59,6 +63,7 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_medicated_cow)
         mCowIsDead = findViewById(R.id.cow_is_dead_card)
+        mProgressIndicator = findViewById(R.id.edit_cow_progress_indicator)
         mUpdateBtn = findViewById(R.id.update_medicated_cow)
         mDeleteBtn = findViewById(R.id.delete_medicated_cow)
         mEditDrugsGiven = findViewById(R.id.edit_drugs_given)
@@ -118,6 +123,16 @@ class EditMedicatedCowActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 editMedicatedCowViewModel.uiState.collect {
+
+                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local) ||
+                        (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local)
+                    ) {
+                        mProgressIndicator.visibility = View.VISIBLE
+                    } else {
+                        mProgressIndicator.visibility = View.GONE
+                    }
+
+                    Log.d("TAG", "onCreate: ${it.drugDataSource} = ${it.drugIsFetchingFromCloud}")
                     mCowModel = it.cowModel
 
                     val strTagNumber = mCowModel?.tagNumber.toString()

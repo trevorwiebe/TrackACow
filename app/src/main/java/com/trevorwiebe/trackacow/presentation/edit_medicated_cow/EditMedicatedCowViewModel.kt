@@ -7,15 +7,13 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugM
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -44,9 +42,6 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
         }
     }
 
-    private var cowJob: Job? = null
-    private var drugJob: Job? = null
-
     private val _uiState = MutableStateFlow(EditMedicatedCowUiState())
     val uiState: StateFlow<EditMedicatedCowUiState> = _uiState.asStateFlow()
 
@@ -71,29 +66,35 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: add progress bar
-
     private fun readCow(cowId: String) {
-        cowJob?.cancel()
-        cowJob = cowUseCases.readCowByCowId(cowId).dataFlow
-            .map { (thisCowModel, source) ->
+        val cow = cowUseCases.readCowByCowId(cowId)
+        viewModelScope.launch {
+            cow.dataFlow.collect { (thisCowModel, source) ->
                 _uiState.update {
-                    it.copy(cowModel = thisCowModel as CowModel)
+                    it.copy(
+                        cowModel = thisCowModel as CowModel,
+                        cowDataSource = source,
+                        cowIsFetchingFromCloud = cow.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenByCowId(cowId: String) {
-        drugJob?.cancel()
-        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId)).dataFlow
-            .map { (thisDrugList, source) ->
+        val drug = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId))
+        viewModelScope.launch {
+            drug.dataFlow.collect { (thisDrugList, source) ->
                 _uiState.update {
-                    it.copy(drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>)
+                    it.copy(
+                        drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>,
+                        drugDataSource = source,
+                        drugIsFetchingFromCloud = drug.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun updateCow(cowModel: CowModel) {
@@ -118,7 +119,11 @@ class EditMedicatedCowViewModel @AssistedInject constructor(
 
 data class EditMedicatedCowUiState(
     val cowModel: CowModel? = null,
-    val drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList()
+    val cowDataSource: DataSource = DataSource.Local,
+    val cowIsFetchingFromCloud: Boolean = false,
+    val drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList(),
+    val drugDataSource: DataSource = DataSource.Local,
+    val drugIsFetchingFromCloud: Boolean = false
 )
 
 sealed class EditMedicatedCowUiEvent {

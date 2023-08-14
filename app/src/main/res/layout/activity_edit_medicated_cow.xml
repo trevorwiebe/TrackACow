@@ -1,170 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.edit_medicated_cow.EditMedicatedCowActivity">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/edit_cow_progress_indicator"
+        android:indeterminate="true"
+        app:indicatorColor="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <androidx.cardview.widget.CardView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.edit_medicated_cow.EditMedicatedCowActivity">
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:cardCornerRadius="3dp"
-            android:layout_margin="5dp"
-            android:id="@+id/cow_is_dead_card">
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="3dp"
+                android:layout_margin="5dp"
+                android:id="@+id/cow_is_dead_card">
+
+                <LinearLayout
+                    android:background="@color/redText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:padding="16dp"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white"
+                        android:text="@string/this_cow_is_dead"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:inputType="number"
+                    android:ems="7"
+                    android:selectAllOnFocus="true"
+                    android:id="@+id/edit_tag_number"
+                    android:hint="@string/tag_number"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:inputType="textCapSentences"
+                    android:id="@+id/edit_date"
+                    android:hint="@string/date"
+                    android:textSize="16sp"
+                    android:ems="7"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="top"
+                    android:hint="@string/memo"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:textSize="16sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <LinearLayout
-                android:background="@color/redText"
+                android:id="@+id/drugs_given_layout"
+                android:orientation="vertical"
+                android:background="@color/lightGray"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:textStyle="bold"
-                    android:padding="16dp"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/white"
-                    android:text="@string/this_cow_is_dead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/drugs_given"
+                    android:textColor="@color/colorAccent"
+                    style="@style/Base.TextAppearance.AppCompat.Button" />
+
+                <LinearLayout
+                    android:id="@+id/drug_given_layout"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/edit_drugs_given"
+                    android:text="@string/edit_drugs_given"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:layout_margin="24dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/white_sign_in_btn"
+                    android:textColor="@color/colorAccent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:inputType="number"
-                android:ems="7"
-                android:selectAllOnFocus="true"
-                android:id="@+id/edit_tag_number"
-                android:hint="@string/tag_number"
-                android:textSize="16sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:inputType="textCapSentences"
-                android:id="@+id/edit_date"
-                android:hint="@string/date"
-                android:textSize="16sp"
-                android:ems="7"
-                android:focusableInTouchMode="false"
-                android:focusable="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_notes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="top"
-                android:hint="@string/memo"
-                android:inputType="textCapSentences|textMultiLine"
-                android:textSize="16sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <LinearLayout
-            android:id="@+id/drugs_given_layout"
-            android:orientation="vertical"
-            android:background="@color/lightGray"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+            <Button
+                android:id="@+id/update_medicated_cow"
+                android:background="@drawable/accent_sign_in_btn"
+                android:textColor="@android:color/white"
+                android:text="@string/update"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/drugs_given"
-                android:textColor="@color/colorAccent"
-                style="@style/Base.TextAppearance.AppCompat.Button"/>
-
-            <LinearLayout
-                android:id="@+id/drug_given_layout"
-                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
+                android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/edit_drugs_given"
-                android:text="@string/edit_drugs_given"
-                android:paddingRight="16dp"
-                android:paddingLeft="16dp"
-                android:layout_margin="24dp"
-                android:layout_gravity="center_horizontal"
+                android:id="@+id/delete_medicated_cow"
                 android:background="@drawable/white_sign_in_btn"
-                android:textColor="@color/colorAccent"
-                android:layout_width="wrap_content"
+                android:textColor="@color/redText"
+                android:text="@string/delete"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/update_medicated_cow"
-            android:background="@drawable/accent_sign_in_btn"
-            android:textColor="@android:color/white"
-            android:text="@string/update"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    </ScrollView>
 
-        <Button
-            android:id="@+id/delete_medicated_cow"
-            android:background="@drawable/white_sign_in_btn"
-            android:textColor="@color/redText"
-            android:text="@string/delete"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>
