@@ -13,9 +13,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.add_drugs_given_to_specific_cow.AddDrugsGivenToSpecificCowActivity
 import com.trevorwiebe.trackacow.presentation.edit_drugs_given_to_specific.EditDrugsGivenToSpecificCowActivity
@@ -29,6 +31,7 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
     private lateinit var mDrugsGivenRv: RecyclerView
     private lateinit var mNoDrugsGiven: TextView
     private lateinit var mAddNewDrugGiven: FloatingActionButton
+    private lateinit var mProgressBar: LinearProgressIndicator
 
     private lateinit var drugsGivenRecyclerViewAdapter: DrugsGivenRecyclerViewAdapter
     private var mCowModel: CowModel? = null
@@ -62,6 +65,7 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
 
         mNoDrugsGiven = findViewById(R.id.edit_drugs_no_drugs_given)
         mAddNewDrugGiven = findViewById(R.id.edit_drugs_add_new_drug)
+        mProgressBar = findViewById(R.id.edit_drugs_progress_bar)
 
         mDrugsGivenRv = findViewById(R.id.drugs_given_rv)
         mDrugsGivenRv.layoutManager = LinearLayoutManager(this)
@@ -88,11 +92,10 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
         )
 
         mAddNewDrugGiven.setOnClickListener {
-            val addNewDrugIntent =
-                    Intent(
-                            this@EditDrugsGivenListActivity,
-                            AddDrugsGivenToSpecificCowActivity::class.java
-                    )
+            val addNewDrugIntent = Intent(
+                this@EditDrugsGivenListActivity,
+                AddDrugsGivenToSpecificCowActivity::class.java
+            )
             addNewDrugIntent.putExtra("cowModel", mCowModel)
             startActivity(addNewDrugIntent)
         }
@@ -100,6 +103,12 @@ class EditDrugsGivenListActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 editDrugsGivenListViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
 
                     mDrugsGivenList = it.drugsGivenList
 

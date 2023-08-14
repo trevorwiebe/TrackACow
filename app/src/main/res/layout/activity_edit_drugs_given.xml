@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".presentation.edit_drugs_given.EditDrugsGivenListActivity">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/edit_drugs_progress_bar"
+        app:indicatorColor="@color/colorAccent"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/drugs_given_rv"
         android:layout_width="match_parent"

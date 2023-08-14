@@ -5,16 +5,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugModel
 import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGivenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class EditDrugsGivenListViewModel @AssistedInject constructor(
         private val drugsGivenUseCases: DrugsGivenUseCases,
@@ -44,25 +43,28 @@ class EditDrugsGivenListViewModel @AssistedInject constructor(
         }
     }
 
-    private var drugJob: Job? = null
-
     private val _uiState = MutableStateFlow(EditDrugsGivenListUiState())
     val uiState: StateFlow<EditDrugsGivenListUiState> = _uiState.asStateFlow()
 
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDrugsGivenByCowId(cowId: String) {
-        drugJob?.cancel()
-        drugJob = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId)).dataFlow
-            .map { (thisDrugList, source) ->
+        val drugUses = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(listOf(cowId))
+        viewModelScope.launch {
+            drugUses.dataFlow.collect { (thisDrugList, source) ->
                 _uiState.update {
-                    it.copy(drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>)
+                    it.copy(
+                        drugsGivenList = thisDrugList as List<DrugsGivenAndDrugModel>,
+                        dataSource = source,
+                        isFetchingFromCloud = drugUses.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     data class EditDrugsGivenListUiState(
-            val drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList()
+        val drugsGivenList: List<DrugsGivenAndDrugModel> = emptyList(),
+        val isFetchingFromCloud: Boolean = false,
+        val dataSource: DataSource = DataSource.Local
     )
 }
