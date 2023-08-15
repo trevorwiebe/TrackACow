@@ -17,11 +17,13 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -36,7 +38,9 @@ class MarkACowDeadActivity : AppCompatActivity() {
     private lateinit var mDate: TextInputEditText
     private lateinit var mNotes: TextInputEditText
     private lateinit var mAddNotesLayout: TextInputLayout
+    private lateinit var mProgressBar: CircularProgressIndicator
     private lateinit var mAddNotes: Button
+    private lateinit var mMarkAsDead: Button
     private lateinit var mStartDatePicker: OnDateSetListener
 
     private var mCalendar = Calendar.getInstance()
@@ -76,9 +80,11 @@ class MarkACowDeadActivity : AppCompatActivity() {
         mDeadCowCard = findViewById(R.id.cow_is_dead_already_card)
         mTagNumber = findViewById(R.id.deads_tag_number)
         mDate = findViewById(R.id.deads_date)
+        mProgressBar = findViewById(R.id.mark_dead_progress_bar)
         mNotes = findViewById(R.id.deads_notes)
         mAddNotesLayout = findViewById(R.id.dead_notes_layout)
         mAddNotes = findViewById(R.id.dead_add_notes_btn)
+        mMarkAsDead = findViewById(R.id.save_medicated_cow)
         mTagNumber.setOnEditorActionListener(doneListener)
         mNotes.setOnEditorActionListener(doneListener)
         mDate.setText(Utility.convertMillisToDate(mCalendar.timeInMillis))
@@ -126,6 +132,11 @@ class MarkACowDeadActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 markACowDeadViewModel.uiState.collect {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        setLoading(true)
+                    } else {
+                        setLoading(false)
+                    }
                     mDeadCowList = it.deadCowList.toMutableList()
                 }
             }
@@ -178,5 +189,14 @@ class MarkACowDeadActivity : AppCompatActivity() {
         mCalendar = Calendar.getInstance()
         mDate.setText(Utility.convertMillisToDate(mCalendar.timeInMillis))
         mTagNumber.requestFocus()
+    }
+
+    fun setLoading(loading: Boolean) {
+        mMarkAsDead.isActivated = loading
+        if (loading) {
+            mProgressBar.visibility = View.VISIBLE
+        } else {
+            mProgressBar.visibility = View.GONE
+        }
     }
 }

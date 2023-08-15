@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -36,8 +36,6 @@ class MarkACowDeadViewModel @AssistedInject constructor(
         }
     }
 
-    private var deadCowJob: Job? = null
-
     private val _uiState = MutableStateFlow(MarkACowDeadUiState())
     val uiState: StateFlow<MarkACowDeadUiState> = _uiState.asStateFlow()
 
@@ -59,24 +57,27 @@ class MarkACowDeadViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readDeadCowsByLotId(lotId: String) {
-        deadCowJob?.cancel()
-        deadCowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
-            .map { (thisDeadCowList, source) ->
+        val deadCows = cowUseCases.readDeadCowsByLotId(lotId)
+        viewModelScope.launch {
+            deadCows.dataFlow.collect { (thisDeadCowList, source) ->
                 _uiState.update {
                     it.copy(
-                        deadCowList = thisDeadCowList as List<CowModel>
+                        deadCowList = thisDeadCowList as List<CowModel>,
+                        dataSource = source,
+                        isFetchingFromCloud = deadCows.isFetchingFromCloud
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 }
 
 data class MarkACowDeadUiState(
-    val deadCowList: List<CowModel> = emptyList()
+    val deadCowList: List<CowModel> = emptyList(),
+    val dataSource: DataSource = DataSource.Local,
+    val isFetchingFromCloud: Boolean = false
 )
 
 sealed class MarkACowDeadEvent {
