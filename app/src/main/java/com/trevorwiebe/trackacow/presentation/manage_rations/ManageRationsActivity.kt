@@ -13,10 +13,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.adapters.ManageRationsRvAdapter
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener.OnItemClickListener
 import com.trevorwiebe.trackacow.presentation.add_or_edit_rations.AddOrEditRation
@@ -30,10 +32,13 @@ class ManageRationsActivity : AppCompatActivity() {
 
     private val manageRationsViewModel: ManageRationsViewModel by viewModels()
 
+    private lateinit var mProgressBar: LinearProgressIndicator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_rations)
 
+        mProgressBar = findViewById(R.id.manage_rations_progress_bar)
         val manageRationsRv: RecyclerView = findViewById(R.id.ration_rv)
         manageRationsRv.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -64,10 +69,17 @@ class ManageRationsActivity : AppCompatActivity() {
 
         lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                manageRationsViewModel.uiState.collect{
+                manageRationsViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
                     globalRationsList = it.rationsList
                     manageRationsAdapter.setRationsList(globalRationsList)
-                    findViewById<TextView>(R.id.manage_ration_empty_list_tv).isVisible = globalRationsList.isEmpty()
+                    findViewById<TextView>(R.id.manage_ration_empty_list_tv).isVisible =
+                        globalRationsList.isEmpty()
                 }
             }
         }
