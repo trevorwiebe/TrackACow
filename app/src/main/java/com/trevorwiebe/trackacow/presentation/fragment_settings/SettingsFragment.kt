@@ -11,9 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.domain.utils.Utility.haveNetworkConnection
 import com.trevorwiebe.trackacow.domain.utils.Utility.isThereNewDataToUpload
 import com.trevorwiebe.trackacow.domain.utils.Utility.setLastSync
@@ -30,6 +32,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
+
+        val offlineMode = findPreference<CheckBoxPreference>("off_line_mode")
+        offlineMode?.setOnPreferenceChangeListener { _, newValue ->
+            val offlineSetting: Boolean = newValue as Boolean
+            Utility.setOfflineMode(offlineSetting, mContext)
+            true
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {

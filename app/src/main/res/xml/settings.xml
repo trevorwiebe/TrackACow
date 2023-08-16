@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/more_settings">
+
+        <CheckBoxPreference
+            android:key="off_line_mode"
+            android:title="Offline Mode"
+            android:icon="@drawable/baseline_signal_cellular_connected_no_internet_4_bar_24"
+            android:summary="Enable this when network is poor. Track-A-Cow will not attempt to connect to the network." />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Account">
 
         <Preference

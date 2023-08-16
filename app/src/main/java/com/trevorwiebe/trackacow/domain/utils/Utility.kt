@@ -20,8 +20,32 @@ object Utility {
     fun haveNetworkConnection(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return connectivityManager.activeNetwork != null &&
+        val haveDeviceConnectivity = connectivityManager.activeNetwork != null &&
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork) != null
+
+        val sharedPreferences = context.getSharedPreferences(
+            context.resources.getString(R.string.offline_mode_name),
+            Context.MODE_PRIVATE
+        )
+        val offlineModeActive = sharedPreferences.getBoolean(
+            context.resources.getString(R.string.offline_mode_key),
+            false
+        )
+        return if (offlineModeActive) {
+            false
+        } else {
+            haveDeviceConnectivity
+        }
+    }
+
+    fun setOfflineMode(offlineMode: Boolean, context: Context) {
+        val sharedPreferences = context.getSharedPreferences(
+            context.resources.getString(R.string.offline_mode_name),
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(context.resources.getString(R.string.offline_mode_key), offlineMode)
+        editor.apply()
     }
 
     fun saveLastUsedScreen(context: Context, lastUsedScreen: Int) {
