@@ -100,6 +100,13 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
                             callIsFetchingFromCloud = call.isFetchingFromCloud
                         )
                     }
+                } else {
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                            callDataSource = source,
+                            callIsFetchingFromCloud = call.isFetchingFromCloud
+                        )
+                    }
                 }
             }
         }
