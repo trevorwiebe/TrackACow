@@ -32,7 +32,7 @@ data class ReadCallByLotIdAndDateUC(
         val cloudCallAndRationFlow = callRepositoryRemote.readCallAndRationByLotIdRemote(lotId)
             .map { call -> call to DataSource.Cloud }
 
-        val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
         val flowResult = if (isFetchingFromCloud) {
             localCallAndRationFlow.flatMapConcat { (localData, source) ->
                 cloudCallAndRationFlow.flatMapConcat { (pair, source) ->

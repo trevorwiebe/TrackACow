@@ -35,7 +35,7 @@ class ReadDrugsGivenAndDrugsByCowId(
             .readDrugsGivenAndDrugsByCowIdRemote(cowIdList[0])
             .map { drugGiven -> drugGiven to DataSource.Cloud }
 
-        val isFetchingFromCloud = Utility.isThereNewDataToUpload(context)
+        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val flowResult = if (isFetchingFromCloud) {
             localDrugFlow.flatMapConcat { (localData, source) ->
