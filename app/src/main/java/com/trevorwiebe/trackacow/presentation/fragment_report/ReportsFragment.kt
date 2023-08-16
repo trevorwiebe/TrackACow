@@ -16,9 +16,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.presentation.lot_reports.LotReportActivity
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,7 @@ class ReportsFragment : Fragment() {
 
     private var mReportsRvAdapter: ReportsRecyclerViewAdapter? = null
     private var mLotList: List<LotModel> = emptyList()
-
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mNoReportsTv: TextView
 
     private val reportsFragmentViewModel: ReportsFragmentViewModel by viewModels()
@@ -41,6 +43,7 @@ class ReportsFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_reports, container, false)
         mNoReportsTv = rootView.findViewById(R.id.empty_reports_tv)
         val reportsRv = rootView.findViewById<RecyclerView>(R.id.reports_rv)
+        mProgressBar = rootView.findViewById(R.id.reports_progress_bar)
         reportsRv.layoutManager = LinearLayoutManager(context)
         mReportsRvAdapter = ReportsRecyclerViewAdapter()
         reportsRv.adapter = mReportsRvAdapter
@@ -63,9 +66,16 @@ class ReportsFragment : Fragment() {
                 })
         )
 
-        lifecycleScope.launch{
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                reportsFragmentViewModel.uiState.collect{
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                reportsFragmentViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
+
                     mLotList = it.lotList
                     if (mLotList.isEmpty()) {
                         mNoReportsTv.visibility = View.VISIBLE

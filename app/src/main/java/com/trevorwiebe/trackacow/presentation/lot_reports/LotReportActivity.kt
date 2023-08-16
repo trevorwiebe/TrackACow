@@ -20,10 +20,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.models.load.LoadModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.feed_reports.FeedReportsActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +48,7 @@ class LotReportActivity : AppCompatActivity() {
     private var mCurrentHeadDays = 0
     private var mReportType: Int? = null
     private var mLoadModelList: List<LoadModel> = emptyList()
-
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mCustomerName: TextView
     private lateinit var mTotalHead: TextView
     private lateinit var mCurrentHead: TextView
@@ -82,6 +84,7 @@ class LotReportActivity : AppCompatActivity() {
             mReportType = Constants.ARCHIVE
         }
 
+        mProgressBar = findViewById(R.id.lot_report_progress_bar)
         mNoDrugReports = findViewById(R.id.no_drug_reports)
         val resetLotBtn = findViewById<Button>(R.id.archive_this_lot)
         resetLotBtn.setOnClickListener(archiveLotListener)
@@ -137,9 +140,20 @@ class LotReportActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                lotReportViewModel.uiState.collect { lotReportUiState ->
+                lotReportViewModel.uiState.collect {
 
-                    mSelectedLotModel = lotReportUiState.lotModel
+                    if ((it.lotIsFetchingFromCloud && it.lotDataSource == DataSource.Local) ||
+                        (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local) ||
+                        (it.loadIsFetchingFromCloud && it.loadDataSource == DataSource.Local) ||
+                        (it.deadCowIsFetchingFromCloud && it.deadCowDataSource == DataSource.Local) ||
+                        (it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local)
+                    ) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.INVISIBLE
+                    }
+
+                    mSelectedLotModel = it.lotModel
                     mLotId = mSelectedLotModel?.lotCloudDatabaseId
 
                     title = mSelectedLotModel?.lotName ?: ""
@@ -147,13 +161,13 @@ class LotReportActivity : AppCompatActivity() {
                     mDate.text = Utility.convertMillisToDate(mSelectedLotModel?.date ?: 0)
                     mNotes.text = mSelectedLotModel?.notes ?: ""
 
-                    if (lotReportUiState.drugsGivenAndDrugList.isNotEmpty()) {
+                    if (it.drugsGivenAndDrugList.isNotEmpty()) {
 
                         // Prepare drugs used layout to add drugs given reporting
                         mDrugsUsedLayout.removeAllViews()
                         mNoDrugReports.visibility = View.GONE
 
-                        val drugsGivenAndDrugsList = lotReportUiState.drugsGivenAndDrugList
+                        val drugsGivenAndDrugsList = it.drugsGivenAndDrugList
 
                         for (i in drugsGivenAndDrugsList.indices) {
                             val scale = resources.displayMetrics.density
@@ -185,7 +199,7 @@ class LotReportActivity : AppCompatActivity() {
                         mNoDrugReports.visibility = View.VISIBLE
                     }
 
-                    mLoadModelList = lotReportUiState.loadList
+                    mLoadModelList = it.loadList
                     if (mLoadModelList.isNotEmpty()) {
 
                         mNoCattleReceived.visibility = View.GONE
@@ -210,7 +224,7 @@ class LotReportActivity : AppCompatActivity() {
                         mNoCattleReceived.visibility = View.VISIBLE
                     }
 
-                    val cowEntities: List<CowModel> = lotReportUiState.deadCowList
+                    val cowEntities: List<CowModel> = it.deadCowList
                     var numberOfHeadDaysToSubtract = 0
                     for (r in cowEntities.indices) {
                         val (_, _, _, _, date) = cowEntities[r]
@@ -238,7 +252,7 @@ class LotReportActivity : AppCompatActivity() {
                     val currentHeadStr = numberFormat.format(currentHead.toLong())
                     mCurrentHead.text = currentHeadStr
 
-                    mFeedReports.text = lotReportUiState.feedAmount
+                    mFeedReports.text = it.feedAmount
                 }
             }
         }

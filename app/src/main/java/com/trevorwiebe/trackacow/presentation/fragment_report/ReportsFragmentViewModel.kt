@@ -23,19 +23,18 @@ class ReportsFragmentViewModel @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     private fun getLots() {
-        val dataFlow = lotUseCases.readLots().dataFlow
+        val lot = lotUseCases.readLots()
         viewModelScope.launch {
-            dataFlow.collect { (lotList, source) ->
+            lot.dataFlow.collect { (lotList, source) ->
                 _uiState.update {
                     it.copy(
                         lotList = lotList as List<LotModel>,
-                        dataSource = source
+                        dataSource = source,
+                        isFetchingFromCloud = lot.isFetchingFromCloud
                     )
                 }
             }
         }
-
-        _uiState.update { it.copy(isFetchingFromCloud = lotUseCases.readLots().isFetchingFromCloud) }
     }
 
 }
