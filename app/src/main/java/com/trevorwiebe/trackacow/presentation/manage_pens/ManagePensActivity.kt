@@ -25,8 +25,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ManagePensActivity : AppCompatActivity(){
 
-    // TODO: fix bug where when offline pens do not show up, until going back and to
-    
     private val managePensViewModel: ManagePensViewModel by viewModels()
 
     private var mPenAndLotList: List<PenAndLotModel> = emptyList()
