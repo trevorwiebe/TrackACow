@@ -230,7 +230,7 @@ class DrugsGivenReportActivity : AppCompatActivity() {
                     if (drugsGivenUiState.isFetchingFromCloud && drugsGivenUiState.dataSource == DataSource.Local) {
                         mProgressIndicator.visibility = View.VISIBLE
                     } else {
-                        mProgressIndicator.visibility = View.GONE
+                        mProgressIndicator.visibility = View.INVISIBLE
                     }
 
                     if (drugsGivenUiState.drugsGivenAndDrugList.isEmpty()) {
