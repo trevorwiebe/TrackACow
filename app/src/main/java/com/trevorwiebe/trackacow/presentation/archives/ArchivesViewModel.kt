@@ -26,12 +26,12 @@ class ArchivesViewModel @Inject constructor(
     private fun readArchivedLots() {
         val readLots = lotUseCases.readArchivedLots()
         viewModelScope.launch {
-            readLots.dataFlow.map { (thisArchivedLotList, source) ->
+            readLots.dataFlow.collect { (thisArchivedLotList, source) ->
                 _uiState.update {
                     it.copy(
-                            archivedLotList = thisArchivedLotList as List<LotModel>,
-                            dataSource = source,
-                            isFetchingFromCloud = readLots.isFetchingFromCloud
+                        archivedLotList = thisArchivedLotList as List<LotModel>,
+                        dataSource = source,
+                        isFetchingFromCloud = readLots.isFetchingFromCloud
                     )
                 }
             }

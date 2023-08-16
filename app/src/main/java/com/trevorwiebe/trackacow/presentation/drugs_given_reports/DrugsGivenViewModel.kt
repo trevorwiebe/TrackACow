@@ -37,7 +37,7 @@ class DrugsGivenViewModel @Inject constructor(
             lotId, startDate, endDate
         )
         viewModelScope.launch {
-            drugsGiven.dataFlow.map { (thisDrugsAndDrugsModelList, source) ->
+            drugsGiven.dataFlow.collect { (thisDrugsAndDrugsModelList, source) ->
                 _uiState.update {
                     it.copy(
                         drugsGivenAndDrugList = calculateDrugsGiven.invoke(
