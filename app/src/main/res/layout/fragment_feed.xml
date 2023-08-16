@@ -5,13 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/feed_container_progress_bar"
-        android:indeterminate="true"
-        app:indicatorColor="@color/colorAccent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.google.android.material.tabs.TabLayout
         app:tabMode="scrollable"
         android:id="@+id/feed_pen_tab_layout"
