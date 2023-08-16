@@ -4,9 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,28 +22,26 @@ class MedicateListViewModel @Inject constructor(
         getPensAndLots()
     }
 
-    private var getPenAndLotJobs: Job? = null
-
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getPensAndLots() {
-        _uiState.update { it.copy(isLoading = true) }
-        getPenAndLotJobs?.cancel()
-        getPenAndLotJobs = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
-            .map { (thisPenAndLotList, source) ->
+        val pen = penUseCases.readPenAndLotModelIncludeEmptyPens()
+        viewModelScope.launch {
+            pen.dataFlow.collect { (thisPenAndLotList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
                         penAndLotModelList = thisPenAndLotList as List<PenAndLotModel>,
-                        isLoading = false
+                        isFetchingFromCloud = pen.isFetchingFromCloud,
+                        dataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
 }
 
 data class MedicateListUiState(
     val penAndLotModelList: List<PenAndLotModel> = emptyList(),
-    val isLoading: Boolean = false
+    val isFetchingFromCloud: Boolean = false,
+    val dataSource: DataSource = DataSource.Local
 )

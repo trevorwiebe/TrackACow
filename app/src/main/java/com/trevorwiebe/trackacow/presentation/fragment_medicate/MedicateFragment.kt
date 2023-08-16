@@ -17,8 +17,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.presentation.medicated_cows.MedicatedCowsActivity
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.presentation.add_lot_and_load.AddLotAndLoad
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +36,7 @@ class MedicateFragment : Fragment() {
 
     private lateinit var mNoPensLl: LinearLayout
     private lateinit var mPenRv: RecyclerView
-
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mContext: Context
 
     override fun onCreateView(
@@ -51,7 +53,7 @@ class MedicateFragment : Fragment() {
             }
 
         mNoPensLl = rootView.findViewById(R.id.fragment_medicate_no_pens_layout)
-
+        mProgressBar = rootView.findViewById(R.id.medicate_progress_bar)
         mPenRv = rootView.findViewById(R.id.main_rv)
         mPenRv.layoutManager = LinearLayoutManager(mContext)
         mPenRecyclerViewAdapter = PenRecyclerViewAdapter(mPenAndLotModelList, true, mContext)
@@ -83,15 +85,19 @@ class MedicateFragment : Fragment() {
 
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                mMedicateListViewModel.uiState.collect{
-                    mPenAndLotModelList = it.penAndLotModelList
-                    if(it.penAndLotModelList.isEmpty()){
-                        mPenRv.visibility = View.GONE
-                        if(!it.isLoading){
-                            mNoPensLl.visibility = View.VISIBLE
-                        }
-                    }else {
+                mMedicateListViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.penAndLotModelList.isEmpty()) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
                         mNoPensLl.visibility = View.GONE
+                    }
+
+                    mPenAndLotModelList = it.penAndLotModelList
+                    if (it.penAndLotModelList.isEmpty()) {
+                        mPenRv.visibility = View.GONE
+                    } else {
                         mPenRv.visibility = View.VISIBLE
                         mPenRecyclerViewAdapter!!.swapData(mPenAndLotModelList)
                     }
