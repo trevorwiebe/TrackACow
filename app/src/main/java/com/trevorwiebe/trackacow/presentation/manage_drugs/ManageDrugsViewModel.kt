@@ -22,13 +22,9 @@ class ManageDrugsViewModel @Inject constructor(
         getDrugList()
     }
 
-    // TODO: make sure this works
-
     @Suppress("UNCHECKED_CAST")
     private fun getDrugList() {
-
         val readDrugsUC = drugUseCases.readDrugsUC()
-
         viewModelScope.launch {
             readDrugsUC.dataFlow.collect { (drugList, source) ->
                 _uiState.update { uiState ->

@@ -114,7 +114,9 @@ class MedicatedCowsActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 medicatedCowsViewModel.uiState.collect {
 
-                    if (it.isFetchingCowFromCloud && it.cowDataSource == DataSource.Local) {
+                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local) ||
+                        (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local)
+                    ) {
                         mProgressIndicator.visibility = View.VISIBLE
                     } else {
                         mProgressIndicator.visibility = View.GONE

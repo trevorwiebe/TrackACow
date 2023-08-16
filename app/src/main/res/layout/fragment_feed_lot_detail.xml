@@ -1,185 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".presentation.feed_lot_detail_fragment.FeedLotDetailFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.feed_lot_detail_fragment.FeedLotDetailFragment">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/feed_lot_detail_progress_bar"
+        android:indeterminate="true"
+        app:indicatorColor="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <androidx.cardview.widget.CardView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="5dp"
-            android:backgroundTint="@color/colorAccentVeryLight">
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="5dp"
+                android:backgroundTint="@color/colorAccentVeryLight">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp"
+                            android:text="@string/total_fed"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/pen_total_fed"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:textColor="@android:color/black"
+                            android:text="@string/_0"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/Base.TextAppearance.AppCompat.Button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp"
+                            android:text="@string/left_to_feed"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/pen_left_to_feed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:textColor="@android:color/black"
+                            android:text="@string/_0"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:baselineAligned="false"
                 android:weightSum="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content">
 
                     <TextView
                         style="@style/Base.TextAppearance.AppCompat.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:text="@string/total_fed"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:text="@string/ration"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/pen_total_fed"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
+                    <Spinner
+                        android:id="@+id/select_ration"
+                        android:background="@drawable/spinner_background"
+                        android:layout_marginTop="4dp"
                         android:layout_marginEnd="16dp"
-                        android:textColor="@android:color/black"
-                        android:text="@string/_0"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                        android:layout_marginStart="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                     <TextView
-                        style="@style/Base.TextAppearance.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:text="@string/left_to_feed"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/pen_left_to_feed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:textColor="@android:color/black"
-                        android:text="@string/_0"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-
-        <LinearLayout
-            android:baselineAligned="false"
-            android:weightSum="2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    style="@style/Base.TextAppearance.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:text="@string/ration"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp" />
-
-                <Spinner
-                    android:id="@+id/select_ration"
-                    android:background="@drawable/spinner_background"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/feed_add_ration_txt"
-                    android:text="@string/add_ration_txt"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    android:textColor="@color/orangeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:id="@+id/feed_add_ration_btn"
-                    android:background="@drawable/accent_sign_in_btn"
-                    android:text="@string/add_ration"
-                    android:layout_gravity="end"
-                    android:textColor="@android:color/white"
-                    android:visibility="gone"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/feed_lot_call_et"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="8"
-                        android:selectAllOnFocus="true"
+                        android:id="@+id/feed_add_ration_txt"
+                        android:text="@string/add_ration_txt"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
-                        android:hint="@string/call"
-                        android:inputType="number"
-                        android:textSize="16sp" />
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"
+                        android:textColor="@color/orangeText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <Button
+                        android:id="@+id/feed_add_ration_btn"
+                        android:background="@drawable/accent_sign_in_btn"
+                        android:text="@string/add_ration"
+                        android:layout_gravity="end"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/feed_lot_call_et"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="8"
+                            android:selectAllOnFocus="true"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/call"
+                            android:inputType="number"
+                            android:textSize="16sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="wrap_content"
@@ -211,21 +223,23 @@
 
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/save_feed_lot_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="36dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/save"
+                android:background="@drawable/accent_sign_in_btn_deactivated"
+                android:padding="24dp"
+                android:textColor="@android:color/white" />
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/save_feed_lot_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="24dp"
-            android:text="@string/save"
-            android:background="@drawable/accent_sign_in_btn_deactivated"
-            android:padding="24dp"
-            android:textColor="@android:color/white" />
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

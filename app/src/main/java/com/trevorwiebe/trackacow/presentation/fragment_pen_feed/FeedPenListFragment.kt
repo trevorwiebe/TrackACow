@@ -15,8 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import com.trevorwiebe.trackacow.presentation.add_lot_and_load.AddLotAndLoad
 import com.trevorwiebe.trackacow.presentation.feed_lot_view_pager_container.FeedLotViewPagerContainer
@@ -32,6 +34,7 @@ class FeedPenListFragment : Fragment() {
     private lateinit var mAddLotBtn: Button
     private lateinit var mFeedPenRv: RecyclerView
     private lateinit var mLotModel: LotModel
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var feedPenRecyclerViewAdapter: FeedPenRecyclerViewAdapter
     private lateinit var feedPenListUiModelList: List<FeedPenListUiModel>
 
@@ -58,6 +61,7 @@ class FeedPenListFragment : Fragment() {
         mEmptyPen = rootView.findViewById(R.id.feed_pen_empty_layout)
         mAddLotBtn = rootView.findViewById(R.id.feed_add_lot_btn)
         mFeedPenRv = rootView.findViewById(R.id.feed_pen_rv)
+        mProgressBar = rootView.findViewById(R.id.pen_feed_progress_bar)
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.reverseLayout = true
         mFeedPenRv.layoutManager = linearLayoutManager
@@ -92,7 +96,15 @@ class FeedPenListFragment : Fragment() {
 
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                feedPenListViewModel.uiState.collect{
+                feedPenListViewModel.uiState.collect {
+
+                    if ((it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local) ||
+                        (it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local)
+                    ) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
 
                     feedPenListUiModelList = it.feedPenUiList
 
@@ -100,7 +112,7 @@ class FeedPenListFragment : Fragment() {
 
                     //if the feedPenListUiModelList is empty and loading is false, the list is empty
                     // and that is shown
-                    if (feedPenListUiModelList.isEmpty() && !it.isLoading) {
+                    if (feedPenListUiModelList.isEmpty()) {
                         mEmptyPen.visibility = View.VISIBLE
                     } else {
                         mEmptyPen.visibility = View.INVISIBLE

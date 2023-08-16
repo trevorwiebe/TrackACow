@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/move_progress_indicator"
+        android:indeterminate="true"
+        app:indicatorColor="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shuffle_rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/empty_move_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:paddingLeft="16dp"
+        android:paddingTop="24dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/empty_move"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <TextView
-            android:id="@+id/empty_move_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:paddingLeft="16dp"
-            android:paddingTop="24dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
-            android:gravity="center_horizontal"
-            android:text="@string/empty_move"
-            android:textSize="16sp"
-            android:visibility="invisible" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shuffle_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

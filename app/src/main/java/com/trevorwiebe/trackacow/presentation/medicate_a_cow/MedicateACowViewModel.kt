@@ -15,7 +15,6 @@ import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -45,8 +44,6 @@ class MedicateACowViewModel @AssistedInject constructor(
         }
     }
 
-    private var drugsGivenByCows: Job? = null
-
     private val _uiState = MutableStateFlow(MedicateACowUiState())
     val uiState: StateFlow<MedicateACowUiState> = _uiState.asStateFlow()
 
@@ -67,58 +64,57 @@ class MedicateACowViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: update this
     @Suppress("UNCHECKED_CAST")
     private fun readDrugs() {
-        val dataFlow = drugUseCases.readDrugsUC().dataFlow
+        val drug = drugUseCases.readDrugsUC()
         viewModelScope.launch {
-            dataFlow.collect { (drugList, source) ->
+            drug.dataFlow.collect { (drugList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
                         drugList = drugList as List<DrugModel>,
-                        drugDataSource = source
+                        drugDataSource = source,
+                        drugIsFetchingFromCloud = drug.isFetchingFromCloud
                     )
                 }
             }
         }
-        _uiState.update { it.copy(isFetchingDrugsFromCloud = drugUseCases.readDrugsUC().isFetchingFromCloud) }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readCowsByLotId(lotId: String) {
-        val dataFlow = cowUseCases.readCowsByLotId(lotId).dataFlow
+        val cow = cowUseCases.readCowsByLotId(lotId)
         viewModelScope.launch {
-            dataFlow.collect { (cowList, source) ->
+            cow.dataFlow.collect { (cowList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
                         medicatedCowList = cowList as List<CowModel>,
-                        cowDataSource = source
+                        cowDataSource = source,
+                        cowIsFetchingFromCloud = cow.isFetchingFromCloud
                     )
                 }
             }
         }
-        _uiState.update { it.copy(isFetchingCowsFromCloud = cowUseCases.readCowsByLotId(lotId).isFetchingFromCloud) }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun updateStateWithCowFoundList(cowList: List<CowModel>) {
-        _uiState.update {
-            it.copy(cowFoundList = cowList)
-        }
+        _uiState.update { it.copy(cowFoundList = cowList) }
         if (cowList.isNotEmpty()) {
             val cowIdList = cowList.map { it.cowId }
-            drugsGivenByCows?.cancel()
-            drugsGivenByCows = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(cowIdList).dataFlow
-                .map { (thisDrugAndDrugGivenList, source) ->
+            val drugs = drugsGivenUseCases.readDrugsGivenAndDrugsByCowId(cowIdList)
+            viewModelScope.launch {
+                drugs.dataFlow.collect { (thisDrugAndDrugGivenList, source) ->
                     _uiState.update {
-                        it.copy(drugAndDrugGivenListForFoundCows = thisDrugAndDrugGivenList as List<DrugsGivenAndDrugModel>)
+                        it.copy(
+                            drugAndDrugGivenListForFoundCows = thisDrugAndDrugGivenList as List<DrugsGivenAndDrugModel>,
+                            drugDataSource = source,
+                            drugIsFetchingFromCloud = drugs.isFetchingFromCloud
+                        )
                     }
                 }
-                .launchIn(viewModelScope)
-        } else {
-            _uiState.update {
-                it.copy(drugAndDrugGivenListForFoundCows = emptyList())
             }
+        } else {
+            _uiState.update { it.copy(drugAndDrugGivenListForFoundCows = emptyList()) }
         }
     }
 
@@ -134,12 +130,14 @@ class MedicateACowViewModel @AssistedInject constructor(
 
 data class MedicateACowUiState(
     val drugList: List<DrugModel> = emptyList(),
-    val isFetchingDrugsFromCloud: Boolean = false,
+    val drugIsFetchingFromCloud: Boolean = false,
     val drugDataSource: DataSource = DataSource.Local,
+
     val cowFoundList: List<CowModel> = emptyList(),
-    val medicatedCowList: List<CowModel> = emptyList(),
-    val isFetchingCowsFromCloud: Boolean = false,
+    val cowIsFetchingFromCloud: Boolean = false,
     val cowDataSource: DataSource = DataSource.Local,
+
+    val medicatedCowList: List<CowModel> = emptyList(),
     val drugAndDrugGivenListForFoundCows: List<DrugsGivenAndDrugModel> = emptyList()
 )
 

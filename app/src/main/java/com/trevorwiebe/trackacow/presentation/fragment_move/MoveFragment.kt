@@ -16,8 +16,10 @@ import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.presentation.fragment_move.utils.DragHelper
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
 import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toPenModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,6 +28,7 @@ class MoveFragment : Fragment() {
 
     private lateinit var mMoveRv: RecyclerView
     private lateinit var mEmptyMoveList: TextView
+    private lateinit var mProgressBar: LinearProgressIndicator
 
     private lateinit var mShuffleAdapter: ShufflePenAndLotsAdapter
 
@@ -41,7 +44,7 @@ class MoveFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_move, container, false)
         mMoveRv = rootView.findViewById(R.id.shuffle_rv)
         mEmptyMoveList = rootView.findViewById(R.id.empty_move_tv)
-
+        mProgressBar = rootView.findViewById(R.id.move_progress_indicator)
         mMoveRv.layoutManager = LinearLayoutManager(mContext)
 
         mShuffleAdapter = ShufflePenAndLotsAdapter()
@@ -66,6 +69,12 @@ class MoveFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 moveViewModel.uiState.collect {
 
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.INVISIBLE
+                    }
+
                     val penAndLotList = it.penAndLotList
 
                     val objectList: MutableList<Any> = mutableListOf()
@@ -86,7 +95,7 @@ class MoveFragment : Fragment() {
                     if (objectList.size == 0) {
                         mEmptyMoveList.visibility = View.VISIBLE
                     } else {
-                        mEmptyMoveList.visibility = View.INVISIBLE
+                        mEmptyMoveList.visibility = View.GONE
                     }
                     mShuffleAdapter.setShuffleObjectList(objectList, mContext)
                 }

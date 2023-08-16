@@ -15,7 +15,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.presentation.add_edit_pen.AddEditPensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -31,6 +33,7 @@ class ManagePensActivity : AppCompatActivity(){
 
     private lateinit var mPensRv: RecyclerView
     private lateinit var mEmptyTv: TextView
+    private lateinit var mProgressBar: LinearProgressIndicator
 
     private var mPenRecyclerViewAdapter: PenRecyclerViewAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +41,7 @@ class ManagePensActivity : AppCompatActivity(){
         setContentView(R.layout.activity_manage_pens)
 
         mEmptyTv = findViewById(R.id.empty_pen_rv)
-
+        mProgressBar = findViewById(R.id.manage_pens_progress_indicator)
         mPensRv = findViewById(R.id.manage_pens_rv)
         mPensRv.layoutManager = LinearLayoutManager(this)
         mPenRecyclerViewAdapter = PenRecyclerViewAdapter(mPenAndLotList, false, this)
@@ -69,6 +72,12 @@ class ManagePensActivity : AppCompatActivity(){
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 managePensViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.GONE
+                    }
 
                     mPenAndLotList = it.penList
                     mPenRecyclerViewAdapter!!.swapData(mPenAndLotList)

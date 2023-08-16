@@ -7,10 +7,12 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class FeedReportsViewModel @AssistedInject constructor(
@@ -59,32 +61,36 @@ class FeedReportsViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun getRationAndFeedListByDateAndLotId(lotId: String, startDate: Long, endDate: Long) {
-        feedUseCases.readFeedsAndRationsTotalsByLotIdAndDate(lotId, startDate, endDate).dataFlow
-                .map { (thisFeedList, source) ->
-                    _uiState.update { uiState ->
-                        uiState.copy(
-                                feedList = thisFeedList as List<FeedAndRationModel>
-                        )
-                    }
-                }
-                .launchIn(viewModelScope)
-    }
-
-    // TODO: add progress bar
-    @Suppress("UNCHECKED_CAST")
-    private fun getRations() {
-        rationUseCases.readAllRationsUC().dataFlow
-            .map { (thisRationList, source) ->
+        val feed = feedUseCases.readFeedsAndRationsTotalsByLotIdAndDate(lotId, startDate, endDate)
+        viewModelScope.launch {
+            feed.dataFlow.collect { (thisFeedList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        rationList = thisRationList as List<RationModel>
+                        feedList = thisFeedList as List<FeedAndRationModel>,
+                        feedIsFetchingFromCloud = feed.isFetchingFromCloud,
+                        feedDataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getRations() {
+        val ration = rationUseCases.readAllRationsUC()
+        viewModelScope.launch {
+            ration.dataFlow.collect { (thisRationList, source) ->
+                _uiState.update { uiState ->
+                    uiState.copy(
+                        rationList = thisRationList as List<RationModel>,
+                        rationDataSource = source,
+                        rationIsFetchingFromCloud = ration.isFetchingFromCloud
+                    )
+                }
+            }
+        }
     }
 
 }
@@ -95,6 +101,10 @@ sealed class FeedReportsUiEvent {
 }
 
 data class FeedReportsUiState(
-        val feedList: List<FeedAndRationModel> = emptyList(),
-        val rationList: List<RationModel> = emptyList()
+    val feedList: List<FeedAndRationModel> = emptyList(),
+    val feedDataSource: DataSource = DataSource.Local,
+    val feedIsFetchingFromCloud: Boolean = false,
+    val rationList: List<RationModel> = emptyList(),
+    val rationDataSource: DataSource = DataSource.Local,
+    val rationIsFetchingFromCloud: Boolean = false
 )

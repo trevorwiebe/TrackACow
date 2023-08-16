@@ -14,9 +14,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.google.android.material.tabs.TabLayout
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenViewPagerAdapter
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,7 +29,7 @@ class FeedContainerFragment : Fragment() {
     private lateinit var feedPenViewPager: ViewPager
     private var feedPenViewPagerAdapter: FeedPenViewPagerAdapter? = null
     private lateinit var mContext: Context
-
+    private lateinit var mProgressBar: LinearProgressIndicator
     private val feedContainerViewModel: FeedContainerViewModel by viewModels()
 
     override fun onCreateView(
@@ -39,7 +41,7 @@ class FeedContainerFragment : Fragment() {
         feedPenViewPager = view.findViewById(R.id.feed_pen_view_pager)
         val tabs = view.findViewById<TabLayout>(R.id.feed_pen_tab_layout)
         tabs.setupWithViewPager(feedPenViewPager)
-
+        mProgressBar = view.findViewById(R.id.feed_container_progress_bar)
         val noPensLayout = view.findViewById<LinearLayout>(R.id.no_pens_layout)
         view.findViewById<Button>(R.id.fragment_feed_add_pen_btn)
             .setOnClickListener {
@@ -52,16 +54,21 @@ class FeedContainerFragment : Fragment() {
         feedPenViewPager.adapter = feedPenViewPagerAdapter
 
         lifecycleScope.launch{
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                feedContainerViewModel.uiState.collect{
-                    if(it.penAndLotList.isEmpty()){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                feedContainerViewModel.uiState.collect {
+
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                        mProgressBar.visibility = View.VISIBLE
                         tabs.visibility = View.GONE
-                        if(!it.isLoading){
-                            noPensLayout.visibility = View.VISIBLE
-                        }
-                    }else {
-                        feedPenViewPagerAdapter?.updatePenList(it.penAndLotList)
+                    } else {
+                        mProgressBar.visibility = View.GONE
                         tabs.visibility = View.VISIBLE
+                    }
+
+                    if (it.penAndLotList.isEmpty()) {
+                        noPensLayout.visibility = View.VISIBLE
+                    } else {
+                        feedPenViewPagerAdapter?.updatePenList(it.penAndLotList)
                         noPensLayout.visibility = View.GONE
                     }
                 }

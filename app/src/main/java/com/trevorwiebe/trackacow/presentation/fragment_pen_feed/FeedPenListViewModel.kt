@@ -9,12 +9,13 @@ import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.presentation.fragment_pen_feed.ui_model.FeedPenListUiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -46,44 +47,46 @@ class FeedPenListViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(FeedPenListUiState())
     val uiState: StateFlow<FeedPenListUiState> = _uiState.asStateFlow()
 
-    private lateinit var mCallList: List<CallAndRationModel>
-
-    private var readCallsJob: Job? = null
+    private var mCallList: List<CallAndRationModel> = emptyList()
+    private var mFeedList: List<FeedModel> = emptyList()
 
     init {
         readCallsAndRationsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
+        readFeedsByLotId(lotModel.date, lotModel.lotCloudDatabaseId)
     }
-
-    // TODO: add progress bar
 
     @Suppress("UNCHECKED_CAST")
     private fun readCallsAndRationsByLotId(lotDate: Long, lotId: String?) {
-        _uiState.update { it.copy(isLoading = true) }
-        readCallsJob?.cancel()
-        readCallsJob = callUseCases.readCallsAndRationsByLotId(lotId ?: "").dataFlow
-            .map { (callList, source) ->
+        val call = callUseCases.readCallsAndRationsByLotId(lotId ?: "")
+        viewModelScope.launch {
+            call.dataFlow.collect { (callList, source) ->
                 mCallList = callList as List<CallAndRationModel>
-                readFeedsByLotId(lotDate, lotId ?: "")
+                _uiState.update {
+                    it.copy(
+                        callDataSource = source,
+                        callIsFetchingFromCloud = call.isFetchingFromCloud,
+                        feedPenUiList = buildFeedList(lotDate, mCallList, mFeedList)
+                    )
+                }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readFeedsByLotId(lotDate: Long, lotId: String) {
-        feedUseCases.readFeedsByLotId(lotId).dataFlow
-            .map { (feedList, source) ->
+        val feed = feedUseCases.readFeedsByLotId(lotId)
+        viewModelScope.launch {
+            feed.dataFlow.collect { (feedList, source) ->
+                mFeedList = feedList as List<FeedModel>
                 _uiState.update { uiState ->
                     uiState.copy(
-                        feedPenUiList = buildFeedList(
-                            lotDate,
-                            mCallList,
-                            feedList as List<FeedModel>
-                        ),
-                        isLoading = false
+                        feedDataSource = source,
+                        feedIsFetchingFromCloud = feed.isFetchingFromCloud,
+                        feedPenUiList = buildFeedList(lotDate, mCallList, mFeedList),
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun buildFeedList(lotStartDate: Long, callList: List<CallAndRationModel>, feedList: List<FeedModel>): MutableList<FeedPenListUiModel> {
@@ -124,3 +127,12 @@ class FeedPenListViewModel @AssistedInject constructor(
         return feedPenUiModelList
     }
 }
+
+data class FeedPenListUiState(
+    val callDataSource: DataSource = DataSource.Local,
+    val feedDataSource: DataSource = DataSource.Local,
+    val callIsFetchingFromCloud: Boolean = false,
+    val feedIsFetchingFromCloud: Boolean = false,
+    val feedPenUiList: List<FeedPenListUiModel> = emptyList(),
+    val lotList: List<LotModel> = emptyList(),
+)

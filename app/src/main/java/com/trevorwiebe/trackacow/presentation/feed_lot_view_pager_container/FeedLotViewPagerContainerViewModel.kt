@@ -28,13 +28,13 @@ class FeedLotViewPagerContainerViewModel @Inject constructor(
         getRationList()
     }
 
-    // TODO: add progress bar
+    // Decided not to add progress indicator to this location
 
     @Suppress("UNCHECKED_CAST")
     private fun getPenAndLotModelsExcludeEmptyPens() {
         penAndLotModelsJob?.cancel()
         penAndLotModelsJob = penUseCases.readPenAndLotModelExcludeEmptyPens().dataFlow
-            .map { (thisPenAndLotList, source) ->
+            .map { (thisPenAndLotList, _) ->
                 _uiState.update {
                     it.copy(
                         penAndLotList = thisPenAndLotList as List<PenAndLotModel>

@@ -14,10 +14,10 @@ import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -31,9 +31,6 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
     @Assisted defaultArgs: Bundle? = null
 ) : ViewModel() {
-
-    private var readCallByLotIdAndDateJob: Job? = null
-    private var readFeedsByLotIdAndDateJob: Job? = null
 
     @AssistedFactory
     interface FeedLotDetailFragmentViewModelFactory {
@@ -91,48 +88,53 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: add progress bar
-
     private fun readCallByLotIdAndDate(lotId: String, dateStart: Long, dateEnd: Long) {
-        readCallByLotIdAndDateJob?.cancel()
-        readCallByLotIdAndDateJob =
-            callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd).dataFlow
-                .map { (receivedCallModel, source) ->
-                    if (receivedCallModel != null) {
-                        _uiState.update { uiState ->
-                            uiState.copy(
-                                callModel = receivedCallModel as CallAndRationModel
-                            )
-                        }
+        val call = callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd)
+        viewModelScope.launch {
+            call.dataFlow.collect { (receivedCallModel, source) ->
+                if (receivedCallModel != null) {
+                    _uiState.update { uiState ->
+                        uiState.copy(
+                            callModel = receivedCallModel as CallAndRationModel,
+                            callDataSource = source,
+                            callIsFetchingFromCloud = call.isFetchingFromCloud
+                        )
                     }
                 }
-                .launchIn(viewModelScope)
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readFeedsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long) {
-        readFeedsByLotIdAndDateJob?.cancel()
-        readFeedsByLotIdAndDateJob =
-            feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate).dataFlow
-                .map { (thisFeedList, source) ->
-                    _uiState.update {
-                        it.copy(
-                            feedList = thisFeedList as List<FeedModel>
-                        )
-                    }
+        val feed = feedUseCases.readFeedsByLotIdAndDate(lotId, startDate, endDate)
+        viewModelScope.launch {
+            feed.dataFlow.collect { (thisFeedList, source) ->
+                _uiState.update {
+                    it.copy(
+                        feedList = thisFeedList as List<FeedModel>,
+                        feedDataSource = source,
+                        feedIsFetchingFromCloud = feed.isFetchingFromCloud
+                    )
                 }
-                .launchIn(viewModelScope)
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readRations() {
-        rationUseCases.readAllRationsUC().dataFlow
-            .map { (feedRationList, _) ->
+        val ration = rationUseCases.readAllRationsUC()
+        viewModelScope.launch {
+            ration.dataFlow.collect { (feedRationList, source) ->
                 _uiState.update {
-                    it.copy(rationList = feedRationList as List<RationModel>)
+                    it.copy(
+                        rationList = feedRationList as List<RationModel>,
+                        rationDataSource = source,
+                        rationIsFetchingFromCloud = ration.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun createOrUpdateCallandFeeds(
@@ -152,9 +154,15 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
 }
 
 data class FeedLotDetailFragmentUiState(
-        val callModel: CallAndRationModel? = null,
-        val feedList: List<FeedModel> = emptyList(),
-        val rationList: List<RationModel> = emptyList()
+    val callModel: CallAndRationModel? = null,
+    val callIsFetchingFromCloud: Boolean = false,
+    val callDataSource: DataSource = DataSource.Local,
+    val feedList: List<FeedModel> = emptyList(),
+    val feedIsFetchingFromCloud: Boolean = false,
+    val feedDataSource: DataSource = DataSource.Local,
+    val rationList: List<RationModel> = emptyList(),
+    val rationIsFetchingFromCloud: Boolean = false,
+    val rationDataSource: DataSource = DataSource.Local
 )
 
 sealed class FeedLotDetailFragmentEvents {

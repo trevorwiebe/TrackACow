@@ -6,8 +6,8 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,8 +20,6 @@ class MoveViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(MoveUiState())
     val uiState: StateFlow<MoveUiState> = _uiState.asStateFlow()
-
-    private var readPenAndLotsJob: Job? = null
 
     init {
         readPensAndLots()
@@ -39,19 +37,20 @@ class MoveViewModel @Inject constructor(
         }
     }
 
-    // TODO: add progress bar
     @Suppress("UNCHECKED_CAST")
     private fun readPensAndLots() {
-        readPenAndLotsJob?.cancel()
-        readPenAndLotsJob = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
-            .map { (thisPenAndLotList, source) ->
+        val pen = penUseCases.readPenAndLotModelIncludeEmptyPens()
+        viewModelScope.launch {
+            pen.dataFlow.collect { (thisPenAndLotList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penAndLotList = thisPenAndLotList as List<PenAndLotModel>
+                        penAndLotList = thisPenAndLotList as List<PenAndLotModel>,
+                        isFetchingFromCloud = pen.isFetchingFromCloud,
+                        dataSource = source
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun updateLotWithNewPenId(lotModel: LotModel) {
@@ -67,7 +66,13 @@ class MoveViewModel @Inject constructor(
     }
 }
 
-sealed class MoveUiEvents{
+sealed class MoveUiEvents {
     data class OnItemShuffled(val lotModel: LotModel) : MoveUiEvents()
     data class OnLotsMerged(val lotIdList: List<String>) : MoveUiEvents()
 }
+
+data class MoveUiState(
+    val penAndLotList: List<PenAndLotModel> = emptyList(),
+    val isFetchingFromCloud: Boolean = false,
+    val dataSource: DataSource = DataSource.Local
+)

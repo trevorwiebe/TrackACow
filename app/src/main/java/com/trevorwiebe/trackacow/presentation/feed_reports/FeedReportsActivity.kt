@@ -16,10 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.Constants
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class FeedReportsActivity : AppCompatActivity() {
 
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mStartBtn: Button
     private lateinit var mEndBtn: Button
     private lateinit var mQuickLast24Hrs: Button
@@ -60,6 +63,7 @@ class FeedReportsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_reports)
 
+        mProgressBar = findViewById(R.id.feed_reports_progress_bar)
         mStartBtn = findViewById(R.id.start_feed_date_btn)
         mEndBtn = findViewById(R.id.end_feed_date_btn)
         mQuickLast24Hrs = findViewById(R.id.quick_feed_yesterday)
@@ -227,6 +231,14 @@ class FeedReportsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 feedReportViewModel.uiState.collect {
+
+                    if ((it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local) ||
+                        (it.rationIsFetchingFromCloud && it.feedDataSource == DataSource.Local)
+                    ) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.INVISIBLE
+                    }
 
                     // rations
                     val allRation = RationModel(

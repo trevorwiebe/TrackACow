@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.pen.PenModel
 import com.trevorwiebe.trackacow.domain.use_cases.pen_use_cases.PenUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,8 +18,6 @@ class ManagePensViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ManagePensUiState())
     val uiState: StateFlow<ManagePensUiState> = _uiState.asStateFlow()
-
-    private var readPensJob: Job? = null
 
     init {
         readPensAndLots()
@@ -59,20 +57,20 @@ class ManagePensViewModel @Inject constructor(
         }
     }
 
-    // TODO: add progress bar
-
     @Suppress("UNCHECKED_CAST")
     private fun readPensAndLots() {
-        readPensJob?.cancel()
-        readPensJob = penUseCases.readPenAndLotModelIncludeEmptyPens().dataFlow
-            .map { (thisPenList, source) ->
+        val pens = penUseCases.readPenAndLotModelIncludeEmptyPens()
+        viewModelScope.launch {
+            pens.dataFlow.collect { (thisPenList, source) ->
                 _uiState.update { uiState ->
                     uiState.copy(
-                        penList = thisPenList as List<PenAndLotModel>
+                        penList = thisPenList as List<PenAndLotModel>,
+                        dataSource = source,
+                        isFetchingFromCloud = pens.isFetchingFromCloud
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 }
 
@@ -83,5 +81,7 @@ sealed class ManagePenEvents{
 }
 
 data class ManagePensUiState(
-    val penList: List<PenAndLotModel> = emptyList()
+    val penList: List<PenAndLotModel> = emptyList(),
+    val dataSource: DataSource = DataSource.Local,
+    val isFetchingFromCloud: Boolean = false
 )

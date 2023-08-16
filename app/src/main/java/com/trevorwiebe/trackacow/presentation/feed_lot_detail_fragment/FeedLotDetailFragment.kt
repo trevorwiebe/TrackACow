@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.trevorwiebe.trackacow.R
@@ -30,6 +31,7 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.add_or_edit_rations.AddOrEditRation
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +54,7 @@ class FeedLotDetailFragment : Fragment() {
     private var mCallAndRationModel: CallAndRationModel? = null
     private var mPenUiDate: Long = -1
     private var mOriginalFeedModelList: List<FeedModel> = emptyList()
+    private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var mRationSpinner: Spinner
     private var mSelectedRation: RationModel? = null
     private lateinit var mCallET: TextInputEditText
@@ -104,7 +107,7 @@ class FeedLotDetailFragment : Fragment() {
     ): View {
 
         val view = inflater.inflate(R.layout.fragment_feed_lot_detail, container, false)
-
+        mProgressBar = view.findViewById(R.id.feed_lot_detail_progress_bar)
         mRationSpinner = view.findViewById(R.id.select_ration)
         mCallET = view.findViewById(R.id.feed_lot_call_et)
         mFeedFirst = view.findViewById(R.id.feed_lot_feed_first)
@@ -235,6 +238,15 @@ class FeedLotDetailFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 feedLotDetailFragmentViewModel.uiState.collect {
+
+                    if ((it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local) ||
+                        (it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local) ||
+                        (it.rationIsFetchingFromCloud && it.rationDataSource == DataSource.Local)
+                    ) {
+                        mProgressBar.visibility = View.VISIBLE
+                    } else {
+                        mProgressBar.visibility = View.INVISIBLE
+                    }
 
                     mFeedAgainLayout.removeAllViews()
 

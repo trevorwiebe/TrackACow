@@ -1,6 +1,5 @@
 package com.trevorwiebe.trackacow.presentation.lot_reports
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -15,10 +14,10 @@ import com.trevorwiebe.trackacow.domain.use_cases.drugs_given_use_cases.DrugsGiv
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.load_use_cases.LoadUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
+import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -55,12 +54,6 @@ class LotReportViewModel @AssistedInject constructor(
         }
     }
 
-    private var lotJob: Job? = null
-    private var drugsGivenJob: Job? = null
-    private var loadJob: Job? = null
-    private var cowJob: Job? = null
-    private var feedJob: Job? = null
-
     private val _uiState = MutableStateFlow(LotReportUiState())
     val uiState: StateFlow<LotReportUiState> = _uiState.asStateFlow()
 
@@ -81,71 +74,87 @@ class LotReportViewModel @AssistedInject constructor(
         }
     }
 
-    // TODO: add progress bar
     private fun readLotByLotId(lotCloudDatabaseId: String) {
-        lotJob?.cancel()
-        lotJob = lotUseCases.readLotsByLotId(lotCloudDatabaseId).dataFlow
-            .map { (thisLotModel, source) ->
+        val lot = lotUseCases.readLotsByLotId(lotCloudDatabaseId)
+        viewModelScope.launch {
+            lot.dataFlow.collect { (thisLotModel, source) ->
                 _uiState.update {
-                    it.copy(lotModel = thisLotModel as LotModel)
+                    it.copy(
+                        lotModel = thisLotModel as LotModel,
+                        lotDataSource = source,
+                        lotIsFetchingFromCloud = lot.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId: String){
-        drugsGivenJob?.cancel()
-        drugsGivenJob = drugsGivenUseCases
-            .readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId).dataFlow
-            .map { (drugsGivenAndDrugList, source) ->
+    private fun readDrugsGivenAndDrugsByLotCloudDatabaseId(lotCloudDatabaseId: String) {
+        val drug = drugsGivenUseCases.readDrugsGivenAndDrugsByLotId(lotCloudDatabaseId)
+        viewModelScope.launch {
+            drug.dataFlow.collect { (drugsGivenAndDrugList, source) ->
                 _uiState.update {
                     it.copy(
                         drugsGivenAndDrugList = calculateDrugsGiven.invoke(
                             drugsGivenAndDrugList as List<DrugsGivenAndDrugModel>
-                        )
+                        ),
+                        drugDataSource = source,
+                        drugIsFetchingFromCloud = drug.isFetchingFromCloud
                     )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readLoadsByLotId(lotId: String) {
-        loadJob?.cancel()
-        loadJob = loadUseCases.readLoadsByLotId(lotId).dataFlow
-            .map { (thisLoadList, source) ->
+        val load = loadUseCases.readLoadsByLotId(lotId)
+        viewModelScope.launch {
+            load.dataFlow.collect { (thisLoadList, source) ->
                 _uiState.update {
-                    it.copy(loadList = thisLoadList as List<LoadModel>)
+                    it.copy(
+                        loadList = thisLoadList as List<LoadModel>,
+                        loadDataSource = source,
+                        loadIsFetchingFromCloud = load.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readDeadCowsByLotId(lotId: String) {
-        cowJob?.cancel()
-        cowJob = cowUseCases.readDeadCowsByLotId(lotId).dataFlow
-            .map { (thisDeadCowList, source) ->
+        val deadCows = cowUseCases.readDeadCowsByLotId(lotId)
+        viewModelScope.launch {
+            deadCows.dataFlow.collect { (thisDeadCowList, source) ->
                 _uiState.update {
-                    it.copy(deadCowList = thisDeadCowList as List<CowModel>)
+                    it.copy(
+                        deadCowList = thisDeadCowList as List<CowModel>,
+                        deadCowDataSource = source,
+                        deadCowIsFetchingFromCloud = deadCows.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun readFeedsByLotId(lotId: String) {
-        feedJob?.cancel()
-        feedJob = feedUseCases.readFeedsByLotId(lotId).dataFlow
-            .map { (thisFeedList, source) ->
+        val feed = feedUseCases.readFeedsByLotId(lotId)
+        viewModelScope.launch {
+            feed.dataFlow.collect { (thisFeedList, source) ->
                 val feedList = thisFeedList as List<FeedModel>
                 val amount = numberFormat.format(feedList.sumOf { it.feed })
                 _uiState.update {
-                    it.copy(feedAmount = amount)
+                    it.copy(
+                        feedAmount = amount,
+                        feedDataSource = source,
+                        feedIsFetchingFromCloud = feed.isFetchingFromCloud
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun archivedLot(lotModel: LotModel?) {
@@ -158,10 +167,24 @@ class LotReportViewModel @AssistedInject constructor(
 
 data class LotReportUiState(
     val lotModel: LotModel? = null,
+    val lotIsFetchingFromCloud: Boolean = false,
+    val lotDataSource: DataSource = DataSource.Local,
+
     val drugsGivenAndDrugList: List<DrugsGivenAndDrugModel> = emptyList(),
+    val drugIsFetchingFromCloud: Boolean = false,
+    val drugDataSource: DataSource = DataSource.Local,
+
     val loadList: List<LoadModel> = emptyList(),
+    val loadIsFetchingFromCloud: Boolean = false,
+    val loadDataSource: DataSource = DataSource.Local,
+
     val deadCowList: List<CowModel> = emptyList(),
-    val feedAmount: String = ""
+    val deadCowIsFetchingFromCloud: Boolean = false,
+    val deadCowDataSource: DataSource = DataSource.Local,
+
+    val feedAmount: String = "",
+    val feedIsFetchingFromCloud: Boolean = false,
+    val feedDataSource: DataSource = DataSource.Local
 )
 
 sealed class LotReportEvents {
