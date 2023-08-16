@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.models.cow.CowModel
 import com.trevorwiebe.trackacow.domain.use_cases.cow_use_cases.CowUseCases
-import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -61,12 +60,10 @@ class MarkACowDeadViewModel @AssistedInject constructor(
     private fun readDeadCowsByLotId(lotId: String) {
         val deadCows = cowUseCases.readDeadCowsByLotId(lotId)
         viewModelScope.launch {
-            deadCows.dataFlow.collect { (thisDeadCowList, source) ->
+            deadCows.dataFlow.collect { (thisDeadCowList, _) ->
                 _uiState.update {
                     it.copy(
-                        deadCowList = thisDeadCowList as List<CowModel>,
-                        dataSource = source,
-                        isFetchingFromCloud = deadCows.isFetchingFromCloud
+                        deadCowList = thisDeadCowList as List<CowModel>
                     )
                 }
             }
@@ -75,9 +72,7 @@ class MarkACowDeadViewModel @AssistedInject constructor(
 }
 
 data class MarkACowDeadUiState(
-    val deadCowList: List<CowModel> = emptyList(),
-    val dataSource: DataSource = DataSource.Local,
-    val isFetchingFromCloud: Boolean = false
+    val deadCowList: List<CowModel> = emptyList()
 )
 
 sealed class MarkACowDeadEvent {

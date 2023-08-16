@@ -100,34 +100,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <FrameLayout
+        <Button
+            android:textColor="@android:color/white"
+            android:background="@drawable/accent_sign_in_btn"
+            android:text="@string/mark_as_dead"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:layout_margin="24dp"
+            android:id="@+id/save_medicated_cow"
+            android:onClick="markAsDead"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:textColor="@android:color/white"
-                android:background="@drawable/accent_sign_in_btn"
-                android:text="@string/mark_as_dead"
-                android:paddingTop="24dp"
-                android:paddingBottom="24dp"
-                android:layout_margin="24dp"
-                android:id="@+id/save_medicated_cow"
-                android:elevation="2dp"
-                android:onClick="markAsDead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/mark_dead_progress_bar"
-                android:indeterminate="true"
-                android:layout_gravity="center"
-                app:indicatorColor="@color/colorAccent"
-                android:layout_margin="24dp"
-                android:elevation="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
