@@ -312,6 +312,7 @@ object ViewModelDomainModule {
     @Provides
     fun provideFeedUseCases(
         feedRepository: FeedRepository,
+        rationsRepository: RationsRepository,
         feedRepositoryRemote: FeedRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
@@ -334,9 +335,10 @@ object ViewModelDomainModule {
                         context
                 ),
                 readFeedsAndRationsTotalsByLotIdAndDate = ReadFeedsAndRationsTotalsByLotIdAndDate(
-                        feedRepository,
-                        feedRepositoryRemote,
-                        context
+                    feedRepository,
+                    rationsRepository,
+                    feedRepositoryRemote,
+                    context
                 )
         )
     }

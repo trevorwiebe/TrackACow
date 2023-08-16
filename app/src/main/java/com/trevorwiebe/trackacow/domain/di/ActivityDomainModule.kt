@@ -239,6 +239,7 @@ object ActivityDomainModule {
     @Provides
     fun provideFeedUseCases(
         feedRepository: FeedRepository,
+        rationsRepository: RationsRepository,
         feedRepositoryRemote: FeedRepositoryRemote,
         getCloudDatabaseId: GetCloudDatabaseId,
         context: Application
@@ -261,9 +262,10 @@ object ActivityDomainModule {
                         context
                 ),
                 readFeedsAndRationsTotalsByLotIdAndDate = ReadFeedsAndRationsTotalsByLotIdAndDate(
-                        feedRepository,
-                        feedRepositoryRemote,
-                        context
+                    feedRepository,
+                    rationsRepository,
+                    feedRepositoryRemote,
+                    context
                 )
         )
     }

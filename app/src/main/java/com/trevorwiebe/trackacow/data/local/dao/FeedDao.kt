@@ -19,20 +19,22 @@ interface FeedDao {
 
     @Query("SELECT * FROM feed WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate")
     fun getFeedsByLotIdAndDate(
-            lotId: String,
-            startDate: Long,
-            endDate: Long
+        lotId: String,
+        startDate: Long,
+        endDate: Long
     ): Flow<List<FeedEntity>>
 
-    @Query("SELECT SUM(feed.feed) AS 'feed', feed.lotId, ration.rationCloudDatabaseId, ration.rationName FROM feed " +
-            "INNER JOIN ration ON ration.rationCloudDatabaseId = feed.rationCloudId " +
-            "WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate " +
-            "GROUP BY ration.rationCloudDatabaseId " +
-            "ORDER BY ration.rationName")
+    @Query(
+        "SELECT SUM(feed.feed) AS 'feed', feed.date, feed.lotId, ration.rationCloudDatabaseId, ration.rationName FROM feed " +
+                "LEFT JOIN ration ON ration.rationCloudDatabaseId = feed.rationCloudId " +
+                "WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate " +
+                "GROUP BY ration.rationCloudDatabaseId " +
+                "ORDER BY ration.rationName"
+    )
     fun getFeedsAndRationsTotalsByLotIdAndDate(
-            lotId: String,
-            startDate: Long,
-            endDate: Long
+        lotId: String,
+        startDate: Long,
+        endDate: Long
     ): Flow<List<FeedAndRationEntity>>
 
     @Update

@@ -111,7 +111,7 @@
     <string name="start_date">START DATE</string>
     <string name="end_date">END DATE</string>
     <string name="last_24_hrs">Last 24 Hrs</string>
-    <string name="this_month">This month</string>
+    <string name="this_month">Last 30 Days</string>
     <string name="all">All</string>
     <string name="no_drugs_given_in_this_date_range">No drugs given in this date range</string>
     <string name="drug_report_title">Drug Reports: %1$s</string>

@@ -7,9 +7,11 @@ import com.google.firebase.database.ValueEventListener
 import com.trevorwiebe.trackacow.data.mapper.toFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.CacheFeedModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.repository.remote.FeedRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.addQueryListValueEventListenerFlow
+import com.trevorwiebe.trackacow.domain.utils.combineQueryDatabaseNodes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Provider
@@ -55,6 +57,25 @@ class FeedRepositoryRemoteImpl(
                 .orderByChild("lotId")
                 .equalTo(lotId)
             feedQuery.addQueryListValueEventListenerFlow(FeedModel::class.java)
+        } else {
+            emptyFlow()
+        }
+    }
+
+    override fun readFeedsAndRationsByLotId(lotId: String): Flow<Pair<List<RationModel>, List<FeedModel>>> {
+        val userId = firebaseUserId.get().toString()
+        return if (userId.isNotEmpty()) {
+            val feedQuery = firebaseDatabase
+                .getReference("/users/${userId}/feed")
+                .orderByChild("lotId")
+                .equalTo(lotId)
+            val rationRef = firebaseDatabase.getReference("/users/$userId/rations")
+            combineQueryDatabaseNodes(
+                rationRef,
+                feedQuery,
+                RationModel::class.java,
+                FeedModel::class.java
+            )
         } else {
             emptyFlow()
         }

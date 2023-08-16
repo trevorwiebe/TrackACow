@@ -5,9 +5,10 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.FeedAndRationModel
 
 fun FeedAndRationEntity.toFeedAndRationModel(): FeedAndRationModel {
     return FeedAndRationModel(
-            feed = feed,
-            lotId = lotId,
-            rationCloudId = rationCloudId,
-            rationName = rationName
+        feed = feed,
+        date = date,
+        lotId = lotId,
+        rationCloudId = rationCloudId,
+        rationName = rationName
     )
 }
