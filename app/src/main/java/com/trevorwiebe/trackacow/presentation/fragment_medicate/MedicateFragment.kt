@@ -91,13 +91,14 @@ class MedicateFragment : Fragment() {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE
-                        mNoPensLl.visibility = View.GONE
                     }
 
                     mPenAndLotModelList = it.penAndLotModelList
                     if (it.penAndLotModelList.isEmpty()) {
                         mPenRv.visibility = View.GONE
+                        mNoPensLl.visibility = View.VISIBLE
                     } else {
+                        mNoPensLl.visibility = View.GONE
                         mPenRv.visibility = View.VISIBLE
                         mPenRecyclerViewAdapter!!.swapData(mPenAndLotModelList)
                     }
