@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -139,14 +138,15 @@ class MainActivity : AppCompatActivity() {
         if (id == R.id.action_upload_data) {
             val dataToUploadDialog = AlertDialog.Builder(this@MainActivity)
             dataToUploadDialog.setTitle("Local changes made")
-            dataToUploadDialog.setMessage("You have made local changes that are not synced to the cloud.")
+            dataToUploadDialog.setMessage("You have made local changes that are not synced to the cloud. Make sure you are connected to the network and offline mode is disabled to sync.")
             dataToUploadDialog.setNegativeButton("Cancel") { _: DialogInterface?, _: Int -> }
-            dataToUploadDialog.setPositiveButton("Sync") { _: DialogInterface?, _: Int ->
-                Toast.makeText(
-                        this@MainActivity,
-                        "Not implemented yet",
-                        Toast.LENGTH_SHORT
-                ).show()
+            if (Utility.haveNetworkConnection(this@MainActivity)) {
+                dataToUploadDialog.setPositiveButton("Sync") { _: DialogInterface?, _: Int ->
+                    // Check data cache and upload if network is available and data is present
+                    mainViewModel.onEvent(MainUiEvent.CheckCache)
+
+                    invalidateOptionsMenu()
+                }
             }
             dataToUploadDialog.show()
         }
@@ -170,6 +170,8 @@ class MainActivity : AppCompatActivity() {
 
         // Check data cache and upload if network is available and data is present
         mainViewModel.onEvent(MainUiEvent.CheckCache)
+
+        invalidateOptionsMenu()
 
         // Check if app is on required version
         checkIfAppIsOnRequiredVersion()

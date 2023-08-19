@@ -1,7 +1,6 @@
 package com.trevorwiebe.trackacow.presentation.main_activity
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
@@ -38,7 +37,7 @@ class MainViewModel @Inject constructor(
             }
 
             is MainUiEvent.CheckCache -> {
-                checkCache()
+                syncCache()
             }
         }
     }
@@ -58,7 +57,7 @@ class MainViewModel @Inject constructor(
             }
     }
 
-    private fun checkCache() {
+    private fun syncCache() {
         if (
             Utility.isThereNewDataToUpload(context) &&
             Utility.haveNetworkConnection(context)
