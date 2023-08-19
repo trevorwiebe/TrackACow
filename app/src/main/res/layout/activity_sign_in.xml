@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorPrimaryDark"
     tools:context=".presentation.sign_in.SignInActivity">
 
     <LinearLayout
@@ -14,6 +14,13 @@
         android:paddingLeft="36dp"
         android:paddingRight="36dp"
         android:gravity="center_horizontal">
+
+        <ImageView
+            android:src="@mipmap/track_a_cow_launcher"
+            android:contentDescription="@string/app_name"
+            android:layout_margin="16dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
 
         <TextView
             android:text="@string/app_name"
@@ -29,10 +36,34 @@
 
         <TextView
             android:gravity="center"
+            android:text="@string/name"
+            android:textSize="16sp"
+            android:labelFor="@id/sign_in_name"
+            android:layout_marginTop="36dp"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_marginBottom="16dp"
+            android:textColor="@android:color/white"
+            android:id="@+id/sign_in_name"
+            android:inputType="textCapWords"
+            android:theme="@style/TextLabel"
+            android:textCursorDrawable="@null"
+            android:selectAllOnFocus="true"
+            android:backgroundTint="@android:color/white"
+            android:drawableTint="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Name" />
+
+        <TextView
+            android:gravity="center"
             android:text="@string/email"
             android:textSize="16sp"
             android:labelFor="@id/sign_in_email"
-            android:layout_marginTop="36dp"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -134,7 +165,7 @@
                 android:layout_marginBottom="24dp"
                 android:text="@string/sign_in_with_google"
                 android:textColor="@android:color/white"
-                android:background="@drawable/dark_accent_sign_in_btn"
+                android:background="@drawable/accent_sign_in_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -148,18 +179,6 @@
                 android:layout_height="wrap_content" />
 
         </FrameLayout>
-
-        <Button
-            android:id="@+id/create_account"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
-            android:text="@string/create_an_account"
-            android:textColor="@android:color/white"
-            android:background="@drawable/accent_sign_in_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

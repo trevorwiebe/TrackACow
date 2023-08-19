@@ -3,7 +3,6 @@ package com.trevorwiebe.trackacow.presentation.sign_in
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.os.Bundle
@@ -11,32 +10,39 @@ import com.trevorwiebe.trackacow.R
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import android.widget.TextView
-import android.content.Intent
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
 import android.view.View
 import android.widget.Button
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.trevorwiebe.trackacow.presentation.create_account.CreateAccountActivity
-import com.trevorwiebe.trackacow.presentation.main_activity.MainActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.auth.api.identity.Identity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
+@AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
 
-    private val mAuth = FirebaseAuth.getInstance()
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
-
+    private val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(this, Identity.getSignInClient(this))
+    }
+    private lateinit var mName: EditText
     private lateinit var mEmail: EditText
     private lateinit var mPassword: EditText
-    private lateinit var mSigningIn: ProgressBar
-    private lateinit var mSigningInWithGoogle: ProgressBar
+    private lateinit var mSignInWithEmailBtn: Button
+    private lateinit var mSignInWithEmailProgressBar: ProgressBar
+    private lateinit var mSignInWithGoogleBtn: Button
+    private lateinit var mSignInWithGoogleProgressBar: ProgressBar
+
+    private val signInViewModel: SignInViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,74 +51,67 @@ class SignInActivity : AppCompatActivity() {
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         // finally change the color
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorAccent)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
 
+        mName = findViewById(R.id.sign_in_name)
         mEmail = findViewById(R.id.sign_in_email)
         mPassword = findViewById(R.id.sign_in_password)
-        mSigningIn = findViewById(R.id.signing_in)
-        mSigningInWithGoogle = findViewById(R.id.signing_in_with_google)
-        val signInBtn = findViewById<Button>(R.id.sign_in_btn)
+        mSignInWithEmailProgressBar = findViewById(R.id.signing_in)
+        mSignInWithGoogleProgressBar = findViewById(R.id.signing_in_with_google)
+        mSignInWithEmailBtn = findViewById(R.id.sign_in_btn)
         val forgotPassword = findViewById<TextView>(R.id.forgot_password)
-        val signInWithGoogle = findViewById<Button>(R.id.sign_in_with_google)
-        val createAccount = findViewById<Button>(R.id.create_account)
+        mSignInWithGoogleBtn = findViewById(R.id.sign_in_with_google)
 
-        signInBtn.setOnClickListener {
+        mSignInWithEmailBtn.setOnClickListener {
 
-            var shouldSave = true
+            mSignInWithEmailProgressBar.visibility = View.VISIBLE
 
-            if (mPassword.length() == 0) {
-                mPassword.requestFocus()
-                mPassword.error = "Please enter your password"
-                shouldSave = false
-            } else {
-                mPassword.error = null
-            }
+            signInViewModel.onEvent(
+                SignInEvent.OnSignInWithEmail(
+                    mName.text.toString(),
+                    mEmail.text.toString(),
+                    mPassword.text.toString()
+                )
+            )
+        }
 
-            if (mEmail.length() == 0) {
-                mEmail.requestFocus()
-                mEmail.error = "Please enter your email"
-                shouldSave = false
-            } else {
-                mEmail.error = null
-            }
-
-            if (shouldSave) {
-                mSigningIn.visibility = View.VISIBLE
-                val email = mEmail.text.toString()
-                val password = mPassword.text.toString()
-                mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            startActivity(intent)
-                        } else {
-                            mSigningIn.visibility = View.INVISIBLE
-                            val errorCode = try {
-                                (task.exception as FirebaseAuthException).errorCode
-                            } catch (e: Exception) {
-                                ERROR_UNKNOWN_ERROR
-                            }
-                            val errorMessage = task.exception?.localizedMessage
-                            val messageTitle = "Error signing in"
-                            showMessage(messageTitle, errorMessage, errorCode)
-                        }
-                    }
+        val googleSignInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            result.checkResultAndExecute {
+                lifecycleScope.launch {
+                    val credential = googleAuthUiClient.getCredentialFromSignInIntent(
+                        data ?: return@launch
+                    )
+                    signInViewModel.onEvent(SignInEvent.OnSignInWithGoogle(credential))
+                }
             }
         }
 
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        mSignInWithGoogleBtn.setOnClickListener {
+            mSignInWithGoogleProgressBar.visibility = View.VISIBLE
+            lifecycleScope.launch {
+                val intentSender = googleAuthUiClient.getSignInIntent()
+                googleSignInLauncher.launch(
+                    IntentSenderRequest.Builder(
+                        intentSender ?: return@launch
+                    ).build()
+                )
+            }
+        }
 
-        signInWithGoogle.setOnClickListener {
-            mSigningInWithGoogle.visibility = View.VISIBLE
-            val signInWithGoogleIntent = mGoogleSignInClient.signInIntent
-            createAccountLauncher.launch(signInWithGoogleIntent)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                signInViewModel.state.collect {
+                    if (it.isSignInSuccessful) {
+                        finish()
+                    } else {
+                        if (it.signInErrorCode != NO_ERROR) {
+                            showErrorMessage("Sign in error", it.signInError, it.signInErrorCode)
+                        }
+                    }
+                }
+            }
         }
 
         forgotPassword.setOnClickListener {
@@ -137,7 +136,7 @@ class SignInActivity : AppCompatActivity() {
                         FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddressStr)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    showMessage(
+                                    showErrorMessage(
                                         "Success!",
                                         "The link has been sent to " + emailAddress.text.toString(),
                                         NO_ERROR
@@ -145,7 +144,7 @@ class SignInActivity : AppCompatActivity() {
                                 } else {
                                     val errorCode = (task.exception as FirebaseAuthException).errorCode
                                     val errorMessage = (task.exception as FirebaseAuthException).localizedMessage
-                                    showMessage(
+                                    showErrorMessage(
                                         "Sending failed",
                                         errorMessage,
                                         errorCode
@@ -160,75 +159,53 @@ class SignInActivity : AppCompatActivity() {
             }
             forgotPasswordDialog.show()
         }
-
-        createAccount.setOnClickListener {
-            val createAccountIntent = Intent(this@SignInActivity, CreateAccountActivity::class.java)
-            createAccountLauncher.launch(createAccountIntent)
-        }
     }
 
-    private var createAccountLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    fireBaseAuthWithGoogle(account)
-                } catch (e: ApiException) {
-                    val errorMessage = e.localizedMessage
-                    val errorCode = (task.exception as FirebaseAuthException).errorCode
-                    showMessage("Error signing in", errorMessage, errorCode)
-                }
-            }
-        }
-
-
-    private fun fireBaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                    intent.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(intent)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    val errorMessage = (task.exception as FirebaseAuthException).localizedMessage
-                    val errorCode = (task.exception as FirebaseAuthException).errorCode
-                    showMessage("Error signing in", errorMessage, errorCode)
-                }
-            }
-    }
-
-    private fun showMessage(title: String, errorMessage: String?, errorType: String?) {
-        val signInError = AlertDialog.Builder(this@SignInActivity)
-        signInError.setTitle(title)
-        signInError.setMessage(errorMessage)
-        signInError.setPositiveButton("Ok") { dialog, which ->
-            if (errorType === ERROR_INVALID_EMAIL
-                || errorType === ERROR_USER_DISABLED
-                || errorType === ERROR_USER_MISMATCH
-                || errorType === ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
-                || errorType === ERROR_EMAIL_ALREADY_IN_USE
-                || errorType === ERROR_CREDENTIAL_ALREADY_IN_USE
-                || errorType === ERROR_USER_NOT_FOUND
-                || errorType === ERROR_MISSING_EMAIL
-            ) {
+    private fun showErrorMessage(title: String, errorMessage: String?, errorType: String?) {
+        if (errorType === ERROR_NO_EMAIL
+            || errorType === ERROR_NO_PASSWORD
+            || errorType === ERROR_NO_NAME
+        ) {
+            if (errorType === ERROR_NO_EMAIL) {
                 mEmail.requestFocus()
-                mEmail.selectAll()
-            } else if (errorType === ERROR_INVALID_CREDENTIAL
-                || errorType === ERROR_WRONG_PASSWORD
-                || errorType === ERROR_WEAK_PASSWORD
-            ) {
-                mPassword.requestFocus()
-                mPassword.selectAll()
+                mEmail.error = "Email required"
             }
+            if (errorType === ERROR_NO_PASSWORD) {
+                mPassword.requestFocus()
+                mPassword.error = "Password required"
+            }
+            if (errorType === ERROR_NO_NAME) {
+                mName.requestFocus()
+                mName.error = "Name required"
+            }
+        } else {
+            val signInError = AlertDialog.Builder(this@SignInActivity)
+            signInError.setTitle(title)
+            signInError.setMessage(errorMessage)
+            signInError.setPositiveButton("Ok") { dialog, which ->
+                if (errorType === ERROR_INVALID_EMAIL
+                    || errorType === ERROR_USER_DISABLED
+                    || errorType === ERROR_USER_MISMATCH
+                    || errorType === ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
+                    || errorType === ERROR_EMAIL_ALREADY_IN_USE
+                    || errorType === ERROR_CREDENTIAL_ALREADY_IN_USE
+                    || errorType === ERROR_USER_NOT_FOUND
+                    || errorType === ERROR_MISSING_EMAIL
+                ) {
+                    mEmail.requestFocus()
+                    mEmail.selectAll()
+                } else if (errorType === ERROR_INVALID_CREDENTIAL
+                    || errorType === ERROR_WRONG_PASSWORD
+                    || errorType === ERROR_WEAK_PASSWORD
+                ) {
+                    mPassword.requestFocus()
+                    mPassword.selectAll()
+                }
+            }
+            signInError.show()
         }
-        signInError.show()
-        mSigningIn.visibility = View.INVISIBLE
-        mSigningInWithGoogle.visibility = View.INVISIBLE
+        mSignInWithEmailProgressBar.visibility = View.INVISIBLE
+        mSignInWithGoogleProgressBar.visibility = View.INVISIBLE
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("finishAffinity()"))
@@ -238,6 +215,9 @@ class SignInActivity : AppCompatActivity() {
 
     companion object {
         const val NO_ERROR = "NO_ERROR"
+        const val ERROR_NO_NAME = "ERROR_NO_NAME"
+        const val ERROR_NO_EMAIL = "ERROR_NO_EMAIL"
+        const val ERROR_NO_PASSWORD = "ERROR_NO_PASSWORD"
         const val ERROR_WRONG_PASSWORD = "ERROR_WRONG_PASSWORD"
         const val ERROR_USER_MISMATCH = "ERROR_USER_MISMATCH"
         const val ERROR_INVALID_EMAIL = "ERROR_INVALID_EMAIL"
@@ -252,4 +232,8 @@ class SignInActivity : AppCompatActivity() {
         const val ERROR_MISSING_EMAIL = "ERROR_MISSING_EMAIL"
         const val ERROR_UNKNOWN_ERROR = "ERROR_UNKNOWN_ERROR"
     }
+
+    private inline fun ActivityResult.checkResultAndExecute(block: ActivityResult.() -> Unit) =
+        if (resultCode == Activity.RESULT_OK) runCatching(block)
+        else Result.failure(Exception("Something went wrong"))
 }
