@@ -40,36 +40,19 @@ class SignInViewModel @Inject constructor(
     private fun signInWithEmailAndPassword(name: String, email: String, password: String) {
         var shouldSignIn = true
 
-        if (name.isEmpty()) {
-            _state.update {
-                it.copy(
-                    signInError = "Please enter your name.",
-                    signInErrorCode = SignInActivity.ERROR_NO_NAME
-                )
-            }
-            shouldSignIn = false
-        } else {
-            _state.update {
-                it.copy(
-                    signInError = null,
-                    signInErrorCode = SignInActivity.NO_ERROR
-                )
-            }
-        }
-
         if (password.isEmpty()) {
             _state.update {
                 it.copy(
-                    signInError = "Please enter your password.",
-                    signInErrorCode = SignInActivity.ERROR_NO_PASSWORD
+                        signInError = "Please enter your password.",
+                        signInErrorCode = SignInActivity.ERROR_NO_PASSWORD
                 )
             }
             shouldSignIn = false
         } else {
             _state.update {
                 it.copy(
-                    signInError = null,
-                    signInErrorCode = SignInActivity.NO_ERROR
+                        signInError = null,
+                        signInErrorCode = SignInActivity.NO_ERROR
                 )
             }
         }
@@ -77,8 +60,25 @@ class SignInViewModel @Inject constructor(
         if (email.isEmpty()) {
             _state.update {
                 it.copy(
-                    signInError = "Please enter your email.",
-                    signInErrorCode = SignInActivity.ERROR_NO_EMAIL
+                        signInError = "Please enter your email.",
+                        signInErrorCode = SignInActivity.ERROR_NO_EMAIL
+                )
+            }
+            shouldSignIn = false
+        } else {
+            _state.update {
+                it.copy(
+                        signInError = null,
+                        signInErrorCode = SignInActivity.NO_ERROR
+                )
+            }
+        }
+
+        if (name.isEmpty()) {
+            _state.update {
+                it.copy(
+                        signInError = "Please enter your name.",
+                        signInErrorCode = SignInActivity.ERROR_NO_NAME
                 )
             }
             shouldSignIn = false
