@@ -22,7 +22,7 @@ interface LotDao {
     @Query("SELECT * FROM lot WHERE lotPenCloudDatabaseId = :penId AND archived = 0")
     fun getLotEntitiesByPenId(penId: String): Flow<List<LotEntity>>
 
-    @Query("SELECT * FROM lot WHERE archived = 1")
+    @Query("SELECT * FROM lot WHERE archived = 1 ORDER BY dateArchived ASC")
     fun getArchivedLots(): Flow<List<LotEntity>>
 
     @Query("UPDATE lot SET lotPenCloudDatabaseId = :penId WHERE lotCloudDatabaseId = :lotId")

@@ -1,6 +1,7 @@
 package com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases
 
 import android.app.Application
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.repository.local.LotRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.LotRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.DataSource
@@ -32,7 +33,19 @@ data class ReadArchivedLots(
                     emit(localData to source)
                 }.map { (lotList, source) ->
                     lotRepository.insertOrUpdateLotList(lotList)
-                    lotList to source
+                    val mutableList = lotList.toMutableList()
+                    mutableList.sortWith(object : Comparator<LotModel> {
+                        override fun compare(p0: LotModel, p1: LotModel): Int {
+                            if (p0.dateArchived < p1.dateArchived) {
+                                return 1
+                            }
+                            if (p0.dateArchived == p1.dateArchived) {
+                                return 0
+                            }
+                            return -1
+                        }
+                    })
+                    mutableList.toList() to source
                 }
             }
         } else {
