@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Feedlot Management</string>
+    <string name="app_name">Track-A-Cow</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
@@ -150,12 +150,9 @@
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="create_account">Create Account</string>
-    <string name="create_account_with_google">Create account with Google</string>
     <string name="forgot_your_password">Forgot your password?</string>
-    <string name="sign_in">Sign In</string>
-    <string name="sign_in_with_google">Sign In with Google</string>
-    <string name="create_an_account">Create an account</string>
+    <string name="sign_in">Sign In / Sign Up</string>
+    <string name="sign_in_with_google">Sign In / Sign Up with Google</string>
 
     Utility Strings
     <string name="save_ration_id_key" translatable="false">save_ration_id_key</string>
