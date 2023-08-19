@@ -219,11 +219,11 @@ object Utility {
 
     fun getResourceIdFromFragmentId(id: Int): Int {
         return when (id) {
-            R.id.action_medicate -> Constants.MEDICATE
-            R.id.action_feed -> Constants.FEED
-            R.id.action_reports -> Constants.REPORTS
-            R.id.action_more -> Constants.MORE
-            else -> Constants.MOVE
+            Constants.MEDICATE -> R.id.action_medicate
+            Constants.FEED -> R.id.action_feed
+            Constants.REPORTS -> R.id.action_reports
+            Constants.MORE -> R.id.action_more
+            else -> R.id.action_medicate
         }
     }
 }
