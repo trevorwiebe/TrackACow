@@ -16,8 +16,8 @@
         <TextView
             android:text="@string/pen"
             android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
             android:textSize="16sp"
             android:textColor="@android:color/black"
@@ -27,8 +27,8 @@
         <TextView
             android:id="@+id/pen"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:textSize="16sp"
             android:textColor="@android:color/black"
@@ -41,12 +41,8 @@
             android:layout_height="0dp" />
 
         <TextView
-            android:layout_margin="16dp"
             android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="16dp"
+            android:layout_margin="16dp"
             android:textSize="16sp"
             android:id="@+id/lot_names"
             android:layout_width="wrap_content"

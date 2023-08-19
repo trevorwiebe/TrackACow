@@ -16,7 +16,7 @@
     Work Fragment Strings
     <string name="work">Treat</string>
     <string name="treat_a_cow">Treat a cow</string>
-    <string name="work_no_cattle_in_this_pen">No cattle in this Pen, Tap to add a Lot.</string>
+    <string name="work_no_cattle_in_this_pen">Tap to add a Lot.</string>
     <string name="this_cow_is_dead">This cow is dead</string>
     <string name="mark_a_cow_dead">Mark as dead</string>
     <string name="tag_number">Tag number</string>
@@ -46,7 +46,7 @@
 
     Feed Fragment Strings
     <string name="feed">Feed</string>
-    <string name="no_pens_create_one">No pens saved. You must add one to continue</string>
+    <string name="no_pens_create_one">Your pens will show here.</string>
     <string name="feed_no_cattle_in_this_pen">No cattle in this Pen.</string>
     <string name="call">Call</string>
     <string name="total_fed">Total Fed</string>
