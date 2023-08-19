@@ -24,8 +24,6 @@ class ReadDrugsGivenAndDrugsByCowId(
         private val context: Application
 ) {
 
-    // TODO: fix issue where it says just local data is returned
-
     @OptIn(FlowPreview::class)
     operator fun invoke(cowIdList: List<String>): SourceIdentifiedListFlow {
 
