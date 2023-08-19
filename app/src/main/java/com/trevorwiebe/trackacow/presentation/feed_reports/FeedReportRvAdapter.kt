@@ -28,8 +28,13 @@ class FeedReportRvAdapter :
     }
 
     override fun onBindViewHolder(holder: FeedReportViewHolder, position: Int) {
-        holder.amount.text = numberFormat.format(feedList[position].feed)
-        holder.ration.text = feedList[position].rationName.toString()
+        val feedAndRationModel = feedList[position]
+        holder.amount.text = numberFormat.format(feedAndRationModel.feed)
+        if (feedAndRationModel.rationName.isNullOrEmpty()) {
+            holder.ration.text = "[ration_unavailable]"
+        } else {
+            holder.ration.text = feedAndRationModel.rationName.toString()
+        }
     }
 
     fun setFeedList(feedList: List<FeedAndRationModel>) {
