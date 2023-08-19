@@ -31,11 +31,11 @@ data class ReadDeadCowsByLotId(
                 cowCloudFlow.onStart {
                     emit(localData to source)
                 }.map { (cowModelList, source) ->
-                    cowRepository.insertOrUpdateCowList(cowModelList)
-                    cowModelList.filter {
+                    val cowList = cowModelList.filter {
                         it.alive == 0
                     }
-                    cowModelList to source
+                    cowRepository.insertOrUpdateCowList(cowList)
+                    cowList to source
                 }
             }
         } else {
