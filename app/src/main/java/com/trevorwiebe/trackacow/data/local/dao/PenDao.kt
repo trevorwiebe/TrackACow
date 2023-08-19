@@ -22,7 +22,7 @@ interface PenDao {
 
     @Query(
         "SELECT * FROM Pen LEFT JOIN lot ON lot.lotPenCloudDatabaseId = Pen.penCloudDatabaseId " +
-                "AND lot.archived = 0"
+                "AND lot.archived = 0 ORDER BY Pen.penName ASC"
     )
     fun getPenAndLotListIncludeEmptyPens(): Flow<List<PenAndLotEntity>>
 
