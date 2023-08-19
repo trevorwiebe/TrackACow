@@ -64,12 +64,12 @@ class MainActivity : AppCompatActivity() {
         mMainProgressBar = findViewById(R.id.main_progress_bar)
         mBottomNavigationView = findViewById(R.id.bottom_navigation)
         mBottomNavigationView.visibility = View.INVISIBLE
-        mBottomNavigationView.setOnItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem: MenuItem ->
+        mBottomNavigationView.setOnItemSelectedListener { menuItem: MenuItem ->
             mBottomNavigationView.menu.setGroupCheckable(0, true, true)
             val id = menuItem.itemId
             setSelectedFragment(Utility.getFragmentIdFromResourceID(id))
             true
-        })
+        }
 
         if (BuildConfig.DEBUG) {
             try {
