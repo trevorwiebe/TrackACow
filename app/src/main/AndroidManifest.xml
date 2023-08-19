@@ -95,12 +95,6 @@
             android:label="@string/edit_drugs_given"
             android:parentActivityName=".presentation.edit_medicated_cow.EditMedicatedCowActivity" />
         <activity
-            android:name=".presentation.create_account.CreateAccountActivity"
-            android:exported="false"
-            android:label="@string/create_account"
-            android:parentActivityName=".presentation.sign_in.SignInActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".presentation.sign_in.SignInActivity"
             android:exported="false"
             android:label="@string/sign_in"
