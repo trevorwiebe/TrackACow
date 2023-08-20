@@ -66,7 +66,7 @@ class ArchivesActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mArchivesViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.archivedLotList.isEmpty()) {
                         mProgressIndicator.visibility = View.VISIBLE
                     } else {
                         mProgressIndicator.visibility = View.GONE

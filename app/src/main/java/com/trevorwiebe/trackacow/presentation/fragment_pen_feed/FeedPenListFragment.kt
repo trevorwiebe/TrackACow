@@ -98,8 +98,8 @@ class FeedPenListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 feedPenListViewModel.uiState.collect {
 
-                    if ((it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local) ||
-                        (it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local)
+                    if ((it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local && it.feedPenUiList.isEmpty()) ||
+                            (it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local && it.feedPenUiList.isEmpty())
                     ) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {

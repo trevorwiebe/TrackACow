@@ -239,9 +239,9 @@ class FeedLotDetailFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 feedLotDetailFragmentViewModel.uiState.collect {
 
-                    if ((it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local) ||
-                        (it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local) ||
-                        (it.rationIsFetchingFromCloud && it.rationDataSource == DataSource.Local)
+                    if ((it.callIsFetchingFromCloud && it.callDataSource == DataSource.Local && it.callModel == null) ||
+                            (it.feedIsFetchingFromCloud && it.feedDataSource == DataSource.Local && it.feedList.isEmpty()) ||
+                            (it.rationIsFetchingFromCloud && it.rationDataSource == DataSource.Local && it.rationList.isEmpty())
                     ) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {

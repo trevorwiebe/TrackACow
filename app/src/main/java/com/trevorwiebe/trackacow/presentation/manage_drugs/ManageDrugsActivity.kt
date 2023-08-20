@@ -72,7 +72,7 @@ class ManageDrugsActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mManageDrugsViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.drugList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE

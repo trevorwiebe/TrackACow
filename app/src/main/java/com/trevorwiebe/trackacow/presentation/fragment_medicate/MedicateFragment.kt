@@ -87,7 +87,7 @@ class MedicateFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 mMedicateListViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.penAndLotModelList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE

@@ -71,7 +71,7 @@ class ManageRationsActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 manageRationsViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.rationsList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE

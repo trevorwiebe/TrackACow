@@ -70,7 +70,7 @@ class ReportsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 reportsFragmentViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.lotList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE

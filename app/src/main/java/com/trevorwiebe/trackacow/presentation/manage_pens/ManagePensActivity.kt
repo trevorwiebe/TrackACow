@@ -71,7 +71,7 @@ class ManagePensActivity : AppCompatActivity(){
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 managePensViewModel.uiState.collect {
 
-                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local) {
+                    if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.penList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
                         mProgressBar.visibility = View.GONE

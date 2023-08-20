@@ -123,8 +123,8 @@ class EditMedicatedCowActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 editMedicatedCowViewModel.uiState.collect {
 
-                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local) ||
-                        (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local)
+                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local && it.cowModel == null) ||
+                            (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local && it.drugsGivenList.isEmpty())
                     ) {
                         mProgressIndicator.visibility = View.VISIBLE
                     } else {

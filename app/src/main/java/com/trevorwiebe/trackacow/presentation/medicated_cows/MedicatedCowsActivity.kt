@@ -114,8 +114,8 @@ class MedicatedCowsActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 medicatedCowsViewModel.uiState.collect {
 
-                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local) ||
-                        (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local)
+                    if ((it.cowIsFetchingFromCloud && it.cowDataSource == DataSource.Local && it.cowUiModelList.isNullOrEmpty()) ||
+                            (it.drugIsFetchingFromCloud && it.drugDataSource == DataSource.Local && it.cowUiModelList.isNullOrEmpty())
                     ) {
                         mProgressIndicator.visibility = View.VISIBLE
                     } else {
@@ -123,7 +123,7 @@ class MedicatedCowsActivity : AppCompatActivity() {
                     }
 
                     mCowUiModelList =
-                        if (it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
+                            if (it.cowUiModelList.isNullOrEmpty()) emptyList() else it.cowUiModelList
                     if (mCowUiModelList.isEmpty()) {
                         mNoMedicatedCows.visibility = View.VISIBLE
                     } else {
