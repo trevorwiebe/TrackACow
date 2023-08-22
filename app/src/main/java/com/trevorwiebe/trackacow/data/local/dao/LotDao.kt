@@ -56,6 +56,7 @@ interface LotDao {
     @Query("DELETE FROM lot")
     suspend fun deleteAllLots()
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdateLotList(lotList: List<LotEntity>) {
         val insertResult = insertLotList(lotList)

@@ -42,6 +42,7 @@ interface LoadDao {
     @Query("DELETE FROM load")
     suspend fun deleteAllLoads()
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(loadList: List<LoadEntity>) {
         val insertResult = insertLoadList(loadList)

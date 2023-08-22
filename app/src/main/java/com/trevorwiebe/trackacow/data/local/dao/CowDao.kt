@@ -40,6 +40,7 @@ interface CowDao {
     @Query("DELETE FROM cow")
     suspend fun deleteAllCows()
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(cowList: List<CowEntity>) {
         val insertResult = insertCowList(cowList)

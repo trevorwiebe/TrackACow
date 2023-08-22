@@ -55,6 +55,7 @@ interface DrugsGivenDao {
     @Query("DELETE FROM drugs_given")
     suspend fun deleteAllDrugsGiven()
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(drugsGivenList: List<DrugsGivenEntity>) {
         val insertResult = insertDrugsGivenList(drugsGivenList)

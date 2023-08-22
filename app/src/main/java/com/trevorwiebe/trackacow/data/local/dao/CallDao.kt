@@ -57,6 +57,7 @@ interface CallDao {
     @Delete
     suspend fun deleteCall(callEntity: CallEntity?)
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(callList: List<CallEntity>) {
         val insertResult = insertCallList(callList)

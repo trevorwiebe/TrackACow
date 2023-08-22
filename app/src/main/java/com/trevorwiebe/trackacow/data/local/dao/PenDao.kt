@@ -47,6 +47,7 @@ interface PenDao {
     @Delete
     suspend fun deletePen(penEntity: PenEntity)
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdatePenList(penList: List<PenEntity>) {
         val insertResult = insertPenList(penList)

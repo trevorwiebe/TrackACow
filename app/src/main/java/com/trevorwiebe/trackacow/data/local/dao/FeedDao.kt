@@ -55,6 +55,7 @@ interface FeedDao {
     @Query("DELETE FROM feed")
     suspend fun deleteAllFeeds()
 
+    // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(feedList: List<FeedEntity>) {
         val insertResult = insertFeedEntityList(feedList)
