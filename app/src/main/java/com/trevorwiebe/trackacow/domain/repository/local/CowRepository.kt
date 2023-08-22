@@ -22,7 +22,9 @@ interface CowRepository {
 
     suspend fun deleteAllCows()
 
-    suspend fun insertOrUpdateCowList(cowList: List<CowModel>)
+    suspend fun syncCloudCowsByCowId(cowList: List<CowModel>, cowId: String)
+
+    suspend fun syncCloudCowsByLotId(cowList: List<CowModel>, lotId: String)
 
     // cache functions
 

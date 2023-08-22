@@ -32,7 +32,7 @@ class ReadCowsByLotId(
                 cowCloudFlow.onStart {
                     emit(localData to source)
                 }.map { (cowModelList, source) ->
-                    cowRepository.insertOrUpdateCowList(cowModelList)
+                    cowRepository.syncCloudCowsByLotId(cowModelList, lotId)
                     cowModelList to source
                 }
             }

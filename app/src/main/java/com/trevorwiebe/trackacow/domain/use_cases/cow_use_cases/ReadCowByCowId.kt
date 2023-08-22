@@ -33,7 +33,7 @@ class ReadCowByCowId(
                 }.map { (cowModel, source) ->
                     if (cowModel != null) {
                         val cowList = listOf(cowModel)
-                        cowRepository.insertOrUpdateCowList(cowList)
+                        cowRepository.syncCloudCowsByCowId(cowList, cowId)
                     }
                     cowModel to source
                 }

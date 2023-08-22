@@ -40,14 +40,21 @@ interface CowDao {
     @Query("DELETE FROM cow")
     suspend fun deleteAllCows()
 
-    // TODO: update this to delete
+    @Query("DELETE FROM cow WHERE cowId = :cowId")
+    suspend fun deleteCowsByCowId(cowId: String)
+
+    @Query("DELETE FROM cow WHERE lotId = :lotId")
+    suspend fun deleteCowsByLotId(lotId: String)
+
     @Transaction
-    suspend fun insertOrUpdate(cowList: List<CowEntity>) {
-        val insertResult = insertCowList(cowList)
-        val updateList = mutableListOf<CowEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(cowList[i])
-        }
-        if (updateList.isNotEmpty()) updateCowList(cowList)
+    suspend fun syncCloudCowsByCowId(cowList: List<CowEntity>, cowId: String) {
+        deleteCowsByCowId(cowId)
+        insertCowList(cowList)
+    }
+
+    @Transaction
+    suspend fun syncCloudCowsByLotId(cowList: List<CowEntity>, lotId: String) {
+        deleteCowsByLotId(lotId)
+        insertCowList(cowList)
     }
 }

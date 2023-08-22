@@ -31,10 +31,10 @@ data class ReadDeadCowsByLotId(
                 cowCloudFlow.onStart {
                     emit(localData to source)
                 }.map { (cowModelList, source) ->
+                    cowRepository.syncCloudCowsByLotId(cowModelList, lotId)
                     val cowList = cowModelList.filter {
                         it.alive == 0
                     }
-                    cowRepository.insertOrUpdateCowList(cowList)
                     cowList to source
                 }
             }

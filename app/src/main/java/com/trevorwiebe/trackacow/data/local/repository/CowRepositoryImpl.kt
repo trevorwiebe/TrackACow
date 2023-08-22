@@ -56,6 +56,14 @@ data class CowRepositoryImpl(
         cowDao.deleteAllCows()
     }
 
+    override suspend fun syncCloudCowsByCowId(cowList: List<CowModel>, cowId: String) {
+        cowDao.syncCloudCowsByCowId(cowList.map { it.toCowEntity() }, cowId)
+    }
+
+    override suspend fun syncCloudCowsByLotId(cowList: List<CowModel>, lotId: String) {
+        cowDao.syncCloudCowsByLotId(cowList.map { it.toCowEntity() }, lotId)
+    }
+
     override suspend fun insertCacheCow(cacheCowModel: CacheCowModel) {
         cacheCowDao.insertCacheCow(cacheCowModel.toCacheCowEntity())
     }
@@ -66,9 +74,5 @@ data class CowRepositoryImpl(
 
     override suspend fun deleteCacheCows() {
         cacheCowDao.deleteCacheCows()
-    }
-
-    override suspend fun insertOrUpdateCowList(cowList: List<CowModel>) {
-        cowDao.insertOrUpdate(cowList.map { it.toCowEntity() })
     }
 }
