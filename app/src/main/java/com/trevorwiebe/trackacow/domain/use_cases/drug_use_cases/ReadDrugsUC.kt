@@ -31,7 +31,7 @@ data class ReadDrugsUC(
                 cloudDrugFlow.onStart {
                     emit(localData to source)
                 }.map { (drugList, source) ->
-                    drugRepository.insertOrUpdateDrugList(drugList)
+                    drugRepository.syncCloudDrugToDatabase(drugList)
                     drugList to source
                 }
             }

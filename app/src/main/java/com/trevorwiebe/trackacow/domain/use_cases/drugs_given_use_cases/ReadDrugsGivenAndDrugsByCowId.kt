@@ -38,7 +38,7 @@ class ReadDrugsGivenAndDrugsByCowId(
         val flowResult = if (isFetchingFromCloud) {
             localDrugFlow.flatMapConcat { (localData, source) ->
                 cloudDrugFlow.flatMapConcat { (pair, source) ->
-                    drugRepository.insertOrUpdateDrugList(pair.first)
+                    drugRepository.syncCloudDrugToDatabase(pair.first)
                     drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
                     flow {
                         val combinedList = combineDrugList(pair.first, pair.second)

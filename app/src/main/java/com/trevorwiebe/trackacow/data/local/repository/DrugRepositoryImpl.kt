@@ -43,8 +43,8 @@ class DrugRepositoryImpl(
         }
     }
 
-    override suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>) {
-        drugDao.insertOrUpdate(drugList.map { it.toDrugEntity() })
+    override suspend fun syncCloudDrugToDatabase(drugList: List<DrugModel>) {
+        drugDao.syncCloudDrugListToDatabase(drugList.map { it.toDrugEntity() })
     }
 
     override suspend fun getCacheDrugs(): List<CacheDrugModel> {

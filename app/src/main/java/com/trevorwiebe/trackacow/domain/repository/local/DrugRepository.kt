@@ -18,7 +18,7 @@ interface DrugRepository {
 
     fun getDrugList(): Flow<List<DrugModel>>
 
-    suspend fun insertOrUpdateDrugList(drugList: List<DrugModel>)
+    suspend fun syncCloudDrugToDatabase(drugList: List<DrugModel>)
 
     // cache functions
 

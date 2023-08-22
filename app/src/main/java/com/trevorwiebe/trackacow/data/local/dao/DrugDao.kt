@@ -32,13 +32,9 @@ interface DrugDao {
     suspend fun deleteDrug(drugEntity: DrugEntity)
 
     @Transaction
-    suspend fun insertOrUpdate(drugList: List<DrugEntity>) {
-        val insertResult = insertDrugList(drugList)
-        val updateList = mutableListOf<DrugEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(drugList[i])
-        }
-        if (updateList.isNotEmpty()) updateDrugList(drugList)
+    suspend fun syncCloudDrugListToDatabase(drugList: List<DrugEntity>) {
+        deleteAllDrugs()
+        insertDrugList(drugList)
     }
 
 }
