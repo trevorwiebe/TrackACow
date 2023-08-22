@@ -36,7 +36,7 @@ data class ReadCallByLotIdAndDateUC(
         val flowResult = if (isFetchingFromCloud) {
             localCallAndRationFlow.flatMapConcat { (localData, source) ->
                 cloudCallAndRationFlow.flatMapConcat { (pair, source) ->
-                    rationRepository.insertOrUpdateRationList(pair.first)
+                    rationRepository.syncCloudRationListToDatabase(pair.first)
                     callRepository.insertOrUpdateCallList(pair.second)
                     flow {
                         val callAndRationModel =

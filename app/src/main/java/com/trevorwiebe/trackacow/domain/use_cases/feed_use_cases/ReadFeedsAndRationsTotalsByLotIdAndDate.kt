@@ -38,7 +38,7 @@ data class ReadFeedsAndRationsTotalsByLotIdAndDate(
             localFeedAndRationFlow.flatMapConcat { (localData, source) ->
                 cloudFeedAndRationFlow.flatMapConcat { (pair, source) ->
                     feedRepository.insertOrUpdateFeedList(pair.second)
-                    rationRepository.insertOrUpdateRationList(pair.first)
+                    rationRepository.syncCloudRationListToDatabase(pair.first)
                     flow {
                         val combineList = combineList(pair.second, pair.first, startDate, endDate)
                         emit(combineList to source)

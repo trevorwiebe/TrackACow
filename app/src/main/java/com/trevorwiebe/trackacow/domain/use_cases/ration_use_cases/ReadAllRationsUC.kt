@@ -31,7 +31,7 @@ class ReadAllRationsUC(
                 rationCloudFlow.onStart {
                     emit(localData to source)
                 }.map { (rationList, source) ->
-                    rationsRepository.insertOrUpdateRationList(rationList)
+                    rationsRepository.syncCloudRationListToDatabase(rationList)
                     rationList to source
                 }
             }

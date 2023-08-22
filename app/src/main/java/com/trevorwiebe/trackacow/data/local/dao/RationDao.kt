@@ -37,12 +37,8 @@ interface RationDao {
     suspend fun deleteAllRations()
 
     @Transaction
-    suspend fun insertOrUpdateRationList(rationList: List<RationEntity>) {
-        val insertResult = insertRationList(rationList)
-        val updateList = mutableListOf<RationEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(rationList[i])
-        }
-        if (updateList.isNotEmpty()) updateRationList(rationList)
+    suspend fun syncCloudRationListToDatabase(rationList: List<RationEntity>) {
+        deleteAllRations()
+        insertRationList(rationList)
     }
 }

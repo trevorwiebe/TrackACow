@@ -18,7 +18,7 @@ interface RationsRepository {
 
     suspend fun insertCacheRation(cacheRationModel: CacheRationModel)
 
-    suspend fun insertOrUpdateRationList(rationList: List<RationModel>)
+    suspend fun syncCloudRationListToDatabase(rationList: List<RationModel>)
 
     // cache functions
 

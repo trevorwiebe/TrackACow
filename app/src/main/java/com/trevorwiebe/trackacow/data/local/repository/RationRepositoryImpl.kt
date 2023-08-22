@@ -44,8 +44,8 @@ class RationRepositoryImpl(
         cacheRationDao.insertHoldingRation(cacheRationModel.toCacheRationEntity())
     }
 
-    override suspend fun insertOrUpdateRationList(rationList: List<RationModel>) {
-        rationDao.insertOrUpdateRationList(rationList.map { it.toRationEntity() })
+    override suspend fun syncCloudRationListToDatabase(rationList: List<RationModel>) {
+        rationDao.syncCloudRationListToDatabase(rationList.map { it.toRationEntity() })
     }
 
     override suspend fun getCacheRations(): List<CacheRationModel> {
