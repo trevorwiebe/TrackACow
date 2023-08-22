@@ -83,7 +83,23 @@ class CallRepositoryImpl(
         cacheCallDao.deleteCacheCalls()
     }
 
-    override suspend fun insertOrUpdateCallList(callList: List<CallModel>) {
-        callDao.insertOrUpdate(callList.map { it.toCallEntity() })
+    override suspend fun syncCloudCallsByLotId(callList: List<CallModel>, lotId: String) {
+        callDao.syncCloudCallsWithLotId(callList.map { it.toCallEntity() }, lotId)
     }
+
+    override suspend fun syncCloudCallsByLotIdAndDate(
+        callList: List<CallModel>,
+        lotId: String,
+        dateStart: Long,
+        dateEnd: Long
+    ) {
+        callDao.syncCloudCallsWithLotIdAndDate(
+            callList.map { it.toCallEntity() },
+            lotId,
+            dateStart,
+            dateEnd
+        )
+    }
+
+
 }

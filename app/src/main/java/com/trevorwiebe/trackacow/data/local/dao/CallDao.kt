@@ -57,14 +57,26 @@ interface CallDao {
     @Delete
     suspend fun deleteCall(callEntity: CallEntity?)
 
-    // TODO: update this to delete
+    @Query("DELETE FROM call WHERE lotId = :lotId")
+    suspend fun deleteCallsByLotId(lotId: String)
+
+    @Query("DELETE FROM call WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate")
+    suspend fun deleteCallsByLotIdAndDate(lotId: String, startDate: Long, endDate: Long)
+
     @Transaction
-    suspend fun insertOrUpdate(callList: List<CallEntity>) {
-        val insertResult = insertCallList(callList)
-        val updateList = mutableListOf<CallEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(callList[i])
-        }
-        if (updateList.isNotEmpty()) updateCallList(callList)
+    suspend fun syncCloudCallsWithLotId(callList: List<CallEntity>, lotId: String) {
+        deleteCallsByLotId(lotId)
+        insertCallList(callList)
+    }
+
+    @Transaction
+    suspend fun syncCloudCallsWithLotIdAndDate(
+        callList: List<CallEntity>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ) {
+        deleteCallsByLotIdAndDate(lotId, startDate, endDate)
+        insertCallList(callList)
     }
 }

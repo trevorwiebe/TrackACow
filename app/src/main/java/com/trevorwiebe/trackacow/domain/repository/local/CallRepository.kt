@@ -27,7 +27,14 @@ interface CallRepository {
 
     suspend fun deleteAllCalls()
 
-    suspend fun insertOrUpdateCallList(callList: List<CallModel>)
+    suspend fun syncCloudCallsByLotId(callList: List<CallModel>, lotId: String)
+
+    suspend fun syncCloudCallsByLotIdAndDate(
+        callList: List<CallModel>,
+        lotId: String,
+        dateStart: Long,
+        dateEnd: Long
+    )
 
     // cache functions
     suspend fun insertCacheCall(cacheCallModel: CacheCallModel)
