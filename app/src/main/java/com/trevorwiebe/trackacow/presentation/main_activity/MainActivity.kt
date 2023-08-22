@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +26,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.BuildConfig
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -66,6 +68,16 @@ class MainActivity : AppCompatActivity() {
             val id = menuItem.itemId
             setSelectedFragment(Utility.getFragmentIdFromResourceID(id))
             true
+        }
+
+        if (BuildConfig.DEBUG) {
+            try {
+                mFirebaseAuth.useEmulator("10.0.2.2", 9099)
+                val firebaseDatabase = FirebaseDatabase.getInstance()
+                firebaseDatabase.useEmulator("10.0.2.2", 9000)
+            } catch (e: Exception) {
+                Log.e("MainActivity", "onCreate: Cannot start emulator", e)
+            }
         }
 
         mAuthListener = AuthStateListener { firebaseAuth: FirebaseAuth ->
