@@ -61,17 +61,6 @@ interface DrugsGivenDao {
     @Query("DELETE FROM drugs_given WHERE drugsGivenLotId = :lotId AND drugsGivenDate BETWEEN :startDate AND :endDate")
     suspend fun deleteDrugsGivenByLotIdAndDate(lotId: String, startDate: Long, endDate: Long)
 
-    // TODO: update this to delete
-    @Transaction
-    suspend fun insertOrUpdate(drugsGivenList: List<DrugsGivenEntity>) {
-        val insertResult = insertDrugsGivenList(drugsGivenList)
-        val updateList = mutableListOf<DrugsGivenEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(drugsGivenList[i])
-        }
-        if (updateList.isNotEmpty()) updateDrugsGivenList(drugsGivenList)
-    }
-
     @Transaction
     suspend fun deleteDrugsGivenByCowIdTransaction(cowId: String): List<DrugsGivenEntity> {
         val drugsGivenList = getDrugsGivenByCowId(cowId)
