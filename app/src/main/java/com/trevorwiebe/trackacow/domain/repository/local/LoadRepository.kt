@@ -20,7 +20,7 @@ interface LoadRepository {
 
     suspend fun deleteAllLoads()
 
-    suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>)
+    suspend fun syncCloudLoadByLotId(loadList: List<LoadModel>, lotId: String)
 
     // cache functions
 

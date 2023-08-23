@@ -42,14 +42,12 @@ interface LoadDao {
     @Query("DELETE FROM load")
     suspend fun deleteAllLoads()
 
-    // TODO: update this to delete
+    @Query("DELETE FROM load WHERE lotId = :lotId")
+    suspend fun deleteLoadByLotId(lotId: String)
+
     @Transaction
-    suspend fun insertOrUpdate(loadList: List<LoadEntity>) {
-        val insertResult = insertLoadList(loadList)
-        val updateList = mutableListOf<LoadEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(loadList[i])
-        }
-        if (updateList.isNotEmpty()) updateLoadList(loadList)
+    suspend fun syncCloudLoadsByLotId(loadList: List<LoadEntity>, lotId: String) {
+        deleteLoadByLotId(lotId)
+        insertLoadList(loadList)
     }
 }

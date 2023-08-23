@@ -53,8 +53,8 @@ class LoadRepositoryImpl(
         loadDao.deleteAllLoads()
     }
 
-    override suspend fun insertOrUpdateLoadList(loadList: List<LoadModel>) {
-        loadDao.insertOrUpdate(loadList.map { it.toLoadEntity() })
+    override suspend fun syncCloudLoadByLotId(loadList: List<LoadModel>, lotId: String) {
+        loadDao.syncCloudLoadsByLotId(loadList.map { it.toLoadEntity() }, lotId)
     }
 
     override suspend fun getCacheLoads(): List<CacheLoadModel> {

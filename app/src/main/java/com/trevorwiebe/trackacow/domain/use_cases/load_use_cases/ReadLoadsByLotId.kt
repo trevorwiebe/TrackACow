@@ -32,7 +32,7 @@ data class ReadLoadsByLotId(
                 cloudLoadFlow.onStart {
                     emit(localData to source)
                 }.map { (loadList, source) ->
-                    loadRepository.insertOrUpdateLoadList(loadList)
+                    loadRepository.syncCloudLoadByLotId(loadList, lotId)
                     loadList to source
                 }
             }
