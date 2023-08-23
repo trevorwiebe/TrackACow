@@ -47,14 +47,9 @@ interface PenDao {
     @Delete
     suspend fun deletePen(penEntity: PenEntity)
 
-    // TODO: update this to delete
     @Transaction
-    suspend fun insertOrUpdatePenList(penList: List<PenEntity>) {
-        val insertResult = insertPenList(penList)
-        val updateList = mutableListOf<PenEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(penList[i])
-        }
-        if (updateList.isNotEmpty()) updatePenList(updateList)
+    suspend fun syncCloudPenList(penList: List<PenEntity>) {
+        deleteAllPens()
+        insertPenList(penList)
     }
 }

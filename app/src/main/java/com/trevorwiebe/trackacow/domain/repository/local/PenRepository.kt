@@ -23,7 +23,7 @@ interface PenRepository {
 
     suspend fun deleteAllPens()
 
-    suspend fun insertOrUpdatePenList(penList: List<PenModel>)
+    suspend fun syncCloudPens(penList: List<PenModel>)
 
     // cache functions
     suspend fun insertCachePen(cachePenModel: CachePenModel)

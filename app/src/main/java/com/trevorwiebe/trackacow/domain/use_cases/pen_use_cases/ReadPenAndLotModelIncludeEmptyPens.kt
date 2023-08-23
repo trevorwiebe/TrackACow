@@ -38,7 +38,7 @@ class ReadPenAndLotModelIncludeEmptyPens(
         val flowResult = if (isFetchingFromCloud) {
             localFlow.flatMapConcat { (localData, source) ->
                 cloudFlow.flatMapConcat { (pair, source) ->
-                    penRepository.insertOrUpdatePenList(pair.first)
+                    penRepository.syncCloudPens(pair.first)
                     lotRepository.syncCloudLots(pair.second)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)

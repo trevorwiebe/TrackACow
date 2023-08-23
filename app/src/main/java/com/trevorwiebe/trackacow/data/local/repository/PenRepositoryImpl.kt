@@ -73,7 +73,7 @@ class PenRepositoryImpl(
         penDao.deleteAllPens()
     }
 
-    override suspend fun insertOrUpdatePenList(penList: List<PenModel>) {
-        penDao.insertOrUpdatePenList(penList.map { it.toPenEntity() })
+    override suspend fun syncCloudPens(penList: List<PenModel>) {
+        penDao.syncCloudPenList(penList.map { it.toPenEntity() })
     }
 }
