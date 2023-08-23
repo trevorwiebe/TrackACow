@@ -61,6 +61,22 @@ class FeedRepositoryImpl(
         feedDao.deleteAllFeeds()
     }
 
+    override suspend fun syncCloudFeedByLotId(feedModelList: List<FeedModel>, lotId: String) {
+        feedDao.syncCloudFeedByLotId(feedModelList.map { it.toFeedEntity() }, lotId)
+    }
+
+    override suspend fun syncCloudFeedByLotIdAndDate(
+        feedModelList: List<FeedModel>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ) {
+        feedDao.syncCloudFeedByLotIdAndDate(
+            feedModelList.map { it.toFeedEntity() },
+            lotId, startDate, endDate
+        )
+    }
+
     override suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>) {
         cacheFeedDao.insertHoldingFeedList(feedModelList.map { it.toCacheFeedEntity() })
     }
@@ -71,9 +87,5 @@ class FeedRepositoryImpl(
 
     override suspend fun deleteCacheFeeds() {
         cacheFeedDao.deleteCacheDrugs()
-    }
-
-    override suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>) {
-        feedDao.insertOrUpdate(feedList.map { it.toFeedEntity() })
     }
 }

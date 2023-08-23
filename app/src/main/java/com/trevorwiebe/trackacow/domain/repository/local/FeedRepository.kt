@@ -18,9 +18,9 @@ interface FeedRepository {
     ): Flow<List<FeedModel>>
 
     fun readFeedsAndRationTotalByLotIdAndDate(
-            lotId: String,
-            startDate: Long,
-            endDate: Long
+        lotId: String,
+        startDate: Long,
+        endDate: Long
     ): Flow<List<FeedAndRationModel>>
 
     suspend fun updateFeedsWithNewLot(lotId: String, oldLotIds: List<String>)
@@ -29,7 +29,14 @@ interface FeedRepository {
 
     suspend fun deleteAllFeeds()
 
-    suspend fun insertOrUpdateFeedList(feedList: List<FeedModel>)
+    suspend fun syncCloudFeedByLotId(feedModelList: List<FeedModel>, lotId: String)
+
+    suspend fun syncCloudFeedByLotIdAndDate(
+        feedModelList: List<FeedModel>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    )
 
     // cache functions
     suspend fun createCacheFeedList(feedModelList: List<CacheFeedModel>)

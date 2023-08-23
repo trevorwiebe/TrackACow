@@ -55,14 +55,24 @@ interface FeedDao {
     @Query("DELETE FROM feed")
     suspend fun deleteAllFeeds()
 
-    // TODO: update this to delete
+    @Query("DELETE FROM feed WHERE lotId = :lotId")
+    suspend fun deleteFeedByLotId(lotId: String)
+
+    @Query("DELETE FROM feed WHERE lotId = :lotId AND date BETWEEN :startDate AND :endDate")
+    suspend fun deleteFeedByLotIdAndDate(lotId: String, startDate: Long, endDate: Long)
+
     @Transaction
-    suspend fun insertOrUpdate(feedList: List<FeedEntity>) {
-        val insertResult = insertFeedEntityList(feedList)
-        val updateList = mutableListOf<FeedEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(feedList[i])
-        }
-        if (updateList.isNotEmpty()) updateFeedList(feedList)
+    suspend fun syncCloudFeedByLotId(feedList: List<FeedEntity>, lotId: String) {
+        deleteFeedByLotId(lotId)
+    }
+
+    @Transaction
+    suspend fun syncCloudFeedByLotIdAndDate(
+        feedList: List<FeedEntity>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ) {
+        deleteFeedByLotIdAndDate(lotId, startDate, endDate)
     }
 }

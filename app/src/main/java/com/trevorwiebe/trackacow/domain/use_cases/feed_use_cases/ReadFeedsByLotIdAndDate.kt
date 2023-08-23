@@ -31,7 +31,7 @@ data class ReadFeedsByLotIdAndDate(
                 cloudFeedFlow.onStart {
                     emit(localData to source)
                 }.map { (feedList, source) ->
-                    feedRepository.insertOrUpdateFeedList(feedList)
+                    feedRepository.syncCloudFeedByLotIdAndDate(feedList, lotId, startDate, endDate)
                     feedList.filter { feedModel ->
                         feedModel.date in startDate..endDate
                     } to source

@@ -32,7 +32,7 @@ data class ReadFeedsByLotId(
                 cloudFeedFlow.onStart {
                     emit(localData to source)
                 }.map { (feedList, source) ->
-                    feedRepository.insertOrUpdateFeedList(feedList)
+                    feedRepository.syncCloudFeedByLotId(feedList, lotId)
                     feedList to source
                 }
             }
