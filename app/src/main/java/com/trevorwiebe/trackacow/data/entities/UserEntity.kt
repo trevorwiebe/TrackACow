@@ -1,10 +1,8 @@
 package com.trevorwiebe.trackacow.data.entities
 
-import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Keep
 @Entity(tableName = "user")
 data class UserEntity (
     @PrimaryKey(autoGenerate = true)

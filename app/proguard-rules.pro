@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keep class com.trevorwiebe.trackacow.data.entities.** { *; }
+-keep class com.trevorwiebe.trackacow.data.cacheEntities.** { *; }
+-keep class com.trevorwiebe.trackacow.domain.models.** { *; }
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**

@@ -1,10 +1,8 @@
 package com.trevorwiebe.trackacow.data.entities
 
-import androidx.annotation.Keep
 import androidx.room.PrimaryKey
 import androidx.room.Entity
 
-@Keep
 @Entity(tableName = "load")
 data class LoadEntity (
     @PrimaryKey(autoGenerate = true)

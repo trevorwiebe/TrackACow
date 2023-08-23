@@ -1,10 +1,8 @@
 package com.trevorwiebe.trackacow.data.cacheEntities
 
-import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Keep
 @Entity(tableName = "cache_ration")
 data class CacheRationEntity(
         @PrimaryKey(autoGenerate = true)

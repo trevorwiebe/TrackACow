@@ -1,10 +1,8 @@
 package com.trevorwiebe.trackacow.data.entities
 
-import androidx.annotation.Keep
 import androidx.room.PrimaryKey
 import androidx.room.Entity
 
-@Keep
 @Entity(tableName = "cow")
 data class CowEntity (
     @PrimaryKey(autoGenerate = true)

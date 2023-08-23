@@ -1,10 +1,8 @@
 package com.trevorwiebe.trackacow.data.entities
 
 import androidx.room.PrimaryKey
-import androidx.annotation.Keep
 import androidx.room.Entity
 
-@Keep
 @Entity(tableName = "drug")
 data class DrugEntity(
         @PrimaryKey(autoGenerate = true)
