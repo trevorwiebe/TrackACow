@@ -70,6 +70,35 @@ class DrugsGivenRepositoryImpl(
         drugsGivenDao.deleteAllDrugsGiven()
     }
 
+    override suspend fun syncCloudDrugsGivenToDatabaseByCowId(
+        drugGivenList: List<DrugGivenModel>,
+        cowId: String
+    ) {
+        drugsGivenDao.syncCloudDrugsGivenByCowId(drugGivenList.map {
+            it.toDrugGivenEntity()
+        }, cowId)
+    }
+
+    override suspend fun syncCloudDrugsGivenToDatabaseByLotId(
+        drugGivenList: List<DrugGivenModel>,
+        lotId: String
+    ) {
+        drugsGivenDao.syncCloudDrugsGivenByLotId(drugGivenList.map {
+            it.toDrugGivenEntity()
+        }, lotId)
+    }
+
+    override suspend fun syncCloudDrugsGivenToDatabaseByLotIdAndDate(
+        drugGivenList: List<DrugGivenModel>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ) {
+        drugsGivenDao.syncCloudDrugsGivenByLotIdAndDate(drugGivenList.map {
+            it.toDrugGivenEntity()
+        }, lotId, startDate, endDate)
+    }
+
     override suspend fun insertCacheDrugGiven(cacheDrugGivenModel: CacheDrugGivenModel) {
         cacheDrugsGivenDao.insertCacheDrugGiven(cacheDrugGivenModel.toCacheDrugGivenEntity())
     }
@@ -86,9 +115,5 @@ class DrugsGivenRepositoryImpl(
 
     override suspend fun deleteCacheDrugsGiven() {
         cacheDrugsGivenDao.deleteCacheDrugGiven()
-    }
-
-    override suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>) {
-        drugsGivenDao.insertOrUpdate(drugGivenList.map { it.toDrugGivenEntity() })
     }
 }

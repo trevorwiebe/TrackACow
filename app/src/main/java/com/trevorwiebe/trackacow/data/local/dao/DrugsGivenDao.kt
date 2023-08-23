@@ -55,6 +55,12 @@ interface DrugsGivenDao {
     @Query("DELETE FROM drugs_given")
     suspend fun deleteAllDrugsGiven()
 
+    @Query("DELETE FROM drugs_given WHERE drugsGivenLotId = :lotId")
+    suspend fun deleteDrugsGivenByLotId(lotId: String)
+
+    @Query("DELETE FROM drugs_given WHERE drugsGivenLotId = :lotId AND drugsGivenDate BETWEEN :startDate AND :endDate")
+    suspend fun deleteDrugsGivenByLotIdAndDate(lotId: String, startDate: Long, endDate: Long)
+
     // TODO: update this to delete
     @Transaction
     suspend fun insertOrUpdate(drugsGivenList: List<DrugsGivenEntity>) {
@@ -71,6 +77,29 @@ interface DrugsGivenDao {
         val drugsGivenList = getDrugsGivenByCowId(cowId)
         deleteDrugsGivenByCowId(cowId)
         return drugsGivenList
+    }
+
+    @Transaction
+    suspend fun syncCloudDrugsGivenByCowId(drugsGivenList: List<DrugsGivenEntity>, cowId: String) {
+        deleteDrugsGivenByCowId(cowId)
+        insertDrugsGivenList(drugsGivenList)
+    }
+
+    @Transaction
+    suspend fun syncCloudDrugsGivenByLotId(drugsGivenList: List<DrugsGivenEntity>, lotId: String) {
+        deleteDrugsGivenByLotId(lotId)
+        insertDrugsGivenList(drugsGivenList)
+    }
+
+    @Transaction
+    suspend fun syncCloudDrugsGivenByLotIdAndDate(
+        drugsGivenList: List<DrugsGivenEntity>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    ) {
+        deleteDrugsGivenByLotIdAndDate(lotId, startDate, endDate)
+        insertDrugsGivenList(drugsGivenList)
     }
 
 }

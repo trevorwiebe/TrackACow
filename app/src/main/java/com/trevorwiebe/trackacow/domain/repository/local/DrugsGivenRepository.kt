@@ -26,7 +26,22 @@ interface DrugsGivenRepository {
 
     suspend fun deleteAllDrugsGiven()
 
-    suspend fun insertOrUpdateDrugGivenList(drugGivenList: List<DrugGivenModel>)
+    suspend fun syncCloudDrugsGivenToDatabaseByCowId(
+        drugGivenList: List<DrugGivenModel>,
+        cowId: String
+    )
+
+    suspend fun syncCloudDrugsGivenToDatabaseByLotId(
+        drugGivenList: List<DrugGivenModel>,
+        lotId: String
+    )
+
+    suspend fun syncCloudDrugsGivenToDatabaseByLotIdAndDate(
+        drugGivenList: List<DrugGivenModel>,
+        lotId: String,
+        startDate: Long,
+        endDate: Long
+    )
 
     // cache functions
 

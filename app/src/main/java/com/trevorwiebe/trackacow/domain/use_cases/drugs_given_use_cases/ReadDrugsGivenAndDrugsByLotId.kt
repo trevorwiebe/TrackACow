@@ -38,7 +38,7 @@ class ReadDrugsGivenAndDrugsByLotId(
             localDrugsGivenFlow.flatMapConcat { (localData, source) ->
                 cloudDrugsGivenFlow.flatMapConcat { (pair, source) ->
                     drugRepository.syncCloudDrugToDatabase(pair.first)
-                    drugsGivenRepository.insertOrUpdateDrugGivenList(pair.second)
+                    drugsGivenRepository.syncCloudDrugsGivenToDatabaseByLotId(pair.second, lotId)
                     flow {
                         val combinedList = combineDrugList(pair.first, pair.second)
                         emit(combinedList to source)
