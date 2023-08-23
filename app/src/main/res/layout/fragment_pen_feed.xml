@@ -21,6 +21,7 @@
 
     <LinearLayout
         android:orientation="vertical"
+        android:visibility="gone"
         android:id="@+id/feed_pen_empty_layout"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"

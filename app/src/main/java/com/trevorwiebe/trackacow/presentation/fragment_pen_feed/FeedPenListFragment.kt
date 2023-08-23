@@ -3,6 +3,8 @@ package com.trevorwiebe.trackacow.presentation.fragment_pen_feed
 import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +38,7 @@ class FeedPenListFragment : Fragment() {
     private lateinit var mLotModel: LotModel
     private lateinit var mProgressBar: LinearProgressIndicator
     private lateinit var feedPenRecyclerViewAdapter: FeedPenRecyclerViewAdapter
-    private lateinit var feedPenListUiModelList: List<FeedPenListUiModel>
+    private var feedPenListUiModelList: List<FeedPenListUiModel> = emptyList()
 
     @Inject
     lateinit var feedPenListViewModelFactory: FeedPenListViewModel.FeedPenListViewModelFactory
@@ -115,7 +117,12 @@ class FeedPenListFragment : Fragment() {
                     //if the feedPenListUiModelList is empty and loading is false, the list is empty
                     // and that is shown
                     if (feedPenListUiModelList.isEmpty()) {
-                        mEmptyPen.visibility = View.VISIBLE
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (feedPenListUiModelList.isEmpty())
+                                    mEmptyPen.visibility = View.VISIBLE
+                            }, 100
+                        )
                     } else {
                         mEmptyPen.visibility = View.INVISIBLE
                         feedPenRecyclerViewAdapter.setFeedPenList(feedPenListUiModelList)

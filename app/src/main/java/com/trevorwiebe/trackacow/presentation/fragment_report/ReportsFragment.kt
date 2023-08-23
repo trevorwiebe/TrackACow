@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -78,7 +80,12 @@ class ReportsFragment : Fragment() {
 
                     mLotList = it.lotList
                     if (mLotList.isEmpty()) {
-                        mNoReportsTv.visibility = View.VISIBLE
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (mLotList.isEmpty())
+                                    mNoReportsTv.visibility = View.VISIBLE
+                            }, 100 // value in milliseconds
+                        )
                     } else {
                         mNoReportsTv.visibility = View.INVISIBLE
                     }

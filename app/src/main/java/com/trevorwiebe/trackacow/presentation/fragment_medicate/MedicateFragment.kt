@@ -9,6 +9,8 @@ import com.trevorwiebe.trackacow.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevorwiebe.trackacow.domain.utils.ItemClickListener
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -95,8 +97,14 @@ class MedicateFragment : Fragment() {
 
                     mPenAndLotModelList = it.penAndLotModelList
                     if (it.penAndLotModelList.isEmpty()) {
-                        mPenRv.visibility = View.GONE
-                        mNoPensLl.visibility = View.VISIBLE
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (mPenAndLotModelList.isEmpty()) {
+                                    mPenRv.visibility = View.GONE
+                                    mNoPensLl.visibility = View.VISIBLE
+                                }
+                            }, 100 // value in milliseconds
+                        )
                     } else {
                         mNoPensLl.visibility = View.GONE
                         mPenRv.visibility = View.VISIBLE

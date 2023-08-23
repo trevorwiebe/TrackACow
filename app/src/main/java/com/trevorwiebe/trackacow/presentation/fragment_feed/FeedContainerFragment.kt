@@ -6,6 +6,8 @@ import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -17,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.trevorwiebe.trackacow.R
 import com.google.android.material.tabs.TabLayout
 import com.trevorwiebe.trackacow.domain.adapters.FeedPenViewPagerAdapter
+import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.presentation.manage_pens.ManagePensActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,6 +31,7 @@ class FeedContainerFragment : Fragment() {
     private var feedPenViewPagerAdapter: FeedPenViewPagerAdapter? = null
     private lateinit var mContext: Context
     private val feedContainerViewModel: FeedContainerViewModel by viewModels()
+    private var mPenAndLotList: List<PenAndLotModel> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,11 +57,19 @@ class FeedContainerFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 feedContainerViewModel.uiState.collect {
 
-                    if (it.penAndLotList.isEmpty()) {
-                        noPensLayout.visibility = View.VISIBLE
-                        tabs.visibility = View.GONE
+                    mPenAndLotList = it.penAndLotList
+
+                    if (mPenAndLotList.isEmpty()) {
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (mPenAndLotList.isEmpty()) {
+                                    noPensLayout.visibility = View.VISIBLE
+                                    tabs.visibility = View.GONE
+                                }
+                            }, 100 // value in milliseconds
+                        )
                     } else {
-                        feedPenViewPagerAdapter?.updatePenList(it.penAndLotList)
+                        feedPenViewPagerAdapter?.updatePenList(mPenAndLotList)
                         noPensLayout.visibility = View.GONE
                         tabs.visibility = View.VISIBLE
                     }

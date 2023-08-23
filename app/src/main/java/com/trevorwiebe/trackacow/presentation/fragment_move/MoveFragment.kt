@@ -6,6 +6,8 @@ import android.widget.TextView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,7 +31,7 @@ class MoveFragment : Fragment() {
     private lateinit var mMoveRv: RecyclerView
     private lateinit var mEmptyMoveList: TextView
     private lateinit var mProgressBar: LinearProgressIndicator
-
+    private var mObjectList: MutableList<Any> = mutableListOf()
     private lateinit var mShuffleAdapter: ShufflePenAndLotsAdapter
 
     private val moveViewModel: MoveViewModel by viewModels()
@@ -77,27 +79,31 @@ class MoveFragment : Fragment() {
 
                     val penAndLotList = it.penAndLotList
 
-                    val objectList: MutableList<Any> = mutableListOf()
-
                     for (r in penAndLotList.indices) {
 
                         val penAndLotModel = penAndLotList[r]
 
                         val penModel = penAndLotModel.toPenModel()
-                        objectList.add(penModel)
+                        mObjectList.add(penModel)
 
                         if (!penAndLotModel.lotName.isNullOrEmpty()) {
                             val lotModel = penAndLotModel.toLotModel()
-                            objectList.add(lotModel)
+                            mObjectList.add(lotModel)
                         }
                     }
 
-                    if (objectList.size == 0) {
-                        mEmptyMoveList.visibility = View.VISIBLE
+                    if (mObjectList.size == 0) {
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                if (mObjectList.size == 0) {
+                                    mEmptyMoveList.visibility = View.VISIBLE
+                                }
+                            }, 100 // value in milliseconds
+                        )
                     } else {
                         mEmptyMoveList.visibility = View.GONE
                     }
-                    mShuffleAdapter.setShuffleObjectList(objectList, mContext)
+                    mShuffleAdapter.setShuffleObjectList(mObjectList, mContext)
                 }
             }
         }
