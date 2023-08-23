@@ -9,13 +9,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 33
+        compileSdk 34
+        targetSdkVersion 34
         versionCode 19
         versionName "0.5.0"
-        flavorDimensions "default"
+        flavorDimensions["default"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -91,10 +91,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:30.5.0')
-    implementation('com.google.firebase:firebase-auth-ktx') {
-        exclude module: "play-services-safetynet"
-    }
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation('com.google.firebase:firebase-auth-ktx')
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-functions-ktx'
 
