@@ -196,6 +196,7 @@ class LotReportActivity : AppCompatActivity() {
                             mDrugsUsedLayout.addView(textView)
                         }
                     } else {
+                        mDrugsUsedLayout.removeAllViews()
                         mNoDrugReports.visibility = View.VISIBLE
                     }
 
