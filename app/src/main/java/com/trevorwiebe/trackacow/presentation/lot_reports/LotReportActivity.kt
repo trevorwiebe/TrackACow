@@ -222,6 +222,7 @@ class LotReportActivity : AppCompatActivity() {
                         val lotIds = ArrayList<String?>()
                         lotIds.add(mLotId)
                     } else {
+                        cattleListAdapter.setData(emptyList(), this@LotReportActivity)
                         mNoCattleReceived.visibility = View.VISIBLE
                     }
 
