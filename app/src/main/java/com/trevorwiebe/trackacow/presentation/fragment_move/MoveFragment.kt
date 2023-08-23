@@ -71,6 +71,8 @@ class MoveFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 moveViewModel.uiState.collect {
 
+                    mObjectList.clear()
+
                     if (it.isFetchingFromCloud && it.dataSource == DataSource.Local && it.penAndLotList.isEmpty()) {
                         mProgressBar.visibility = View.VISIBLE
                     } else {
