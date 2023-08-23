@@ -59,8 +59,6 @@ class FeedReportsActivity : AppCompatActivity() {
         )
     }
 
-    // TODO: remove ration horizontal scroll
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_reports)
