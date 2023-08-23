@@ -38,7 +38,7 @@ class ReadPenAndLotModelExcludeEmptyPens(
             localFlow.flatMapConcat { (localData, source) ->
                 cloudFlow.flatMapConcat { (pair, source) ->
                     penRepository.insertOrUpdatePenList(pair.first)
-                    lotRepository.insertOrUpdateLotList(pair.second)
+                    lotRepository.syncCloudLots(pair.second)
                     flow {
                         val combinedList = combineList(pair.first, pair.second)
                         emit(combinedList to source)

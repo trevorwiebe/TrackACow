@@ -32,7 +32,7 @@ data class ReadArchivedLots(
                 cloudFlow.onStart {
                     emit(localData to source)
                 }.map { (lotList, source) ->
-                    lotRepository.insertOrUpdateLotList(lotList)
+                    lotRepository.syncCloudLots(lotList)
                     val mutableList = lotList.toMutableList()
                     mutableList.sortWith(object : Comparator<LotModel> {
                         override fun compare(p0: LotModel, p1: LotModel): Int {

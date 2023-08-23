@@ -28,7 +28,9 @@ interface LotRepository {
 
     suspend fun deleteAllLots()
 
-    suspend fun insertOrUpdateLotList(lotList: List<LotModel>)
+    suspend fun syncCloudLots(lotList: List<LotModel>)
+
+    suspend fun syncCloudLotsByLotId(lotList: List<LotModel>, lotId: String)
 
     // cache function
     suspend fun createCacheLot(cacheLotModel: CacheLotModel)

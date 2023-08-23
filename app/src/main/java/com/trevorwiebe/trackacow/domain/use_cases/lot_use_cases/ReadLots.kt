@@ -31,7 +31,7 @@ data class ReadLots(
                 cloudLotFlow.onStart {
                     emit(localData to source)
                 }.map { (lotList, source) ->
-                    lotRepository.insertOrUpdateLotList(lotList)
+                    lotRepository.syncCloudLots(lotList)
                     lotList to source
                 }
             }

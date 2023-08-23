@@ -56,14 +56,19 @@ interface LotDao {
     @Query("DELETE FROM lot")
     suspend fun deleteAllLots()
 
-    // TODO: update this to delete
+    @Query("DELETE FROM lot WHERE lotCloudDatabaseId = :lotId")
+    suspend fun deleteLotsByLotId(lotId: String)
+
     @Transaction
-    suspend fun insertOrUpdateLotList(lotList: List<LotEntity>) {
-        val insertResult = insertLotList(lotList)
-        val updateList = mutableListOf<LotEntity>()
-        for (i in insertResult.indices) {
-            if (insertResult[i] == -1L) updateList.add(lotList[i])
-        }
-        if (updateList.isNotEmpty()) updateLotList(lotList)
+    suspend fun syncCloudLots(lotList: List<LotEntity>) {
+        deleteAllLots()
+        insertLotList(lotList)
     }
+
+    @Transaction
+    suspend fun syncCloudLotsByLotId(lotList: List<LotEntity>, lotId: String) {
+        deleteLotsByLotId(lotId)
+        insertLotList(lotList)
+    }
+
 }

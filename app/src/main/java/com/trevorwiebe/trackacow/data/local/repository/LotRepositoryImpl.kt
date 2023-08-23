@@ -80,8 +80,12 @@ class LotRepositoryImpl(
         lotDao.deleteAllLots()
     }
 
-    override suspend fun insertOrUpdateLotList(lotList: List<LotModel>) {
-        lotDao.insertOrUpdateLotList(lotList.map { it.toLotEntity() })
+    override suspend fun syncCloudLots(lotList: List<LotModel>) {
+        lotDao.syncCloudLots(lotList.map { it.toLotEntity() })
+    }
+
+    override suspend fun syncCloudLotsByLotId(lotList: List<LotModel>, lotId: String) {
+        lotDao.syncCloudLotsByLotId(lotList.map { it.toLotEntity() }, lotId)
     }
 
     override suspend fun createCacheLot(cacheLotModel: CacheLotModel) {

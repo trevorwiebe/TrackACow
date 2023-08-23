@@ -48,6 +48,8 @@ class FeedPenListFragment : Fragment() {
         )
     }
 
+    // TODO: fix issue where recyclerview still shows even when lot is deleted
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

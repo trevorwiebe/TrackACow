@@ -35,7 +35,7 @@ data class ReadLotsByLotId(
                     }
                 }.map { (lotModel, source) ->
                     val lotList = listOf(lotModel)
-                    lotRepository.insertOrUpdateLotList(lotList)
+                    lotRepository.syncCloudLotsByLotId(lotList, lotCloudDatabaseId)
                     lotModel to source
                 }
             }
