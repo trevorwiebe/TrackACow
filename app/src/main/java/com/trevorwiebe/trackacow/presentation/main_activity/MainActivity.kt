@@ -2,9 +2,9 @@ package com.trevorwiebe.trackacow.presentation.main_activity
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.trevorwiebe.trackacow.BuildConfig
 import com.trevorwiebe.trackacow.R
 import com.trevorwiebe.trackacow.domain.utils.Constants
 import com.trevorwiebe.trackacow.domain.utils.Utility
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var mAuthListener: AuthStateListener? = null
     private var mFirebaseAuth = FirebaseAuth.getInstance()
     private var mIsActivityPaused = true
-
+    private var mDbVersion: Long = 0
     private lateinit var mBottomNavigationView: BottomNavigationView
     private lateinit var mMainProgressBar: ProgressBar
     private lateinit var mToolBar: Toolbar
@@ -104,6 +105,8 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         migrationAlertDialog.hide()
                     }
+
+                    mDbVersion = it.dbVersion
                 }
             }
         }
@@ -186,36 +189,20 @@ class MainActivity : AppCompatActivity() {
                 .getReference("users")
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
                 .child("requiredAppVersion")
-        var appVersion: Long
-        try {
-            val pInfo = this@MainActivity.packageManager.getPackageInfo(this@MainActivity.packageName, 0)
-            appVersion = pInfo.versionCode.toLong()
-        } catch (e: PackageManager.NameNotFoundException) {
-            appVersion = 0
-            e.printStackTrace()
-        }
 
-        val appVersionCode = appVersion
         appVersionRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null) {
                     val databaseAppVersion = snapshot.value as Long
-                    if (databaseAppVersion > appVersion) {
-                        showNoPassDialog(
-                                "Update required",
-                                "You must update to the latest version of TrackACow to continue.",
-                                "Update",
-                                "Cancel",
-                                "market://details?id=$packageName",
-                                "https://play.google.com/store/apps/details?id=$packageName"
-                        )
-                    } else if (databaseAppVersion < appVersion) {
-                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration(appVersionCode))
+                    if (databaseAppVersion.toInt() == 18) {
+                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration)
+                    } else if (databaseAppVersion.toInt() == 19) {
+                        appVersionRef.setValue(mDbVersion)
                     }
                 } else {
                     // Since there is no version save in cloud,
                     // just set cloud to current version
-                    appVersionRef.setValue(appVersion)
+                    mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration)
                 }
             }
 

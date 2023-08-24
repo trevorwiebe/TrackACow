@@ -1,8 +1,10 @@
 package com.trevorwiebe.trackacow.presentation.main_activity
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trevorwiebe.trackacow.domain.use_cases.DatabaseVersionHelper
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
 import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
 import com.trevorwiebe.trackacow.domain.use_cases.UploadCache
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val initiateCloudDatabaseMigration5to6: InitiateCloudDatabaseMigration5to6,
     private val deleteAllLocalData: DeleteAllLocalData,
+    private val dbVersionHelper: DatabaseVersionHelper,
     private val uploadCache: UploadCache,
     private val context: Application
 ) : ViewModel() {
@@ -26,10 +29,14 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    init {
+        setDbVersion()
+    }
+
     fun onEvent(event: MainUiEvent) {
         when (event) {
             is MainUiEvent.OnInitiateCloudDatabaseMigration -> {
-                migrateDatabase(event.appVersion)
+                migrateDatabase(dbVersionHelper.getDbVersion())
             }
 
             is MainUiEvent.OnSignedOut -> {
@@ -54,6 +61,7 @@ class MainViewModel @Inject constructor(
             .continueWith { task ->
                 // TODO: add error handling here
                 _uiState.update { it.copy(cloudDatabaseMigrationInProgress = false) }
+                Log.d("TAG", "migrateDatabase: ${task.result.data}")
             }
     }
 
@@ -68,14 +76,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun setDbVersion() {
+        _uiState.update { it.copy(dbVersion = dbVersionHelper.getDbVersion()) }
+    }
+
 }
 
 data class MainUiState(
-    val cloudDatabaseMigrationInProgress: Boolean = false
+    val cloudDatabaseMigrationInProgress: Boolean = false,
+    val dbVersion: Long = 0
 )
 
 sealed class MainUiEvent {
-    data class OnInitiateCloudDatabaseMigration(val appVersion: Long) : MainUiEvent()
+    object OnInitiateCloudDatabaseMigration : MainUiEvent()
     object CheckCache : MainUiEvent()
     object OnSignedOut : MainUiEvent()
 }

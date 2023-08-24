@@ -16,6 +16,7 @@ import com.trevorwiebe.trackacow.domain.repository.local.*
 import com.trevorwiebe.trackacow.domain.repository.remote.*
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
+import com.trevorwiebe.trackacow.domain.use_cases.DatabaseVersionHelper
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
 import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
 import com.trevorwiebe.trackacow.domain.use_cases.UploadCache
@@ -247,6 +248,14 @@ object TrackACowDataModule {
         firebaseFunctions: FirebaseFunctions
     ): InitiateCloudDatabaseMigration5to6 {
         return InitiateCloudDatabaseMigration5to6(firebaseFunctions)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabaseVersionHelper(
+        roomDatabase: AppDatabase
+    ): DatabaseVersionHelper {
+        return DatabaseVersionHelper(roomDatabase)
     }
 
     @Provides
