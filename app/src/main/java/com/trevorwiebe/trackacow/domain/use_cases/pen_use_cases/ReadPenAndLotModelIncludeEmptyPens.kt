@@ -62,17 +62,17 @@ class ReadPenAndLotModelIncludeEmptyPens(
             val penAndLotModel = penModel.toPenAndLotModel(lot)
             result.add(penAndLotModel)
         }
-        result.sortWith(object : Comparator<PenAndLotModel> {
-            override fun compare(p0: PenAndLotModel, p1: PenAndLotModel): Int {
-                if (p0.penName > p1.penName) {
-                    return 1
-                }
-                if (p0.penName == p1.penName) {
-                    return 0
-                }
-                return -1
-            }
-        })
+//        result.sortWith(object : Comparator<PenAndLotModel> {
+//            override fun compare(p0: PenAndLotModel, p1: PenAndLotModel): Int {
+//                if (p0.penName > p1.penName) {
+//                    return 1
+//                }
+//                if (p0.penName == p1.penName) {
+//                    return 0
+//                }
+//                return -1
+//            }
+//        })
         return result
     }
 }
