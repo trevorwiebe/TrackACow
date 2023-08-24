@@ -68,6 +68,16 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        if (BuildConfig.DEBUG) {
+            try {
+                mFirebaseAuth.useEmulator("10.0.2.2", 9099)
+                val firebaseDatabase = FirebaseDatabase.getInstance()
+                firebaseDatabase.useEmulator("10.0.2.2", 9000)
+            } catch (e: Exception) {
+                Log.e("MainActivity", "onCreate: Cannot start emulator", e)
+            }
+        }
+
         mAuthListener = AuthStateListener { firebaseAuth: FirebaseAuth ->
             mFirebaseAuth = firebaseAuth
             val user = firebaseAuth.currentUser
