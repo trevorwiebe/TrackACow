@@ -49,7 +49,7 @@ class FeedContainerFragment : Fragment() {
                 startActivity(addPenIntent)
             }
 
-        feedPenViewPagerAdapter = fragmentManager?.let { FeedPenViewPagerAdapter(it, emptyList()) }
+        feedPenViewPagerAdapter = FeedPenViewPagerAdapter(childFragmentManager, emptyList())
 
         feedPenViewPager.adapter = feedPenViewPagerAdapter
 
