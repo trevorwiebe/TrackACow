@@ -64,6 +64,7 @@ interface FeedDao {
     @Transaction
     suspend fun syncCloudFeedByLotId(feedList: List<FeedEntity>, lotId: String) {
         deleteFeedByLotId(lotId)
+        insertFeedEntityList(feedList)
     }
 
     @Transaction
