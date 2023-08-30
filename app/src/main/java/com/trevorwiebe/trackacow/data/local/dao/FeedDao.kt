@@ -75,5 +75,6 @@ interface FeedDao {
         endDate: Long
     ) {
         deleteFeedByLotIdAndDate(lotId, startDate, endDate)
+        insertFeedEntityList(feedList)
     }
 }
