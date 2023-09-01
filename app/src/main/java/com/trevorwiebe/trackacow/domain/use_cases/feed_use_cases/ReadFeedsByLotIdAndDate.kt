@@ -27,14 +27,21 @@ data class ReadFeedsByLotIdAndDate(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localFeedFlow.flatMapConcat { (localData, source) ->
+            localFeedFlow.flatMapConcat { (localData, fromLocalSource) ->
                 cloudFeedFlow.onStart {
-                    emit(localData to source)
-                }.map { (feedList, source) ->
-                    feedRepository.syncCloudFeedByLotIdAndDate(feedList, lotId, startDate, endDate)
+                    emit(localData to fromLocalSource)
+                }.map { (feedList, fromCloudSource) ->
+                    if (fromCloudSource == DataSource.Cloud) {
+                        feedRepository.syncCloudFeedByLotIdAndDate(
+                            feedList,
+                            lotId,
+                            startDate,
+                            endDate
+                        )
+                    }
                     feedList.filter { feedModel ->
                         feedModel.date in startDate..endDate
-                    } to source
+                    } to fromCloudSource
                 }
             }
         } else {

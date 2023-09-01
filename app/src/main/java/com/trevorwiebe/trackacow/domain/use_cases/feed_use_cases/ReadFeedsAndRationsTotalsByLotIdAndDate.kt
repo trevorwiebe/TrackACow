@@ -35,8 +35,8 @@ data class ReadFeedsAndRationsTotalsByLotIdAndDate(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val flowResults = if (isFetchingFromCloud) {
-            localFeedAndRationFlow.flatMapConcat { (localData, source) ->
-                cloudFeedAndRationFlow.flatMapConcat { (pair, source) ->
+            localFeedAndRationFlow.flatMapConcat { (localData, fromLocalSource) ->
+                cloudFeedAndRationFlow.flatMapConcat { (pair, fromCloudSource) ->
                     feedRepository.syncCloudFeedByLotIdAndDate(
                         pair.second,
                         lotId,
@@ -46,9 +46,9 @@ data class ReadFeedsAndRationsTotalsByLotIdAndDate(
                     rationRepository.syncCloudRationListToDatabase(pair.first)
                     flow {
                         val combineList = combineList(pair.second, pair.first, startDate, endDate)
-                        emit(combineList to source)
+                        emit(combineList to fromCloudSource)
                     }
-                }.onStart { emit(localData to source) }
+                }.onStart { emit(localData to fromLocalSource) }
             }
         } else {
             localFeedAndRationFlow

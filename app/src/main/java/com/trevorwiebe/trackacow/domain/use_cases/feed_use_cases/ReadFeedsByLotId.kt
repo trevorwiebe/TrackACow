@@ -28,12 +28,14 @@ data class ReadFeedsByLotId(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localFeedFlow.flatMapConcat { (localData, source) ->
+            localFeedFlow.flatMapConcat { (localData, fromLocalFlowSource) ->
                 cloudFeedFlow.onStart {
-                    emit(localData to source)
-                }.map { (feedList, source) ->
-                    feedRepository.syncCloudFeedByLotId(feedList, lotId)
-                    feedList to source
+                    emit(localData to fromLocalFlowSource)
+                }.map { (feedList, fromCloudFlowSource) ->
+                    if (fromCloudFlowSource == DataSource.Cloud) {
+                        feedRepository.syncCloudFeedByLotId(feedList, lotId)
+                    }
+                    feedList to fromCloudFlowSource
                 }
             }
         } else {

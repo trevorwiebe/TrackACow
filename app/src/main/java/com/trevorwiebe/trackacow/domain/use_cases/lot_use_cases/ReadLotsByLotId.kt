@@ -28,15 +28,17 @@ data class ReadLotsByLotId(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localLotFlow.flatMapConcat { (localData, source) ->
+            localLotFlow.flatMapConcat { (localData, fromLocalSource) ->
                 cloudLotFlow.onStart {
                     if (localData != null) {
-                        emit(localData to source)
+                        emit(localData to fromLocalSource)
                     }
-                }.map { (lotModel, source) ->
-                    val lotList = listOf(lotModel)
-                    lotRepository.syncCloudLotsByLotId(lotList, lotCloudDatabaseId)
-                    lotModel to source
+                }.map { (lotModel, fromCloudSource) ->
+                    if (fromCloudSource == DataSource.Cloud) {
+                        val lotList = listOf(lotModel)
+                        lotRepository.syncCloudLotsByLotId(lotList, lotCloudDatabaseId)
+                    }
+                    lotModel to fromCloudSource
                 }
             }
         } else {

@@ -28,11 +28,13 @@ data class ReadArchivedLots(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localFlow.flatMapConcat { (localData, source) ->
+            localFlow.flatMapConcat { (localData, fromLocalSource) ->
                 cloudFlow.onStart {
-                    emit(localData to source)
-                }.map { (lotList, source) ->
-                    lotRepository.syncCloudLots(lotList)
+                    emit(localData to fromLocalSource)
+                }.map { (lotList, fromCloudSource) ->
+                    if (fromCloudSource == DataSource.Cloud) {
+                        lotRepository.syncCloudLots(lotList)
+                    }
                     val mutableList = lotList.toMutableList()
                     mutableList.sortWith(object : Comparator<LotModel> {
                         override fun compare(p0: LotModel, p1: LotModel): Int {
@@ -45,7 +47,7 @@ data class ReadArchivedLots(
                             return -1
                         }
                     })
-                    mutableList.toList() to source
+                    mutableList.toList() to fromCloudSource
                 }
             }
         } else {

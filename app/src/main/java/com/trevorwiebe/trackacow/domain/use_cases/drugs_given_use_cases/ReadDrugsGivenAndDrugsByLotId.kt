@@ -35,16 +35,16 @@ class ReadDrugsGivenAndDrugsByLotId(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val flowResult = if (isFetchingFromCloud) {
-            localDrugsGivenFlow.flatMapConcat { (localData, source) ->
-                cloudDrugsGivenFlow.flatMapConcat { (pair, source) ->
+            localDrugsGivenFlow.flatMapConcat { (localData, fromLocalSource) ->
+                cloudDrugsGivenFlow.flatMapConcat { (pair, fromCloudSource) ->
                     drugRepository.syncCloudDrugToDatabase(pair.first)
                     drugsGivenRepository.syncCloudDrugsGivenToDatabaseByLotId(pair.second, lotId)
                     flow {
                         val combinedList = combineDrugList(pair.first, pair.second)
-                        emit(combinedList to source)
+                        emit(combinedList to fromCloudSource)
                     }
                 }.onStart {
-                    emit(localData to source)
+                    emit(localData to fromLocalSource)
                 }
             }
         } else {

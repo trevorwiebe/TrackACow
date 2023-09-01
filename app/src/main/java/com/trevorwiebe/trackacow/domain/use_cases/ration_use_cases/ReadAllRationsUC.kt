@@ -27,12 +27,14 @@ class ReadAllRationsUC(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localFlow.flatMapConcat { (localData, source) ->
+            localFlow.flatMapConcat { (localData, fromLocalSource) ->
                 rationCloudFlow.onStart {
-                    emit(localData to source)
-                }.map { (rationList, source) ->
-                    rationsRepository.syncCloudRationListToDatabase(rationList)
-                    rationList to source
+                    emit(localData to fromLocalSource)
+                }.map { (rationList, fromCloudSource) ->
+                    if (fromCloudSource == DataSource.Cloud) {
+                        rationsRepository.syncCloudRationListToDatabase(rationList)
+                    }
+                    rationList to fromCloudSource
                 }
             }
         } else {

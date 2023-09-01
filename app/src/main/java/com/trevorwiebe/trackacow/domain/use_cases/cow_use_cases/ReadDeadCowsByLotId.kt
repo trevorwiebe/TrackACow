@@ -27,15 +27,17 @@ data class ReadDeadCowsByLotId(
         val isFetchingFromCloud = Utility.haveNetworkConnection(context)
 
         val resultsFlow = if (isFetchingFromCloud) {
-            localCowFlow.flatMapConcat { (localData, source) ->
+            localCowFlow.flatMapConcat { (localData, fromLocalSource) ->
                 cowCloudFlow.onStart {
-                    emit(localData to source)
-                }.map { (cowModelList, source) ->
-                    cowRepository.syncCloudCowsByLotId(cowModelList, lotId)
+                    emit(localData to fromLocalSource)
+                }.map { (cowModelList, fromCloudSource) ->
+                    if (fromCloudSource == DataSource.Cloud) {
+                        cowRepository.syncCloudCowsByLotId(cowModelList, lotId)
+                    }
                     val cowList = cowModelList.filter {
                         it.alive == 0
                     }
-                    cowList to source
+                    cowList to fromCloudSource
                 }
             }
         } else {
