@@ -37,10 +37,6 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         fun create(defaultArgs: Bundle?): FeedLotDetailFragmentViewModel
     }
 
-    init {
-        readRations()
-    }
-
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun providesFactory(
@@ -70,6 +66,7 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
 
         readCallByLotIdAndDate(lotId, dateList[0], dateList[1])
         readFeedsByLotIdAndDate(lotId, dateList[0], dateList[1])
+        readRations()
     }
 
     fun onEvent(event: FeedLotDetailFragmentEvents) {
