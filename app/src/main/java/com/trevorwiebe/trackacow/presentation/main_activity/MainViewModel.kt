@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.trevorwiebe.trackacow.domain.use_cases.DatabaseVersionHelper
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
 import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
+import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration6to7
 import com.trevorwiebe.trackacow.domain.use_cases.UploadCache
 import com.trevorwiebe.trackacow.domain.utils.Utility
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val initiateCloudDatabaseMigration5to6: InitiateCloudDatabaseMigration5to6,
+    private val initiateCloudDatabaseMigration6to7: InitiateCloudDatabaseMigration6to7,
     private val deleteAllLocalData: DeleteAllLocalData,
     private val dbVersionHelper: DatabaseVersionHelper,
     private val uploadCache: UploadCache,
@@ -35,8 +37,12 @@ class MainViewModel @Inject constructor(
 
     fun onEvent(event: MainUiEvent) {
         when (event) {
-            is MainUiEvent.OnInitiateCloudDatabaseMigration -> {
-                migrateDatabase(dbVersionHelper.getDbVersion())
+            is MainUiEvent.OnInitiateCloudDatabaseMigration5to6 -> {
+                migrateDatabase5to6(dbVersionHelper.getDbVersion())
+            }
+
+            is MainUiEvent.OnInitiateCloudDatabaseMigration6to7 -> {
+                migrateDatabase6to7(dbVersionHelper.getDbVersion())
             }
 
             is MainUiEvent.OnSignedOut -> {
@@ -55,13 +61,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun migrateDatabase(appVersion: Long) {
-        _uiState.update { it.copy(cloudDatabaseMigrationInProgress = true) }
-        initiateCloudDatabaseMigration5to6.invoke(appVersion)
+    private fun migrateDatabase5to6(dbVersion: Long) {
+        _uiState.update {
+            it.copy(
+                dbVersion = dbVersion,
+                cloudDatabaseMigrationInProgress = true
+            )
+        }
+        initiateCloudDatabaseMigration5to6.invoke(dbVersion)
             .continueWith { task ->
                 // TODO: add error handling here
                 _uiState.update { it.copy(cloudDatabaseMigrationInProgress = false) }
                 Log.d("TAG", "migrateDatabase: ${task.result.data}")
+            }
+    }
+
+    private fun migrateDatabase6to7(dbVersion: Long) {
+        initiateCloudDatabaseMigration6to7.invoke(dbVersion)
+            .continueWith { task ->
+                Log.i("TAG", "migrateDatabase6to7: ${task.result.data}")
             }
     }
 
@@ -88,7 +106,8 @@ data class MainUiState(
 )
 
 sealed class MainUiEvent {
-    object OnInitiateCloudDatabaseMigration : MainUiEvent()
+    object OnInitiateCloudDatabaseMigration5to6 : MainUiEvent()
+    object OnInitiateCloudDatabaseMigration6to7 : MainUiEvent()
     object CheckCache : MainUiEvent()
     object OnSignedOut : MainUiEvent()
 }

@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
 
         // Check if app is on required version
-        checkIfAppIsOnRequiredVersion()
+        checkIfAppIsCompatibleWithRequiredDBVersion()
     }
 
     private fun onSignedOutCleanUp() {
@@ -183,26 +183,28 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.onEvent(MainUiEvent.OnSignedOut)
     }
 
-    private fun checkIfAppIsOnRequiredVersion() {
-        val appVersionRef = FirebaseDatabase
-                .getInstance()
-                .getReference("users")
-                .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                .child("requiredAppVersion")
+    private fun checkIfAppIsCompatibleWithRequiredDBVersion() {
+        val dbVersionRef = FirebaseDatabase
+            .getInstance()
+            .getReference("users")
+            .child(FirebaseAuth.getInstance().currentUser!!.uid)
+            .child("requiredAppVersion")
 
-        appVersionRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        dbVersionRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null) {
-                    val databaseAppVersion = snapshot.value as Long
-                    if (databaseAppVersion.toInt() == 18) {
-                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration)
-                    } else if (databaseAppVersion.toInt() == 19) {
-                        appVersionRef.setValue(mDbVersion)
+                    val databaseDBVersion = snapshot.value as Long
+                    if (databaseDBVersion.toInt() == 18) {
+                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration5to6)
+                    } else if (databaseDBVersion.toInt() == 19) {
+                        dbVersionRef.setValue(mDbVersion)
+                    } else if (databaseDBVersion.toInt() == 6) {
+                        mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration6to7)
                     }
                 } else {
                     // Since there is no version save in cloud,
                     // just set cloud to current version
-                    mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration)
+                    mainViewModel.onEvent(MainUiEvent.OnInitiateCloudDatabaseMigration5to6)
                 }
             }
 

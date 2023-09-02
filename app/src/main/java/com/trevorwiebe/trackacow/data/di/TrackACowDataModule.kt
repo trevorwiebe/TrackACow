@@ -19,6 +19,7 @@ import com.trevorwiebe.trackacow.domain.use_cases.CalculateDrugsGiven
 import com.trevorwiebe.trackacow.domain.use_cases.DatabaseVersionHelper
 import com.trevorwiebe.trackacow.domain.use_cases.DeleteAllLocalData
 import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration5to6
+import com.trevorwiebe.trackacow.domain.use_cases.InitiateCloudDatabaseMigration6to7
 import com.trevorwiebe.trackacow.domain.use_cases.UploadCache
 import dagger.Module
 import dagger.Provides
@@ -264,6 +265,14 @@ object TrackACowDataModule {
         firebaseFunctions: FirebaseFunctions
     ): InitiateCloudDatabaseMigration5to6 {
         return InitiateCloudDatabaseMigration5to6(firebaseFunctions)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInitiateCloudDatabaseMigration6to7(
+        firebaseFunctions: FirebaseFunctions
+    ): InitiateCloudDatabaseMigration6to7 {
+        return InitiateCloudDatabaseMigration6to7(firebaseFunctions)
     }
 
     @Provides
