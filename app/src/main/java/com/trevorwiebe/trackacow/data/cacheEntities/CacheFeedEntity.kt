@@ -2,12 +2,8 @@ package com.trevorwiebe.trackacow.data.cacheEntities
 
 import androidx.room.PrimaryKey
 import androidx.room.Entity
-import androidx.room.Index
 
-@Entity(
-    tableName = "cache_feed",
-    indices = [Index(value = ["id"], unique = true)]
-)
+@Entity(tableName = "cache_feed")
 class CacheFeedEntity(
     @PrimaryKey
     var id: String = "",

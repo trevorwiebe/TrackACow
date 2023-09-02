@@ -2,12 +2,8 @@ package com.trevorwiebe.trackacow.data.entities
 
 import androidx.room.PrimaryKey
 import androidx.room.Entity
-import androidx.room.Index
 
-@Entity(
-    tableName = "feed",
-    indices = [Index(value = ["id"], unique = true)]
-)
+@Entity(tableName = "feed")
 class FeedEntity(
     @PrimaryKey
     var id: String = "",

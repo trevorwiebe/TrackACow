@@ -206,14 +206,30 @@ object TrackACowDataModule {
 
             }
         }
+        val migration6to7: Migration = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // update feed table
+                database.execSQL("CREATE TABLE feed_new (id TEXT NOT NULL PRIMARY KEY, feed INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, rationCloudId TEXT)")
+                database.execSQL("INSERT INTO feed_new (id, feed, date, lotId) SELECT id, feed, date, lotId FROM feed")
+                database.execSQL("DROP TABLE feed")
+                database.execSQL("ALTER TABLE feed_new RENAME TO feed")
+
+                // update cache feed table
+                database.execSQL("CREATE TABLE feed_cache_new (id TEXT NOT NULL PRIMARY KEY, feed INTEGER NOT NULL, date INTEGER NOT NULL, lotId TEXT NOT NULL, rationCloudId TEXT, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO feed_cache_new (id, feed, date, lotId, whatHappened) SELECT id, feed, date, lotId, whatHappened FROM cache_feed")
+                database.execSQL("DROP TABLE cache_feed")
+                database.execSQL("ALTER TABLE feed_cache_new RENAME TO cache_feed")
+            }
+        }
         return Room
-                .databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
-                .addMigrations(migration1to2)
-                .addMigrations(migration2to3)
-                .addMigrations(migration3to4)
-                .addMigrations(migration4to5)
-                .addMigrations(migration5to6)
-                .build()
+            .databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
+            .addMigrations(migration1to2)
+            .addMigrations(migration2to3)
+            .addMigrations(migration3to4)
+            .addMigrations(migration4to5)
+            .addMigrations(migration5to6)
+            .addMigrations(migration6to7)
+            .build()
     }
 
     @Provides

@@ -65,7 +65,7 @@ import com.trevorwiebe.trackacow.data.local.cacheDao.CacheRationDao
         CacheCallEntity::class,
         CacheFeedEntity::class,
         CacheRationEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
