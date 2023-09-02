@@ -258,7 +258,6 @@ class FeedLotDetailFragment : Fragment() {
                         if (o == 0) {
                             mFeedFirst.setText(numberFormatter.format(feedModel.feed))
                             mFeedFirst.tag = feedModel.id
-                            mTotalFed.tag = feedModel.primaryKey
                         } else {
                             addFeedEditText(feedModel, mContext)
                         }
@@ -353,7 +352,7 @@ class FeedLotDetailFragment : Fragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         textInputLayout.layoutParams = textInputLayoutParams
-        textInputLayout.tag = feedModel?.primaryKey
+        textInputLayout.tag = feedModel?.id
 
         // create textInputEditText
         val textInputEditText = TextInputEditText(viewContext)
@@ -431,13 +430,11 @@ class FeedLotDetailFragment : Fragment() {
         get() {
             val feedModelList: MutableList<FeedModel> = mutableListOf()
             val firstFeedModel = FeedModel()
-            val firstFeedKey = mTotalFed.tag ?: 0
             val amountFeedText = mFeedFirst.text
             if (!amountFeedText.isNullOrEmpty()) {
                 firstFeedModel.feed = numberFormatter.parse(amountFeedText.toString())?.toInt() ?: 0
                 firstFeedModel.id = mFeedFirst.tag?.toString() ?: ""
                 firstFeedModel.date = mPenUiDate
-                firstFeedModel.primaryKey = firstFeedKey as Int
                 firstFeedModel.rationCloudId = mSelectedRation?.rationCloudDatabaseId
                 firstFeedModel.lotId = mPenAndLotModel?.lotCloudDatabaseId ?: ""
                 feedModelList.add(firstFeedModel)
@@ -446,12 +443,10 @@ class FeedLotDetailFragment : Fragment() {
 
                 val rowView = mFeedAgainLayout.getChildAt(i) as LinearLayout
                 val textLayout = rowView.getChildAt(0) as TextInputLayout
-                val feedKey = textLayout.tag ?: 0
                 val feedId = textLayout.editText?.tag?.toString() ?: ""
                 val amountTextView = textLayout.editText?.text
                 if (!amountTextView.isNullOrEmpty()) {
                     val feedModel = FeedModel()
-                    feedModel.primaryKey = feedKey as Int
                     feedModel.feed = numberFormatter.parse(amountTextView.toString())?.toInt() ?: 0
                     feedModel.date = mPenUiDate
                     feedModel.rationCloudId = mSelectedRation?.rationCloudDatabaseId

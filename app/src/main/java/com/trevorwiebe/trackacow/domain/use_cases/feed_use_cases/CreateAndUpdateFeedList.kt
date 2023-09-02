@@ -53,15 +53,6 @@ class CreateAndUpdateFeedList(
             }
 
             // Add, update or Delete feed list from local DB
-            if (feedListToCreate.isNotEmpty()) {
-                val idList = feedRepository.createOrUpdateFeedList(feedListToCreate)
-                feedListToCreate.forEachIndexed { index, feedModel ->
-                    val updatedFeedModel = feedModel.copy(
-                        primaryKey = idList[index].toInt()
-                    )
-                    feedListToCreate[index] = updatedFeedModel
-                }
-            }
             feedRepository.createOrUpdateFeedList(feedListToCreate)
             feedRepository.deleteFeedList(feedListToDelete)
 

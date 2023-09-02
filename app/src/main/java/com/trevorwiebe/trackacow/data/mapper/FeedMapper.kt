@@ -9,7 +9,6 @@ import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 
 fun FeedEntity.toFeedModel(): FeedModel{
     return FeedModel(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,
@@ -20,7 +19,6 @@ fun FeedEntity.toFeedModel(): FeedModel{
 
 fun FeedModel.toFeedEntity(): FeedEntity{
     return FeedEntity(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,
@@ -31,7 +29,6 @@ fun FeedModel.toFeedEntity(): FeedEntity{
 
 fun FeedModel.toCacheFeedModel(whatHappened: Int): CacheFeedModel{
     return CacheFeedModel(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,
@@ -53,7 +50,6 @@ fun FeedModel.toFeedAndRationModel(rationModel: RationModel?): FeedAndRationMode
 
 fun CacheFeedEntity.toCacheFeedModel(): CacheFeedModel {
     return CacheFeedModel(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,
@@ -65,7 +61,6 @@ fun CacheFeedEntity.toCacheFeedModel(): CacheFeedModel {
 
 fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity {
     return CacheFeedEntity(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,
@@ -77,7 +72,6 @@ fun CacheFeedModel.toCacheFeedEntity(): CacheFeedEntity {
 
 fun CacheFeedModel.toFeedModel(): FeedModel {
     return FeedModel(
-        primaryKey = primaryKey,
         feed = feed,
         date = date,
         id = id,

@@ -14,6 +14,9 @@ interface FeedDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertFeedEntityList(feedEntityList: List<FeedEntity>): List<Long>
 
+    @Upsert
+    suspend fun upsertFeedEntityList(feedEntityList: List<FeedEntity>)
+
     @Query("SELECT * FROM feed WHERE lotId = :lotId")
     fun getFeedsByLotId(lotId: String): Flow<List<FeedEntity>>
 
