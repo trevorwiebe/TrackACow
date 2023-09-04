@@ -13,8 +13,8 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionCode 24
-        versionName "0.5.32"
+        versionCode 25
+        versionName "0.5.4"
         flavorDimensions["default"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
