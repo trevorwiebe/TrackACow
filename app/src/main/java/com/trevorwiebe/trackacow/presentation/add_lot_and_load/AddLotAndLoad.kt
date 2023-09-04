@@ -103,11 +103,14 @@ class AddLotAndLoad : AppCompatActivity() {
                 val loadDateInt = loadCalendar.timeInMillis
                 val loadMemoTxt = loadMemo.text.toString()
 
+                // TODO: set last saved ration
+
                 val lotModel = LotModel(
                     0,
                     lotNameTxt,
                     "",
                     customerNameTxt,
+                    "",
                     lotMemoTxt,
                     lotDateInt,
                     0,

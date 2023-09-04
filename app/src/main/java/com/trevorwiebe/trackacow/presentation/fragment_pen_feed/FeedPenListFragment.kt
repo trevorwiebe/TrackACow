@@ -137,12 +137,12 @@ class FeedPenListFragment : Fragment() {
     private fun getLotModel(bundle: Bundle?): LotModel{
         return if(VERSION.SDK_INT >= 33){
             bundle?.getParcelable("fragment_lot", LotModel::class.java) ?: LotModel(
-                0, "", "", "", "", 0L, 0, 0, ""
+                0, "", "", "", "", "", 0L, 0, 0, ""
             )
         }else{
             @Suppress("DEPRECATION")
             bundle?.getParcelable("fragment_lot") ?: LotModel(
-                0, "", "", "", "", 0L, 0, 0, ""
+                0, "", "", "", "", "", 0L, 0, 0, ""
             )
         }
     }

@@ -10,6 +10,7 @@ class CacheLotEntity (
     var lotName: String = "",
     var lotCloudDatabaseId: String = "",
     var customerName: String? = "",
+    var rationId: String? = null,
     var notes: String? = "",
     var date: Long = 0,
     var archived: Long = 0,
