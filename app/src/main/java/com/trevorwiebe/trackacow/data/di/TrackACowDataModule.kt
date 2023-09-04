@@ -222,6 +222,22 @@ object TrackACowDataModule {
                 database.execSQL("ALTER TABLE feed_cache_new RENAME TO cache_feed")
             }
         }
+        val migration7to8: Migration = object : Migration(7, 8) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // update lot
+                database.execSQL("CREATE TABLE lot_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, rationId TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER NOT NULL, lotPenCloudDatabaseId TEXT NOT NULL)")
+                database.execSQL("INSERT INTO lot_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, rationId, notes, date, archived, dateArchived, lotPenCloudDatabaseId) SELECT lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, '', notes, date, 0, 0, lotPenCloudDatabaseId FROM lot")
+                database.execSQL("DROP TABLE lot")
+                database.execSQL("ALTER TABLE lot_new RENAME TO lot")
+
+                // update cache
+                database.execSQL("CREATE TABLE lot_cache_new (lotPrimaryKey INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, lotName TEXT NOT NULL, lotCloudDatabaseId TEXT NOT NULL, customerName TEXT, rationId TEXT, notes TEXT, date INTEGER NOT NULL, archived INTEGER NOT NULL, dateArchived INTEGER NOT NULL, lotPenCloudDatabaseId TEXT NOT NULL, whatHappened INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO lot_cache_new (lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, rationId, notes, date, archived, dateArchived, lotPenCloudDatabaseId, whatHappened) SELECT lotPrimaryKey, lotName, lotCloudDatabaseId, customerName, '', notes, date, 0, 0, lotPenCloudDatabaseId, whatHappened FROM cache_lot")
+                database.execSQL("DROP TABLE cache_lot")
+                database.execSQL("ALTER TABLE lot_cache_new RENAME TO cache_lot")
+            }
+        }
+
         return Room
             .databaseBuilder(app, AppDatabase::class.java, "track_a_cow_db")
             .addMigrations(migration1to2)
@@ -230,6 +246,7 @@ object TrackACowDataModule {
             .addMigrations(migration4to5)
             .addMigrations(migration5to6)
             .addMigrations(migration6to7)
+            .addMigrations(migration7to8)
             .build()
     }
 
