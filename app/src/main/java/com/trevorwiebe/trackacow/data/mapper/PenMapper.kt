@@ -24,6 +24,7 @@ fun PenModel.toPenAndLotModel(lotModel: LotModel?): PenAndLotModel {
         lotName = lotModel?.lotName,
         lotCloudDatabaseId = lotModel?.lotCloudDatabaseId,
         customerName = lotModel?.customerName,
+        rationId = lotModel?.rationId,
         notes = lotModel?.notes,
         date = lotModel?.date
     )

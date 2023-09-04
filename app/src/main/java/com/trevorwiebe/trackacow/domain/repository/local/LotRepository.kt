@@ -22,6 +22,8 @@ interface LotRepository {
 
     suspend fun updateLot(lotModel: LotModel)
 
+    suspend fun updateLotWithNewRationId(rationId: String, lotId: String)
+
     suspend fun deleteLot(lotModel: LotModel)
 
     suspend fun deleteLotListById(lotModelIdList: List<String>)

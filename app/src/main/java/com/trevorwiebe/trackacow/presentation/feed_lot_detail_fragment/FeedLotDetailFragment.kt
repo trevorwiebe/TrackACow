@@ -26,13 +26,13 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.trevorwiebe.trackacow.R
+import com.trevorwiebe.trackacow.data.mapper.compound_mapper.toLotModel
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.utils.DataSource
-import com.trevorwiebe.trackacow.domain.utils.Utility
 import com.trevorwiebe.trackacow.presentation.add_or_edit_rations.AddOrEditRation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -121,7 +121,7 @@ class FeedLotDetailFragment : Fragment() {
         // code to allow spinner to gain focus
         mRationSpinner.isFocusable = true
         mRationSpinner.isFocusableInTouchMode = true
-        mRationSpinner.setOnFocusChangeListener { v, hasFocus ->
+        mRationSpinner.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus)
                 this@FeedLotDetailFragment.mRationSpinner.performClick()
         }
@@ -178,8 +178,14 @@ class FeedLotDetailFragment : Fragment() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 mSelectedRation = mRationModelList[position]
                 if (mRationSpinner.hasFocus()) {
+                    if (mPenAndLotModel != null) {
+                        val lotModel = mPenAndLotModel!!.toLotModel()
+                        lotModel.rationId = mSelectedRation?.rationCloudDatabaseId
+                        feedLotDetailFragmentViewModel.onEvent(
+                            FeedLotDetailFragmentEvents.OnUpdateRation(lotModel)
+                        )
+                    }
                     setSaveButtonStatus(true)
-                    Utility.saveLastUsedRation(mContext, mSelectedRation!!.rationPrimaryKey)
                 }
             }
 
@@ -284,7 +290,7 @@ class FeedLotDetailFragment : Fragment() {
                         }
                         if (rationSelection == -1)
                             rationSelection = mRationModelList.indexOfFirst { rationModel ->
-                                rationModel.rationPrimaryKey == Utility.getLastUsedRation(mContext)
+                                rationModel.rationCloudDatabaseId == mPenAndLotModel?.rationId
                             }
                         if (rationSelection == -1) rationSelection = 0
 

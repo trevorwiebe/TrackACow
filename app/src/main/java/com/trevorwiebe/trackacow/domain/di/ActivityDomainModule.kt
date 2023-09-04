@@ -181,17 +181,22 @@ object ActivityDomainModule {
                     context
             ),
             readLots = ReadLots(
-                    lotRepository,
-                    lotRepositoryRemote,
-                    context
+                lotRepository,
+                lotRepositoryRemote,
+                context
             ),
             readLotsByLotId = ReadLotsByLotId(
-                    lotRepository,
-                    lotRepositoryRemote,
-                    context
+                lotRepository,
+                lotRepositoryRemote,
+                context
             ),
             archiveLot = ArchiveLot(lotRepository, lotRepositoryRemote, context),
             updateLot = UpdateLot(lotRepository, lotRepositoryRemote, context),
+            updateLotWithNewRation = UpdateLotWithNewRation(
+                lotRepository,
+                lotRepositoryRemote,
+                context
+            ),
             deleteLot = DeleteLot(lotRepository, lotRepositoryRemote, context),
             mergeLots = MergeLots(
                 lotRepository, lotRepositoryRemote,

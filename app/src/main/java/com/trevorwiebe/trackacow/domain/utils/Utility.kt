@@ -69,27 +69,6 @@ object Utility {
         )
     }
 
-    fun saveLastUsedRation(context: Context, rationId: Int) {
-        val sharedPreferences = context.getSharedPreferences(
-            context.resources.getString(R.string.save_ration_id_name),
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences.edit()
-        editor.putInt(context.resources.getString(R.string.save_ration_id_key), rationId)
-        editor.apply()
-    }
-
-    fun getLastUsedRation(context: Context): Int {
-        val sharedPreferences = context.getSharedPreferences(
-            context.resources.getString(R.string.save_ration_id_name),
-            Context.MODE_PRIVATE
-        )
-        return sharedPreferences.getInt(
-            context.resources.getString(R.string.save_ration_id_key),
-            -1
-        )
-    }
-
     fun saveLastFeedPen(context: Context, lastFeedPen: Int) {
         val sharedPreferences = context.getSharedPreferences(
             context.resources.getString(R.string.last_used_feed_pen_name),

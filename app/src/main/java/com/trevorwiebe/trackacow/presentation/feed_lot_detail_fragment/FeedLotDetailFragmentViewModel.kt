@@ -9,10 +9,12 @@ import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.PenAndLotModel
 import com.trevorwiebe.trackacow.domain.models.feed.FeedModel
+import com.trevorwiebe.trackacow.domain.models.lot.LotModel
 import com.trevorwiebe.trackacow.domain.models.ration.RationModel
 import com.trevorwiebe.trackacow.domain.use_cases.CalculateDayStartAndDayEnd
 import com.trevorwiebe.trackacow.domain.use_cases.call_use_cases.CallUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.feed_use_cases.FeedUseCases
+import com.trevorwiebe.trackacow.domain.use_cases.lot_use_cases.LotUseCases
 import com.trevorwiebe.trackacow.domain.use_cases.ration_use_cases.RationUseCases
 import com.trevorwiebe.trackacow.domain.utils.DataSource
 import dagger.assisted.Assisted
@@ -28,6 +30,7 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     private val callUseCases: CallUseCases,
     private val feedUseCases: FeedUseCases,
     private val rationUseCases: RationUseCases,
+    private val lotUseCases: LotUseCases,
     calculateDayStartAndDayEnd: CalculateDayStartAndDayEnd,
     @Assisted defaultArgs: Bundle? = null
 ) : ViewModel() {
@@ -73,14 +76,18 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
         when (event) {
             is FeedLotDetailFragmentEvents.OnSave -> {
                 createOrUpdateCallandFeeds(
-                        event.callModel,
-                        event.feedModelList,
-                        event.originalFeedModelList
+                    event.callModel,
+                    event.feedModelList,
+                    event.originalFeedModelList
                 )
             }
 
             is FeedLotDetailFragmentEvents.OnRationsLoaded -> {
                 readRations()
+            }
+
+            is FeedLotDetailFragmentEvents.OnUpdateRation -> {
+                updateLotWithNewRation(event.lotModel)
             }
         }
     }
@@ -155,6 +162,14 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
             feedUseCases.createAndUpdateFeedList(originalFeedModelList, feedModelList)
         }
     }
+
+    private fun updateLotWithNewRation(
+        lotModel: LotModel
+    ) {
+        viewModelScope.launch {
+            lotUseCases.updateLotWithNewRation(lotModel)
+        }
+    }
 }
 
 data class FeedLotDetailFragmentUiState(
@@ -171,10 +186,14 @@ data class FeedLotDetailFragmentUiState(
 
 sealed class FeedLotDetailFragmentEvents {
     data class OnSave(
-            val callModel: CallModel,
-            val feedModelList: List<FeedModel>,
-            val originalFeedModelList: List<FeedModel>
+        val callModel: CallModel,
+        val feedModelList: List<FeedModel>,
+        val originalFeedModelList: List<FeedModel>
     ) : FeedLotDetailFragmentEvents()
 
     object OnRationsLoaded : FeedLotDetailFragmentEvents()
+
+    data class OnUpdateRation(
+        val lotModel: LotModel
+    ) : FeedLotDetailFragmentEvents()
 }

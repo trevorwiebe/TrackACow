@@ -80,17 +80,18 @@ fun CacheLotModel.toLotModel(): LotModel {
     )
 }
 
-fun LotModel.toCacheLotModel(whatHappened: Int): CacheLotModel {
+fun LotModel.toCacheLotModel(newWhatHappened: Int): CacheLotModel {
     return CacheLotModel(
         lotPrimaryKey = lotPrimaryKey,
         lotName = lotName,
         lotCloudDatabaseId = lotCloudDatabaseId,
         customerName = customerName,
+        rationId = rationId,
         notes = notes,
         date = date,
         archived = archived,
         dateArchived = dateArchived,
         lotPenCloudDatabaseId = lotPenCloudDatabaseId,
-        whatHappened = whatHappened
+        whatHappened = newWhatHappened
     )
 }

@@ -28,6 +28,9 @@ interface LotDao {
     @Query("UPDATE lot SET lotPenCloudDatabaseId = :penId WHERE lotCloudDatabaseId = :lotId")
     suspend fun updateLotWithNewPenId(lotId: String, penId: String)
 
+    @Query("UPDATE lot SET rationId = :rationId WHERE lotCloudDatabaseId = :lotId")
+    suspend fun updateLotWithRationId(rationId: String, lotId: String)
+
     @Query("UPDATE lot SET archived = 1, dateArchived = :date WHERE lotPrimaryKey = :lotPrimaryKey")
     suspend fun archiveLot(lotPrimaryKey: Int, date: Long)
 

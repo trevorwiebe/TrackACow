@@ -38,6 +38,14 @@ class LotRepositoryRemoteImpl(
         }
     }
 
+    override fun updateLotWithRationId(rationId: String, lotId: String) {
+        val userId = firebaseUserId.get().toString()
+        if (userId.isNotEmpty()) {
+            firebaseDatabase.getReference("/users/$userId/cattleLot/$lotId/rationId")
+                .setValue(rationId)
+        }
+    }
+
     override fun insertCacheLotRemote(lotList: List<CacheLotModel>) {
         val userId = firebaseUserId.get().toString()
         if (userId.isNotEmpty() && lotList.isNotEmpty()) {

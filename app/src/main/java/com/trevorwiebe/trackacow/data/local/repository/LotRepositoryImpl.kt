@@ -68,6 +68,10 @@ class LotRepositoryImpl(
         )
     }
 
+    override suspend fun updateLotWithNewRationId(rationId: String, lotId: String) {
+        lotDao.updateLotWithRationId(rationId, lotId)
+    }
+
     override suspend fun deleteLot(lotModel: LotModel) {
         lotDao.deleteLot(lotModel.toLotEntity())
     }
