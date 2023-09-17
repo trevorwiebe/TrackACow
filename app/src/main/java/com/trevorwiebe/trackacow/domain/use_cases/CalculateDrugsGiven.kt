@@ -4,14 +4,18 @@ import com.trevorwiebe.trackacow.domain.models.compound_model.DrugsGivenAndDrugM
 
 class CalculateDrugsGiven {
 
-    operator fun invoke(drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel>): List<DrugsGivenAndDrugModel> {
+    operator fun invoke(
+        drugsGivenAndDrugModelList: List<DrugsGivenAndDrugModel>
+    ): List<DrugsGivenAndDrugModel> {
 
         val list = drugsGivenAndDrugModelList.groupBy { it.drugsGivenDrugId }
 
         val listToReturn: MutableList<DrugsGivenAndDrugModel> = mutableListOf()
         for (array in list) {
             val drugGivenModel: DrugsGivenAndDrugModel = array.value[0]
-            drugGivenModel.drugsGivenAmountGiven = array.value.sumOf { it.drugsGivenAmountGiven }
+            drugGivenModel.drugsGivenAmountGiven = array.value
+                .filter { it.drugsGivenAmountGiven >= 0 }
+                .sumOf { it.drugsGivenAmountGiven }
             listToReturn.add(drugGivenModel)
         }
 
