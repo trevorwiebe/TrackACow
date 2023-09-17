@@ -6,6 +6,10 @@ class CalculateDayStartAndDayEnd {
 
     operator fun invoke(date: Long): List<Long> {
 
+        if (date <= 0L) {
+            return listOf(0, 0)
+        }
+
         val timeList: MutableList<Long> = mutableListOf()
 
         val startCalendar = Calendar.getInstance()
