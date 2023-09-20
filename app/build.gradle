@@ -17,7 +17,7 @@ android {
         versionCode 25
         versionName "0.5.4"
         flavorDimensions["default"]
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.trevorwiebe.trackacow.test_utils.di.HiltTestRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
