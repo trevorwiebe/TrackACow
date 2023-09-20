@@ -1,12 +1,12 @@
 package com.trevorwiebe.trackacow.domain.use_cases.call_use_cases
 
 import app.cash.turbine.test
-import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.trevorwiebe.trackacow.domain.models.call.CacheCallModel
+import com.trevorwiebe.trackacow.domain.data_type_converters.transformCacheCallModel
+import com.trevorwiebe.trackacow.domain.data_type_converters.transformCallModel
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.repository.local.CallRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
@@ -115,31 +115,5 @@ class CreateCallUCTest : TrackACowAndroidTest() {
     override fun tearDown() {
         super.tearDown()
         Utility.setNewDataToUpload(context, false)
-    }
-
-    private fun Assert<CallModel>.transformCallModel(): Assert<CallModel> {
-        return transform {
-            CallModel(
-                callPrimaryKey = it.callPrimaryKey,
-                callAmount = it.callAmount,
-                date = it.date,
-                lotId = it.lotId,
-                callRationId = if (it.callRationId == 0) null else it.callRationId,
-                callCloudDatabaseId = it.callCloudDatabaseId
-            )
-        }
-    }
-
-    private fun Assert<CacheCallModel>.transformCacheCallModel(): Assert<CallModel> {
-        return transform {
-            CallModel(
-                callPrimaryKey = it.callPrimaryKey,
-                callAmount = it.callAmount,
-                date = it.date,
-                lotId = it.lotId,
-                callRationId = it.callRationId,
-                callCloudDatabaseId = it.callCloudDatabaseId
-            )
-        }
     }
 }
