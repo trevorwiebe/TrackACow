@@ -155,7 +155,8 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launch {
             if (callModel.callCloudDatabaseId.isNullOrEmpty()) {
-                callUseCases.createCallUC(callModel)
+                // TODO: remove hard-coded isConnected boolean
+                callUseCases.createCallUC(callModel, true)
             } else {
                 callUseCases.updateCallUC(callModel)
             }
