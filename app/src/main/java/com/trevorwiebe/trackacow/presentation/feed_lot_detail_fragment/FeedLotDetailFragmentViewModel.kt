@@ -93,7 +93,8 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
     }
 
     private fun readCallByLotIdAndDate(lotId: String, dateStart: Long, dateEnd: Long) {
-        val call = callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd)
+        // TODO: replace hard-coded isConnected boolean
+        val call = callUseCases.readCallsByLotIdAndDateUC(lotId, dateStart, dateEnd, true)
         viewModelScope.launch {
             call.dataFlow.collect { (receivedCallModel, source) ->
                 if (receivedCallModel != null) {
@@ -158,7 +159,7 @@ class FeedLotDetailFragmentViewModel @AssistedInject constructor(
                 // TODO: remove hard-coded isConnected boolean
                 callUseCases.createCallUC(callModel, true)
             } else {
-                callUseCases.updateCallUC(callModel)
+                callUseCases.updateCallUC(callModel, true)
             }
             feedUseCases.createAndUpdateFeedList(originalFeedModelList, feedModelList)
         }

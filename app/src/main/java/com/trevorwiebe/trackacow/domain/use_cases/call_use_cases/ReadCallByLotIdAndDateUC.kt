@@ -1,6 +1,6 @@
 package com.trevorwiebe.trackacow.domain.use_cases.call_use_cases
 
-import android.app.Application
+import android.content.Context
 import com.trevorwiebe.trackacow.data.mapper.toCallAndRationModel
 import com.trevorwiebe.trackacow.domain.models.call.CallModel
 import com.trevorwiebe.trackacow.domain.models.compound_model.CallAndRationModel
@@ -10,7 +10,6 @@ import com.trevorwiebe.trackacow.domain.repository.local.RationsRepository
 import com.trevorwiebe.trackacow.domain.repository.remote.CallRepositoryRemote
 import com.trevorwiebe.trackacow.domain.utils.DataSource
 import com.trevorwiebe.trackacow.domain.utils.SourceIdentifiedSingleFlow
-import com.trevorwiebe.trackacow.domain.utils.Utility
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -18,22 +17,23 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 data class ReadCallByLotIdAndDateUC(
-        private val rationRepository: RationsRepository,
-        private val callRepository: CallRepository,
-        private val callRepositoryRemote: CallRepositoryRemote,
-        private val context: Application
+    private val rationRepository: RationsRepository,
+    private val callRepository: CallRepository,
+    private val callRepositoryRemote: CallRepositoryRemote,
+    private val context: Context
 ){
 
     @OptIn(FlowPreview::class)
-    operator fun invoke(lotId: String, dateStart: Long, dateEnd: Long): SourceIdentifiedSingleFlow {
+    operator fun invoke(
+        lotId: String, dateStart: Long, dateEnd: Long, isConnected: Boolean
+    ): SourceIdentifiedSingleFlow {
 
         val localCallAndRationFlow = callRepository.getCallByLotIdAndDate(lotId, dateStart, dateEnd)
             .map { call -> call to DataSource.Local }
         val cloudCallAndRationFlow = callRepositoryRemote.readCallAndRationByLotIdRemote(lotId)
             .map { call -> call to DataSource.Cloud }
 
-        val isFetchingFromCloud = Utility.haveNetworkConnection(context)
-        val flowResult = if (isFetchingFromCloud) {
+        val flowResult = if (isConnected) {
             localCallAndRationFlow.flatMapConcat { (localData, fromLocalSource) ->
                 cloudCallAndRationFlow.flatMapConcat { (pair, fromCloudSource) ->
                     rationRepository.syncCloudRationListToDatabase(pair.first)
@@ -54,7 +54,7 @@ data class ReadCallByLotIdAndDateUC(
             localCallAndRationFlow
         }
 
-        return SourceIdentifiedSingleFlow(flowResult, isFetchingFromCloud)
+        return SourceIdentifiedSingleFlow(flowResult, isConnected)
     }
 
     private fun getCallAndRationModel(
